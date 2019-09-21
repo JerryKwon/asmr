@@ -1,11 +1,14 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.TextField;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -18,11 +21,11 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 
 public class ProtAniRegist extends JFrame{
-	private JLabel vProtAniRegist, vAbanAniType, vRescNo, vParAbanAniName, vAbanAniName, vAge, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vFeature, vPicture, vCage;
-	private TextField xRescNo, xParAbanAniName, xAbanAniName, xAge, xKind, xColor;
+	private JLabel vProtAniRegist, vAbanAniType, vRscuNo, vParAbanAniName, vAbanAniName, vAge, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vFeature, vPicture, vCage;
+	private TextField xRscuNo, xParAbanAniName, xAbanAniName, xAge, xKind, xColor;
 	private JComboBox<String> cbAbanAniType, cbAniType, cbSex, cbNeutWhet, cbAniSize, cbCage;
 	private JTextArea xFeature;
-	private JButton pictureManage, register, cancel;
+	private JButton searchRscu, searchPar, pictureManage, register, cancel;
 	
 	private JScrollPane featureScroll;
 	
@@ -33,6 +36,11 @@ public class ProtAniRegist extends JFrame{
 	private final String[] aniSizeDiv = {"대","중","소"};
 	private final String[] cageDiv = {"케이지1(대)","케이지4(중)","케이지9(소)"};
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	
+	ProtAniRegistItemListener protAniRegistItemListener;
+	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
@@ -41,18 +49,27 @@ public class ProtAniRegist extends JFrame{
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
 		
+		protAniRegistItemListener = new ProtAniRegistItemListener();
+		
 		vProtAniRegist = new JLabel("보호동물등록");
 		
 		vAbanAniType = new JLabel("유기동물구분");
 		cbAbanAniType = new JComboBox<String>(abanAniTypeDiv);
+		cbAbanAniType.addItemListener(protAniRegistItemListener);
 		
-		vRescNo = new JLabel("구조번호");
-		xRescNo = new TextField(10);
-		xRescNo.setEnabled(false);
+		vRscuNo = new JLabel("구조번호");
+		xRscuNo = new TextField(10);
+		xRscuNo.setEnabled(false);
+		searchRscu = new JButton("검색");
+		searchRscu.setBackground(blue);
+		searchRscu.setForeground(white);
 		
 		vParAbanAniName = new JLabel("어미유기동물명");
 		xParAbanAniName = new TextField(10);
 		xParAbanAniName.setEnabled(false);
+		searchPar = new JButton("검색");
+		searchPar.setBackground(blue);
+		searchPar.setForeground(white);
 		
 		vAbanAniName = new JLabel("유기동물명");
 		xAbanAniName = new TextField(10);
@@ -86,12 +103,19 @@ public class ProtAniRegist extends JFrame{
 		
 		vPicture = new JLabel("사진");
 		pictureManage = new JButton("사진관리");
+		pictureManage.setBackground(blue);
+		pictureManage.setForeground(white);
 		
 		vCage = new JLabel("케이지");
 		cbCage = new JComboBox<String>(cageDiv);
 		
 		register = new JButton("등록");
+		register.setBackground(blue);
+		register.setForeground(white);
+		
 		cancel = new JButton("취소");
+		
+		activateRscu();
 		
 		ProtAniRegistView();
 	}
@@ -110,49 +134,51 @@ public class ProtAniRegist extends JFrame{
 		gridbagAdd(vAbanAniType, 0, 1, 1, 1);
 		gridbagAdd(cbAbanAniType, 1, 1, 1, 1);
 		
-		gridbagAdd(vRescNo, 2, 1, 1, 1);
-		gridbagAdd(xRescNo, 3, 1, 1, 1);
+		gridbagAdd(vRscuNo, 0, 2, 1, 1);
+		gridbagAdd(xRscuNo, 1, 2, 1, 1);
+		gridbagAdd(searchRscu, 2, 2, 1, 1);
 		
-		gridbagAdd(vParAbanAniName, 4, 1, 1, 1);
-		gridbagAdd(xParAbanAniName, 5, 1, 1, 1);
+		gridbagAdd(vParAbanAniName, 3, 2, 1, 1);
+		gridbagAdd(xParAbanAniName, 4, 2, 1, 1);
+		gridbagAdd(searchPar, 5, 2, 1, 1);
 		
-		gridbagAdd(vAbanAniName, 0, 2, 1, 1);
-		gridbagAdd(xAbanAniName, 1, 2, 1, 1);
+		gridbagAdd(vAbanAniName, 0, 3, 1, 1);
+		gridbagAdd(xAbanAniName, 1, 3, 1, 1);
 		
-		gridbagAdd(vAge, 2, 2, 1, 1);
-		gridbagAdd(xAge, 3, 2, 1, 1);
+		gridbagAdd(vAge, 2, 3, 1, 1);
+		gridbagAdd(xAge, 3, 3, 1, 1);
 		
-		gridbagAdd(vAniType, 0, 3, 1, 1);
-		gridbagAdd(cbAniType, 1, 3, 1, 1);
+		gridbagAdd(vAniType, 0, 4, 1, 1);
+		gridbagAdd(cbAniType, 1, 4, 1, 1);
 		
-		gridbagAdd(vKind, 2, 3, 1, 1);
-		gridbagAdd(xKind, 3, 3, 1, 1);
+		gridbagAdd(vKind, 2, 4, 1, 1);
+		gridbagAdd(xKind, 3, 4, 1, 1);
 		
-		gridbagAdd(vSex, 0, 4, 1, 1);
-		gridbagAdd(cbSex, 1, 4, 1, 1);
+		gridbagAdd(vSex, 0, 5, 1, 1);
+		gridbagAdd(cbSex, 1, 5, 1, 1);
 		
-		gridbagAdd(vNeutWhet, 2, 4, 1, 1);
-		gridbagAdd(cbNeutWhet, 3, 4, 1, 1);
+		gridbagAdd(vNeutWhet, 2, 5, 1, 1);
+		gridbagAdd(cbNeutWhet, 3, 5, 1, 1);
 		
-		gridbagAdd(vColor, 0, 5, 1, 1);
-		gridbagAdd(xColor, 1, 5, 1, 1);
+		gridbagAdd(vColor, 0, 6, 1, 1);
+		gridbagAdd(xColor, 1, 6, 1, 1);
 		
-		gridbagAdd(vAniSize, 2, 5, 1, 1);
-		gridbagAdd(cbAniSize, 3, 5, 1, 1);
+		gridbagAdd(vAniSize, 2, 6, 1, 1);
+		gridbagAdd(cbAniSize, 3, 6, 1, 1);
 		
-		gridbagAdd(vFeature, 0, 6, 1, 1);
-		gridbagAdd(featureScroll, 1, 6, 3, 1);
+		gridbagAdd(vFeature, 0, 7, 1, 1);
+		gridbagAdd(featureScroll, 1, 7, 3, 1);
 		
-		gridbagAdd(vPicture, 0, 7, 1, 1);
-		gridbagAdd(pictureManage, 1, 7, 1, 1);
+		gridbagAdd(vPicture, 0, 8, 1, 1);
+		gridbagAdd(pictureManage, 1, 8, 1, 1);
 		
-		gridbagAdd(vCage, 0, 8, 1, 1);
-		gridbagAdd(cbCage, 1, 8, 1, 1);
+		gridbagAdd(vCage, 0, 9, 1, 1);
+		gridbagAdd(cbCage, 1, 9, 1, 1);
 	
 		Component[] cops = {register, cancel};
 		CombinePanel buttonPanel = new CombinePanel(cops, true);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 225, 0, 0));
-		gridbagAdd(buttonPanel, 0, 9, 6, 1);
+		gridbagAdd(buttonPanel, 0, 10, 6, 1);
 		
 		pack();
 		setResizable(false);
@@ -186,6 +212,39 @@ public class ProtAniRegist extends JFrame{
 				add(c);
 			}
 		}
+	}
+	
+	class ProtAniRegistItemListener implements ItemListener{
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// TODO Auto-generated method stub
+			String target = (String)e.getItem();
+			if(target=="구조") {
+				activateRscu();
+			}
+			else if(target=="탄생") {
+				activateBirth();
+			}
+		}
+		
+	}
+	
+	private void activateRscu() {
+		xRscuNo.setEnabled(true);
+		searchRscu.setEnabled(true);
+		
+		xParAbanAniName.setEnabled(false);
+		searchPar.setEnabled(false);
+	}
+	
+	private void activateBirth() {
+		xParAbanAniName.setEnabled(true);
+		searchPar.setEnabled(true);
+		
+		xRscuNo.setEnabled(false);
+		searchRscu.setEnabled(false);
+		
 	}
 	
 	public static void main(String[] args) {
