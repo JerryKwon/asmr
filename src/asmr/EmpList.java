@@ -1,5 +1,6 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -35,6 +36,10 @@ public class EmpList extends JFrame {
 	
 	private DefaultTableModel model1 = new DefaultTableModel(col1,0);
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	private Color red = new Color(217,0,27);
+	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
@@ -49,6 +54,8 @@ public class EmpList extends JFrame {
 		cbSearchType = new JComboBox<String>(searchTypeDiv);
 		xEmpNameSearch = new JTextField(10);
 		empSearch = new JButton("검색");
+		empSearch.setBackground(blue);
+		empSearch.setForeground(white);
 		
 		eEmpList = new JTable(model1);
 		scrollpane = new JScrollPane(eEmpList);
@@ -64,6 +71,8 @@ public class EmpList extends JFrame {
 		xBelongCenter = new JTextField(10);
 		xBelongCenter.setEnabled(false);
 		centerSearch = new JButton("검색");
+		centerSearch.setBackground(blue);
+		centerSearch.setForeground(white);
 		
 		vEmpType = new JLabel("직원구분");
 		cbEmptype = new JComboBox<String>(empTypeDiv);
@@ -84,8 +93,14 @@ public class EmpList extends JFrame {
 		xPhoneNum.setEnabled(false);
 		
 		modify = new JButton("수정");
+		modify.setBackground(blue);
+		modify.setForeground(white);
+		
 		cancel = new JButton("취소");
+		
 		resign = new JButton("퇴사");
+		resign.setBackground(red);
+		resign.setForeground(white);
 		 
 		EmpListView();
 		
