@@ -29,7 +29,7 @@ public class Login extends JPanel {
 	
 	private void LoginView() {
 		
-		setSize(1900, 1000);
+		setSize(1900,1000);
 		gridbagconstraints.anchor = GridBagConstraints.WEST;		
 		gridbagconstraints.ipadx = 7;		
 				
