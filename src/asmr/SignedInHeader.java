@@ -15,12 +15,10 @@ public class SignedInHeader extends JPanel {
 	
 	private String[] mlCenter = {"센터목록"};
 	private String[] mlEmp = {"직원등록", "직원조회"};
-	private String[] mlAban = {"보호", "진료"};
+	private String[] mlAban = {"동물등록", "보호", "진료"};
 	private String[] mlReport = {"신고등록", "신고배정(본부센터)", "신고배정(일반센터)"};
 	private String[] mlAdop = {"공고목록", "신청목록", "입양목록"};
 	private String[] mlPost = {"공지사항", "문의/답변"};
-	
-	private JPanel pMain;
 	
 	GridBagLayout gridbaglayout;				// 화면을 구성하는 레이아웃
 	GridBagConstraints gridbagconstraints;	
@@ -48,10 +46,12 @@ public class SignedInHeader extends JPanel {
 		
 		mBar = new JMenuBar();
 
+
 		mCenter = new JMenu("센터");
 		JMenuItem[] mlCenterItem = new JMenuItem[mlCenter.length];
 		for (int i=0; i < mlCenter.length; i++){
 			mlCenterItem[i] = new JMenuItem(mlCenter[i]);
+			
 			mCenter.add(mlCenterItem[i]);
 		}
 		mBar.add(mCenter);

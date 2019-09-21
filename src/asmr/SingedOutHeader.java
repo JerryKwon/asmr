@@ -12,12 +12,12 @@ public class SingedOutHeader extends JFrame {
 	
 	private String[] mlCenter = {"센터목록"};
 	private String[] mlEmp = {"직원등록", "직원조회"};
-	private String[] mlAban = {"보호", "진료"};
+	private String[] mlAban = {"동물등록", "보호", "진료"};
 	private String[] mlReport = {"신고등록", "신고배정(본부센터)", "신고배정(일반센터)"};
 	private String[] mlAdop = {"공고목록", "신청목록", "입양목록"};
 	private String[] mlPost = {"공지사항", "문의/답변"};
 	
-	private JPanel pLogin;
+	private JPanel pContents;
 	
 	GridBagLayout gridbaglayout;				// 화면을 구성하는 레이아웃
 	GridBagConstraints gridbagconstraints;	
@@ -84,7 +84,7 @@ public class SingedOutHeader extends JFrame {
 			mPost.add(mlPostItem[i]);
 		}
 		mBar.add(mPost);
-		pLogin = new Login();
+		pContents = new Login();
 		
 		MainPageView();
 	}
@@ -104,8 +104,7 @@ public class SingedOutHeader extends JFrame {
 		gridbagAdd(mBar, 1, 1, 1, 1);
 		gridbagAdd(bLogin, 7, 0, 1, 1);
 		gridbagAdd(bRegister, 8, 0, 1, 1);
-		gridbagconstraints.anchor = GridBagConstraints.CENTER;
-		gridbagAdd(pLogin, 1, 2, 10, 3);
+		gridbagAdd(pContents, 1, 2, 10, 3);
 		
 		
 		pack();
