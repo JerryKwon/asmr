@@ -1,10 +1,15 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -26,6 +31,12 @@ public class CenterSearch extends JFrame{
 	
 	private DefaultTableModel model1 = new DefaultTableModel(col1,0);
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	
+	CenterSearchButtonListener centerSearchButtonListener;
+	CenterSearchMouseListener centerSearchMouseListener;
+	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
@@ -33,14 +44,23 @@ public class CenterSearch extends JFrame{
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
 		
+		centerSearchButtonListener = new CenterSearchButtonListener();
+		centerSearchMouseListener = new CenterSearchMouseListener();
+		
 		vCenterSearch = new JLabel("센터검색");
 		
 		eCenterList = new JTable(model1);
+		eCenterList.addMouseListener(centerSearchMouseListener);
 		scrollpane = new JScrollPane(eCenterList);
 		scrollpane.setPreferredSize(new Dimension(250,100));
 		
 		confirm = new JButton("확인");
+		confirm.setBackground(blue);
+		confirm.setForeground(white);
+		confirm.addActionListener(centerSearchButtonListener);
+		
 		cancel = new JButton("취소");
+		cancel.addActionListener(centerSearchButtonListener);
 		
 		CenterSearchView();
 	}
@@ -101,7 +121,37 @@ public class CenterSearch extends JFrame{
 
 	}	
 	
-	public static void main(String[] args) {
-		new CenterSearch();
+	class CenterSearchButtonListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(confirm)) {
+				
+			}
+			else if(e.getSource().equals(cancel)) {
+				dispose();
+			}
+		}
+		
 	}
+	
+	class CenterSearchMouseListener extends MouseAdapter{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			super.mouseClicked(e);
+			
+			if(e.getButton()==1) {
+				
+			}
+		}
+		
+	}
+
+//  리스너 작업 종료로 메인 메서드 주석처리하였습니다.
+//	public static void main(String[] args) {
+//		new CenterSearch();
+//	}
 }
