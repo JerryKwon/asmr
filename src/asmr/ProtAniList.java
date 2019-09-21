@@ -1,13 +1,18 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.TextArea;
 import java.awt.TextField;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -48,6 +53,12 @@ public class ProtAniList extends JFrame {
 	private JLabel imageLabel;
 	private JButton previous, next, pictureManage;
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	private Color red = new Color(217,0,27);
+	
+	ProtAniListMouseListener protAniListMouseListener;
+	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
@@ -56,11 +67,16 @@ public class ProtAniList extends JFrame {
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
 		
+		protAniListMouseListener = new ProtAniListMouseListener();
+		
 		vProtAniRegister = new JLabel("보호동물등록");
 		
 		register = new JButton("등록");
+		register.setBackground(blue);
+		register.setForeground(white);
 		
 		eProtAniList = new JTable(model1);
+		eProtAniList.addMouseListener(protAniListMouseListener);
 		aniListScroll = new JScrollPane(eProtAniList);
 		aniListScroll.setPreferredSize(new Dimension(700,100));
 		
@@ -133,9 +149,22 @@ public class ProtAniList extends JFrame {
 		xDscvPlace.setEnabled(false);
 		
 		modify = new JButton("수정");
+		modify.setBackground(blue);
+		modify.setForeground(white);
+		
 		cancel = new JButton("취소");
+		
 		returning = new JButton("반환");
-
+		returning.setBackground(red);
+		returning.setForeground(white);
+		
+		pictureManage = new JButton("사진관리");
+		pictureManage.setBackground(blue);
+		pictureManage.setForeground(white);
+		
+		previous = new JButton("<<");
+		next = new JButton(">>");
+		
 		ProtAniListView();
 	}
 	
@@ -150,7 +179,11 @@ public class ProtAniList extends JFrame {
 		
 		gridbagAdd(vProtAniRegister, 0, 0, 1, 1);
 		
-		gridbagAdd(register, 6, 0, 1, 1);
+		JPanel registerPanel = new JPanel();
+		registerPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,3));
+		registerPanel.add(register);
+		registerPanel.setBorder(BorderFactory.createEmptyBorder(0,135,0,0));
+		gridbagAdd(registerPanel, 5, 0, 1, 1);
 		
 		gridbagAdd(aniListScroll, 0, 1, 10, 1);
 		
@@ -195,22 +228,20 @@ public class ProtAniList extends JFrame {
 		gridbagAdd(vAniSize, 2, 7, 1, 1);
 		gridbagAdd(cbAniSize, 3, 7, 1, 1);
 
-		pictureManage = new JButton("사진관리");
+
 		JPanel manButtonPanel = new JPanel();
-//		manButtonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		manButtonPanel.add(pictureManage);
-		manButtonPanel.setBorder(BorderFactory.createEmptyBorder(0,300,0,0));
-		gridbagAdd(manButtonPanel, 7, 2, 1, 1);
+		manButtonPanel.setBorder(BorderFactory.createEmptyBorder(0,100,0,0));
+		gridbagAdd(manButtonPanel, 5, 7, 1, 1);
 		
+		File input = new File("images/dog_400_400.jpg");
+		BufferedImage image = ImageIO.read(input);
+		BufferedImage resized = resize(image,200,200);
 		imageLabel = new JLabel();
-		ImageIcon icon = new ImageIcon(ImageIO.read(new File("images/dog_400_400.jpg")));
+		ImageIcon icon = new ImageIcon(resized);
 		imageLabel.setIcon(icon);
-		imageLabel.setSize(new Dimension(100,100));
 		
-		gridbagAdd(imageLabel, 7, 3, 1, 8);
-		
-//		ImagePanel imagePanel = new ImagePanel();
-//		gridbagAdd(imagePanel, 4, 7, 2, 4);
+		gridbagAdd(imageLabel, 5, 5, 1, 8);
 		
 		gridbagAdd(vRegisDate, 0, 8, 1, 1);
 		gridbagAdd(xRegisDate, 1, 8, 1, 1);
@@ -230,52 +261,16 @@ public class ProtAniList extends JFrame {
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,250,0,0));
 		gridbagAdd(buttonPanel, 0, 12, 7, 1);
 		
-		previous = new JButton("<<");
-		next = new JButton(">>");
-		
 		JPanel bottomPanel = new JPanel();
-		bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		bottomPanel.add(previous);
 		bottomPanel.add(next);
-		
-		bottomPanel.setBorder(BorderFactory.createEmptyBorder(0,150,0,0));
-		gridbagAdd(bottomPanel, 7, 12 ,3, 1);
+		bottomPanel.setBorder(BorderFactory.createEmptyBorder(0,40,0,0));
+		gridbagAdd(bottomPanel, 5, 11 ,3, 1);
 		
 		pack();
 		setResizable(false);
 		setVisible(true);		
 	}
-	
-//	class ImagePanel extends JPanel{
-//		public ImagePanel() throws IOException {
-//			setLayout(new GridLayout(3,1));
-//			setSize(new Dimension(500,500));
-//			
-//			previous = new JButton("<<");
-//			next = new JButton(">>");
-//			pictureManage = new JButton("사진관리");
-//			imageLabel = new JLabel();
-//			ImageIcon icon = new ImageIcon(ImageIO.read(new File("C:\\Users\\kwon2\\Desktop\\dog.jpg")));
-//			imageLabel.setIcon(icon);
-//			imageLabel.setSize(new Dimension(100,100));
-//			JPanel upPanel = new JPanel();
-//			upPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-//			upPanel.add(pictureManage);
-//			
-//			ImageIcon icon = new ImageIcon(ImageIO.read(new File("C:\\Users\\kwon2\\Desktop\\dog.jpg")));
-//			imageLabel.setIcon(icon);
-//			imageLabel.setSize(new Dimension(100,100));
-//			
-//			JPanel bottomPanel = new JPanel();
-//			bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-//			bottomPanel.add(previous);
-//			bottomPanel.add(next);
-//			
-//			add(upPanel);
-//			add(imageLabel);
-//			add(bottomPanel);
-//		} 
-//	}
 	
 	private void gridbagAdd(Component c, int x, int y, int w , int h) {
 		
@@ -304,6 +299,28 @@ public class ProtAniList extends JFrame {
 				add(c);
 			}
 		}
+	}
+	
+    private static BufferedImage resize(BufferedImage img, int height, int width) {
+        Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resized.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+        return resized;
+    }
+	
+	class ProtAniListMouseListener extends MouseAdapter{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			super.mouseClicked(e);
+			if(e.getButton()==1) {
+				
+			}
+		}
+		
 	}
 	
 	public static void main(String[] args) throws IOException {
