@@ -1,9 +1,12 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -21,12 +24,19 @@ public class CageRegister extends JFrame {
 	
 	private final String[] cageSizeDiv = {"대","중","소"};
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
+	
+	CageRegisterButtonListener cageRegisterButtonListener;
 	
 	public CageRegister() {
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
+		
+		cageRegisterButtonListener = new CageRegisterButtonListener();
 		
 		vCageRegister = new JLabel("케이지등록");
 		
@@ -38,7 +48,11 @@ public class CageRegister extends JFrame {
 		cbCageSize = new JComboBox<String>(cageSizeDiv);
 		
 		confirm = new JButton("확인");
+		confirm.setBackground(blue);
+		confirm.setForeground(white);
+		confirm.addActionListener(cageRegisterButtonListener);
 		cancel = new JButton("취소");
+		cancel.addActionListener(cageRegisterButtonListener);
 		
 		CageRegisterView();
 	}
@@ -97,8 +111,23 @@ public class CageRegister extends JFrame {
 		}
 	}
 	
-	
-	public static void main(String[] args) {
-		new CageRegister();
+	class CageRegisterButtonListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(confirm)) {
+				
+			}
+			else if (e.getSource().equals(cancel)) {
+				dispose();
+			}
+		}
+		
 	}
+	
+//	리스너 작업으로 인하여 main 메서드 삭제
+//	public static void main(String[] args) {
+//		new CageRegister();
+//	}
 }
