@@ -4,11 +4,14 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -33,6 +36,8 @@ public class NewCenterRegistration extends JFrame{
 	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
+	
+	NewCenterRegistButtonListener newCenterRegistButtonListener = new NewCenterRegistButtonListener();
 	
 	public NewCenterRegistration() throws IOException {
 		//레이아웃 생성
@@ -74,16 +79,19 @@ public class NewCenterRegistration extends JFrame{
 		vOperTimeDash = new JLabel("~");
 		cbOperTimeClose = new JComboBox<String>(operTimeCloseDiv);
 		
+		//센터장
 		vCenterManager = new JLabel("센터장");
 		xCenterManager = new JTextField(10);
 		xCenterManager.setEnabled(false);
 		centerManagerSearch = new JButton("검색");
+		centerManagerSearch.addActionListener(newCenterRegistButtonListener);
 		
 		//주소
 		vAddress = new JLabel("주소");
 		xAddress = new JTextField(20);
 		xAddress.setEnabled(false);
 		addressSearch = new JButton("검색");
+		addressSearch.addActionListener(newCenterRegistButtonListener);
 		
 		//총 케이지 수
 		vCageNum = new JLabel("총 케이지 수");
@@ -177,7 +185,10 @@ public class NewCenterRegistration extends JFrame{
 		
 		
 		//저장버튼
-		gridbagAdd(save, 10, 10, 1, 1);
+		JPanel plainPanel3 = new JPanel();
+		plainPanel3.add(save);
+		plainPanel3.setBorder(BorderFactory.createEmptyBorder(5,250,0,0));
+		gridbagAdd(plainPanel3, 0, 10, 4, 1);
 		
 		
 		pack();
@@ -226,6 +237,22 @@ public class NewCenterRegistration extends JFrame{
 				add(c);
 			}
 		}
+	}
+	
+	class NewCenterRegistButtonListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(centerManagerSearch)) {
+				new CenterManagerSearch();
+			}
+			else if(e.getSource().equals(addressSearch)) {
+				
+			}
+			
+		}
+		
 	}
 	
 	public static void main(String[] args) throws IOException{
