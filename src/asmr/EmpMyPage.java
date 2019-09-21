@@ -127,12 +127,7 @@ private void gridbagAdd(Component c, int x, int y, int w, int h) {
 	   }
 
 	public static void main(String[] args) {
-		JFrame f = new JFrame();
-		
-		JPanel p = new EmpMyPage();
-		
-		f.add(p);
-		f.setVisible(true);
+
 	}
 
 }

@@ -23,6 +23,7 @@ public class MainPage extends JPanel{
 	}
 	private void MainPageView() {
 		
+		setSize(1900, 1000);
 		gridbagconstraints.anchor = GridBagConstraints.WEST;		
 		gridbagconstraints.ipadx = 7;		
 				
