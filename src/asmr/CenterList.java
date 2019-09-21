@@ -1,13 +1,13 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -48,7 +48,13 @@ public class CenterList extends JFrame{
 	private final String[] operTimeOpen = {"08:00","08:30","09:00","09:30","10:00","10:30","11:00"};
 	private final String[] operTimeClose = {"16:00","16:30","17:00","17:30","18:00","18:30","19:00"};
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	
+//  리스너들
 //	CenterListButtonListener centerListButtonListener;
+	CenterListMouseListener centerListMouseListener;
+
 	
 	//CenterList 생성자
 	public CenterList(){
@@ -56,10 +62,13 @@ public class CenterList extends JFrame{
 		gridBagConstraints = new GridBagConstraints();
 		
 //		centerListButtonListener = new CenterListButtonListener();
+		centerListMouseListener = new CenterListMouseListener();
+
 		
 		//센터목록, 케이지목록, 센터정보 텍스트
 		vCenterList = new JLabel("센터목록");
 		eCenterList = new JTable(model1);
+		eCenterList.addMouseListener(centerListMouseListener);
 		scrollpane1 = new JScrollPane(eCenterList);
 		scrollpane1.setPreferredSize(new Dimension(400,100));
 		
@@ -126,14 +135,22 @@ public class CenterList extends JFrame{
 		
 		//버튼
 		centerRegist = new JButton("등록");
+		centerRegist.setBackground(blue);
+		centerRegist.setForeground(white);
 //		centerRegist.addActionListener(centerListButtonListener);
 		
 		cageRegist = new JButton("등록");
+		cageRegist.setBackground(blue);
+		cageRegist.setForeground(white);
 //		cageRegist.addActionListener(centerListButtonListener);
 		
 		searchManager = new JButton("검색");
+		searchManager.setBackground(blue);
+		searchManager.setForeground(white);
 		
 		save = new JButton("저장");
+		save.setBackground(blue);
+		save.setForeground(white);
 //		save.addActionListener(centerListButtonListener);
 		
 		
@@ -284,6 +301,23 @@ public class CenterList extends JFrame{
 //		
 //	}
 //	
+//  센터목록테이블 클릭시 발생하는 리스너
+	class CenterListMouseListener extends MouseAdapter{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			super.mouseClicked(e);
+			
+//			https://blaseed.tistory.com/18			
+			//1:좌클릭, 3:우클릭
+			if(e.getButton() == 1) {
+				
+			}
+		}
+	}
+
+	
 	public static void main(String[] args) {
 		new CenterList();
 	}
