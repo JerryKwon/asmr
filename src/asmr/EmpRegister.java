@@ -1,5 +1,6 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -29,6 +30,9 @@ public class EmpRegister extends JFrame{
 	private final String[] workTypeDiv = {"센터장","관리직원","수의사","보호관리직원","사무직종사자","유기동물구조원"};
 	private final String[] genterDiv = {"남","여"};
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
@@ -42,10 +46,13 @@ public class EmpRegister extends JFrame{
 		vEmpName = new JLabel("직원명");
 		xEmpName = new JTextField(10);
 		
+		//센터검색팝업(CenterSearch)와 Listener로 화면연결 하셔야합니다.
 		vBelongCenter = new JLabel("소속센터");
 		xBelongCenter = new JTextField(10);
 		xBelongCenter.setEnabled(false);
 		centerSearch = new JButton("검색");
+		centerSearch.setBackground(blue);
+		centerSearch.setForeground(white);
 		
 		vEmpType = new JLabel("직원구분");
 		cbEmpType = new JComboBox<String>(empTypeDiv);
@@ -69,11 +76,15 @@ public class EmpRegister extends JFrame{
 		xAddress = new JTextField(15);
 		xAddress.setEnabled(false);
 		addressSearch = new JButton("검색");
+		addressSearch.setBackground(blue);
+		addressSearch.setForeground(white);
 		
 		vPhoneNum = new JLabel("전화번호");
 		xPhoneNum = new JTextField(10);
 		
 		register = new JButton("등록");
+		register.setBackground(blue);
+		register.setForeground(white);
 		
 		cancel = new JButton("취소");
 		
