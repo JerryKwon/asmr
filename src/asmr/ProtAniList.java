@@ -33,7 +33,7 @@ public class ProtAniList extends JFrame {
 	private JLabel vProtAniRegister, vProtAniInfo, vAbanAniNo, vAbanAniType, vRescueNo, vAbanAniName, vAge, vParAniName, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vRegisDate, vDescription, vDscvDate, vCage, vDscvPlace;
 	private TextField xAbanAniNo, xAbanAniType, xRescueNo, xAbanAniName, xAge, xParAniName, xAniType ,xKind, xColor, xRegisDate, xDscvDate, xDscvPlace;
 	private JComboBox<String> cbSex, cbNeutWhet, cbAniSize, cbCage;
-	private JButton register, modify, cancel, returning;
+	private JButton modify, cancel, returning;
 	private TextArea xDescription;
 
 	private JTable eProtAniList;
@@ -69,11 +69,11 @@ public class ProtAniList extends JFrame {
 		
 		protAniListMouseListener = new ProtAniListMouseListener();
 		
-		vProtAniRegister = new JLabel("보호동물등록");
+		vProtAniRegister = new JLabel("보호동물목록");
 		
-		register = new JButton("등록");
-		register.setBackground(blue);
-		register.setForeground(white);
+//		register = new JButton("등록");
+//		register.setBackground(blue);
+//		register.setForeground(white);
 		
 		eProtAniList = new JTable(model1);
 		eProtAniList.addMouseListener(protAniListMouseListener);
@@ -186,12 +186,12 @@ public class ProtAniList extends JFrame {
 		
 		gridbagAdd(vProtAniRegister, 0, 0, 1, 1);
 		
-		JPanel registerPanel = new JPanel();
-		registerPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,3));
-		registerPanel.add(register);
-		registerPanel.setBorder(BorderFactory.createEmptyBorder(0,135,0,0));
-		gridbagAdd(registerPanel, 5, 0, 1, 1);
-		
+//		JPanel registerPanel = new JPanel();
+//		registerPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,3));
+//		registerPanel.add(register);
+//		registerPanel.setBorder(BorderFactory.createEmptyBorder(0,135,0,0));
+//		gridbagAdd(registerPanel, 5, 0, 1, 1);
+//		
 		gridbagAdd(aniListScroll, 0, 1, 10, 1);
 		
 		Component[] cops = {modify, cancel, returning};
