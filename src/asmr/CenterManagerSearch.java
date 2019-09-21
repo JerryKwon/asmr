@@ -8,6 +8,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -18,7 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import asmr.CenterManagerSearch.CenterManagerSearchListener;
+import asmr.CenterManagerSearch.CenterManagerSearchButtonListener;
 
 public class CenterManagerSearch extends JFrame{
 	private JLabel vCenterManagerSerach;
@@ -30,27 +32,36 @@ public class CenterManagerSearch extends JFrame{
 	
 	private DefaultTableModel model1 = new DefaultTableModel(col1,0);
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
-	CenterManagerSearchListener centerManagerSearchListener;
+	CenterManagerSearchButtonListener centerManagerSearchButtonListener;
+	CenterManagerSearchMouseListener centerManagerSearchMouseListener;
 	
 	public CenterManagerSearch() {
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
 		
-		centerManagerSearchListener = new CenterManagerSearchListener();
+		centerManagerSearchButtonListener = new CenterManagerSearchButtonListener();
+		centerManagerSearchMouseListener = new CenterManagerSearchMouseListener();
 		
 		vCenterManagerSerach = new JLabel("센터장검색");
 		
 		eCenterManagerList = new JTable(model1);
+		eCenterManagerList.addMouseListener(centerManagerSearchMouseListener);
 		scrollpane = new JScrollPane(eCenterManagerList);
 		scrollpane.setPreferredSize(new Dimension(200,100));
 		
 		confirm = new JButton("확인");
-		confirm.addActionListener(centerManagerSearchListener);
+		confirm.setBackground(blue);
+		confirm.setForeground(white);
+		confirm.addActionListener(centerManagerSearchButtonListener);
+		
 		cancel = new JButton("취소");
-		cancel.addActionListener(centerManagerSearchListener);
+		cancel.addActionListener(centerManagerSearchButtonListener);
 		
 		CenterManagerSearchView();
 	}
@@ -99,7 +110,7 @@ public class CenterManagerSearch extends JFrame{
 		}
 	}
 	
-	class CenterManagerSearchListener implements ActionListener{
+	class CenterManagerSearchButtonListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -109,6 +120,18 @@ public class CenterManagerSearch extends JFrame{
 			}
 			else if(e.getSource().equals(cancel)) {
 				dispose();
+			}
+		}
+	}
+	
+	class CenterManagerSearchMouseListener extends MouseAdapter{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			super.mouseClicked(e);
+			if(e.getButton()==1) {
+				
 			}
 		}
 		
