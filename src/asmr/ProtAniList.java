@@ -162,6 +162,13 @@ public class ProtAniList extends JFrame {
 		pictureManage.setBackground(blue);
 		pictureManage.setForeground(white);
 		
+		File input = new File("images/dog_400_400.jpg");
+		BufferedImage image = ImageIO.read(input);
+		BufferedImage resized = resize(image,200,200);
+		imageLabel = new JLabel();
+		ImageIcon icon = new ImageIcon(resized);
+		imageLabel.setIcon(icon);
+		
 		previous = new JButton("<<");
 		next = new JButton(">>");
 		
@@ -228,18 +235,10 @@ public class ProtAniList extends JFrame {
 		gridbagAdd(vAniSize, 2, 7, 1, 1);
 		gridbagAdd(cbAniSize, 3, 7, 1, 1);
 
-
 		JPanel manButtonPanel = new JPanel();
 		manButtonPanel.add(pictureManage);
 		manButtonPanel.setBorder(BorderFactory.createEmptyBorder(0,100,0,0));
 		gridbagAdd(manButtonPanel, 5, 7, 1, 1);
-		
-		File input = new File("images/dog_400_400.jpg");
-		BufferedImage image = ImageIO.read(input);
-		BufferedImage resized = resize(image,200,200);
-		imageLabel = new JLabel();
-		ImageIcon icon = new ImageIcon(resized);
-		imageLabel.setIcon(icon);
 		
 		gridbagAdd(imageLabel, 5, 5, 1, 8);
 		
@@ -301,6 +300,8 @@ public class ProtAniList extends JFrame {
 		}
 	}
 	
+	//사진크기 변환 함수입니다.
+	//https://memorynotfound.com/java-resize-image-fixed-width-height-example/
     private static BufferedImage resize(BufferedImage img, int height, int width) {
         Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
