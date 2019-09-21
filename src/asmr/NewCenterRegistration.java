@@ -1,5 +1,6 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -33,6 +34,9 @@ public class NewCenterRegistration extends JFrame{
 	private final String[] centerTypeDiv = {"본부","일반"};
 	private final String[] operTimeOpenDiv = {"08:00","08:30","09:00","09:30","10:00","10:30","11:00"};
 	private final String[] operTimeCloseDiv = {"16:00","16:30","17:00","17:30","18:00","18:30","19:00"};
+	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
 	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
@@ -84,6 +88,8 @@ public class NewCenterRegistration extends JFrame{
 		xCenterManager = new JTextField(10);
 		xCenterManager.setEnabled(false);
 		centerManagerSearch = new JButton("검색");
+		centerManagerSearch.setBackground(blue);
+		centerManagerSearch.setForeground(white);
 		centerManagerSearch.addActionListener(newCenterRegistButtonListener);
 		
 		//주소
@@ -91,6 +97,8 @@ public class NewCenterRegistration extends JFrame{
 		xAddress = new JTextField(20);
 		xAddress.setEnabled(false);
 		addressSearch = new JButton("검색");
+		addressSearch.setBackground(blue);
+		addressSearch.setForeground(white);
 		addressSearch.addActionListener(newCenterRegistButtonListener);
 		
 		//총 케이지 수
@@ -113,6 +121,9 @@ public class NewCenterRegistration extends JFrame{
 		
 		//저장버튼
 		save = new JButton("저장");
+		save.setBackground(blue);
+		save.setForeground(white);
+		save.addActionListener(newCenterRegistButtonListener);
 		
 		//배치함수
 		NewCenterRegistrationView();
@@ -248,6 +259,9 @@ public class NewCenterRegistration extends JFrame{
 				new CenterManagerSearch();
 			}
 			else if(e.getSource().equals(addressSearch)) {
+				
+			}
+			else if(e.getSource().equals(save)) {
 				
 			}
 			
