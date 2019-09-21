@@ -1,10 +1,13 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +47,12 @@ public class DiagAniList extends JFrame{
 	
 	private JScrollPane diagContentScroll;
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	
+	ProtAniListMouseListener protAniListMouseListener;
+	DiagListMouseListener diagListMouseListener;
+	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
@@ -51,17 +60,24 @@ public class DiagAniList extends JFrame{
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
 	
+		protAniListMouseListener = new ProtAniListMouseListener();
+		diagListMouseListener = new DiagListMouseListener();
+		
 		vProtAniList = new JLabel("보호동물목록");
 		
 		diagRegister = new JButton("진료등록");
+		diagRegister.setBackground(blue);
+		diagRegister.setForeground(white);
 		
 		vDiagList = new JLabel("진료목록");
 		
 		eProtAniList = new JTable(model1);
+		eProtAniList.addMouseListener(protAniListMouseListener);
 		protAniListScroll = new JScrollPane(eProtAniList);
 		protAniListScroll.setPreferredSize(new Dimension(350,100));
 		
 		eDiagList = new JTable(model2);
+		eDiagList.addMouseListener(diagListMouseListener);
 		diagListScroll = new JScrollPane(eDiagList);
 		diagListScroll.setPreferredSize(new Dimension(350,100));
 		
@@ -133,6 +149,9 @@ public class DiagAniList extends JFrame{
 		diagContentScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
 		modify = new JButton("수정");
+		modify.setBackground(blue);
+		modify.setForeground(white);
+		
 		cancel = new JButton("취소");
 		
 		DiagAniListView();
@@ -239,6 +258,41 @@ public class DiagAniList extends JFrame{
 				add(c);
 			}
 		}
+	}
+	
+	class ProtAniListMouseListener extends MouseAdapter{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			super.mouseClicked(e);
+			if(e.getButton()==1) {
+				
+			}
+		}
+		
+	}
+	
+	class DiagListMouseListener extends MouseAdapter{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			super.mouseClicked(e);
+			if(e.getButton()==1) {
+				checkDiagType();
+			}
+		}
+		
+	}
+	
+	//진료목록이 element를 읽은 후에 그 element의 진료구분에 따라 달력 imageButton을 활성화/비활성화합니다.
+	private void checkDiagType() {
+		String target = xDiagType.getText();
+		if(target=="내진")
+			imageButton.setEnabled(false);
+		else if(target=="외진")
+			imageButton.setEnabled(true);
 	}
 	
 	public static void main(String[] args) throws IOException {
