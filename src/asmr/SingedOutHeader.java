@@ -1,6 +1,7 @@
 package asmr;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 
 public class SingedOutHeader extends JFrame {
@@ -27,20 +28,26 @@ public class SingedOutHeader extends JFrame {
 		gridbaglayout = new GridBagLayout();		
 		gridbagconstraints = new GridBagConstraints();
 		
-		bMainButton = new JButton(new ImageIcon("images/main.png"));
+		MenuActionListener listener = new MenuActionListener();
+		
+		bMainButton = new JButton(" ", new ImageIcon("images/main.png"));
 		bMainButton.setContentAreaFilled(false);
 		bMainButton.setFocusPainted(false);
 		bMainButton.setBorderPainted(false);
+		bMainButton.addActionListener(listener);
 		
 		bLogin = new JButton("로그인");
+		bLogin.addActionListener(listener);
 		bRegister = new JButton("회원가입");
 		
 		mBar = new JMenuBar();
+		
 
 		mCenter = new JMenu("센터");
 		JMenuItem[] mlCenterItem = new JMenuItem[mlCenter.length];
 		for (int i=0; i < mlCenter.length; i++){
 			mlCenterItem[i] = new JMenuItem(mlCenter[i]);
+			mlCenterItem[i].addActionListener(listener);
 			mCenter.add(mlCenterItem[i]);
 		}
 		mBar.add(mCenter);
@@ -92,25 +99,58 @@ public class SingedOutHeader extends JFrame {
 		setTitle("ASMR");
 		setExtendedState(MAXIMIZED_BOTH);
 		
-		gridbagconstraints.anchor = GridBagConstraints.WEST;		
+		gridbagconstraints.anchor = GridBagConstraints.CENTER;		
 		gridbagconstraints.ipadx = 7;		
 				
 		gridbagconstraints.weightx=1.0;		
 		gridbagconstraints.weighty=1.0;		
 				
 		setLayout(gridbaglayout);
-		
-		gridbagAdd(bMainButton, 0, 0, 1, 3);
-		gridbagAdd(mBar, 1, 1, 1, 1);
-		gridbagAdd(bLogin, 7, 0, 1, 1);
-		gridbagAdd(bRegister, 8, 0, 1, 1);
-		gridbagAdd(pContents, 1, 2, 10, 3);
+		cHeaderPanel cHeaderPanel = new cHeaderPanel();
+		gridbagAdd(cHeaderPanel, 0, 0, 1, 1);
+		//gridbagAdd(bMainButton, 0, 0, 1, 3);
+		//gridbagAdd(mBar, 1, 1, 1, 1);
+		//gridbagAdd(bLogin, 7, 0, 1, 1);
+		//gridbagAdd(bRegister, 8, 0, 1, 1);
+		gridbagAdd(pContents, 1, 2, 1, 1);
 		
 		
 		pack();
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
+	}
+	class MenuActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			String cont = e.getActionCommand();
+			switch(cont) {
+			case " ":
+				getContentPane().remove(pContents);
+				pContents = new MainPage();
+				gridbagAdd(pContents, 1, 2, 10, 3);
+				revalidate();
+				repaint();
+				break;
+			case "로그인":
+				remove(pContents);
+				pContents = new Login();
+				gridbagAdd(pContents, 1, 2, 10, 3);
+				revalidate();
+				repaint();
+			}
+		}
+	}
+	class cHeaderPanel extends JPanel {
+		public cHeaderPanel() {
+			setLayout(new GridBagLayout());
+			gridbagconstraints.anchor = GridBagConstraints.WEST;
+			gridbagconstraints.ipadx = 7;
+			
+			gridbagAdd(bMainButton, 0, 0, 1, 3);
+			gridbagAdd(mBar, 1, 1, 1, 1);
+			gridbagAdd(bLogin, 2, 0, 1, 1);
+			gridbagAdd(bRegister, 3, 0, 1, 1);
+		}
 	}
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
 		
