@@ -1,10 +1,15 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +27,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
+
 public class DiagRegister extends JFrame{
 	private JLabel vDiagRegister, vDiagDate, vDiagType, vIndiResult, vIndiVtrnName, vOudiResult, vHospName, vDisease, vInfecWhet, vCureType, vHsptzDate, vDschDate,vDeathType, vDeathReason, vDiagContent; 
 	private JTextField xDiagDate, xIndiVtrnName, xHospName, xDisease, xInfecWhet, xCureType, xHsptzDate, xDschDate, xDeathType, xDeathReason;
@@ -38,6 +44,13 @@ public class DiagRegister extends JFrame{
 	private String[] cureTypeDiv = {"통원","입원"};
 	private String[] deathTypeDiv = {"자연사","안락사"};
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	
+	DiagRegisterButtonListener diagRegisterButtonListener;
+	DiagTypeItemListener diagTypeItemListener;
+	OudiResultItemListener oudiResultItemListener;
+	CureTypeItemListener cureTypeItemListener;
 	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
@@ -46,10 +59,16 @@ public class DiagRegister extends JFrame{
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
 	
+		diagRegisterButtonListener = new DiagRegisterButtonListener();
+		diagTypeItemListener = new DiagTypeItemListener();
+		oudiResultItemListener = new OudiResultItemListener();
+		cureTypeItemListener = new CureTypeItemListener();
+		
 		vDiagRegister = new JLabel("진료등록");
 		
 		vDiagDate = new JLabel("진료일자");
 		xDiagDate = new JTextField(10);
+		xDiagDate.setEnabled(false);
 		xDiagDate.setEnabled(false);
 		buttonIcon = ImageIO.read(new File("images/cal1.png"));
 		imageButton1 = new JButton(new ImageIcon(buttonIcon));
@@ -60,8 +79,9 @@ public class DiagRegister extends JFrame{
 		
 		vDiagType = new JLabel("진료구분");
 		cbDiagType = new JComboBox<String>(diagTypeDiv);
+		cbDiagType.addItemListener(diagTypeItemListener);
 		
-		vIndiResult = new JLabel("진료결과");
+		vIndiResult = new JLabel("내진결과");
 		cbIndiResult = new JComboBox<String>(indiResultDiv);
 		
 		vIndiVtrnName = new JLabel("내진수의사명");
@@ -69,6 +89,7 @@ public class DiagRegister extends JFrame{
 		
 		vOudiResult = new JLabel("외진결과");
 		cbOudiResult = new JComboBox<String>(oudiResultDiv);
+		cbOudiResult.addItemListener(oudiResultItemListener);
 		
 		vHospName = new JLabel("병원명");
 		xHospName = new JTextField(10);
@@ -81,6 +102,7 @@ public class DiagRegister extends JFrame{
 		
 		vCureType = new JLabel("치료구분");
 		cbCureType = new JComboBox<String>(cureTypeDiv);
+		cbCureType.addItemListener(cureTypeItemListener);
 //		xCureType = new JTextField(10);
 		
 		vHsptzDate = new JLabel("입원일자");
@@ -107,7 +129,14 @@ public class DiagRegister extends JFrame{
 		diagContentScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
 		register = new JButton("등록");
+		register.setBackground(blue);
+		register.setForeground(white);
+		register.addActionListener(diagRegisterButtonListener);
+		
 		cancel = new JButton("취소");
+		cancel.addActionListener(diagRegisterButtonListener);
+		
+		activateIndi();
 		
 		DiagRegisterView();
 	}
@@ -205,6 +234,147 @@ public class DiagRegister extends JFrame{
 				add(c);
 			}
 		}
+	}
+	
+	class DiagRegisterButtonListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(register)) {
+				
+			}
+			if(e.getSource().equals(cancel)) {
+				dispose();
+			}
+		}
+		
+	}
+	
+	class DiagTypeItemListener implements ItemListener{
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// TODO Auto-generated method stub
+			String target = (String)e.getItem();
+			if(target=="내진") {
+				activateIndi();
+			}
+			else if(target=="외진") {
+				activateOudi();
+				cbOudiResult.setSelectedItem("치료");
+				cbCureType.setSelectedItem("통원");
+			}
+		}
+		
+	}
+
+	class OudiResultItemListener implements ItemListener{
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// TODO Auto-generated method stub
+			String target = (String)e.getItem();
+			if(target=="치료") {
+				activateCure();
+			}
+			else if(target=="사망") {
+				activateDeath();
+				cbCureType.setSelectedItem("통원");
+			}
+		}
+		
+	}
+	
+	class CureTypeItemListener implements ItemListener{
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// TODO Auto-generated method stub
+			String target = (String)e.getItem();
+			if(target=="통원") {
+				activateHsptz();
+			}
+			else if(target=="입원") {
+				activateDsch();
+			}
+		}
+		
+	}
+ 
+	private void activateIndi() {
+		cbIndiResult.setEnabled(true);
+		xIndiVtrnName.setEnabled(true);
+		
+		cbOudiResult.setEnabled(false);
+		xHospName.setEnabled(false);
+		xDisease.setEnabled(false);
+		xInfecWhet.setEnabled(false);
+		cbCureType.setEnabled(false);
+		xHsptzDate.setEnabled(false);
+		xDschDate.setEnabled(false);
+		imageButton2.setEnabled(false);
+		cbDeathType.setEnabled(false);
+		xDeathReason.setEnabled(false);
+	}
+	
+	private void activateOudi() {
+		cbIndiResult.setEnabled(false);
+		xIndiVtrnName.setEnabled(false);
+		
+		cbOudiResult.setEnabled(true);
+		xHospName.setEnabled(true);
+		xDisease.setEnabled(true);
+		xInfecWhet.setEnabled(true);
+		cbCureType.setEnabled(true);
+		xHsptzDate.setEnabled(true);
+		xDschDate.setEnabled(false);
+		imageButton2.setEnabled(false);
+		cbDeathType.setEnabled(false);
+		xDeathReason.setEnabled(false);
+	}
+	
+	private void activateCure() {
+//		cbOudiResult.setEnabled(true);
+		xHospName.setEnabled(true);
+		xDisease.setEnabled(true);
+		xInfecWhet.setEnabled(true);
+		cbCureType.setEnabled(true);
+		xHsptzDate.setEnabled(true);
+		xDschDate.setEnabled(false);
+		imageButton2.setEnabled(false);
+		
+		cbDeathType.setEnabled(false);
+		xDeathReason.setEnabled(false);
+	}
+	
+	private void activateDeath() {
+//		cbOudiResult.setEnabled(true);
+		xHospName.setEnabled(false);
+		xDisease.setEnabled(false);
+		xInfecWhet.setEnabled(false);
+		cbCureType.setEnabled(false);
+		xHsptzDate.setEnabled(false);
+		xDschDate.setEnabled(false);
+		imageButton2.setEnabled(false);
+		
+		cbDeathType.setEnabled(true);
+		xDeathReason.setEnabled(true);	
+	}
+	
+	
+	private void activateHsptz() {
+		xHsptzDate.setEnabled(true);
+		
+		xDschDate.setEnabled(false);
+		imageButton2.setEnabled(false);
+	}
+	
+	private void activateDsch() {
+		xHsptzDate.setEnabled(true);
+		
+		xDschDate.setEnabled(true);
+		imageButton2.setEnabled(true);
 	}
 	
 	public static void main(String[] args) throws IOException {
