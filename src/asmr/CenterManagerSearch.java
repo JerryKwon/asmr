@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -15,6 +17,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import asmr.CenterManagerSearch.CenterManagerSearchListener;
 
 public class CenterManagerSearch extends JFrame{
 	private JLabel vCenterManagerSerach;
@@ -29,9 +33,13 @@ public class CenterManagerSearch extends JFrame{
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
+	CenterManagerSearchListener centerManagerSearchListener;
+	
 	public CenterManagerSearch() {
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
+		
+		centerManagerSearchListener = new CenterManagerSearchListener();
 		
 		vCenterManagerSerach = new JLabel("센터장검색");
 		
@@ -40,7 +48,9 @@ public class CenterManagerSearch extends JFrame{
 		scrollpane.setPreferredSize(new Dimension(200,100));
 		
 		confirm = new JButton("확인");
+		confirm.addActionListener(centerManagerSearchListener);
 		cancel = new JButton("취소");
+		cancel.addActionListener(centerManagerSearchListener);
 		
 		CenterManagerSearchView();
 	}
@@ -89,8 +99,23 @@ public class CenterManagerSearch extends JFrame{
 		}
 	}
 	
-	
-	public static void main(String[] args) {
-		new CenterManagerSearch();
+	class CenterManagerSearchListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(confirm)) {
+				
+			}
+			else if(e.getSource().equals(cancel)) {
+				dispose();
+			}
+		}
+		
 	}
+	
+//  버튼 기능 구현으로 인하여 메인 메서드를 삭제합니다.	
+//	public static void main(String[] args) {
+//		new CenterManagerSearch();
+//	}
 }
