@@ -8,8 +8,6 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.TextArea;
-import java.awt.TextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -26,15 +24,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 
 public class ProtAniList extends JFrame {
 	private JLabel vProtAniRegister, vProtAniInfo, vAbanAniNo, vAbanAniType, vRescueNo, vAbanAniName, vAge, vParAniName, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vRegisDate, vDescription, vDscvDate, vCage, vDscvPlace;
-	private TextField xAbanAniNo, xAbanAniType, xRescueNo, xAbanAniName, xAge, xParAniName, xAniType ,xKind, xColor, xRegisDate, xDscvDate, xDscvPlace;
+	private JTextField xAbanAniNo, xAbanAniType, xRescueNo, xAbanAniName, xAge, xParAniName, xAniType ,xKind, xColor, xRegisDate, xDscvDate, xDscvPlace;
 	private JComboBox<String> cbSex, cbNeutWhet, cbAniSize, cbCage;
 	private JButton modify, cancel, returning;
-	private TextArea xDescription;
+	private JTextArea xDescription;
 
 	private JTable eProtAniList;
 	private JScrollPane aniListScroll;
@@ -83,35 +83,35 @@ public class ProtAniList extends JFrame {
 		vProtAniInfo = new JLabel("보호동물정보");
 		
 		vAbanAniNo = new JLabel("유기동물번호");
-		xAbanAniNo = new TextField(10);
+		xAbanAniNo = new JTextField(10);
 		xAbanAniNo.setEnabled(false);
 		
 		vAbanAniType = new JLabel("유기동물구분");
-		xAbanAniType = new TextField(10);
+		xAbanAniType = new JTextField(10);
 		xAbanAniType.setEnabled(false);
 		
 		vRescueNo = new JLabel("구조번호");
-		xRescueNo = new TextField(10);
+		xRescueNo = new JTextField(10);
 		xRescueNo.setEnabled(false);
 		
 		vAbanAniName = new JLabel("유기동물명");
-		xAbanAniName = new TextField(10);
+		xAbanAniName = new JTextField(10);
 		xAbanAniName.setEnabled(false);
 		
 		vAge = new JLabel("나이(개월)");
-		xAge = new TextField(10);
+		xAge = new JTextField(10);
 		xAge.setEnabled(false);
 		
 		vParAniName = new JLabel("어미유기동물명");
-		xParAniName = new TextField(10);
+		xParAniName = new JTextField(10);
 		xParAniName.setEnabled(false);
 		
 		vAniType = new JLabel("동물종류");
-		xAniType = new TextField(10);
+		xAniType = new JTextField(10);
 		xAniType.setEnabled(false);
 		
 		vKind = new JLabel("품종");
-		xKind = new TextField(10);
+		xKind = new JTextField(10);
 		xKind.setEnabled(false);
 		
 		vSex = new JLabel("성별");
@@ -121,31 +121,31 @@ public class ProtAniList extends JFrame {
 		cbNeutWhet = new JComboBox<String>(cbNeutWhetDiv);
 		
 		vColor = new JLabel("색상");
-		xColor = new TextField(10);
+		xColor = new JTextField(10);
 		xColor.setEnabled(false);
 		
 		vAniSize = new JLabel("동물크기");
 		cbAniSize = new JComboBox<String>(aniSizeDiv);
 		
 		vRegisDate = new JLabel("등록일자");
-		xRegisDate = new TextField(10);
+		xRegisDate = new JTextField(10);
 		xRegisDate.setEnabled(false);
 		
 		vDescription = new JLabel("설명");
-		xDescription = new TextArea();
+		xDescription = new JTextArea();
 		descriptionScroll = new JScrollPane(xDescription);
 		descriptionScroll.setPreferredSize(new Dimension(400,150));
 		descriptionScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
 		vDscvDate = new JLabel("발견일시");
-		xDscvDate = new TextField(10);
+		xDscvDate = new JTextField(10);
 		xDscvDate.setEnabled(false);
 		
 		vCage = new JLabel("케이지");
 		cbCage = new JComboBox<String>(cageDiv);
 		
 		vDscvPlace = new JLabel("발견장소");
-		xDscvPlace = new TextField(10);
+		xDscvPlace = new JTextField(10);
 		xDscvPlace.setEnabled(false);
 		
 		modify = new JButton("수정");

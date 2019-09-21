@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.TextField;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -18,11 +17,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 public class ProtAniRegist extends JFrame{
 	private JLabel vProtAniRegist, vAbanAniType, vRscuNo, vParAbanAniName, vAbanAniName, vAge, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vFeature, vPicture, vCage;
-	private TextField xRscuNo, xParAbanAniName, xAbanAniName, xAge, xKind, xColor;
+	private JTextField xRscuNo, xParAbanAniName, xAbanAniName, xAge, xKind, xColor;
 	private JComboBox<String> cbAbanAniType, cbAniType, cbSex, cbNeutWhet, cbAniSize, cbCage;
 	private JTextArea xFeature;
 	private JButton searchRscu, searchPar, pictureManage, register, cancel;
@@ -58,30 +58,30 @@ public class ProtAniRegist extends JFrame{
 		cbAbanAniType.addItemListener(protAniRegistItemListener);
 		
 		vRscuNo = new JLabel("구조번호");
-		xRscuNo = new TextField(10);
+		xRscuNo = new JTextField(10);
 		xRscuNo.setEnabled(false);
 		searchRscu = new JButton("검색");
 		searchRscu.setBackground(blue);
 		searchRscu.setForeground(white);
 		
 		vParAbanAniName = new JLabel("어미유기동물명");
-		xParAbanAniName = new TextField(10);
+		xParAbanAniName = new JTextField(10);
 		xParAbanAniName.setEnabled(false);
 		searchPar = new JButton("검색");
 		searchPar.setBackground(blue);
 		searchPar.setForeground(white);
 		
 		vAbanAniName = new JLabel("유기동물명");
-		xAbanAniName = new TextField(10);
+		xAbanAniName = new JTextField(10);
 		
 		vAge = new JLabel("나이(개월)");
-		xAge = new TextField(10);
+		xAge = new JTextField(10);
 		
 		vAniType = new JLabel("동물종류");
 		cbAniType = new JComboBox<String>(aniTypeDiv);
 		
 		vKind = new JLabel("품종");
-		xKind = new TextField(10);
+		xKind = new JTextField(10);
 		
 		vSex = new JLabel("성별");
 		cbSex = new JComboBox<String>(sexDiv);
@@ -90,7 +90,7 @@ public class ProtAniRegist extends JFrame{
 		cbNeutWhet = new JComboBox<String>(neutWhetDiv);
 		
 		vColor = new JLabel("색상");
-		xColor = new TextField(10);
+		xColor = new JTextField(10);
 		
 		vAniSize = new JLabel("동물크기");
 		cbAniSize = new JComboBox<String>(aniSizeDiv);

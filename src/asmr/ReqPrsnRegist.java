@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -23,13 +22,12 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class ReqPrsnRegist extends JFrame {
 	private JLabel vReqPrsnRegist, vCustSearch, vNonCustRegist, vName, vAddress, vPhoneNum;
-	private TextField xCustSearch, xName, xAddress, xPhoneNum;
+	private JTextField xCustSearch, xName, xAddress, xPhoneNum;
 	private JButton custSearch, addressSearch, returning, cancel;
 	private JRadioButton cust,nonCust;
 	private JComboBox<String> cbCustSearch;
@@ -75,7 +73,7 @@ public class ReqPrsnRegist extends JFrame {
 		vCustSearch = new JLabel("회원검색");
 		
 		cbCustSearch = new JComboBox<String>(custSearchDiv);
-		xCustSearch = new TextField(10);
+		xCustSearch = new JTextField(10);
 		custSearch = new JButton("검색");
 		custSearch.setBackground(blue);
 		custSearch.setForeground(white);
@@ -89,10 +87,10 @@ public class ReqPrsnRegist extends JFrame {
 		vNonCustRegist = new JLabel("비회원등록");
 		
 		vName = new JLabel("성명");
-		xName = new TextField(10);
+		xName = new JTextField(10);
 		
 		vAddress = new JLabel("주소");
-		xAddress = new TextField(15);
+		xAddress = new JTextField(15);
 		xAddress.setEnabled(false);
 		addressSearch = new JButton("검색");
 		addressSearch.setBackground(blue);
@@ -100,7 +98,7 @@ public class ReqPrsnRegist extends JFrame {
 		addressSearch.addActionListener(reqPrsnRegistButtonListener);
 		
 		vPhoneNum = new JLabel("전화번호");
-		xPhoneNum = new TextField(10);
+		xPhoneNum = new JTextField(10);
 		
 		returning = new JButton("반환");
 		returning.setBackground(red);
