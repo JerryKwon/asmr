@@ -99,20 +99,18 @@ public class SingedOutHeader extends JFrame {
 		setTitle("ASMR");
 		setExtendedState(MAXIMIZED_BOTH);
 		
-		gridbagconstraints.anchor = GridBagConstraints.CENTER;		
+		gridbagconstraints.anchor = GridBagConstraints.WEST;		
 		gridbagconstraints.ipadx = 7;		
 				
 		gridbagconstraints.weightx=1.0;		
 		gridbagconstraints.weighty=1.0;		
 				
 		setLayout(gridbaglayout);
-		cHeaderPanel cHeaderPanel = new cHeaderPanel();
-		gridbagAdd(cHeaderPanel, 0, 0, 1, 1);
-		//gridbagAdd(bMainButton, 0, 0, 1, 3);
-		//gridbagAdd(mBar, 1, 1, 1, 1);
-		//gridbagAdd(bLogin, 7, 0, 1, 1);
-		//gridbagAdd(bRegister, 8, 0, 1, 1);
-		gridbagAdd(pContents, 1, 2, 1, 1);
+		gridbagAdd(bMainButton, 0, 0, 1, 3, 0.1, 0.1);
+		gridbagAdd(mBar, 1, 1, 1, 1, 0.1, 0.1);
+		gridbagAdd(bLogin, 7, 0, 1, 1, 0.1, 0.1);
+		gridbagAdd(bRegister, 8, 0, 1, 1, 0.1, 0.1);
+		gridbagAdd(pContents, 1, 2, 1, 1, 1.0, 1.0);
 		
 		
 		pack();
@@ -127,39 +125,31 @@ public class SingedOutHeader extends JFrame {
 			case " ":
 				getContentPane().remove(pContents);
 				pContents = new MainPage();
-				gridbagAdd(pContents, 1, 2, 10, 3);
+				gridbagAdd(pContents, 1, 2, 10, 3, 1.0, 1.0);
 				revalidate();
 				repaint();
 				break;
 			case "로그인":
-				remove(pContents);
+				getContentPane().remove(pContents);
 				pContents = new Login();
-				gridbagAdd(pContents, 1, 2, 10, 3);
+				gridbagAdd(pContents, 1, 2, 10, 3, 1.0, 1.0);
 				revalidate();
 				repaint();
 			}
 		}
 	}
-	class cHeaderPanel extends JPanel {
-		public cHeaderPanel() {
-			setLayout(new GridBagLayout());
-			gridbagconstraints.anchor = GridBagConstraints.WEST;
-			gridbagconstraints.ipadx = 7;
-			
-			gridbagAdd(bMainButton, 0, 0, 1, 3);
-			gridbagAdd(mBar, 1, 1, 1, 1);
-			gridbagAdd(bLogin, 2, 0, 1, 1);
-			gridbagAdd(bRegister, 3, 0, 1, 1);
-		}
-	}
-	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
+
+	private void gridbagAdd(Component c, int x, int y, int w, int h, double wx, double wy) {			
 		
 		gridbagconstraints.gridx = x;		
 		gridbagconstraints.gridy = y; 		
 	      //가장 왼쪽 위 gridx, gridy값은 0 			
 				
 		gridbagconstraints.gridwidth  = w;	//넓이	
-		gridbagconstraints.gridheight = h;	//높이	
+		gridbagconstraints.gridheight = h;	//높이
+		
+		gridbagconstraints.weightx = wx;
+		gridbagconstraints.weighty = wy;
 	     			
 	      			
 	    gridbaglayout.setConstraints(c, gridbagconstraints); //컴포넌트를 컴포넌트 위치+크기 정보에 따라 GridBagLayout에 배치			
