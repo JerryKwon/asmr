@@ -1,6 +1,7 @@
 package asmr;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 
 public class SingedOutHeader extends JFrame {
@@ -27,20 +28,26 @@ public class SingedOutHeader extends JFrame {
 		gridbaglayout = new GridBagLayout();		
 		gridbagconstraints = new GridBagConstraints();
 		
-		bMainButton = new JButton(new ImageIcon("images/main.png"));
+		MenuActionListener listener = new MenuActionListener();
+		
+		bMainButton = new JButton(" ", new ImageIcon("images/main.png"));
 		bMainButton.setContentAreaFilled(false);
 		bMainButton.setFocusPainted(false);
 		bMainButton.setBorderPainted(false);
+		bMainButton.addActionListener(listener);
 		
 		bLogin = new JButton("로그인");
+		bLogin.addActionListener(listener);
 		bRegister = new JButton("회원가입");
 		
 		mBar = new JMenuBar();
+		
 
 		mCenter = new JMenu("센터");
 		JMenuItem[] mlCenterItem = new JMenuItem[mlCenter.length];
 		for (int i=0; i < mlCenter.length; i++){
 			mlCenterItem[i] = new JMenuItem(mlCenter[i]);
+			mlCenterItem[i].addActionListener(listener);
 			mCenter.add(mlCenterItem[i]);
 		}
 		mBar.add(mCenter);
@@ -99,12 +106,11 @@ public class SingedOutHeader extends JFrame {
 		gridbagconstraints.weighty=1.0;		
 				
 		setLayout(gridbaglayout);
-		
-		gridbagAdd(bMainButton, 0, 0, 1, 3);
-		gridbagAdd(mBar, 1, 1, 1, 1);
-		gridbagAdd(bLogin, 7, 0, 1, 1);
-		gridbagAdd(bRegister, 8, 0, 1, 1);
-		gridbagAdd(pContents, 1, 2, 10, 3);
+		gridbagAdd(bMainButton, 0, 0, 1, 3, 0.1, 0.1);
+		gridbagAdd(mBar, 1, 1, 1, 1, 0.1, 0.1);
+		gridbagAdd(bLogin, 7, 0, 1, 1, 0.1, 0.1);
+		gridbagAdd(bRegister, 8, 0, 1, 1, 0.1, 0.1);
+		gridbagAdd(pContents, 1, 2, 1, 1, 1.0, 1.0);
 		
 		
 		pack();
@@ -112,14 +118,38 @@ public class SingedOutHeader extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
-	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
+	class MenuActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			String cont = e.getActionCommand();
+			switch(cont) {
+			case " ":
+				getContentPane().remove(pContents);
+				pContents = new MainPage();
+				gridbagAdd(pContents, 1, 2, 10, 3, 1.0, 1.0);
+				revalidate();
+				repaint();
+				break;
+			case "로그인":
+				getContentPane().remove(pContents);
+				pContents = new Login();
+				gridbagAdd(pContents, 1, 2, 10, 3, 1.0, 1.0);
+				revalidate();
+				repaint();
+			}
+		}
+	}
+
+	private void gridbagAdd(Component c, int x, int y, int w, int h, double wx, double wy) {			
 		
 		gridbagconstraints.gridx = x;		
 		gridbagconstraints.gridy = y; 		
 	      //가장 왼쪽 위 gridx, gridy값은 0 			
 				
 		gridbagconstraints.gridwidth  = w;	//넓이	
-		gridbagconstraints.gridheight = h;	//높이	
+		gridbagconstraints.gridheight = h;	//높이
+		
+		gridbagconstraints.weightx = wx;
+		gridbagconstraints.weighty = wy;
 	     			
 	      			
 	    gridbaglayout.setConstraints(c, gridbagconstraints); //컴포넌트를 컴포넌트 위치+크기 정보에 따라 GridBagLayout에 배치			

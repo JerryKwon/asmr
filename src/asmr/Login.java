@@ -29,7 +29,6 @@ public class Login extends JPanel {
 	
 	private void LoginView() {
 		
-		setSize(1900, 1000);
 		gridbagconstraints.anchor = GridBagConstraints.WEST;		
 		gridbagconstraints.ipadx = 7;		
 				
@@ -44,6 +43,7 @@ public class Login extends JPanel {
 		gridbagAdd(xPassword, 1, 2, 1, 1);
 		gridbagconstraints.fill = GridBagConstraints.VERTICAL;
 		gridbagAdd(bLogin, 2, 1, 1, 2);
+
 		
 	}
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
@@ -63,7 +63,6 @@ public class Login extends JPanel {
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
 	}
 
 }
