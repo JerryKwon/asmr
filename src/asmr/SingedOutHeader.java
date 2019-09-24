@@ -19,14 +19,11 @@ public class SingedOutHeader extends JFrame {
 	private String[] mlPost = {"공지사항", "문의/답변"};
 	
 	private JPanel pContents;
-	
-	GridBagLayout gridbaglayout;				// 화면을 구성하는 레이아웃
-	GridBagConstraints gridbagconstraints;	
+	private ContentPanel ContentPanel;	
 	
 	public SingedOutHeader() {
-				
-		gridbaglayout = new GridBagLayout();		
-		gridbagconstraints = new GridBagConstraints();
+		
+		setLayout(null);
 		
 		MenuActionListener listener = new MenuActionListener();
 		
@@ -56,6 +53,7 @@ public class SingedOutHeader extends JFrame {
 		JMenuItem[] mlEmpItem = new JMenuItem[mlEmp.length];
 		for (int i=0; i < mlEmp.length; i++){
 			mlEmpItem[i] = new JMenuItem(mlEmp[i]);
+			mlEmpItem[i].addActionListener(listener);
 			mEmp.add(mlEmpItem[i]);
 		}
 		mBar.add(mEmp);
@@ -64,6 +62,7 @@ public class SingedOutHeader extends JFrame {
 		JMenuItem[] mlAbanItem = new JMenuItem[mlAban.length];
 		for (int i=0; i < mlAban.length; i++){
 			mlAbanItem[i] = new JMenuItem(mlAban[i]);
+			mlAbanItem[i].addActionListener(listener);
 			mAban.add(mlAbanItem[i]);
 		}
 		mBar.add(mAban);
@@ -72,6 +71,7 @@ public class SingedOutHeader extends JFrame {
 		JMenuItem[] mlReportItem = new JMenuItem[mlReport.length];
 		for (int i=0; i < mlReport.length; i++){
 			mlReportItem[i] = new JMenuItem(mlReport[i]);
+			mlReportItem[i].addActionListener(listener);
 			mReport.add(mlReportItem[i]);
 		}
 		mBar.add(mReport);
@@ -80,6 +80,7 @@ public class SingedOutHeader extends JFrame {
 		JMenuItem[] mlAdopItem = new JMenuItem[mlAdop.length];
 		for (int i=0; i < mlAdop.length; i++){
 			mlAdopItem[i] = new JMenuItem(mlAdop[i]);
+			mlAdopItem[i].addActionListener(listener);
 			mAdop.add(mlAdopItem[i]);
 		}
 		mBar.add(mAdop);
@@ -88,30 +89,31 @@ public class SingedOutHeader extends JFrame {
 		JMenuItem[] mlPostItem = new JMenuItem[mlPost.length];
 		for (int i=0; i < mlPost.length; i++){
 			mlPostItem[i] = new JMenuItem(mlPost[i]);
+			mlPostItem[i].addActionListener(listener);
 			mPost.add(mlPostItem[i]);
 		}
 		mBar.add(mPost);
-		pContents = new Login();
 		
+		ContentPanel = new ContentPanel();
+		pContents = new MainPage();
+		ContentPanel.add(pContents);
 		MainPageView();
 	}
 	private void MainPageView() {
 		setTitle("ASMR");
 		setExtendedState(MAXIMIZED_BOTH);
 		
-		gridbagconstraints.anchor = GridBagConstraints.WEST;		
-		gridbagconstraints.ipadx = 7;		
-				
-		gridbagconstraints.weightx=1.0;		
-		gridbagconstraints.weighty=1.0;		
-				
-		setLayout(gridbaglayout);
-		gridbagAdd(bMainButton, 0, 0, 1, 3, 0.1, 0.1);
-		gridbagAdd(mBar, 1, 1, 1, 1, 0.1, 0.1);
-		gridbagAdd(bLogin, 7, 0, 1, 1, 0.1, 0.1);
-		gridbagAdd(bRegister, 8, 0, 1, 1, 0.1, 0.1);
-		gridbagAdd(pContents, 1, 2, 1, 1, 1.0, 1.0);
+		bMainButton.setBounds(10,10,240,240);
+		mBar.setBounds(310,110,300,50);
+		bLogin.setBounds(700, 10, 100, 40);
+		bRegister.setBounds(810, 10, 100, 40);
+		ContentPanel.setBounds(100,200, 500, 500);
 		
+		this.add(bMainButton);
+		this.add(mBar);
+		this.add(ContentPanel);
+		this.add(bLogin);
+		this.add(bRegister);
 		
 		pack();
 		setResizable(false);
@@ -125,38 +127,24 @@ public class SingedOutHeader extends JFrame {
 			case " ":
 				getContentPane().remove(pContents);
 				pContents = new MainPage();
-				gridbagAdd(pContents, 1, 2, 10, 3, 1.0, 1.0);
 				revalidate();
 				repaint();
 				break;
 			case "로그인":
 				getContentPane().remove(pContents);
 				pContents = new Login();
-				gridbagAdd(pContents, 1, 2, 10, 3, 1.0, 1.0);
 				revalidate();
 				repaint();
 			}
 		}
 	}
+	class ContentPanel extends JPanel {
+		public void ContentPanel() {
+			
+			setPreferredSize(new Dimension(1800, 900));
+		}
+	}
 
-	private void gridbagAdd(Component c, int x, int y, int w, int h, double wx, double wy) {			
-		
-		gridbagconstraints.gridx = x;		
-		gridbagconstraints.gridy = y; 		
-	      //가장 왼쪽 위 gridx, gridy값은 0 			
-				
-		gridbagconstraints.gridwidth  = w;	//넓이	
-		gridbagconstraints.gridheight = h;	//높이
-		
-		gridbagconstraints.weightx = wx;
-		gridbagconstraints.weighty = wy;
-	     			
-	      			
-	    gridbaglayout.setConstraints(c, gridbagconstraints); //컴포넌트를 컴포넌트 위치+크기 정보에 따라 GridBagLayout에 배치			
-				
-	   add(c);			
-				
-	   }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new SingedOutHeader();
