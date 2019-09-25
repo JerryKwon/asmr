@@ -10,21 +10,18 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
-public class RprtAssignmentNorm extends JFrame {
+public class RprtAssignmentNorm extends JPanel {
 	
 	private JLabel vRprtNo, vRprtDttm, vRprtName, vTelNo, vRprtTp, vWrtPrsnTp, vAnmlKinds,
 	vAnmlSize, vExpln, vDscvDttm, vDscvLoc, vApprovalWaitList, vApprovalCompleteList, vRprtInfo;
@@ -108,7 +105,7 @@ public class RprtAssignmentNorm extends JFrame {
 		vDscvLoc = new JLabel("발견장소");
 		xDscvLoc = new JTextField(20);
 		
-		buttonIcon = ImageIO.read(new File("./img/cat1.png"));
+		buttonIcon = ImageIO.read(new File("./images/cat1.png"));
 		Imagebutton = new JButton(new ImageIcon(buttonIcon));
 		Imagebutton.setBorderPainted(false);
 		Imagebutton.setContentAreaFilled(false);
@@ -119,14 +116,14 @@ public class RprtAssignmentNorm extends JFrame {
 		RprtAssignmentNormView();
 	}
 	
-	private void setBorder(Border createEmptyBorder) {
+	//private void setBorder(Border createEmptyBorder) {
 		// TODO Auto-generated method stub
 		
-	}
+	//}
 
 	private void RprtAssignmentNormView() {
 		
-		setTitle("신고배정_일반센터");	
+		//setTitle("신고배정_일반센터");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;
@@ -179,13 +176,6 @@ public class RprtAssignmentNorm extends JFrame {
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
-		pack();
-		setResizable(false);
-		setVisible(true);
-		
-		
-		
-		
 	}
 
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			

@@ -1,13 +1,16 @@
 package asmr;
 import javax.swing.*;
+
 import java.awt.*;
+import java.awt.event.*;
 
 
-public class Login extends JPanel {
+public class Login extends JPanel implements ActionListener{
 	private JLabel vLogin, vID, vPassword;
 	private JButton bLogin;
 	private JTextField xID;
 	private JPasswordField xPassword;
+	private MainFrame main;
 	
 	GridBagLayout gridbaglayout;				// 화면을 구성하는 레이아웃
 	GridBagConstraints gridbagconstraints;
@@ -23,10 +26,16 @@ public class Login extends JPanel {
 		xPassword = new JPasswordField(20);
 		
 		bLogin = new JButton("로그인");
-		
+		bLogin.addActionListener(this);
 		LoginView();
 	}
-	
+
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource().equals(bLogin)){
+			main.removeAll();
+		}
+	}
+
 	private void LoginView() {
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;		

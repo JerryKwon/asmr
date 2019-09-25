@@ -19,7 +19,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class EmpList extends JFrame {
+public class EmpList extends JPanel {
 	private JLabel vEmpList,vEmpNameSearch,vEmpInfo,vEmpNo,vBelongCenter,vEmpType,vWorkType,vEmpName,vBirthDate,vPhoneNum;
 	private JTextField xEmpNameSearch,xEmpNo,xBelongCenter,xEmpName,xBirthDate,xPhoneNum;
 	private JButton empSearch,centerSearch, modify, cancel, resign;
@@ -167,9 +167,6 @@ public class EmpList extends JFrame {
 		combineButtonPanel.setBorder(BorderFactory.createEmptyBorder(10,150,0,0));
 		gridbagAdd(combineButtonPanel, 0, 8, 5, 1);
 		
-		pack();
-		setResizable(false);
-		setVisible(true);
 	}
 	
 	private void gridbagAdd(Component c, int x, int y, int w , int h) {

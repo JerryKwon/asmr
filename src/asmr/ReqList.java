@@ -12,14 +12,14 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class ReqList extends JFrame {
+public class ReqList extends JPanel {
 	
 	private JLabel vReqList, vAdopEva, vAnmlInfo,
 	vAbanName, vAnmlKinds, vKind, vSex, vAge,
@@ -104,7 +104,7 @@ public class ReqList extends JFrame {
 		regis = new JButton("등록");
 		cancel = new JButton("취소");
 		
-		buttonIcon = ImageIO.read(new File("./img/cal1.png"));
+		buttonIcon = ImageIO.read(new File("./images/cal1.png"));
 		imageButton = new JButton(new ImageIcon(buttonIcon));
 		imageButton.setBorderPainted(false);
 		imageButton.setContentAreaFilled(false);
@@ -115,7 +115,7 @@ public class ReqList extends JFrame {
 	}
 	
 	private void ReqListView() {
-		setTitle("신청목록");
+		//setTitle("신청목록");
 		
 		gridbagConstraints.anchor = GridBagConstraints.WEST;
 		gridbagConstraints.ipadx = 7;
@@ -169,10 +169,6 @@ public class ReqList extends JFrame {
 		
 		gridbagAdd(regis, 3, 14, 1, 1);
 		gridbagAdd(cancel, 4, 14, 1, 1);
-		
-		pack();
-		setResizable(false);
-		setVisible(true);
 			
 	}
 	

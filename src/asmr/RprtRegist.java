@@ -12,11 +12,11 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class MyFrame extends JFrame {
+public class RprtRegist extends JPanel {
 	private JLabel vRprtName,  vTelNo, vRprtTp,vAnmlKinds,
 	vAnmlSize, vExpln,vDscvDttm, vDscvLoc, vPic;
 	
@@ -40,7 +40,7 @@ public class MyFrame extends JFrame {
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
 
-	public MyFrame() throws IOException{
+	public RprtRegist() throws IOException{
 		
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
@@ -77,7 +77,7 @@ public class MyFrame extends JFrame {
 		regist = new JButton("등록");
 		cancel = new JButton("취소");
 		
-		buttonIcon = ImageIO.read(new File("./img/cal1.png"));
+		buttonIcon = ImageIO.read(new File("./images/cal1.png"));
 		Imagebutton = new JButton(new ImageIcon(buttonIcon));
 		Imagebutton.setBorderPainted(false);
 		Imagebutton.setContentAreaFilled(false);
@@ -88,7 +88,7 @@ public class MyFrame extends JFrame {
 	
 	private void RprtRegisterView() {
 
-		setTitle("신고 등록");
+		//setTitle("신고 등록");
 
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;
@@ -125,10 +125,6 @@ public class MyFrame extends JFrame {
 		gridbagAdd(regist, 4, 9, 1, 1);
 		gridbagAdd(cancel, 6, 9, 1, 1);
 
-		pack();
-		setResizable(false);
-		setVisible(true);
-
 	}
 	
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
@@ -148,7 +144,7 @@ public class MyFrame extends JFrame {
 	   }			
 				
 	public static void main(String[] args) throws IOException {			
-		new MyFrame();		
+		new RprtRegist();		
 	}			
 	
 	

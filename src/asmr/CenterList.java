@@ -20,7 +20,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class CenterList extends JFrame{
+public class CenterList extends JPanel{
 	
 	private JButton centerRegist, cageRegist, searchManager, save;
 	private JLabel vCenterList,vCageList,vCenterInfo,vCenterNum,vEstDate,vCenterName,vPhoneNum,vArea,vOperTime,vOperTimeDash,vCenterManager,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount;
@@ -230,10 +230,6 @@ public class CenterList extends JFrame{
 		savePanel.add(save);
 		savePanel.setBorder(BorderFactory.createEmptyBorder(10,325,0,0));
 		gridbagAdd(savePanel, 0, 13, 21, 1);
-		
-		pack();
-		setResizable(false);
-		setVisible(true);
 		
 	}
 	
