@@ -4,6 +4,7 @@ import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 
 public class MainFrame extends JFrame {
@@ -29,7 +30,7 @@ public class MainFrame extends JFrame {
 	
 	public MainFrame() {
 		
-		LoginState = 0;
+		LoginState = 1;
 		setLayout(null);
 		
 		MenuActionListener listener = new MenuActionListener();
@@ -47,12 +48,15 @@ public class MainFrame extends JFrame {
 		bLogin = new JButton("로그인");
 		bLogin.addActionListener(listener);
 		bRegister = new JButton("회원가입");
+		bRegister.addActionListener(listener);
 		
 		bLogout = new JButton("로그아웃");
+		bLogout.addActionListener(listener);
 		
 		vWelcome = new JLabel("님 환영합니다.");
 		vCenterName = new JLabel("부산남구보호센터");
 		bUserName = new JButton("권영인");
+		bUserName.addActionListener(listener);
 		bUserName.setContentAreaFilled(false);
 		bUserName.setFocusPainted(false);
 		bUserName.setBorderPainted(false);
@@ -148,12 +152,14 @@ public class MainFrame extends JFrame {
 		
 		ContentPanel = new ContentPanel();
 		pContents = new MainPage();
+		//pContents.setBackground(Color.WHITE);
 		ContentPanel.add(pContents);
 		MainPageView();
 	}
 	private void MainPageView() {
 		setTitle("ASMR");
 		setExtendedState(MAXIMIZED_BOTH);
+		//this.getContentPane().setBackground(Color.WHITE);
 		
 		bMainButton.setBounds(100,50,175,175);
 		mBar.setBounds(310,110,1370,50);
@@ -166,7 +172,7 @@ public class MainFrame extends JFrame {
 		vWelcome.setBounds(1770,130,150,20);
 		bLogout.setBounds(1810, 10, 100, 30);
 		
-		ContentPanel.setBounds(0,300, 1800, 900);
+		ContentPanel.setBounds(50, 300, 1800, 900);
 		
 		this.add(bMainButton);
 		this.add(mBar);
@@ -192,7 +198,6 @@ public class MainFrame extends JFrame {
 			String cont = e.getActionCommand();
 			switch(cont) {
 			case " ":
-				
 				ContentPanel.removeAll();
 				pContents = new MainPage();
 				ContentPanel.add(pContents);
@@ -206,13 +211,175 @@ public class MainFrame extends JFrame {
 				revalidate();
 				repaint();
 				break;
+			case "회원가입":
+				ContentPanel.removeAll();
+				pContents = new UserRegister();
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "센터목록":
+				ContentPanel.removeAll();
+				pContents = new CenterList();
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "권영인":
+				ContentPanel.removeAll();
+				pContents = new EmpMyPage();
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "로그아웃":
+				new MainFrame();
+				dispose();
+				ContentPanel.removeAll();
+				pContents = new MainPage();
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "직원등록":
+				ContentPanel.removeAll();
+				try {
+					pContents = new EmpRegister();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+				
+			case "직원조회":
+				ContentPanel.removeAll();
+				pContents = new EmpList();
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "동물등록":
+				ContentPanel.removeAll();
+				pContents = new ProtAniRegist();
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "보호":
+				ContentPanel.removeAll();
+				try {
+					pContents = new ProtAniList();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "진료":
+				ContentPanel.removeAll();
+				try {
+					pContents = new DiagAniList();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "신고등록":
+				ContentPanel.removeAll();
+				try {
+					pContents = new RprtRegist();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "신고배정(본부센터)":
+				ContentPanel.removeAll();
+				try {
+					pContents = new RprtAssignment();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "신고배정(일반센터)":
+				ContentPanel.removeAll();
+				try {
+					pContents = new RprtAssignmentNorm();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "공고목록":
+				ContentPanel.removeAll();
+				pContents = new AnncList();
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "신청목록":
+				ContentPanel.removeAll();
+				try {
+					pContents = new ReqList();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "입양목록":
+				ContentPanel.removeAll();
+				try {
+					pContents = new AdopList();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "공지사항":
+				ContentPanel.removeAll();
+				pContents = new NotiBoard();
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
+			case "문의/답변":
+				ContentPanel.removeAll();
+				pContents = new InqAnsBoard();
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
 			}
 		}
 	}
 	class ContentPanel extends JPanel {
 		public void ContentPanel() {
-			
 			setPreferredSize(new Dimension(1800, 900));
+			//setBackground(Color.WHITE);
 		}
 	}
 	public void setLogin() {

@@ -12,14 +12,14 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class AdopList extends JFrame {
+public class AdopList extends JPanel {
 	
 	private JLabel vAdopList, vAdopDate, vWave,
 	vVisitList;
@@ -62,14 +62,14 @@ public class AdopList extends JFrame {
 		vAdopDate = new JLabel("입양일자");
 		xStartDate = new JTextField(20);
 		vWave = new JLabel("~");
-		buttonIcon1 = ImageIO.read(new File("./img/cal1.png"));
+		buttonIcon1 = ImageIO.read(new File("./images/cal1.png"));
 		imageButton1 = new JButton(new ImageIcon(buttonIcon1));
 		imageButton1.setBorderPainted(false);
 		imageButton1.setContentAreaFilled(false);
 		imageButton1.setFocusPainted(false);
 	
 		xEndDate = new JTextField(20);
-		buttonIcon2 = ImageIO.read(new File("./img/cal1.png"));
+		buttonIcon2 = ImageIO.read(new File("./images/cal1.png"));
 		imageButton2 = new JButton(new ImageIcon(buttonIcon2));
 		imageButton2.setBorderPainted(false);
 		imageButton2.setContentAreaFilled(false);
@@ -95,7 +95,7 @@ public class AdopList extends JFrame {
 	
 	private void AdopListView() {
 		
-		setTitle("입양목록");
+		//setTitle("입양목록");
 		
 		gridbagConstraints.anchor = GridBagConstraints.WEST;
 		gridbagConstraints.ipadx = 7;
@@ -126,10 +126,7 @@ public class AdopList extends JFrame {
 		
 		gridbagAdd(regis2, 5, 5, 1, 1);
 		gridbagAdd(cancel, 6, 5, 1, 1);
-		
-		pack();
-		setResizable(false);
-		setVisible(true);
+
 		
 	}
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			

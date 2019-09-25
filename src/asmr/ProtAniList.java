@@ -29,7 +29,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 
-public class ProtAniList extends JFrame {
+public class ProtAniList extends JPanel {
 	private JLabel vProtAniRegister, vProtAniInfo, vAbanAniNo, vAbanAniType, vRescueNo, vAbanAniName, vAge, vParAniName, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vRegisDate, vDescription, vDscvDate, vCage, vDscvPlace;
 	private JTextField xAbanAniNo, xAbanAniType, xRescueNo, xAbanAniName, xAge, xParAniName, xAniType ,xKind, xColor, xRegisDate, xDscvDate, xDscvPlace;
 	private JComboBox<String> cbSex, cbNeutWhet, cbAniSize, cbCage;
@@ -265,10 +265,7 @@ public class ProtAniList extends JFrame {
 		bottomPanel.add(next);
 		bottomPanel.setBorder(BorderFactory.createEmptyBorder(0,40,0,0));
 		gridbagAdd(bottomPanel, 5, 11 ,3, 1);
-		
-		pack();
-		setResizable(false);
-		setVisible(true);		
+			
 	}
 	
 	private void gridbagAdd(Component c, int x, int y, int w , int h) {

@@ -20,7 +20,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
-public class ProtAniRegist extends JFrame{
+public class ProtAniRegist extends JPanel{
 	private JLabel vProtAniRegist, vAbanAniType, vRscuNo, vParAbanAniName, vAbanAniName, vAge, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vFeature, vPicture, vCage;
 	private JTextField xRscuNo, xParAbanAniName, xAbanAniName, xAge, xKind, xColor;
 	private JComboBox<String> cbAbanAniType, cbAniType, cbSex, cbNeutWhet, cbAniSize, cbCage;
@@ -179,10 +179,7 @@ public class ProtAniRegist extends JFrame{
 		CombinePanel buttonPanel = new CombinePanel(cops, true);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 225, 0, 0));
 		gridbagAdd(buttonPanel, 0, 10, 6, 1);
-		
-		pack();
-		setResizable(false);
-		setVisible(true);		
+			
 	}
 	
 	private void gridbagAdd(Component c, int x, int y, int w , int h) {

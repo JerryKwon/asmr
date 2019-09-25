@@ -7,15 +7,14 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class InqAnsBoard extends JFrame {
+public class InqAnsBoard extends JPanel {
 	// 페이징 미구현, 페이징 번호 없음!
 	private JLabel vInqAns;
 	
@@ -43,7 +42,7 @@ public class InqAnsBoard extends JFrame {
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
 		
-		vInqAns = new JLabel("공지사항");
+		vInqAns = new JLabel("문의답변게시판");
 		eInqAnsList = new JTable(model);
 		scrollPane = new JScrollPane(eInqAnsList);
 		scrollPane.setPreferredSize(new Dimension(800,100));
@@ -60,7 +59,7 @@ public class InqAnsBoard extends JFrame {
 
 	private void InqAnsBoardView() {
 		
-		setTitle("문의/답변");	
+		//setTitle("문의/답변");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;
@@ -82,10 +81,6 @@ public class InqAnsBoard extends JFrame {
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
-		pack();
-		setResizable(false);
-		setVisible(true);
-		
 	}
 	
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			

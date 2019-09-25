@@ -19,7 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class EmpRegister extends JFrame{
+public class EmpRegister extends JPanel{
 	private JLabel vEmpRegist,vEmpName,vBelongCenter,vEmpType,vWorkType,vBirthDate,vGender,vAddress,vPhoneNum;
 	private JTextField xEmpName,xBelongCenter,xBirthDate,xAddress,xPhoneNum;
 	private JButton centerSearch,addressSearch, imageButton, register, cancel;
@@ -93,6 +93,7 @@ public class EmpRegister extends JFrame{
 	}
 	
 	private void EmpRegisterView() {
+		
 		setLayout(gridBagLayout);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
@@ -133,10 +134,7 @@ public class EmpRegister extends JFrame{
 		CombinePanel registerAndCancel = new CombinePanel(register, cancel,true);
 		registerAndCancel.setBorder(BorderFactory.createEmptyBorder(0, 220, 0, 0));
 		gridbagAdd(registerAndCancel, 0, 6, 5, 1);
-		
-		pack();
-		setResizable(false);
-		setVisible(true);
+
 	}
 	
 	private void gridbagAdd(Component c, int x, int y, int w , int h) {

@@ -26,7 +26,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 
-public class DiagAniList extends JFrame{
+public class DiagAniList extends JPanel{
 	private JLabel vProtAniList, vDiagList, vDiagInfo, vDiagDate, vDiagType, vIndiResult, vIndiVtrnName, vOudiResult, vHospName, vDisease, vInfecWhet, vCureType, vHsptzDate, vDschDate, vDeathType, vDeathReason, vDiagContent;
 	private JTextField xDiagDate, xDiagType, xIndiResult, xIndiVtrnName, xOudiResult, xHospName, xDisease, xInfecWhet, xCureType, xHsptzDate, xDschDate, xDeathType, xDeathReason;
 	private JButton diagRegister, imageButton, modify, cancel;
@@ -226,10 +226,7 @@ public class DiagAniList extends JFrame{
 		CombinePanel buttonPanel = new CombinePanel(cops2, true);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 280, 0, 0));
 		gridbagAdd(buttonPanel, 0, 11, 6, 1);
-		
-		pack();
-		setResizable(false);
-		setVisible(true);
+
 	}
 	
 	private void gridbagAdd(Component c, int x, int y, int w , int h) {
@@ -295,7 +292,6 @@ public class DiagAniList extends JFrame{
 			imageButton.setEnabled(true);
 	}
 	
-	public static void main(String[] args) throws IOException {
-		new DiagAniList();
+	public static void main(String[] args) {
 	}
 }
