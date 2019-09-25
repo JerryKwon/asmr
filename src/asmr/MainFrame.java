@@ -6,9 +6,10 @@ import java.awt.*;
 import java.awt.event.*;
 
 
-public class SingedOutHeader extends JFrame {
+public class MainFrame extends JFrame {
 
-	private JButton bMainButton, bLogin, bRegister;
+	private JButton bMainButton, bLogin, bRegister, bLogout, bUserName;
+	private JLabel vCenterName, vWelcome;
 	
 	private JMenuBar mBar;
 	private JMenu mCenter, mEmp, mAban, mReport, mAdop, mPost;
@@ -23,8 +24,12 @@ public class SingedOutHeader extends JFrame {
 	private JPanel pContents;
 	private ContentPanel ContentPanel;	
 	
-	public SingedOutHeader() {
+	private Login Login;
+	public static int LoginState;
+	
+	public MainFrame() {
 		
+		LoginState = 0;
 		setLayout(null);
 		
 		MenuActionListener listener = new MenuActionListener();
@@ -43,19 +48,33 @@ public class SingedOutHeader extends JFrame {
 		bLogin.addActionListener(listener);
 		bRegister = new JButton("È¸¿ø°¡ÀÔ");
 		
-		mBar = new JMenuBar();
+		bLogout = new JButton("·Î±×¾Æ¿ô");
 		
+		vWelcome = new JLabel("´Ô È¯¿µÇÕ´Ï´Ù.");
+		vCenterName = new JLabel("ºÎ»ê³²±¸º¸È£¼¾ÅÍ");
+		bUserName = new JButton("±Ç¿µÀÎ");
+		bUserName.setContentAreaFilled(false);
+		bUserName.setFocusPainted(false);
+		bUserName.setBorderPainted(false);
+		bUserName.setForeground(Color.cyan);
+		
+		mBar = new JMenuBar();
+		UIManager.put("Menu.font", new Font("³ª´®°íµñ", Font.BOLD, 20));
 
 		mCenter = new JMenu("¼¾ÅÍ");
 		JMenuItem[] mlCenterItem = new JMenuItem[mlCenter.length];
 		for (int i=0; i < mlCenter.length; i++){
 			mlCenterItem[i] = new JMenuItem(mlCenter[i]);
 			mlCenterItem[i].addActionListener(listener);
+			mlCenterItem[i].setPreferredSize(new Dimension(218, 40));
+			mlCenterItem[i].setFont(new Font("³ª´®°íµñ", Font.BOLD, 17));
 			mCenter.add(mlCenterItem[i]);
 		}
-		mCenter.setPreferredSize(new Dimension(200, 50));
+		mCenter.setPreferredSize(new Dimension(220, 50));
 		mCenter.setBorder(new EmptyBorder(0,90,0,0));
 		mBar.add(mCenter);
+		
+		//mBar.add(new JSeparator(JSeparator.VERTICAL));
 		mBar.add(Box.createHorizontalStrut(10));
 		
 		mEmp = new JMenu("Á÷¿ø");
@@ -63,44 +82,68 @@ public class SingedOutHeader extends JFrame {
 		for (int i=0; i < mlEmp.length; i++){
 			mlEmpItem[i] = new JMenuItem(mlEmp[i]);
 			mlEmpItem[i].addActionListener(listener);
+			mlEmpItem[i].setPreferredSize(new Dimension(218, 40));
+			mlEmpItem[i].setFont(new Font("³ª´®°íµñ", Font.BOLD, 17));
 			mEmp.add(mlEmpItem[i]);
 		}
+		mEmp.setPreferredSize(new Dimension(220, 50));
+		mEmp.setBorder(new EmptyBorder(0,90,0,0));
 		mBar.add(mEmp);
+		mBar.add(Box.createHorizontalStrut(10));
 		
 		mAban = new JMenu("µ¿¹°");
 		JMenuItem[] mlAbanItem = new JMenuItem[mlAban.length];
 		for (int i=0; i < mlAban.length; i++){
 			mlAbanItem[i] = new JMenuItem(mlAban[i]);
 			mlAbanItem[i].addActionListener(listener);
+			mlAbanItem[i].setPreferredSize(new Dimension(218, 40));
+			mlAbanItem[i].setFont(new Font("³ª´®°íµñ", Font.BOLD, 17));
 			mAban.add(mlAbanItem[i]);
 		}
+		mAban.setPreferredSize(new Dimension(220, 50));
+		mAban.setBorder(new EmptyBorder(0,90,0,0));
 		mBar.add(mAban);
+		mBar.add(Box.createHorizontalStrut(10));
 		
 		mReport = new JMenu("½Å°í");
 		JMenuItem[] mlReportItem = new JMenuItem[mlReport.length];
 		for (int i=0; i < mlReport.length; i++){
 			mlReportItem[i] = new JMenuItem(mlReport[i]);
 			mlReportItem[i].addActionListener(listener);
+			mlReportItem[i].setPreferredSize(new Dimension(218, 40));
+			mlReportItem[i].setFont(new Font("³ª´®°íµñ", Font.BOLD, 17));
 			mReport.add(mlReportItem[i]);
 		}
+		mReport.setPreferredSize(new Dimension(220, 50));
+		mReport.setBorder(new EmptyBorder(0,90,0,0));
 		mBar.add(mReport);
+		mBar.add(Box.createHorizontalStrut(10));
 		
 		mAdop = new JMenu("ÀÔ¾ç");
 		JMenuItem[] mlAdopItem = new JMenuItem[mlAdop.length];
 		for (int i=0; i < mlAdop.length; i++){
 			mlAdopItem[i] = new JMenuItem(mlAdop[i]);
 			mlAdopItem[i].addActionListener(listener);
+			mlAdopItem[i].setPreferredSize(new Dimension(218, 40));
+			mlAdopItem[i].setFont(new Font("³ª´®°íµñ", Font.BOLD, 17));
 			mAdop.add(mlAdopItem[i]);
 		}
+		mAdop.setPreferredSize(new Dimension(220, 50));
+		mAdop.setBorder(new EmptyBorder(0,90,0,0));
 		mBar.add(mAdop);
+		mBar.add(Box.createHorizontalStrut(10));
 		
 		mPost = new JMenu("°Ô½ÃÆÇ");
 		JMenuItem[] mlPostItem = new JMenuItem[mlPost.length];
 		for (int i=0; i < mlPost.length; i++){
 			mlPostItem[i] = new JMenuItem(mlPost[i]);
 			mlPostItem[i].addActionListener(listener);
+			mlPostItem[i].setPreferredSize(new Dimension(218, 40));
+			mlPostItem[i].setFont(new Font("³ª´®°íµñ", Font.BOLD, 17));
 			mPost.add(mlPostItem[i]);
 		}
+		mPost.setPreferredSize(new Dimension(220, 50));
+		mPost.setBorder(new EmptyBorder(0,80,0,0));
 		mBar.add(mPost);
 		
 		ContentPanel = new ContentPanel();
@@ -113,16 +156,31 @@ public class SingedOutHeader extends JFrame {
 		setExtendedState(MAXIMIZED_BOTH);
 		
 		bMainButton.setBounds(100,50,175,175);
-		mBar.setBounds(310,110,1000,50);
+		mBar.setBounds(310,110,1370,50);
+		
 		bLogin.setBounds(1700, 10, 100, 30);
 		bRegister.setBounds(1810, 10, 100, 30);
+		
+		vCenterName.setBounds(1700,110,150,20);
+		bUserName.setBounds(1700,125,75,30);
+		vWelcome.setBounds(1770,130,150,20);
+		bLogout.setBounds(1810, 10, 100, 30);
+		
 		ContentPanel.setBounds(0,300, 1800, 900);
 		
 		this.add(bMainButton);
 		this.add(mBar);
 		this.add(ContentPanel);
-		this.add(bLogin);
-		this.add(bRegister);
+		if(LoginState == 0) {
+			this.add(bLogin);
+			this.add(bRegister);
+		}
+		else if(LoginState == 1) {
+			this.add(bLogout);
+			this.add(vCenterName);
+			this.add(bUserName);
+			this.add(vWelcome);
+		}
 		
 		pack();
 		setResizable(false);
@@ -138,13 +196,11 @@ public class SingedOutHeader extends JFrame {
 				ContentPanel.removeAll();
 				pContents = new MainPage();
 				ContentPanel.add(pContents);
-				add(ContentPanel);
 				revalidate();
 				repaint();
 				break;
 			case "·Î±×ÀÎ":
 				ContentPanel.removeAll();
-				//getContentPane().remove(pContents);
 				pContents = new Login();
 				ContentPanel.add(pContents);
 				revalidate();
@@ -159,10 +215,19 @@ public class SingedOutHeader extends JFrame {
 			setPreferredSize(new Dimension(1800, 900));
 		}
 	}
-
+	public void setLogin() {
+		this.remove(bLogin);
+		this.remove(bRegister);
+		ContentPanel.removeAll();
+		this.add(vCenterName);
+		this.add(bUserName);
+		this.add(vWelcome);
+		revalidate();
+		repaint();
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new SingedOutHeader();
+		MainFrame main = new MainFrame();
 	}
 
 }
