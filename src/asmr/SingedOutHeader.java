@@ -1,5 +1,7 @@
 package asmr;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -27,7 +29,11 @@ public class SingedOutHeader extends JFrame {
 		
 		MenuActionListener listener = new MenuActionListener();
 		
-		bMainButton = new JButton(" ", new ImageIcon("images/main.png"));
+		ImageIcon iMainIcon = new ImageIcon("images/main.png");
+		Image iMainLogo = iMainIcon.getImage();
+		Image iMainButton = iMainLogo.getScaledInstance(180, 180, Image.SCALE_SMOOTH);
+		
+		bMainButton = new JButton(" ", new ImageIcon(iMainButton));
 		bMainButton.setContentAreaFilled(false);
 		bMainButton.setFocusPainted(false);
 		bMainButton.setBorderPainted(false);
@@ -47,7 +53,10 @@ public class SingedOutHeader extends JFrame {
 			mlCenterItem[i].addActionListener(listener);
 			mCenter.add(mlCenterItem[i]);
 		}
+		mCenter.setPreferredSize(new Dimension(200, 50));
+		mCenter.setBorder(new EmptyBorder(0,90,0,0));
 		mBar.add(mCenter);
+		mBar.add(Box.createHorizontalStrut(10));
 		
 		mEmp = new JMenu("직원");
 		JMenuItem[] mlEmpItem = new JMenuItem[mlEmp.length];
@@ -103,11 +112,11 @@ public class SingedOutHeader extends JFrame {
 		setTitle("ASMR");
 		setExtendedState(MAXIMIZED_BOTH);
 		
-		bMainButton.setBounds(10,10,240,240);
-		mBar.setBounds(310,110,300,50);
-		bLogin.setBounds(700, 10, 100, 40);
-		bRegister.setBounds(810, 10, 100, 40);
-		ContentPanel.setBounds(100,200, 500, 500);
+		bMainButton.setBounds(100,50,175,175);
+		mBar.setBounds(310,110,1000,50);
+		bLogin.setBounds(1700, 10, 100, 30);
+		bRegister.setBounds(1810, 10, 100, 30);
+		ContentPanel.setBounds(0,300, 1800, 900);
 		
 		this.add(bMainButton);
 		this.add(mBar);
@@ -125,16 +134,22 @@ public class SingedOutHeader extends JFrame {
 			String cont = e.getActionCommand();
 			switch(cont) {
 			case " ":
-				getContentPane().remove(pContents);
+				
+				ContentPanel.removeAll();
 				pContents = new MainPage();
+				ContentPanel.add(pContents);
+				add(ContentPanel);
 				revalidate();
 				repaint();
 				break;
 			case "로그인":
-				getContentPane().remove(pContents);
+				ContentPanel.removeAll();
+				//getContentPane().remove(pContents);
 				pContents = new Login();
+				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
+				break;
 			}
 		}
 	}
