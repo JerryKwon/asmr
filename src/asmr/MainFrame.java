@@ -237,9 +237,10 @@ public class MainFrame extends JFrame {
 				dispose();
 				ContentPanel.removeAll();
 				pContents = new MainPage();
-				ContentPanel.add(pContents);
-				revalidate();
-				repaint();
+				//LoginState = 0;
+				//ContentPanel.add(pContents);
+				//revalidate();
+				//repaint();
 				break;
 			case "직원등록":
 				ContentPanel.removeAll();

@@ -7,14 +7,14 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class NotiBoard extends JFrame {
+public class NotiBoard extends JPanel {
 	// 페이징 미구현, 페이징 번호 없음!
 	private JLabel vNoti;
 	
@@ -59,7 +59,7 @@ public class NotiBoard extends JFrame {
 	
 	private void NotiBoardView() {
 		
-		setTitle("공지사항");	
+		//setTitle("공지사항");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;
@@ -81,9 +81,9 @@ public class NotiBoard extends JFrame {
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
-		pack();
-		setResizable(false);
-		setVisible(true);
+		//pack();
+		//setResizable(false);
+		//setVisible(true);
 		
 	}
 	
@@ -105,7 +105,7 @@ public class NotiBoard extends JFrame {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new NotiBoard();
+		//new NotiBoard();
 	}
 
 }

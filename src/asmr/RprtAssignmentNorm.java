@@ -16,16 +16,14 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import asmr.RprtAssignment.RprtAniListMouseListener;
-
-public class RprtAssignmentNorm extends JFrame {
+public class RprtAssignmentNorm extends JPanel {
 	
 	private JLabel vRprtNo, vRprtDttm, vRprtName, vTelNo, vRprtTp, vWrtPrsnTp, vAnmlKinds,
 	vAnmlSize, vExpln, vDscvDttm, vDscvLoc, vApprovalWaitList, vApprovalCompleteList, vRprtInfo;
@@ -146,7 +144,7 @@ public class RprtAssignmentNorm extends JFrame {
 	
 	private void RprtAssignmentNormView() {
 		
-		setTitle("신고배정_일반센터");	
+		//setTitle("신고배정_일반센터");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;
@@ -200,9 +198,9 @@ public class RprtAssignmentNorm extends JFrame {
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
-		pack();
-		setResizable(false);
-		setVisible(true);
+		//pack();
+		//setResizable(false);
+		//setVisible(true);
 		
 	}
 	

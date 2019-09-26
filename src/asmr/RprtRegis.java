@@ -3,7 +3,6 @@ package asmr;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -17,9 +16,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
@@ -28,7 +27,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerDateModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class RprtRegis extends JFrame implements ActionListener{
+public class RprtRegis extends JPanel implements ActionListener{
 	private JLabel vRprtName,  vTelNo, vRprtTp,vAnmlKinds,
 	vAnmlSize, vExpln,vDscvDttm, vDscvLoc, vPic;
 	
@@ -108,7 +107,7 @@ public class RprtRegis extends JFrame implements ActionListener{
 		
 		btnSearch = new Button("찾아보기");
 		btnSearch.addActionListener(this);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		regist = new JButton("등록");
 		regist.setBackground(blue);
@@ -144,7 +143,7 @@ public class RprtRegis extends JFrame implements ActionListener{
 				
 			}
 			if(e.getSource().equals(cancel)) {
-				dispose();
+				//dispose();
 			}
 		}
 		
@@ -168,7 +167,7 @@ public class RprtRegis extends JFrame implements ActionListener{
         
         // 파일 선택했을 경우
         String path = fc.getSelectedFile().getPath();
-        pack();
+        //pack();
         
         xPic.setText(path);
 		
@@ -180,7 +179,7 @@ public class RprtRegis extends JFrame implements ActionListener{
 	
 	private void RprtRegisView() {
 
-		setTitle("신고 등록");
+		//setTitle("신고 등록");
 
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;
@@ -218,9 +217,9 @@ public class RprtRegis extends JFrame implements ActionListener{
 		gridbagAdd(regist, 4, 9, 1, 1);
 		gridbagAdd(cancel, 6, 9, 1, 1);
 
-		pack();
-		setResizable(false);
-		setVisible(true);
+		//pack();
+		//setResizable(false);
+		//setVisible(true);
 
 	}
 	
@@ -241,7 +240,7 @@ public class RprtRegis extends JFrame implements ActionListener{
 	   }			
 				
 	public static void main(String[] args) throws IOException {			
-		new RprtRegis();		
+		//new RprtRegis();		
 	}			
 	
 	

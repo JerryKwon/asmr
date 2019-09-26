@@ -12,14 +12,14 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class AdopList extends JFrame {
+public class AdopList extends JPanel {
 	
 	private JLabel vAdopList, vAdopDate, vWave,
 	vVisitList;
@@ -95,7 +95,7 @@ public class AdopList extends JFrame {
 	
 	private void AdopListView() {
 		
-		setTitle("입양목록");
+		//setTitle("입양목록");
 		
 		gridbagConstraints.anchor = GridBagConstraints.WEST;
 		gridbagConstraints.ipadx = 7;
@@ -127,9 +127,9 @@ public class AdopList extends JFrame {
 		gridbagAdd(regis2, 5, 5, 1, 1);
 		gridbagAdd(cancel, 6, 5, 1, 1);
 		
-		pack();
-		setResizable(false);
-		setVisible(true);
+		//pack();
+		//setResizable(false);
+		///setVisible(true);
 		
 	}
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
@@ -150,7 +150,7 @@ public class AdopList extends JFrame {
 	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		new AdopList();
+		//new AdopList();
 
 	}
 
