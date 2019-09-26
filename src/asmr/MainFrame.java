@@ -295,7 +295,7 @@ public class MainFrame extends JFrame {
 			case "신고등록":
 				ContentPanel.removeAll();
 				try {
-					pContents = new RprtRegist();
+					pContents = new RprtRegis();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
