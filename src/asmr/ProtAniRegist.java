@@ -6,15 +6,13 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -22,7 +20,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
-public class ProtAniRegist extends JPanel implements ActionListener {
+public class ProtAniRegist extends JPanel{
 	private JLabel vProtAniRegist, vAbanAniType, vRscuNo, vParAbanAniName, vAbanAniName, vAge, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vFeature, vPicture, vCage;
 	private JTextField xRscuNo, xParAbanAniName, xAbanAniName, xAge, xKind, xColor;
 	private JComboBox<String> cbAbanAniType, cbAniType, cbSex, cbNeutWhet, cbAniSize, cbCage;
@@ -65,7 +63,6 @@ public class ProtAniRegist extends JPanel implements ActionListener {
 		searchRscu = new JButton("검색");
 		searchRscu.setBackground(blue);
 		searchRscu.setForeground(white);
-		searchRscu.addActionListener(this);
 		
 		vParAbanAniName = new JLabel("어미유기동물명");
 		xParAbanAniName = new JTextField(10);
@@ -73,7 +70,6 @@ public class ProtAniRegist extends JPanel implements ActionListener {
 		searchPar = new JButton("검색");
 		searchPar.setBackground(blue);
 		searchPar.setForeground(white);
-		searchPar.addActionListener(this);
 		
 		vAbanAniName = new JLabel("유기동물명");
 		xAbanAniName = new JTextField(10);
@@ -109,7 +105,6 @@ public class ProtAniRegist extends JPanel implements ActionListener {
 		pictureManage = new JButton("사진관리");
 		pictureManage.setBackground(blue);
 		pictureManage.setForeground(white);
-		pictureManage.addActionListener(this);
 		
 		vCage = new JLabel("케이지");
 		cbCage = new JComboBox<String>(cageDiv);
@@ -247,22 +242,6 @@ public class ProtAniRegist extends JPanel implements ActionListener {
 		xRscuNo.setEnabled(false);
 		searchRscu.setEnabled(false);
 		
-	}
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource().equals(searchRscu)){
-			new RscuSearch();
-		}
-		if(e.getSource().equals(searchPar)){
-			new ProtAnmlSearchPopup();
-		}
-		if(e.getSource().equals(pictureManage)){
-			try {
-				new PictureManage();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
 	}
 	
 	public static void main(String[] args) {

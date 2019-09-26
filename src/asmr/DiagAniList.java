@@ -6,8 +6,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -18,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -27,7 +26,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 
-public class DiagAniList extends JPanel implements ActionListener {
+public class DiagAniList extends JPanel{
 	private JLabel vProtAniList, vDiagList, vDiagInfo, vDiagDate, vDiagType, vIndiResult, vIndiVtrnName, vOudiResult, vHospName, vDisease, vInfecWhet, vCureType, vHsptzDate, vDschDate, vDeathType, vDeathReason, vDiagContent;
 	private JTextField xDiagDate, xDiagType, xIndiResult, xIndiVtrnName, xOudiResult, xHospName, xDisease, xInfecWhet, xCureType, xHsptzDate, xDschDate, xDeathType, xDeathReason;
 	private JButton diagRegister, imageButton, modify, cancel;
@@ -69,7 +68,6 @@ public class DiagAniList extends JPanel implements ActionListener {
 		diagRegister = new JButton("진료등록");
 		diagRegister.setBackground(blue);
 		diagRegister.setForeground(white);
-		diagRegister.addActionListener(this);
 		
 		vDiagList = new JLabel("진료목록");
 		
@@ -292,16 +290,6 @@ public class DiagAniList extends JPanel implements ActionListener {
 			imageButton.setEnabled(false);
 		else if(target=="외진")
 			imageButton.setEnabled(true);
-	}
-	public void actionPerformed(ActionEvent e){
-		if(e.getSource().equals(diagRegister)){
-			try {
-				new DiagRegister();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
 	}
 	
 	public static void main(String[] args) {

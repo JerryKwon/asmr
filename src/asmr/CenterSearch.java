@@ -151,7 +151,7 @@ public class CenterSearch extends JFrame{
 	}
 
 //  리스너 작업 종료로 메인 메서드 주석처리하였습니다.
-	public static void main(String[] args) {
-		//new CenterSearch();
-	}
+//	public static void main(String[] args) {
+//		new CenterSearch();
+//	}
 }

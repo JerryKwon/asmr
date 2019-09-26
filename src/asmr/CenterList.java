@@ -6,15 +6,13 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -22,7 +20,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class CenterList extends JPanel {
+public class CenterList extends JPanel{
 	
 	private JButton centerRegist, cageRegist, searchManager, save;
 	private JLabel vCenterList,vCageList,vCenterInfo,vCenterNum,vEstDate,vCenterName,vPhoneNum,vArea,vOperTime,vOperTimeDash,vCenterManager,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount;
@@ -54,7 +52,7 @@ public class CenterList extends JPanel {
 	private Color white = new Color(255,255,255);
 	
 //  리스너들
-	CenterListButtonListener centerListButtonListener;
+//	CenterListButtonListener centerListButtonListener;
 	CenterListMouseListener centerListMouseListener;
 
 	
@@ -63,7 +61,7 @@ public class CenterList extends JPanel {
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
 		
-		centerListButtonListener = new CenterListButtonListener();
+//		centerListButtonListener = new CenterListButtonListener();
 		centerListMouseListener = new CenterListMouseListener();
 
 		
@@ -139,22 +137,21 @@ public class CenterList extends JPanel {
 		centerRegist = new JButton("등록");
 		centerRegist.setBackground(blue);
 		centerRegist.setForeground(white);
-		centerRegist.addActionListener(centerListButtonListener);
+//		centerRegist.addActionListener(centerListButtonListener);
 		
 		cageRegist = new JButton("등록");
 		cageRegist.setBackground(blue);
 		cageRegist.setForeground(white);
-		cageRegist.addActionListener(centerListButtonListener);
+//		cageRegist.addActionListener(centerListButtonListener);
 		
 		searchManager = new JButton("검색");
 		searchManager.setBackground(blue);
 		searchManager.setForeground(white);
-		searchManager.addActionListener(centerListButtonListener);
 		
 		save = new JButton("저장");
 		save.setBackground(blue);
 		save.setForeground(white);
-		save.addActionListener(centerListButtonListener);
+//		save.addActionListener(centerListButtonListener);
 		
 		
 		CenterListView();
@@ -280,34 +277,26 @@ public class CenterList extends JPanel {
 		}
 	}
 	
-	class CenterListButtonListener implements ActionListener{
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			if(e.getSource().equals(centerRegist)) {
-				try {
-					new NewCenterRegistration();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-			
-			if(e.getSource().equals(cageRegist)) {
-				new CageRegister();
-		}
-			
-			if(e.getSource().equals(save)) {
-				System.out.println("저장등록버튼 테스트");
-			}
-			if(e.getSource().equals(searchManager)) {
-				new CenterManagerSearch();
-			}
-		}
-		
-	}
-	
+//	class CenterListButtonListener implements ActionListener{
+//
+//		@Override
+//		public void actionPerformed(ActionEvent e) {
+//			// TODO Auto-generated method stub
+//			if(e.getSource().equals(centerRegist)) {
+//				System.out.println("센터등록버튼 테스트");
+//			}
+//			
+//			if(e.getSource().equals(cageRegist)) {
+//				System.out.println("케이지등록버튼 테스트");
+//			}
+//			
+//			if(e.getSource().equals(save)) {
+//				System.out.println("저장등록버튼 테스트");
+//			}
+//		}
+//		
+//	}
+//	
 //  센터목록테이블 클릭시 발생하는 리스너
 	class CenterListMouseListener extends MouseAdapter{
 
@@ -326,7 +315,7 @@ public class CenterList extends JPanel {
 
 	
 	public static void main(String[] args) {
-		//new CenterList();
+		new CenterList();
 	}
 }
 
