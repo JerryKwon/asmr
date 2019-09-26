@@ -53,6 +53,7 @@ public class RscuRegisPopup extends JFrame {
 		btnSearch.setBackground(blue);
 		btnSearch.setForeground(white);
 		
+		
 		confirm = new JButton("»Æ¿Œ");
 		confirm.setBackground(blue);
 		confirm.setForeground(white);

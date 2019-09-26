@@ -129,7 +129,7 @@ public class UserRegister extends JPanel implements ActionListener {
 	}
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(bAddrSearch)) {
-		//	new AddressSearch();
+		new AddressSearchPop();
 		}
 	}
 	public static void main(String[] args) {

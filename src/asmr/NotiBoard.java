@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -14,7 +16,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class NotiBoard extends JPanel {
+public class NotiBoard extends JPanel implements ActionListener {
 	// 페이징 미구현, 페이징 번호 없음!
 	private JLabel vNoti;
 	
@@ -48,6 +50,7 @@ public class NotiBoard extends JPanel {
 		scrollPane.setPreferredSize(new Dimension(800,100));
 		
 		regis = new JButton("등록");
+		regis.addActionListener(this);
 		
 		cbSearch = new JComboBox<String>(searchDiv);
 		xSearch = new JTextField(20);
@@ -102,7 +105,11 @@ public class NotiBoard extends JPanel {
 	   add(c);			
 				
 	   }
-
+	public void actionPerformed(ActionEvent e){
+		if(e.getSource().equals(regis)){
+			new NotiWrtUpt();
+		}
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//new NotiBoard();

@@ -6,12 +6,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -19,7 +19,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class EmpList extends JPanel {
+public class EmpList extends JPanel implements ActionListener {
 	private JLabel vEmpList,vEmpNameSearch,vEmpInfo,vEmpNo,vBelongCenter,vEmpType,vWorkType,vEmpName,vBirthDate,vPhoneNum;
 	private JTextField xEmpNameSearch,xEmpNo,xBelongCenter,xEmpName,xBirthDate,xPhoneNum;
 	private JButton empSearch,centerSearch, modify, cancel, resign;
@@ -73,6 +73,7 @@ public class EmpList extends JPanel {
 		centerSearch = new JButton("검색");
 		centerSearch.setBackground(blue);
 		centerSearch.setForeground(white);
+		centerSearch.addActionListener(this);
 		
 		vEmpType = new JLabel("직원구분");
 		cbEmptype = new JComboBox<String>(empTypeDiv);
@@ -197,9 +198,14 @@ public class EmpList extends JPanel {
 			}
 		}
 
-	}	
+	}
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource().equals(centerSearch)) {
+			new CenterSearch();
+		}
+	}
 	public static void main(String[] args) {
-		new EmpList();
+	//	new EmpList();
 	}
 	
 }

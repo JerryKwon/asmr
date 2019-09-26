@@ -30,7 +30,7 @@ public class MainFrame extends JFrame {
 	
 	public MainFrame() {
 		
-		LoginState = 1;
+		LoginState = 0;
 		setLayout(null);
 		
 		MenuActionListener listener = new MenuActionListener();

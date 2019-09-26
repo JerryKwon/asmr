@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -19,7 +21,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -29,7 +30,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 
-public class ProtAniList extends JPanel {
+public class ProtAniList extends JPanel implements ActionListener {
 	private JLabel vProtAniRegister, vProtAniInfo, vAbanAniNo, vAbanAniType, vRescueNo, vAbanAniName, vAge, vParAniName, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vRegisDate, vDescription, vDscvDate, vCage, vDscvPlace;
 	private JTextField xAbanAniNo, xAbanAniType, xRescueNo, xAbanAniName, xAge, xParAniName, xAniType ,xKind, xColor, xRegisDate, xDscvDate, xDscvPlace;
 	private JComboBox<String> cbSex, cbNeutWhet, cbAniSize, cbCage;
@@ -161,6 +162,7 @@ public class ProtAniList extends JPanel {
 		pictureManage = new JButton("사진관리");
 		pictureManage.setBackground(blue);
 		pictureManage.setForeground(white);
+		pictureManage.addActionListener(this);
 		
 		File input = new File("images/dog_400_400.jpg");
 		BufferedImage image = ImageIO.read(input);
@@ -320,7 +322,16 @@ public class ProtAniList extends JPanel {
 		}
 		
 	}
-	
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource().equals(pictureManage)){
+			try {
+				new PictureManage();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
 	public static void main(String[] args) throws IOException {
 		new ProtAniList();
 	}

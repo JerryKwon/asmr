@@ -24,7 +24,7 @@ public class NotiWrtUpt extends JFrame {
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
 	
-	private NotiWrtUpt() {
+	public NotiWrtUpt() {
 		
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();

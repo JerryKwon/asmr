@@ -22,7 +22,7 @@ public class InqRegis extends JFrame {
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
 	
-	private InqRegis() {
+	public InqRegis() {
 		
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
