@@ -67,7 +67,7 @@ public class AdopReq extends JFrame {
 		req = new JButton("신청");
 		cancel = new JButton("취소");
 		
-		buttonIcon = ImageIO.read(new File("./img/process.png"));
+		buttonIcon = ImageIO.read(new File("./images/process.png"));
 		imageButton = new JButton(new ImageIcon(buttonIcon));
 		imageButton.setBorderPainted(false);
 		imageButton.setContentAreaFilled(false);

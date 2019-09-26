@@ -38,7 +38,7 @@ public class VisitRegisPopup extends JFrame {
 		
 		vVisitDate = new JLabel("방문일자");
 		xVisitDate = new JTextField(20);
-		buttonIcon = ImageIO.read(new File("./img/cal1.png"));
+		buttonIcon = ImageIO.read(new File("./images/cal1.png"));
 		imageButton = new JButton(new ImageIcon(buttonIcon));
 		imageButton.setBorderPainted(false);
 		imageButton.setContentAreaFilled(false);

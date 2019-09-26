@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,26 +15,29 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 
-public class RprtAssignment extends JPanel {
+public class RprtAssignment extends JFrame {
 	
 	private JLabel vRprtNo, vRprtDttm, vRprtName, vTelNo, vRprtTp, vWrtPrsnTp, vAnmlKinds,
 	vAnmlSize, vExpln, vDscvDttm, vDscvLoc, vRprtList, vCageList, vRprtInfo;
 	
-	private JTextField xRprtNo, xRprtDttm, xRprtName, xTelNo, xExpln, xDscvDttm, xDscvLoc;
+	private JTextField xRprtNo, xRprtDttm, xRprtName, xTelNo, xDscvDttm, xDscvLoc;
+	
+	private JTextArea xExpln;
 	
 	private JComboBox<String> cbRprtTp, cbWrtPrsnTp, cbAnmlKinds, cbAnmlSize;
 	
 	private JTable eRprtList, eCageList;
 	
-	private JScrollPane scrollpane1, scrollpane2;
+	private JScrollPane scrollpane1, scrollpane2, rprtContentScroll;;
 	
 	private String[] rprtDiv = {"발견", "인계"};
 	private String[] wrtPrsnDiv = {"직원","사용자"};
@@ -48,6 +53,8 @@ public class RprtAssignment extends JPanel {
 	
 	private Button btn;
 	
+	RprtAniListMouseListener rprtAniListMouseListener;
+	
 	private final String[] col1 = {"신고일시","동물종류","동물크기","설명","배정센터명"};
 	private final String[] col2 = {"센터명","주소","여유케이지(대)","여유케이지(중)","여유케이지(소)"};
 	
@@ -60,8 +67,11 @@ public class RprtAssignment extends JPanel {
 		
 		// eRprtList, eCageList
 		
+		rprtAniListMouseListener = new RprtAniListMouseListener();
+		
 		vRprtList = new JLabel("신고목록");
 		eRprtList = new JTable(model1);
+		eRprtList.addMouseListener(rprtAniListMouseListener);
 		scrollpane1 = new JScrollPane(eRprtList);
 		scrollpane1.setPreferredSize(new Dimension(300,100));
 		
@@ -74,36 +84,49 @@ public class RprtAssignment extends JPanel {
 		
 		vRprtNo = new JLabel("신고번호");
 		xRprtNo = new JTextField(20);
+		xRprtNo.setEditable(false);
 		
 		vRprtDttm = new JLabel("신고일시");
 		xRprtDttm = new JTextField(20);
+		xRprtDttm.setEditable(false);
 		
 		vRprtName = new JLabel("신고자명");
 		xRprtName = new JTextField(20);
+		xRprtName.setEditable(false);
 		
 		vTelNo = new JLabel("연락처");
 		xTelNo = new JTextField(20);
+		xTelNo.setEditable(false);
 		
 		vRprtTp = new JLabel("신고구분");
 		cbRprtTp = new JComboBox<String>(rprtDiv);
+		cbRprtTp.setEnabled(false);
 		
 		vWrtPrsnTp = new JLabel("작성자구분");
 		cbWrtPrsnTp = new JComboBox<String>(wrtPrsnDiv);
+		cbWrtPrsnTp.setEnabled(false);
 		
 		vAnmlKinds = new JLabel("동물종류");
 		cbAnmlKinds = new JComboBox<String>(anmlDiv);
+		cbAnmlKinds.setEnabled(false);
 		
 		vAnmlSize = new JLabel("동물크기");
 		cbAnmlSize = new JComboBox<String>(anmlSizeDiv);
+		cbAnmlSize.setEnabled(false);
 		
 		vExpln = new JLabel("설명");
-		xExpln = new JTextField(20);
+		xExpln = new JTextArea(4,75);
+		xExpln.setEditable(false);
+		rprtContentScroll = new JScrollPane(xExpln);
+		rprtContentScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
 		vDscvDttm = new JLabel("발견일시");
 		xDscvDttm = new JTextField(20);
+		xDscvDttm.setEditable(false);
 		
 		vDscvLoc = new JLabel("발견장소");
 		xDscvLoc = new JTextField(20);
+		xDscvLoc.setEditable(false);
 		
 		buttonIcon = ImageIO.read(new File("./images/cat1.png"));
 		Imagebutton = new JButton(new ImageIcon(buttonIcon));
@@ -116,12 +139,9 @@ public class RprtAssignment extends JPanel {
 		RprtAssignmentView();
 	}
 	
-	//private void setBorder(Border createEmptyBorder) {
-		// TODO Auto-generated method stub
-		
-	//}
-
 	private void RprtAssignmentView() {
+		
+		setTitle("신고배정_본부센터");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;
@@ -162,7 +182,7 @@ public class RprtAssignment extends JPanel {
 		gridbagAdd(cbAnmlSize, 6, 10, 1, 1);
 		
 		gridbagAdd(vExpln, 0,11,1,1);
-		gridbagAdd(xExpln, 2,11,1,1);
+		gridbagAdd(xExpln, 2,11,6,1);
 
 		gridbagAdd(vDscvDttm, 0, 12, 1, 1);
 		gridbagAdd(xDscvDttm, 2, 12, 1, 1);
@@ -174,6 +194,25 @@ public class RprtAssignment extends JPanel {
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
+		pack();
+		setResizable(false);
+		setVisible(true);
+		
+		
+		
+		
+	}
+	
+	class RprtAniListMouseListener extends MouseAdapter{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			super.mouseClicked(e);
+			if(e.getButton()==1) {
+				
+			}
+		}
 		
 	}
 

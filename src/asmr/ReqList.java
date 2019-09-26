@@ -12,14 +12,14 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class ReqList extends JPanel {
+public class ReqList extends JFrame {
 	
 	private JLabel vReqList, vAdopEva, vAnmlInfo,
 	vAbanName, vAnmlKinds, vKind, vSex, vAge,
@@ -115,7 +115,7 @@ public class ReqList extends JPanel {
 	}
 	
 	private void ReqListView() {
-		//setTitle("脚没格废");
+		setTitle("脚没格废");
 		
 		gridbagConstraints.anchor = GridBagConstraints.WEST;
 		gridbagConstraints.ipadx = 7;
@@ -169,6 +169,10 @@ public class ReqList extends JPanel {
 		
 		gridbagAdd(regis, 3, 14, 1, 1);
 		gridbagAdd(cancel, 4, 14, 1, 1);
+		
+		pack();
+		setResizable(false);
+		setVisible(true);
 			
 	}
 	

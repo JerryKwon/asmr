@@ -1,6 +1,6 @@
 package asmr;
 
-import java.awt.Button;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -21,16 +21,18 @@ public class RscuRegisPopup extends JFrame {
 	
 	private JTextField xRscuDttm, xRscuLoc, xRepRscuCrewName;
 	
-	private JButton confirm, cancel, imageButton;
+	private JButton confirm, cancel, imageButton, btnSearch;
 	
 	private BufferedImage buttonIcon;
 	
-	private Button btnSearch;
 	
 	GridBagLayout gridbagLayout;
 	GridBagConstraints gridbagConstraints;
 	
-	public RscuRegisPopup() throws IOException {
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	
+	public RscuRegisPopup() throws IOException  {
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
 		
@@ -38,19 +40,25 @@ public class RscuRegisPopup extends JFrame {
 		
 		vRscuDttm = new JLabel("구조일시");
 		xRscuDttm = new JTextField(20);
+		xRscuDttm.setEditable(false);
 		
 		vRscuLoc = new JLabel("구조장소");
 		xRscuLoc = new JTextField(20);
 		
 		vRepRscuCrewName = new JLabel("대표구조대원명");
 		xRepRscuCrewName = new JTextField(20);
+		xRepRscuCrewName.setEditable(false);
 		
-		btnSearch = new Button("검색");
+		btnSearch = new JButton("검색");
+		btnSearch.setBackground(blue);
+		btnSearch.setForeground(white);
 		
 		confirm = new JButton("확인");
+		confirm.setBackground(blue);
+		confirm.setForeground(white);
 		cancel = new JButton("취소");
 		
-		buttonIcon = ImageIO.read(new File("./img/cal1.png"));
+		buttonIcon = ImageIO.read(new File("./images/cal1.png"));
 		imageButton = new JButton(new ImageIcon(buttonIcon));
 		imageButton.setBorderPainted(false);
 		imageButton.setContentAreaFilled(false);
@@ -74,11 +82,11 @@ public class RscuRegisPopup extends JFrame {
 		gridbagAdd(vRscuRegis, 0, 0, 1, 1);
 		
 		gridbagAdd(vRscuDttm, 0, 1, 1, 1);
-		gridbagAdd(xRscuDttm, 2, 1, 1, 1);
-		gridbagAdd(imageButton, 4, 1, 1, 1);
+		gridbagAdd(xRscuDttm, 2, 1, 2, 1);
+		gridbagAdd(imageButton, 5, 1, 1, 1);
 		
 		gridbagAdd(vRscuLoc, 0, 2, 1, 1);
-		gridbagAdd(xRscuLoc, 2, 2, 1, 1);
+		gridbagAdd(xRscuLoc, 2, 2, 2, 1);
 		
 		gridbagAdd(vRepRscuCrewName, 0, 4, 1, 1);
 		gridbagAdd(xRepRscuCrewName, 2, 4, 1, 1);
@@ -109,7 +117,7 @@ public class RscuRegisPopup extends JFrame {
 				
 	   }			
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException  {
 		// TODO Auto-generated method stub
 		
 		new RscuRegisPopup();

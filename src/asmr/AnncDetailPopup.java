@@ -73,7 +73,7 @@ public class AnncDetailPopup extends JFrame {
 		confirm = new JButton("입양신청");
 		cancel = new JButton("취소");
 		
-		buttonIcon = ImageIO.read(new File("./img/cat1.png"));
+		buttonIcon = ImageIO.read(new File("./images/cat1.png"));
 		imageButton = new JButton(new ImageIcon(buttonIcon));
 		imageButton.setBorderPainted(false);
 		imageButton.setContentAreaFilled(false);

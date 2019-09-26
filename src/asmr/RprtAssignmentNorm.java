@@ -1,10 +1,13 @@
 package asmr;
-
-import java.awt.Button;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,15 +16,16 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
-public class RprtAssignmentNorm extends JPanel {
+import asmr.RprtAssignment.RprtAniListMouseListener;
+
+public class RprtAssignmentNorm extends JFrame {
 	
 	private JLabel vRprtNo, vRprtDttm, vRprtName, vTelNo, vRprtTp, vWrtPrsnTp, vAnmlKinds,
 	vAnmlSize, vExpln, vDscvDttm, vDscvLoc, vApprovalWaitList, vApprovalCompleteList, vRprtInfo;
@@ -41,12 +45,12 @@ public class RprtAssignmentNorm extends JPanel {
 	
 	private BufferedImage buttonIcon;
 	
-	private JButton Imagebutton;
+	private JButton Imagebutton, regis;
 	
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
 	
-	private Button btn;
+	ApprovalWaitListMouseListener approvalWaitListMouseListener;
 	
 	private final String[] col1 = {"신고일시","동물종류","동물크기","설명","배정결과"};
 	private final String[] col2 = {"신고일시","동물종류","동물크기","설명"};
@@ -54,14 +58,24 @@ public class RprtAssignmentNorm extends JPanel {
 	private DefaultTableModel model1 = new DefaultTableModel(col1,0);
 	private DefaultTableModel model2 = new DefaultTableModel(col2,0);
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	
+	RprtRegisterButtonListener rprtRegisterButtonListener;
+	
 	public RprtAssignmentNorm() throws IOException {
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
+		
+		rprtRegisterButtonListener = new RprtRegisterButtonListener();
+		
+		approvalWaitListMouseListener = new ApprovalWaitListMouseListener();
 		
 		// eRprtList, eCageList
 		
 		vApprovalWaitList = new JLabel("승인대기목록");
 		eApprovalWaitList = new JTable(model1);
+		eApprovalWaitList.addMouseListener(approvalWaitListMouseListener);
 		scrollpane1 = new JScrollPane(eApprovalWaitList);
 		scrollpane1.setPreferredSize(new Dimension(300,100));
 		
@@ -74,56 +88,65 @@ public class RprtAssignmentNorm extends JPanel {
 		
 		vRprtNo = new JLabel("신고번호");
 		xRprtNo = new JTextField(20);
+		xRprtNo.setEditable(false);
 		
 		vRprtDttm = new JLabel("신고일시");
 		xRprtDttm = new JTextField(20);
+		xRprtDttm.setEditable(false);
 		
 		vRprtName = new JLabel("신고자명");
 		xRprtName = new JTextField(20);
+		xRprtName.setEditable(false);
 		
 		vTelNo = new JLabel("연락처");
 		xTelNo = new JTextField(20);
+		xTelNo.setEditable(false);
 		
 		vRprtTp = new JLabel("신고구분");
 		cbRprtTp = new JComboBox<String>(rprtDiv);
+		cbRprtTp.setEnabled(false);
 		
 		vWrtPrsnTp = new JLabel("작성자구분");
 		cbWrtPrsnTp = new JComboBox<String>(wrtPrsnDiv);
+		cbWrtPrsnTp.setEnabled(false);
 		
 		vAnmlKinds = new JLabel("동물종류");
 		cbAnmlKinds = new JComboBox<String>(anmlDiv);
+		cbAnmlKinds.setEnabled(false);
 		
 		vAnmlSize = new JLabel("동물크기");
 		cbAnmlSize = new JComboBox<String>(anmlSizeDiv);
+		cbAnmlSize.setEnabled(false);
 		
 		vExpln = new JLabel("설명");
 		xExpln = new JTextField(20);
+		xExpln.setEditable(false);
 		
 		vDscvDttm = new JLabel("발견일시");
 		xDscvDttm = new JTextField(20);
+		xDscvDttm.setEditable(false);
 		
 		vDscvLoc = new JLabel("발견장소");
 		xDscvLoc = new JTextField(20);
+		xDscvLoc.setEditable(false);
 		
-		buttonIcon = ImageIO.read(new File("./images/cat1.png"));
+		buttonIcon = ImageIO.read(new File("./img/cat1.png"));
 		Imagebutton = new JButton(new ImageIcon(buttonIcon));
 		Imagebutton.setBorderPainted(false);
 		Imagebutton.setContentAreaFilled(false);
 		Imagebutton.setFocusPainted(false);
 		
-		btn = new Button();
+		regis = new JButton("등록");
+		regis.setBackground(blue);
+		regis.setForeground(white);
+		regis.addActionListener(rprtRegisterButtonListener);
 		
 		RprtAssignmentNormView();
 	}
 	
-	//private void setBorder(Border createEmptyBorder) {
-		// TODO Auto-generated method stub
-		
-	//}
-
 	private void RprtAssignmentNormView() {
 		
-		//setTitle("신고배정_일반센터");	
+		setTitle("신고배정_일반센터");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;
@@ -135,6 +158,7 @@ public class RprtAssignmentNorm extends JPanel {
 
 		gridbagAdd(vApprovalWaitList, 0, 0, 1, 1);
 		gridbagAdd(vApprovalCompleteList, 4, 0, 1, 1);
+		gridbagAdd(regis, 8,0,1,1);
 		
 		gridbagAdd(scrollpane1, 0, 1, 4, 1);
 		gridbagAdd(scrollpane2, 4, 1, 4, 1);
@@ -176,7 +200,45 @@ public class RprtAssignmentNorm extends JPanel {
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
+		pack();
+		setResizable(false);
+		setVisible(true);
+		
 	}
+	
+	class RprtRegisterButtonListener implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(regis)) {
+				try {
+					new RscuRegisPopup();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}	
+			}
+		}
+		
+	}
+	
+	class ApprovalWaitListMouseListener extends MouseAdapter{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			super.mouseClicked(e);
+			if(e.getButton()==1) {
+				
+			}
+		}
+		
+	}
+	
+    
+
+
 
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
 		
@@ -193,6 +255,7 @@ public class RprtAssignmentNorm extends JPanel {
 	   add(c);			
 				
 	   }
+	
 
 	public static void main(String[] args) throws IOException {
 		new RprtAssignmentNorm();
