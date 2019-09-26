@@ -23,7 +23,7 @@ public class NotiPost extends JFrame {
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
 	
-	public NotiPost() {
+	private NotiPost() {
 		
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
@@ -52,7 +52,7 @@ public class NotiPost extends JFrame {
 	
 	private void NotiPostView() {
 		
-		setTitle("공지사항 작성");	
+		setTitle("신고배정_일반센터");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;

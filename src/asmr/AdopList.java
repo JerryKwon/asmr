@@ -4,8 +4,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +19,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-public class AdopList extends JPanel implements ActionListener {
+public class AdopList extends JPanel {
 	
 	private JLabel vAdopList, vAdopDate, vWave,
 	vVisitList;
@@ -83,14 +81,13 @@ public class AdopList extends JPanel implements ActionListener {
 		
 		vVisitList = new JLabel("방문목록");
 		regis1 = new JButton("등록");
-		regis1.addActionListener(this);
 		
 		eVisitList = new JTable(model2);
 		scrollPane2 = new JScrollPane(eVisitList);
 		scrollPane2.setPreferredSize(new Dimension(1200,100));
 		
-		//regis2 = new JButton("등록");
-		//cancel = new JButton("취소");
+		regis2 = new JButton("등록");
+		cancel = new JButton("취소");
 		
 		AdopListView();
 		
@@ -127,8 +124,8 @@ public class AdopList extends JPanel implements ActionListener {
 		
 		gridbagAdd(scrollPane2, 0, 4, 15, 1);
 		
-		//gridbagAdd(regis2, 5, 5, 1, 1);
-		//gridbagAdd(cancel, 6, 5, 1, 1);
+		gridbagAdd(regis2, 5, 5, 1, 1);
+		gridbagAdd(cancel, 6, 5, 1, 1);
 		
 		//pack();
 		//setResizable(false);
@@ -150,16 +147,7 @@ public class AdopList extends JPanel implements ActionListener {
 	   add(c);			
 				
 	   }		
-	public void actionPerformed(ActionEvent e){
-		if(e.getSource().equals(regis1)){
-			try {
-				new VisitRegisPopup();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
-	}
+	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		//new AdopList();

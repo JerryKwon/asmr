@@ -128,7 +128,7 @@ public class RprtAssignmentNorm extends JPanel {
 		xDscvLoc = new JTextField(20);
 		xDscvLoc.setEditable(false);
 		
-		buttonIcon = ImageIO.read(new File("./images/cat1.png"));
+		buttonIcon = ImageIO.read(new File("./img/cat1.png"));
 		Imagebutton = new JButton(new ImageIcon(buttonIcon));
 		Imagebutton.setBorderPainted(false);
 		Imagebutton.setContentAreaFilled(false);

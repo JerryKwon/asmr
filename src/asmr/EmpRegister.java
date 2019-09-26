@@ -5,8 +5,6 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -16,11 +14,12 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class EmpRegister extends JPanel implements ActionListener{
+public class EmpRegister extends JPanel{
 	private JLabel vEmpRegist,vEmpName,vBelongCenter,vEmpType,vWorkType,vBirthDate,vGender,vAddress,vPhoneNum;
 	private JTextField xEmpName,xBelongCenter,xBirthDate,xAddress,xPhoneNum;
 	private JButton centerSearch,addressSearch, imageButton, register, cancel;
@@ -54,7 +53,6 @@ public class EmpRegister extends JPanel implements ActionListener{
 		centerSearch = new JButton("검색");
 		centerSearch.setBackground(blue);
 		centerSearch.setForeground(white);
-		centerSearch.addActionListener(this);
 		
 		vEmpType = new JLabel("직원구분");
 		cbEmpType = new JComboBox<String>(empTypeDiv);
@@ -164,11 +162,7 @@ public class EmpRegister extends JPanel implements ActionListener{
 			add(c2);
 		}
 	}
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource().equals(centerSearch)) {
-			new CenterSearch();
-		}
-	}
+	
 	
 	public static void main(String[] args) throws IOException {
 		new EmpRegister();
