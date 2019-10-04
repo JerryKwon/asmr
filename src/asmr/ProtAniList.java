@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -19,6 +20,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -57,6 +59,7 @@ public class ProtAniList extends JPanel {
 	private Color white = new Color(255,255,255);
 	private Color red = new Color(217,0,27);
 	
+	
 	ProtAniListMouseListener protAniListMouseListener;
 	
 	GridBagLayout gridBagLayout;
@@ -70,6 +73,7 @@ public class ProtAniList extends JPanel {
 		protAniListMouseListener = new ProtAniListMouseListener();
 		
 		vProtAniRegister = new JLabel("보호동물목록");
+		vProtAniRegister.setFont(new Font("나눔고딕", Font.BOLD, 24));
 		
 //		register = new JButton("등록");
 //		register.setBackground(blue);
@@ -78,40 +82,41 @@ public class ProtAniList extends JPanel {
 		eProtAniList = new JTable(model1);
 		eProtAniList.addMouseListener(protAniListMouseListener);
 		aniListScroll = new JScrollPane(eProtAniList);
-		aniListScroll.setPreferredSize(new Dimension(700,100));
+		aniListScroll.setPreferredSize(new Dimension(1400,200));
 		
 		vProtAniInfo = new JLabel("보호동물정보");
+		vProtAniInfo.setFont(new Font("나눔고딕", Font.BOLD, 20));
 		
 		vAbanAniNo = new JLabel("유기동물번호");
-		xAbanAniNo = new JTextField(10);
+		xAbanAniNo = new JTextField(12);
 		xAbanAniNo.setEnabled(false);
 		
 		vAbanAniType = new JLabel("유기동물구분");
-		xAbanAniType = new JTextField(10);
+		xAbanAniType = new JTextField(12);
 		xAbanAniType.setEnabled(false);
 		
 		vRescueNo = new JLabel("구조번호");
-		xRescueNo = new JTextField(10);
+		xRescueNo = new JTextField(12);
 		xRescueNo.setEnabled(false);
 		
 		vAbanAniName = new JLabel("유기동물명");
-		xAbanAniName = new JTextField(10);
+		xAbanAniName = new JTextField(12);
 		xAbanAniName.setEnabled(false);
 		
 		vAge = new JLabel("나이(개월)");
-		xAge = new JTextField(10);
+		xAge = new JTextField(12);
 		xAge.setEnabled(false);
 		
 		vParAniName = new JLabel("어미유기동물명");
-		xParAniName = new JTextField(10);
+		xParAniName = new JTextField(12);
 		xParAniName.setEnabled(false);
 		
 		vAniType = new JLabel("동물종류");
-		xAniType = new JTextField(10);
+		xAniType = new JTextField(12);
 		xAniType.setEnabled(false);
 		
 		vKind = new JLabel("품종");
-		xKind = new JTextField(10);
+		xKind = new JTextField(12);
 		xKind.setEnabled(false);
 		
 		vSex = new JLabel("성별");
@@ -121,14 +126,14 @@ public class ProtAniList extends JPanel {
 		cbNeutWhet = new JComboBox<String>(cbNeutWhetDiv);
 		
 		vColor = new JLabel("색상");
-		xColor = new JTextField(10);
+		xColor = new JTextField(12);
 		xColor.setEnabled(false);
 		
 		vAniSize = new JLabel("동물크기");
 		cbAniSize = new JComboBox<String>(aniSizeDiv);
 		
 		vRegisDate = new JLabel("등록일자");
-		xRegisDate = new JTextField(10);
+		xRegisDate = new JTextField(12);
 		xRegisDate.setEnabled(false);
 		
 		vDescription = new JLabel("설명");
@@ -138,14 +143,14 @@ public class ProtAniList extends JPanel {
 		descriptionScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
 		vDscvDate = new JLabel("발견일시");
-		xDscvDate = new JTextField(10);
+		xDscvDate = new JTextField(12);
 		xDscvDate.setEnabled(false);
 		
 		vCage = new JLabel("케이지");
 		cbCage = new JComboBox<String>(cageDiv);
 		
 		vDscvPlace = new JLabel("발견장소");
-		xDscvPlace = new JTextField(10);
+		xDscvPlace = new JTextField(12);
 		xDscvPlace.setEnabled(false);
 		
 		modify = new JButton("수정");
@@ -172,6 +177,13 @@ public class ProtAniList extends JPanel {
 		previous = new JButton("<<");
 		next = new JButton(">>");
 		
+		JComponent[] fontComps1 = {vAbanAniNo, vAbanAniType, vRescueNo, vAbanAniName, vAge, vParAniName, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vRegisDate, vDescription, vDscvDate, vCage, vDscvPlace};
+		ChangeFont(fontComps1, new Font("나눔고딕", Font.PLAIN, 16));
+
+		JComponent[] fontComps2 = {modify,cancel,returning,pictureManage};
+		ChangeFont(fontComps2, new Font("나눔고딕", Font.BOLD, 16));
+
+		
 		ProtAniListView();
 	}
 	
@@ -192,11 +204,13 @@ public class ProtAniList extends JPanel {
 //		registerPanel.setBorder(BorderFactory.createEmptyBorder(0,135,0,0));
 //		gridbagAdd(registerPanel, 5, 0, 1, 1);
 //		
-		gridbagAdd(aniListScroll, 0, 1, 10, 1);
+		JPanel aniListPanel = new JPanel();
+		aniListPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
+		aniListPanel.add(aniListScroll);
+		aniListPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,0));
+		gridbagAdd(aniListPanel, 0, 1, 20, 1);
 		
-		Component[] cops = {modify, cancel, returning};
-		CombinePanel buttonPanel = new CombinePanel(cops,true);
-		
+		vProtAniInfo.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
 		gridbagAdd(vProtAniInfo, 0, 2, 1, 1);
 		
 		gridbagAdd(vAbanAniNo, 0, 3, 1, 1);
@@ -257,15 +271,19 @@ public class ProtAniList extends JPanel {
 		gridbagAdd(vDscvPlace, 0, 11, 1, 1);
 		gridbagAdd(xDscvPlace, 1, 11, 1, 1);
 		
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,250,0,0));
+		Component[] cops1 = {modify, cancel, returning};
+		CombinePanel buttonPanel = new CombinePanel(cops1,15,0);
+		
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(20,600,0,0));
 		gridbagAdd(buttonPanel, 0, 12, 7, 1);
 		
 		JPanel bottomPanel = new JPanel();
+		bottomPanel.setLayout(new FlowLayout(FlowLayout.LEFT,20,10));
 		bottomPanel.add(previous);
 		bottomPanel.add(next);
-		bottomPanel.setBorder(BorderFactory.createEmptyBorder(0,40,0,0));
+		bottomPanel.setBorder(BorderFactory.createEmptyBorder(0,25,0,0));
 		gridbagAdd(bottomPanel, 5, 11 ,3, 1);
-			
+	
 	}
 	
 	private void gridbagAdd(Component c, int x, int y, int w , int h) {
@@ -283,14 +301,11 @@ public class ProtAniList extends JPanel {
 	//두개의 컴포넌트를 하나의 패널로 묶는 JPanel
 	class CombinePanel extends JPanel {
 		//컴포넌트 1, 컴포넌트 2, 패널 구성시 좌,우 margin 공간을 없애기 위한 Flag
-		public CombinePanel(Component[] cops, boolean isBorder) {
+		public CombinePanel(Component[] cops, int borderWidth, int borderHeight) {
 			//Margin이 필요하지 않을 때
-			if(!isBorder) {
-				setLayout(new FlowLayout(FlowLayout.LEFT,0,0));	
-			}
-			else {
-				setLayout(new FlowLayout(FlowLayout.LEFT,15,0));	
-			}
+			
+			setLayout(new FlowLayout(FlowLayout.LEFT,borderWidth,borderHeight));
+			
 			for (Component c: cops) {
 				add(c);
 			}
@@ -308,6 +323,12 @@ public class ProtAniList extends JPanel {
         return resized;
     }
 	
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
+    
 	class ProtAniListMouseListener extends MouseAdapter{
 
 		@Override
