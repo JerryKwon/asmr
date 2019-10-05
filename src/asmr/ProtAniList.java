@@ -35,7 +35,7 @@ public class ProtAniList extends JPanel {
 	private JLabel vProtAniRegister, vProtAniInfo, vAbanAniNo, vAbanAniType, vRescueNo, vAbanAniName, vAge, vParAniName, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vRegisDate, vDescription, vDscvDate, vCage, vDscvPlace;
 	private JTextField xAbanAniNo, xAbanAniType, xRescueNo, xAbanAniName, xAge, xParAniName, xAniType ,xKind, xColor, xRegisDate, xDscvDate, xDscvPlace;
 	private JComboBox<String> cbSex, cbNeutWhet, cbAniSize, cbCage;
-	private JButton modify, cancel, returning;
+	private JButton register,modify, cancel, returning;
 	private JTextArea xDescription;
 
 	private JTable eProtAniList;
@@ -75,9 +75,9 @@ public class ProtAniList extends JPanel {
 		vProtAniRegister = new JLabel("º¸È£µ¿¹°¸ñ·Ï");
 		vProtAniRegister.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		
-//		register = new JButton("µî·Ï");
-//		register.setBackground(blue);
-//		register.setForeground(white);
+		register = new JButton("µî·Ï");
+		register.setBackground(blue);
+		register.setForeground(white);
 		
 		eProtAniList = new JTable(model1);
 		eProtAniList.addMouseListener(protAniListMouseListener);
@@ -180,7 +180,7 @@ public class ProtAniList extends JPanel {
 		JComponent[] fontComps1 = {vAbanAniNo, vAbanAniType, vRescueNo, vAbanAniName, vAge, vParAniName, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vRegisDate, vDescription, vDscvDate, vCage, vDscvPlace};
 		ChangeFont(fontComps1, new Font("³ª´®°íµñ", Font.PLAIN, 16));
 
-		JComponent[] fontComps2 = {modify,cancel,returning,pictureManage};
+		JComponent[] fontComps2 = {register,modify,cancel,returning,pictureManage};
 		ChangeFont(fontComps2, new Font("³ª´®°íµñ", Font.BOLD, 16));
 
 		
@@ -198,17 +198,16 @@ public class ProtAniList extends JPanel {
 		
 		gridbagAdd(vProtAniRegister, 0, 0, 1, 1);
 		
-//		JPanel registerPanel = new JPanel();
-//		registerPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,3));
-//		registerPanel.add(register);
-//		registerPanel.setBorder(BorderFactory.createEmptyBorder(0,135,0,0));
-//		gridbagAdd(registerPanel, 5, 0, 1, 1);
-//		
+		JPanel registerPanel = new JPanel();
+		registerPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,0,0));
+		registerPanel.add(register);
+		gridbagAdd(registerPanel, 9, 0, 1, 1);
+		
 		JPanel aniListPanel = new JPanel();
 		aniListPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 		aniListPanel.add(aniListScroll);
 		aniListPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,0));
-		gridbagAdd(aniListPanel, 0, 1, 20, 1);
+		gridbagAdd(aniListPanel, 0, 1, 10, 1);
 		
 		vProtAniInfo.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
 		gridbagAdd(vProtAniInfo, 0, 2, 1, 1);
