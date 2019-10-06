@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -11,6 +12,7 @@ import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -50,6 +52,8 @@ public class EmpList extends JPanel {
 		gridBagConstraints = new GridBagConstraints();
 
 		vEmpList = new JLabel("직원목록");
+		vEmpList.setFont(new Font("나눔고딕", Font.BOLD, 24));
+		vEmpList.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
 		
 		cbSearchType = new JComboBox<String>(searchTypeDiv);
 		xEmpNameSearch = new JTextField(10);
@@ -59,9 +63,11 @@ public class EmpList extends JPanel {
 		
 		eEmpList = new JTable(model1);
 		scrollpane = new JScrollPane(eEmpList);
-		scrollpane.setPreferredSize(new Dimension(300,100));
+		scrollpane.setPreferredSize(new Dimension(600,100));
 		
 		vEmpInfo = new JLabel("직원정보");
+		vEmpInfo.setFont(new Font("나눔고딕", Font.BOLD, 20));
+		vEmpInfo.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 		
 		vEmpNo = new JLabel("직원번호");
 		xEmpNo = new JTextField(10);
@@ -102,6 +108,12 @@ public class EmpList extends JPanel {
 		resign.setBackground(red);
 		resign.setForeground(white);
 		 
+		JComponent[] vComps = {vEmpNo,vBelongCenter,vEmpType,vWorkType,vEmpName,vBirthDate,vPhoneNum};
+		ChangeFont(vComps, new Font("나눔고딕", Font.PLAIN, 16));
+		
+		JComponent[] bComps = {empSearch,centerSearch, modify, cancel, resign};
+		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 16));
+		
 		EmpListView();
 		
 	}
@@ -122,12 +134,15 @@ public class EmpList extends JPanel {
 		gridbagAdd(cbSearchType, 0, 1, 1, 1);
 		
 		Component[] cpts = {xEmpNameSearch,empSearch};
-		CombinePanel cp1 = new CombinePanel(cpts,true);
+		CombinePanel cp1 = new CombinePanel(cpts,5,0);
 		gridbagAdd(cp1, 1, 1, 1, 1);
 //		gridbagAdd(xEmpNameSearch, 1, 1, 1, 1);
 //		gridbagAdd(empSearch, 2, 1, 1, 1);
 		
-		gridbagAdd(scrollpane, 0, 2, 2, 1);
+		JPanel plainPanel = new JPanel();
+		plainPanel.add(scrollpane);
+		plainPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 0));
+		gridbagAdd(plainPanel, 0, 2, 6, 1);
 		
 		gridbagAdd(vEmpInfo, 0, 3, 1, 1);
 		
@@ -163,8 +178,8 @@ public class EmpList extends JPanel {
 		gridbagAdd(xPhoneNum, 3, 7, 1, 1);
 		
 		Component[] buttons = {modify,cancel,resign};
-		CombinePanel combineButtonPanel = new CombinePanel(buttons, true);
-		combineButtonPanel.setBorder(BorderFactory.createEmptyBorder(10,150,0,0));
+		CombinePanel combineButtonPanel = new CombinePanel(buttons, 15,0);
+		combineButtonPanel.setBorder(BorderFactory.createEmptyBorder(10,175,0,0));
 		gridbagAdd(combineButtonPanel, 0, 8, 5, 1);
 		
 	}
@@ -182,22 +197,25 @@ public class EmpList extends JPanel {
 	}
 	
 	//두개의 컴포넌트를 하나의 패널로 묶는 JPanel
-	class CombinePanel extends JPanel {
-		//컴포넌트 1, 컴포넌트 2, 패널 구성시 좌,우 margin 공간을 없애기 위한 Flag
-		public CombinePanel(Component[] cops, boolean isBorder) {
-			//Margin이 필요하지 않을 때
-			if(!isBorder) {
-				setLayout(new FlowLayout(FlowLayout.LEFT,0,0));	
-			}
-			else {
-				setLayout(new FlowLayout(FlowLayout.LEFT,15,0));	
-			}
-			for (Component c: cops) {
-				add(c);
+		class CombinePanel extends JPanel {
+			//컴포넌트 1, 컴포넌트 2, 패널 구성시 좌,우 margin 공간을 없애기 위한 Flag
+			public CombinePanel(Component[] cops, int borderWidth, int borderHeight) {
+				//Margin이 필요하지 않을 때
+				
+				setLayout(new FlowLayout(FlowLayout.LEFT,borderWidth,borderHeight));
+				
+				for (Component c: cops) {
+					add(c);
+				}
 			}
 		}
-
-	}	
+			
+	private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
+	
 	public static void main(String[] args) {
 		new EmpList();
 	}
