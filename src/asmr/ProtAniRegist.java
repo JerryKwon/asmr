@@ -4,14 +4,19 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -40,6 +45,7 @@ public class ProtAniRegist extends JPanel{
 	private Color white = new Color(255,255,255);
 	
 	ProtAniRegistItemListener protAniRegistItemListener;
+	ProtAniRegistButtonListener protAniRegistButtonListener;
 	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
@@ -50,8 +56,11 @@ public class ProtAniRegist extends JPanel{
 		gridBagConstraints = new GridBagConstraints();
 		
 		protAniRegistItemListener = new ProtAniRegistItemListener();
+		protAniRegistButtonListener = new ProtAniRegistButtonListener();
 		
 		vProtAniRegist = new JLabel("보호동물등록");
+		vProtAniRegist.setFont(new Font("나눔고딕", Font.BOLD, 20));
+		
 		
 		vAbanAniType = new JLabel("유기동물구분");
 		cbAbanAniType = new JComboBox<String>(abanAniTypeDiv);
@@ -63,6 +72,7 @@ public class ProtAniRegist extends JPanel{
 		searchRscu = new JButton("검색");
 		searchRscu.setBackground(blue);
 		searchRscu.setForeground(white);
+		searchRscu.addActionListener(protAniRegistButtonListener);
 		
 		vParAbanAniName = new JLabel("어미유기동물명");
 		xParAbanAniName = new JTextField(10);
@@ -70,6 +80,7 @@ public class ProtAniRegist extends JPanel{
 		searchPar = new JButton("검색");
 		searchPar.setBackground(blue);
 		searchPar.setForeground(white);
+		searchPar.addActionListener(protAniRegistButtonListener);
 		
 		vAbanAniName = new JLabel("유기동물명");
 		xAbanAniName = new JTextField(10);
@@ -105,6 +116,7 @@ public class ProtAniRegist extends JPanel{
 		pictureManage = new JButton("사진관리");
 		pictureManage.setBackground(blue);
 		pictureManage.setForeground(white);
+		pictureManage.addActionListener(protAniRegistButtonListener);
 		
 		vCage = new JLabel("케이지");
 		cbCage = new JComboBox<String>(cageDiv);
@@ -112,8 +124,16 @@ public class ProtAniRegist extends JPanel{
 		register = new JButton("등록");
 		register.setBackground(blue);
 		register.setForeground(white);
+		register.addActionListener(protAniRegistButtonListener);
 		
 		cancel = new JButton("취소");
+		cancel.addActionListener(protAniRegistButtonListener);
+		
+		JComponent[] vComps = {vAbanAniType, vRscuNo, vParAbanAniName, vAbanAniName, vAge, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vFeature, vPicture, vCage};
+		ChangeFont(vComps, new Font("나눔고딕", Font.PLAIN, 16));
+		
+		JComponent[] bComps = {searchRscu, searchPar, pictureManage, register, cancel};
+		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 16));
 		
 		activateRscu();
 		
@@ -244,6 +264,42 @@ public class ProtAniRegist extends JPanel{
 		
 	}
 	
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
+	
+    class ProtAniRegistButtonListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(searchRscu)) {
+				new RscuSearch();
+			}
+			else if(e.getSource().equals(searchPar)) {
+				new ProtAnmlSearchPopup();
+			}
+			else if(e.getSource().equals(pictureManage)) {
+				try {
+					new PictureManage();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			else if(e.getSource().equals(register)) {
+				
+			}
+			else if(e.getSource().equals(cancel)) {
+				//팝업으로 바꾸고 나서 활성화
+				//				dispose();
+			}
+		}
+    	
+    }
+    
 	public static void main(String[] args) {
 		new ProtAniRegist();
 	}
