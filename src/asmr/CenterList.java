@@ -4,14 +4,19 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,7 +27,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class CenterList extends JPanel{
 	
-	private JButton centerRegist, cageRegist, searchManager, save;
+	private JButton centerRegist, cageRegist, searchManager, modify, cancel;
 	private JLabel vCenterList,vCageList,vCenterInfo,vCenterNum,vEstDate,vCenterName,vPhoneNum,vArea,vOperTime,vOperTimeDash,vCenterManager,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount;
 	private JTextField xCenterNum,xEstDate,xCenterName,xPhoneNum,xArea,xCenterManager,xCageBig,xCageMid,xCageSmall;
 	private JComboBox<String> cbOperTimeOpen,cbOperTimeClose;
@@ -52,7 +57,7 @@ public class CenterList extends JPanel{
 	private Color white = new Color(255,255,255);
 	
 //  리스너들
-//	CenterListButtonListener centerListButtonListener;
+	CenterListButtonListener centerListButtonListener;
 	CenterListMouseListener centerListMouseListener;
 
 	
@@ -61,24 +66,43 @@ public class CenterList extends JPanel{
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
 		
-//		centerListButtonListener = new CenterListButtonListener();
+		centerListButtonListener = new CenterListButtonListener();
 		centerListMouseListener = new CenterListMouseListener();
 
 		
 		//센터목록, 케이지목록, 센터정보 텍스트
 		vCenterList = new JLabel("센터목록");
-		eCenterList = new JTable(model1);
+		vCenterList.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+//		eCenterList = new JTable(model1);
+		eCenterList = new JTable(model1) {
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
+		
 		eCenterList.addMouseListener(centerListMouseListener);
 		scrollpane1 = new JScrollPane(eCenterList);
-		scrollpane1.setPreferredSize(new Dimension(400,100));
+		scrollpane1.setPreferredSize(new Dimension(600,100));
 		
 		//케이지목록
 		vCageList = new JLabel("케이지목록");
-		eCageList = new JTable(model2);
+		vCageList.setBorder(BorderFactory.createEmptyBorder(0, 20, 10, 0));
+//		eCageList = new JTable(model2);
+		eCageList = new JTable(model2) {
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
+
 		scrollpane2 = new JScrollPane(eCageList);
 		scrollpane2.setPreferredSize(new Dimension(300,100));
 		
 		vCenterInfo = new JLabel("센터정보");
+		vCenterInfo.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		
 		//센터정보 아래 입력창 JLabel과 JTextField
 		vCenterNum = new JLabel("센터번호");
@@ -93,20 +117,25 @@ public class CenterList extends JPanel{
 		//센터명
 		vCenterName = new JLabel("센터명");
 		xCenterName = new JTextField(10);
+		xCenterName.setEnabled(false);
 		
 		//전화번호 하나의 문자열로 변경
 		vPhoneNum = new JLabel("전화번호");
 		xPhoneNum = new JTextField(10);
+		xPhoneNum.setEnabled(false);
 		
 		//면적
 		vArea = new JLabel("면적");
 		xArea = new JTextField(10);
+		xArea.setEnabled(false);
 		
 		//운영시간
 		vOperTime = new JLabel("운영시간");
 		vOperTimeDash = new JLabel("~");
 		cbOperTimeOpen = new JComboBox<String>(operTimeOpen);
+		cbOperTimeOpen.setEnabled(false);
 		cbOperTimeClose = new JComboBox<String>(operTimeClose);
+		cbOperTimeClose.setEnabled(false);
 		
 		//센터장 이름(직원명 - VARCHAR(20)) - 한글 1글자당 3byte 6.667글자
 		vCenterManager = new JLabel("센터장");
@@ -115,7 +144,7 @@ public class CenterList extends JPanel{
 		
 		//총 케이지수 라벨
 		vCageNum = new JLabel("총 케이지 수");
-		
+		vCageNum.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		//케이지
 		vCageBig = new JLabel("대형");
 		xCageBig = new JTextField(2);
@@ -137,22 +166,37 @@ public class CenterList extends JPanel{
 		centerRegist = new JButton("등록");
 		centerRegist.setBackground(blue);
 		centerRegist.setForeground(white);
-//		centerRegist.addActionListener(centerListButtonListener);
+		centerRegist.addActionListener(centerListButtonListener);
 		
 		cageRegist = new JButton("등록");
 		cageRegist.setBackground(blue);
 		cageRegist.setForeground(white);
-//		cageRegist.addActionListener(centerListButtonListener);
+		cageRegist.addActionListener(centerListButtonListener);
 		
 		searchManager = new JButton("검색");
 		searchManager.setBackground(blue);
 		searchManager.setForeground(white);
+		searchManager.setEnabled(false);
+		searchManager.addActionListener(centerListButtonListener);
 		
-		save = new JButton("저장");
-		save.setBackground(blue);
-		save.setForeground(white);
-//		save.addActionListener(centerListButtonListener);
+		modify = new JButton("수정");
+		modify.setBackground(blue);
+		modify.setForeground(white);
+		modify.addActionListener(centerListButtonListener);
 		
+		cancel = new JButton("취소");
+		cancel.addActionListener(centerListButtonListener);
+		
+		JComponent[] vTitleComps = {vCenterList,vCageList};
+		ChangeFont(vTitleComps, new Font("나눔고딕", Font.BOLD, 24));
+		
+		vCenterInfo.setFont(new Font("나눔고딕", Font.BOLD, 20));
+		
+		JComponent[] vContextComps	= {vCenterNum,vEstDate,vCenterName,vPhoneNum,vArea,vOperTime,vOperTimeDash,vCenterManager,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount};
+		ChangeFont(vContextComps, new Font("나눔고딕", Font.PLAIN, 16));
+		
+		JComponent[] bComps = {centerRegist, cageRegist, searchManager, modify, cancel};
+		ChangeFont(vContextComps, new Font("나눔고딕", Font.BOLD, 16));
 		
 		CenterListView();
 	}
@@ -169,15 +213,23 @@ public class CenterList extends JPanel{
 		
 		//센터목록과 등록버튼
 		gridbagAdd(vCenterList, 0, 0, 1, 1);
-		gridbagAdd(centerRegist, 9, 0, 1, 1);
+		gridbagAdd(centerRegist, 4, 0, 1, 1);
 		
 		//케이지와 등록버튼
-		gridbagAdd(vCageList, 11, 0, 1, 1);
-		gridbagAdd(cageRegist, 20, 0, 1, 1);
+		gridbagAdd(vCageList, 5, 0, 1, 1);
+		JPanel plainPanel2 = new JPanel();
+		plainPanel2.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
+		plainPanel2.add(cageRegist);
+		plainPanel2.setBorder(BorderFactory.createEmptyBorder(0, 100, 0, 0));
+		gridbagAdd(plainPanel2, 9, 0, 1, 1);
 		
 		//센터목록테이블, 케이지목록테이블
-		gridbagAdd(scrollpane1, 0, 1, 10, 5);
-		gridbagAdd(scrollpane2, 11, 1, 10, 5);
+		gridbagAdd(scrollpane1, 0, 1, 5, 5);
+		JPanel plainPanel = new JPanel();
+		plainPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
+		plainPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
+		plainPanel.add(scrollpane2);
+		gridbagAdd(plainPanel, 5, 1, 5, 5);
 		
 		//센터정보
 		gridbagAdd(vCenterInfo, 0, 6, 1, 1);
@@ -187,16 +239,16 @@ public class CenterList extends JPanel{
 		gridbagAdd(xCenterNum, 1, 7, 1, 1);
 	
 		//설립일자
-		gridbagAdd(vEstDate, 11, 7, 1, 1);
-		gridbagAdd(xEstDate, 12, 7, 1, 1);
+		gridbagAdd(vEstDate, 2, 7, 1, 1);
+		gridbagAdd(xEstDate, 3, 7, 1, 1);
 		
 		//센터명
 		gridbagAdd(vCenterName,0, 8,1,1);
 		gridbagAdd(xCenterName, 1, 8, 1, 1);
 		
 		//전화번호
-		gridbagAdd(vPhoneNum, 11, 8, 1, 1);
-		gridbagAdd(xPhoneNum, 12, 8, 1, 1);
+		gridbagAdd(vPhoneNum, 2, 8, 1, 1);
+		gridbagAdd(xPhoneNum, 3, 8, 1, 1);
 		
 		//면적
 		gridbagAdd(vArea, 0, 9, 1, 1);
@@ -206,8 +258,8 @@ public class CenterList extends JPanel{
 		Component[] cops = {cbOperTimeOpen, vOperTimeDash,cbOperTimeClose};
 		CombinePanel operTimePanel = new CombinePanel(cops,0,0);
 		
-		gridbagAdd(vOperTime, 11, 9, 1, 1);
-		gridbagAdd(operTimePanel, 12, 9, 1, 1);
+		gridbagAdd(vOperTime, 2, 9, 1, 1);
+		gridbagAdd(operTimePanel, 3, 9, 1, 1);
 		
 //		gridbagAdd(cbOperTimeOpen, 12, 9, 1, 1);
 //		gridbagAdd(vOperTimeDash, 13, 9, 1, 1);
@@ -215,8 +267,12 @@ public class CenterList extends JPanel{
 		
 		//센터장
 		gridbagAdd(vCenterManager, 0, 10, 1, 1);
-		gridbagAdd(xCenterManager, 1, 10, 1, 1);
-		gridbagAdd(searchManager, 2, 10, 1, 1);
+		JComponent[] centerManagerComps = {xCenterManager, searchManager};
+		CombinePanel centerManagerPanel = new CombinePanel(centerManagerComps, 0, 0);
+		gridbagAdd(centerManagerPanel, 1, 10, 1, 1);
+		
+//		gridbagAdd(xCenterManager, 1, 10, 1, 1);
+//		gridbagAdd(searchManager, 2, 10, 1, 1);
 		
 		//총 케이지 수
 		gridbagAdd(vCageNum, 0, 11, 1, 1);
@@ -226,10 +282,10 @@ public class CenterList extends JPanel{
 		gridbagAdd(bottomPanel, 0, 12, 2, 1);
 		
 		//저장버튼 배치
-		JPanel savePanel = new JPanel();
-		savePanel.add(save);
-		savePanel.setBorder(BorderFactory.createEmptyBorder(10,325,0,0));
-		gridbagAdd(savePanel, 0, 13, 21, 1);
+		JComponent[] bComps = {modify,cancel};
+		CombinePanel buttonPanel = new CombinePanel(bComps, 10, 0);
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10,325,0,0));
+		gridbagAdd(buttonPanel, 0, 13, 21, 1);
 		
 	}
 	
@@ -277,26 +333,46 @@ public class CenterList extends JPanel{
 		}
 	}
 	
-//	class CenterListButtonListener implements ActionListener{
-//
-//		@Override
-//		public void actionPerformed(ActionEvent e) {
-//			// TODO Auto-generated method stub
-//			if(e.getSource().equals(centerRegist)) {
-//				System.out.println("센터등록버튼 테스트");
-//			}
-//			
-//			if(e.getSource().equals(cageRegist)) {
-//				System.out.println("케이지등록버튼 테스트");
-//			}
-//			
-//			if(e.getSource().equals(save)) {
-//				System.out.println("저장등록버튼 테스트");
-//			}
-//		}
-//		
-//	}
-//	
+	class CenterListButtonListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(centerRegist)) {
+				try {
+					new NewCenterRegistration();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			
+			if(e.getSource().equals(cageRegist)) {
+				new CageRegister();
+			}
+			if(e.getSource().equals(searchManager)) {
+				new CenterManagerSearch();
+			}
+			if(e.getSource().equals(modify)) {
+				modify.setText("확인");
+				JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose,searchManager};
+				for(JComponent cop: changeStatusComps) {
+					cop.setEnabled(true);
+				}
+			}
+
+			if(e.getSource().equals(cancel)) {
+				modify.setText("수정");
+				JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose,searchManager};
+				for(JComponent cop: changeStatusComps) {
+					cop.setEnabled(false);
+				}
+			}
+			
+		}
+		
+	}
+	
 //  센터목록테이블 클릭시 발생하는 리스너
 	class CenterListMouseListener extends MouseAdapter{
 
@@ -313,6 +389,13 @@ public class CenterList extends JPanel{
 		}
 	}
 
+	
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
+    
 	
 	public static void main(String[] args) {
 		new CenterList();
