@@ -8,6 +8,9 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -24,7 +27,7 @@ import javax.swing.table.DefaultTableModel;
 public class EmpList extends JPanel {
 	private JLabel vEmpList,vEmpNameSearch,vEmpInfo,vEmpNo,vBelongCenter,vEmpType,vWorkType,vEmpName,vBirthDate,vPhoneNum;
 	private JTextField xEmpNameSearch,xEmpNo,xBelongCenter,xEmpName,xBirthDate,xPhoneNum;
-	private JButton empSearch,centerSearch, modify, cancel, resign;
+	private JButton empSearch,centerSearch, modify, cancel, resign, register;
 	private JComboBox<String> cbSearchType,cbEmptype,cbWorkType;
 	
 	private JTable eEmpList;
@@ -42,6 +45,8 @@ public class EmpList extends JPanel {
 	private Color white = new Color(255,255,255);
 	private Color red = new Color(217,0,27);
 	
+	EmpListButtonListener empListButtonListener;
+	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
@@ -51,6 +56,8 @@ public class EmpList extends JPanel {
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
 
+		empListButtonListener = new EmpListButtonListener();
+		
 		vEmpList = new JLabel("직원목록");
 		vEmpList.setFont(new Font("나눔고딕", Font.BOLD, 24));
 		vEmpList.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
@@ -60,6 +67,12 @@ public class EmpList extends JPanel {
 		empSearch = new JButton("검색");
 		empSearch.setBackground(blue);
 		empSearch.setForeground(white);
+		empSearch.addActionListener(empListButtonListener);
+		
+		register = new JButton("등록");
+		register.setBackground(blue);
+		register.setForeground(white);
+		register.addActionListener(empListButtonListener);
 		
 		eEmpList = new JTable(model1);
 		scrollpane = new JScrollPane(eEmpList);
@@ -79,12 +92,16 @@ public class EmpList extends JPanel {
 		centerSearch = new JButton("검색");
 		centerSearch.setBackground(blue);
 		centerSearch.setForeground(white);
+		centerSearch.setEnabled(false);
+		centerSearch.addActionListener(empListButtonListener);
 		
 		vEmpType = new JLabel("직원구분");
 		cbEmptype = new JComboBox<String>(empTypeDiv);
+		cbEmptype.setEnabled(false);
 		
 		vWorkType = new JLabel("업무분야");
 		cbWorkType = new JComboBox<String>(workTypeDiv);
+		cbWorkType.setEnabled(false);
 		
 		vEmpName = new JLabel("이름");
 		xEmpName = new JTextField(10);
@@ -101,17 +118,20 @@ public class EmpList extends JPanel {
 		modify = new JButton("수정");
 		modify.setBackground(blue);
 		modify.setForeground(white);
+		modify.addActionListener(empListButtonListener);
 		
 		cancel = new JButton("취소");
+		cancel.addActionListener(empListButtonListener);
 		
 		resign = new JButton("퇴사");
 		resign.setBackground(red);
 		resign.setForeground(white);
-		 
+		resign.addActionListener(empListButtonListener); 
+		
 		JComponent[] vComps = {vEmpNo,vBelongCenter,vEmpType,vWorkType,vEmpName,vBirthDate,vPhoneNum};
 		ChangeFont(vComps, new Font("나눔고딕", Font.PLAIN, 16));
 		
-		JComponent[] bComps = {empSearch,centerSearch, modify, cancel, resign};
+		JComponent[] bComps = {empSearch,centerSearch, modify, cancel, resign, register};
 		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 16));
 		
 		EmpListView();
@@ -130,14 +150,17 @@ public class EmpList extends JPanel {
 
 		gridbagAdd(vEmpList, 0, 0, 1, 1);
 		
-		cbSearchType.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-		gridbagAdd(cbSearchType, 0, 1, 1, 1);
+//		cbSearchType.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+//		gridbagAdd(cbSearchType, 0, 1, 1, 1);
 		
-		Component[] cpts = {xEmpNameSearch,empSearch};
+		Component[] cpts = {cbSearchType,xEmpNameSearch,empSearch};
 		CombinePanel cp1 = new CombinePanel(cpts,5,0);
-		gridbagAdd(cp1, 1, 1, 1, 1);
+		cp1.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+		gridbagAdd(cp1, 0, 1, 2, 1);
 //		gridbagAdd(xEmpNameSearch, 1, 1, 1, 1);
 //		gridbagAdd(empSearch, 2, 1, 1, 1);
+		
+		gridbagAdd(register, 5, 1, 1, 1);
 		
 		JPanel plainPanel = new JPanel();
 		plainPanel.add(scrollpane);
@@ -194,6 +217,41 @@ public class EmpList extends JPanel {
 		gridBagLayout.setConstraints(c, gridBagConstraints);
 		
 		add(c);
+	}
+	
+	class EmpListButtonListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(empSearch)) {
+				
+			}
+			else if(e.getSource().equals(register)) {
+
+			}
+			else if(e.getSource().equals(centerSearch)) {
+				new CenterSearch();
+			}
+			else if(e.getSource().equals(modify)) {
+				modify.setText("확인");
+				JComponent[] changeStatusComps = {cbEmptype,cbWorkType,centerSearch};
+				for(JComponent cop: changeStatusComps) {
+					cop.setEnabled(true);
+				}
+			}
+			else if(e.getSource().equals(cancel)) {
+				modify.setText("수정");
+				JComponent[] changeStatusComps = {cbEmptype,cbWorkType,centerSearch};
+				for(JComponent cop: changeStatusComps) {
+					cop.setEnabled(false);
+				}
+			}
+			else if(e.getSource().equals(resign)) {
+				
+			}
+		}
+		
 	}
 	
 	//두개의 컴포넌트를 하나의 패널로 묶는 JPanel
