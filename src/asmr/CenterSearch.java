@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -47,9 +49,17 @@ public class CenterSearch extends JFrame{
 		centerSearchButtonListener = new CenterSearchButtonListener();
 		centerSearchMouseListener = new CenterSearchMouseListener();
 		
-		vCenterSearch = new JLabel("센터검색");
+		vCenterSearch = new JLabel("센터목록");
 		
-		eCenterList = new JTable(model1);
+//		eCenterList = new JTable(model1);
+		eCenterList = new JTable(model1) {
+		        private static final long serialVersionUID = 1L;
+
+		        public boolean isCellEditable(int row, int column) {                
+		                return false;               
+		        };
+		    };
+		
 		eCenterList.addMouseListener(centerSearchMouseListener);
 		scrollpane = new JScrollPane(eCenterList);
 		scrollpane.setPreferredSize(new Dimension(250,100));
@@ -67,6 +77,7 @@ public class CenterSearch extends JFrame{
 	
 	private void CenterSearchView() {
 		setLayout(gridBagLayout);
+		setTitle("센터검색");
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -74,6 +85,7 @@ public class CenterSearch extends JFrame{
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
 		
+		vCenterSearch.setFont(new Font("나눔고딕", Font.PLAIN, 16));
 		gridbagAdd(vCenterSearch, 0, 0, 1, 1);
 		
 		JPanel panel = new JPanel();
@@ -81,12 +93,14 @@ public class CenterSearch extends JFrame{
 		panel.setBorder(BorderFactory.createEmptyBorder(0,20,0,0));
 		gridbagAdd(panel, 0, 1, 1, 1);
 		
-		Component[] cops = {confirm,cancel};
+		JComponent[] cops = {confirm,cancel};
+		ChangeFont(cops, new Font("나눔고딕", Font.BOLD, 12));
 		CombinePanel buttonPanel = new CombinePanel(cops, true);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,70,0,0));
 		gridbagAdd(buttonPanel, 0, 2, 1, 1);
 		
 		pack();
+		setLocationRelativeTo(null);
 		setResizable(false);
 		setVisible(true);
 	}
@@ -150,8 +164,14 @@ public class CenterSearch extends JFrame{
 		
 	}
 
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
+	
 //  리스너 작업 종료로 메인 메서드 주석처리하였습니다.
-//	public static void main(String[] args) {
-//		new CenterSearch();
-//	}
+	public static void main(String[] args) {
+		new CenterSearch();
+	}
 }
