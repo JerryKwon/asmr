@@ -3,6 +3,7 @@ package asmr;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -16,6 +17,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -26,7 +28,7 @@ import asmr.CenterList.BottomPanel;
 public class NewCenterRegistration extends JFrame{
 	private JLabel vNewCenterRegist,vCenterName,vCenterType,vArea,vPhoneNum,vEstDate,vOperTime,vOperTimeDash,vCenterManager,vAddress,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount;
 	private JTextField xCenterName,xArea,xPhoneNum,xEstDate,xCenterManager,xAddress,xCageBig,xCageMid,xCageSmall;
-	private JButton centerManagerSearch,addressSearch, save, imageButton;
+	private JButton centerManagerSearch,addressSearch, register, cancel, imageButton;
 	private JComboBox<String> cbCenterType,cbOperTimeOpen,cbOperTimeClose;
 	private BufferedImage buttonIcon;
 	
@@ -49,7 +51,7 @@ public class NewCenterRegistration extends JFrame{
 		gridBagConstraints = new GridBagConstraints();
 		
 		//화면명
-		vNewCenterRegist = new JLabel("신규센터등록");
+//		vNewCenterRegist = new JLabel("신규센터등록");
 		
 		//센터명
 		vCenterName = new JLabel("센터명");
@@ -120,10 +122,13 @@ public class NewCenterRegistration extends JFrame{
 		vCageSmallCount = new JLabel("개");
 		
 		//저장버튼
-		save = new JButton("저장");
-		save.setBackground(blue);
-		save.setForeground(white);
-		save.addActionListener(newCenterRegistButtonListener);
+		register = new JButton("등록");
+		register.setBackground(blue);
+		register.setForeground(white);
+		register.addActionListener(newCenterRegistButtonListener);
+		
+		cancel = new JButton("취소");
+		cancel.addActionListener(newCenterRegistButtonListener);
 		
 		//배치함수
 		NewCenterRegistrationView();
@@ -131,6 +136,7 @@ public class NewCenterRegistration extends JFrame{
 
 	private void NewCenterRegistrationView() {
 		setLayout(gridBagLayout);
+		setTitle("신규센터등록");
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -139,7 +145,7 @@ public class NewCenterRegistration extends JFrame{
 		gridBagConstraints.weighty=1.0;
 		
 		//화면제목
-		gridbagAdd(vNewCenterRegist, 0, 0, 1, 1);
+//		gridbagAdd(vNewCenterRegist, 0, 0, 1, 1);
 		
 		//센터명
 		gridbagAdd(vCenterName, 0, 1, 1, 1);
@@ -196,13 +202,20 @@ public class NewCenterRegistration extends JFrame{
 		
 		
 		//저장버튼
-		JPanel plainPanel3 = new JPanel();
-		plainPanel3.add(save);
-		plainPanel3.setBorder(BorderFactory.createEmptyBorder(5,250,0,0));
-		gridbagAdd(plainPanel3, 0, 10, 4, 1);
+		JComponent[] buttons = {register, cancel};
+		CombinePanel buttonPanel = new CombinePanel(buttons, 10, 0);
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(5,250,0,0));
+		gridbagAdd(buttonPanel, 0, 10, 4, 1);
 		
+		
+		JComponent[] vContextComps = {vCenterName,vCenterType,vArea,vPhoneNum,vEstDate,vOperTime,vOperTimeDash,vCenterManager,vAddress,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount};
+		ChangeFont(vContextComps, new Font("나눔고딕", Font.PLAIN, 16));
+		
+		JComponent[] bComps= {centerManagerSearch,addressSearch, register, cancel};
+		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 12));
 		
 		pack();
+		setLocationRelativeTo(null);
 		setResizable(false);
 		setVisible(true);
 	}
@@ -261,13 +274,23 @@ public class NewCenterRegistration extends JFrame{
 			else if(e.getSource().equals(addressSearch)) {
 				
 			}
-			else if(e.getSource().equals(save)) {
+			else if(e.getSource().equals(register)) {
 				
 			}
-			
+			else if(e.getSource().equals(cancel)) {
+				dispose();
+			}
 		}
 		
 	}
+	
+	
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
+    
 	
 	public static void main(String[] args) throws IOException{
 		new NewCenterRegistration();
