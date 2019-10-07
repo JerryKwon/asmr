@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -48,9 +50,16 @@ public class CenterManagerSearch extends JFrame{
 		centerManagerSearchButtonListener = new CenterManagerSearchButtonListener();
 		centerManagerSearchMouseListener = new CenterManagerSearchMouseListener();
 		
-		vCenterManagerSerach = new JLabel("센터장검색");
+//		vCenterManagerSerach = new JLabel("센터장검색");
 		
-		eCenterManagerList = new JTable(model1);
+//		eCenterManagerList = new JTable(model1);
+		eCenterManagerList = new JTable(model1) {
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		eCenterManagerList.addMouseListener(centerManagerSearchMouseListener);
 		scrollpane = new JScrollPane(eCenterManagerList);
 		scrollpane.setPreferredSize(new Dimension(200,100));
@@ -68,6 +77,7 @@ public class CenterManagerSearch extends JFrame{
 	
 	private void CenterManagerSearchView() {
 		setLayout(gridBagLayout);
+		setTitle("센터장 검색");
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -75,15 +85,18 @@ public class CenterManagerSearch extends JFrame{
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
 		
-		gridbagAdd(vCenterManagerSerach, 0, 0, 1, 1);
+//		gridbagAdd(vCenterManagerSerach, 0, 0, 1, 1);
 		
 		gridbagAdd(scrollpane, 0, 1, 2, 1);
 		
-		ButtonPanel buttonPanel = new ButtonPanel();
+		JComponent[] bComps = {confirm,cancel};
+		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 12));
+		CombinePanel buttonPanel = new CombinePanel(bComps,10,0);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,35,0,0));
 		gridbagAdd(buttonPanel, 0, 2, 1, 1);
 		
 		pack();
+		setLocationRelativeTo(null);
 		setResizable(false);
 		setVisible(true);
 		
@@ -101,12 +114,16 @@ public class CenterManagerSearch extends JFrame{
 		add(c);
 	}
 
-	class ButtonPanel extends JPanel{
-		public ButtonPanel() {
-			setLayout(new FlowLayout(FlowLayout.RIGHT));
-			add(confirm);
-			add(cancel);
+	class CombinePanel extends JPanel {
+		//컴포넌트 1, 컴포넌트 2, 패널 구성시 좌,우 margin 공간을 없애기 위한 Flag
+		public CombinePanel(Component[] cops, int borderWidth, int borderHeight) {
+			//Margin이 필요하지 않을 때
 			
+			setLayout(new FlowLayout(FlowLayout.LEFT,borderWidth,borderHeight));
+			
+			for (Component c: cops) {
+				add(c);
+			}
 		}
 	}
 	
@@ -137,8 +154,15 @@ public class CenterManagerSearch extends JFrame{
 		
 	}
 	
+	
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
+    
 //  버튼 기능 구현으로 인하여 메인 메서드를 삭제합니다.	
-//	public static void main(String[] args) {
-//		new CenterManagerSearch();
-//	}
+	public static void main(String[] args) {
+		new CenterManagerSearch();
+	}
 }
