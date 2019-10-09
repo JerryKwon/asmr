@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -16,6 +17,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -26,7 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class ReqPrsnRegist extends JFrame {
-	private JLabel vReqPrsnRegist, vCustSearch, vNonCustRegist, vName, vAddress, vPhoneNum;
+	private JLabel vReqPrsnType, vCustSearch, vNonCustRegist, vName, vAddress, vPhoneNum;
 	private JTextField xCustSearch, xName, xAddress, xPhoneNum;
 	private JButton custSearch, addressSearch, returning, cancel;
 	private JRadioButton cust,nonCust;
@@ -63,7 +65,7 @@ public class ReqPrsnRegist extends JFrame {
 		custItemListener = new CustItemListener();
 		nonCustItemListener = new NonCustItemListener();
 		
-		vReqPrsnRegist = new JLabel("인수자등록");
+		vReqPrsnType = new JLabel("인수자구분");
 		
 		cust = new JRadioButton("회원");
 		cust.addItemListener(custItemListener);
@@ -71,6 +73,7 @@ public class ReqPrsnRegist extends JFrame {
 		nonCust.addItemListener(nonCustItemListener);
 		
 		vCustSearch = new JLabel("회원검색");
+		vCustSearch.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		
 		cbCustSearch = new JComboBox<String>(custSearchDiv);
 		xCustSearch = new JTextField(10);
@@ -79,12 +82,20 @@ public class ReqPrsnRegist extends JFrame {
 		custSearch.setForeground(white);
 		custSearch.addActionListener(reqPrsnRegistButtonListener);
 		
-		eCustList = new JTable(model1);
+//		eCustList = new JTable(model1);
+		eCustList = new JTable(model1) {
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		eCustList.addMouseListener(reqRegistMouseListener);
 		custListScroll = new JScrollPane(eCustList);
 		custListScroll.setPreferredSize(new Dimension(350,100));
 		
 		vNonCustRegist = new JLabel("비회원등록");
+		vNonCustRegist.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		
 		vName = new JLabel("성명");
 		xName = new JTextField(10);
@@ -108,6 +119,15 @@ public class ReqPrsnRegist extends JFrame {
 		cancel = new JButton("취소");
 		cancel.addActionListener(reqPrsnRegistButtonListener);
 		
+		JComponent[] vComps1= {vReqPrsnType, vCustSearch, vNonCustRegist};
+		ChangeFont(vComps1, new Font("나눔고딕", Font.BOLD, 16));
+		
+		JComponent[] vComps2 = {vName, vAddress, vPhoneNum,cust,nonCust};
+		ChangeFont(vComps2, new Font("나눔고딕", Font.PLAIN, 16));
+		
+		JComponent[] bComps = {custSearch, addressSearch, returning, cancel};
+		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 12));
+		
 		//기본적으로 회원 활성화
 		activateCust();
 		
@@ -117,6 +137,7 @@ public class ReqPrsnRegist extends JFrame {
 	
 	private void ReqPrsnRegistView() {
 		setLayout(gridBagLayout);
+		setTitle("인수자등록");
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -124,7 +145,7 @@ public class ReqPrsnRegist extends JFrame {
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
 		
-		gridbagAdd(vReqPrsnRegist, 0, 0, 1, 1);
+		gridbagAdd(vReqPrsnType, 0, 0, 1, 1);
 		
 		gridbagAdd(cust, 0, 1, 1, 1);
 		gridbagAdd(nonCust, 1, 1, 1, 1);
@@ -156,6 +177,7 @@ public class ReqPrsnRegist extends JFrame {
 		
 		pack();
 		setResizable(false);
+		setLocationRelativeTo(null);
 		setVisible(true);		
 		
 	}
@@ -279,7 +301,13 @@ public class ReqPrsnRegist extends JFrame {
 		
 	}
 	
-	public static void main(String[] args) {
+   private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
+
+   public static void main(String[] args) {
 		new ReqPrsnRegist();
 	}
 }
