@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -23,6 +25,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.toedter.calendar.JDateChooser;
+
 import asmr.CenterList.BottomPanel;
 
 public class NewCenterRegistration extends JFrame{
@@ -31,7 +35,7 @@ public class NewCenterRegistration extends JFrame{
 	private JButton centerManagerSearch,addressSearch, register, cancel, imageButton;
 	private JComboBox<String> cbCenterType,cbOperTimeOpen,cbOperTimeClose;
 	private BufferedImage buttonIcon;
-	
+	private JDateChooser chooser;
 	
 	private final String[] centerTypeDiv = {"본부","일반"};
 	private final String[] operTimeOpenDiv = {"08:00","08:30","09:00","09:30","10:00","10:30","11:00"};
@@ -71,13 +75,18 @@ public class NewCenterRegistration extends JFrame{
 		
 		//설립일자
 		vEstDate = new JLabel("설립일자");
-		xEstDate = new JTextField(10); 
-		xEstDate.setEnabled(false);
-		buttonIcon = ImageIO.read(new File("images/cal1.png"));
-		imageButton = new JButton(new ImageIcon(buttonIcon));
-		imageButton.setBorderPainted(false);
-		imageButton.setContentAreaFilled(false);
-		imageButton.setFocusPainted(false);
+
+		LocalDate now = LocalDate.now();
+		Date date = Date.valueOf(now);
+		chooser = new JDateChooser(date,"YYYY.MM.dd");
+
+//		xEstDate = new JTextField(10); 
+//		xEstDate.setEnabled(false);		
+//		buttonIcon = ImageIO.read(new File("images/cal1.png"));
+//		imageButton = new JButton(new ImageIcon(buttonIcon));
+//		imageButton.setBorderPainted(false);
+//		imageButton.setContentAreaFilled(false);
+//		imageButton.setFocusPainted(false);
 		
 		//운영시간
 		vOperTime = new JLabel("운영시간");
@@ -165,12 +174,13 @@ public class NewCenterRegistration extends JFrame{
 		
 		//설립일자
 		gridbagAdd(vEstDate, 0, 3, 1, 1);
-		JPanel plainPanel1 = new JPanel();
-		plainPanel1.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
-		plainPanel1.add(imageButton);
-		Component[] cops1 = {xEstDate, plainPanel1};
-		CombinePanel estDatePanel = new CombinePanel(cops1, 0, 0);
-		gridbagAdd(estDatePanel, 1, 3, 1, 1);
+//		JPanel plainPanel1 = new JPanel();
+//		plainPanel1.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
+//		plainPanel1.add(imageButton);
+//		Component[] cops1 = {xEstDate, plainPanel1};
+//		CombinePanel estDatePanel = new CombinePanel(cops1, 0, 0);
+		
+		gridbagAdd(chooser, 1, 3, 1, 1);
 		
 		//운영시간
 		gridbagAdd(vOperTime, 11, 3, 1, 1);
