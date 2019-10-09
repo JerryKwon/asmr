@@ -9,6 +9,8 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -59,8 +61,8 @@ public class ProtAniList extends JPanel {
 	private Color white = new Color(255,255,255);
 	private Color red = new Color(217,0,27);
 	
-	
 	ProtAniListMouseListener protAniListMouseListener;
+	ProtAniListButtonListener protAniListButtonListener;
 	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
@@ -71,6 +73,7 @@ public class ProtAniList extends JPanel {
 		gridBagConstraints = new GridBagConstraints();
 		
 		protAniListMouseListener = new ProtAniListMouseListener();
+		protAniListButtonListener = new ProtAniListButtonListener();
 		
 		vProtAniRegister = new JLabel("보호동물목록");
 		vProtAniRegister.setFont(new Font("나눔고딕", Font.BOLD, 24));
@@ -78,8 +81,16 @@ public class ProtAniList extends JPanel {
 		register = new JButton("등록");
 		register.setBackground(blue);
 		register.setForeground(white);
+		register.addActionListener(protAniListButtonListener);
 		
-		eProtAniList = new JTable(model1);
+//		eProtAniList = new JTable(model1);
+		eProtAniList = new JTable(model1) {
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		eProtAniList.addMouseListener(protAniListMouseListener);
 		aniListScroll = new JScrollPane(eProtAniList);
 		aniListScroll.setPreferredSize(new Dimension(1400,200));
@@ -121,9 +132,11 @@ public class ProtAniList extends JPanel {
 		
 		vSex = new JLabel("성별");
 		cbSex = new JComboBox<String>(sexDiv);
+		cbSex.setEnabled(false);
 		
 		vNeutWhet = new JLabel("중성화여부");
 		cbNeutWhet = new JComboBox<String>(cbNeutWhetDiv);
+		cbNeutWhet.setEnabled(false);
 		
 		vColor = new JLabel("색상");
 		xColor = new JTextField(12);
@@ -131,6 +144,7 @@ public class ProtAniList extends JPanel {
 		
 		vAniSize = new JLabel("동물크기");
 		cbAniSize = new JComboBox<String>(aniSizeDiv);
+		cbAniSize.setEnabled(false);
 		
 		vRegisDate = new JLabel("등록일자");
 		xRegisDate = new JTextField(12);
@@ -138,6 +152,7 @@ public class ProtAniList extends JPanel {
 		
 		vDescription = new JLabel("설명");
 		xDescription = new JTextArea();
+		xDescription.setEnabled(false);
 		descriptionScroll = new JScrollPane(xDescription);
 		descriptionScroll.setPreferredSize(new Dimension(400,150));
 		descriptionScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -148,6 +163,7 @@ public class ProtAniList extends JPanel {
 		
 		vCage = new JLabel("케이지");
 		cbCage = new JComboBox<String>(cageDiv);
+		cbCage.setEnabled(false);
 		
 		vDscvPlace = new JLabel("발견장소");
 		xDscvPlace = new JTextField(12);
@@ -156,16 +172,22 @@ public class ProtAniList extends JPanel {
 		modify = new JButton("수정");
 		modify.setBackground(blue);
 		modify.setForeground(white);
+		modify.addActionListener(protAniListButtonListener);
 		
 		cancel = new JButton("취소");
+		cancel.addActionListener(protAniListButtonListener);
 		
 		returning = new JButton("반환");
 		returning.setBackground(red);
 		returning.setForeground(white);
+		returning.addActionListener(protAniListButtonListener);
 		
 		pictureManage = new JButton("사진관리");
+		pictureManage.setEnabled(false);
 		pictureManage.setBackground(blue);
 		pictureManage.setForeground(white);
+		pictureManage.addActionListener(protAniListButtonListener);
+		
 		
 		File input = new File("images/dog_400_400.jpg");
 		BufferedImage image = ImageIO.read(input);
@@ -175,7 +197,9 @@ public class ProtAniList extends JPanel {
 		imageLabel.setIcon(icon);
 		
 		previous = new JButton("<<");
+		previous.addActionListener(protAniListButtonListener);
 		next = new JButton(">>");
+		next.addActionListener(protAniListButtonListener);
 		
 		JComponent[] fontComps1 = {vAbanAniNo, vAbanAniType, vRescueNo, vAbanAniName, vAge, vParAniName, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vRegisDate, vDescription, vDscvDate, vCage, vDscvPlace};
 		ChangeFont(fontComps1, new Font("나눔고딕", Font.PLAIN, 16));
@@ -201,6 +225,7 @@ public class ProtAniList extends JPanel {
 		JPanel registerPanel = new JPanel();
 		registerPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,0,0));
 		registerPanel.add(register);
+		registerPanel.setBorder(BorderFactory.createEmptyBorder(0,300,0,0));
 		gridbagAdd(registerPanel, 9, 0, 1, 1);
 		
 		JPanel aniListPanel = new JPanel();
@@ -295,6 +320,49 @@ public class ProtAniList extends JPanel {
 		gridBagLayout.setConstraints(c, gridBagConstraints);
 		
 		add(c);
+	}
+	
+	class ProtAniListButtonListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(register)){
+				new ProtAniRegist();
+			}
+			else if(e.getSource().equals(pictureManage)) {
+				try {
+					new PictureManage();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			else if(e.getSource().equals(previous)) {
+				
+			}
+			else if(e.getSource().equals(next)) {
+				
+			}
+			else if(e.getSource().equals(modify)) {
+				modify.setText("확인");
+				JComponent[] changeStatusComps = {cbSex,cbNeutWhet,cbAniSize,xDescription,cbCage,pictureManage};
+				for(JComponent cop: changeStatusComps) {
+					cop.setEnabled(true);
+				}
+			}
+			else if(e.getSource().equals(cancel)) {
+				modify.setText("수정");
+				JComponent[] changeStatusComps = {cbSex,cbNeutWhet,cbAniSize,xDescription,cbCage,pictureManage};
+				for(JComponent cop: changeStatusComps) {
+					cop.setEnabled(false);
+				}
+			}
+			else if(e.getSource().equals(returning)) {
+				
+			}
+		}
+		
 	}
 	
 	//두개의 컴포넌트를 하나의 패널로 묶는 JPanel
