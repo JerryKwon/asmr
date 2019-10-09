@@ -359,7 +359,7 @@ public class ProtAniList extends JPanel {
 				}
 			}
 			else if(e.getSource().equals(returning)) {
-				
+				new ReqPrsnRegist();
 			}
 		}
 		
