@@ -83,7 +83,7 @@ public class EmpList extends JPanel {
 	        };
 	    };
 		scrollpane = new JScrollPane(eEmpList);
-		scrollpane.setPreferredSize(new Dimension(600,100));
+		scrollpane.setPreferredSize(new Dimension(600,200));
 		
 		vEmpInfo = new JLabel("Á÷¿øÁ¤º¸");
 		vEmpInfo.setFont(new Font("³ª´®°íµñ", Font.BOLD, 20));
