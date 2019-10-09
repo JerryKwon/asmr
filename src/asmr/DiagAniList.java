@@ -4,8 +4,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -16,6 +19,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,6 +28,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
 public class DiagAniList extends JPanel{
@@ -50,6 +55,7 @@ public class DiagAniList extends JPanel{
 	private Color blue = new Color(22,155,213);
 	private Color white = new Color(255,255,255);
 	
+	DiagAniListButtonListener diagAniListButtonListener;
 	ProtAniListMouseListener protAniListMouseListener;
 	DiagListMouseListener diagListMouseListener;
 	
@@ -60,71 +66,92 @@ public class DiagAniList extends JPanel{
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
 	
+		diagAniListButtonListener = new DiagAniListButtonListener();
 		protAniListMouseListener = new ProtAniListMouseListener();
 		diagListMouseListener = new DiagListMouseListener();
 		
 		vProtAniList = new JLabel("보호동물목록");
+		vProtAniList.setFont(new Font("나눔고딕", Font.BOLD, 24));
 		
 		diagRegister = new JButton("진료등록");
 		diagRegister.setBackground(blue);
 		diagRegister.setForeground(white);
+		diagRegister.addActionListener(diagAniListButtonListener);
 		
 		vDiagList = new JLabel("진료목록");
+		vDiagList.setFont(new Font("나눔고딕", Font.BOLD, 24));
+		vDiagList.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
 		
-		eProtAniList = new JTable(model1);
+//		eProtAniList = new JTable(model1);
+		eProtAniList = new JTable(model1) {
+		        private static final long serialVersionUID = 1L;
+
+		        public boolean isCellEditable(int row, int column) {                
+		                return false;               
+		        };
+		    };
 		eProtAniList.addMouseListener(protAniListMouseListener);
 		protAniListScroll = new JScrollPane(eProtAniList);
-		protAniListScroll.setPreferredSize(new Dimension(350,100));
+		protAniListScroll.setPreferredSize(new Dimension(750,200));
 		
-		eDiagList = new JTable(model2);
+//		eDiagList = new JTable(model2);
+		eDiagList = new JTable(model2) {
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		eDiagList.addMouseListener(diagListMouseListener);
 		diagListScroll = new JScrollPane(eDiagList);
-		diagListScroll.setPreferredSize(new Dimension(350,100));
+		diagListScroll.setPreferredSize(new Dimension(450,200));
 		
 		vDiagInfo = new JLabel("진료정보");
+		vDiagInfo.setFont(new Font("나눔고딕", Font.BOLD, 20));
+		vDiagInfo.setBorder(BorderFactory.createEmptyBorder(0,0,10,0));
 		
 		vDiagDate = new JLabel("진료일자");
-		xDiagDate = new JTextField(10);
+		xDiagDate = new JTextField(12);
 		xDiagDate.setEnabled(false);
 		
 		vDiagType = new JLabel("진료구분");
-		xDiagType = new JTextField(10);
+		xDiagType = new JTextField(12);
 		xDiagType.setEnabled(false);
 		
 		vIndiResult = new JLabel("진료결과");
-		xIndiResult = new JTextField(10);
+		xIndiResult = new JTextField(12);
 		xIndiResult.setEnabled(false);
 		
 		vIndiVtrnName = new JLabel("내진수의사명");
-		xIndiVtrnName =  new JTextField(10);
+		xIndiVtrnName =  new JTextField(12);
 		xIndiVtrnName.setEnabled(false);
 		
 		vOudiResult = new JLabel("외진결과");
-		xOudiResult = new JTextField(10);
+		xOudiResult = new JTextField(12);
 		xOudiResult.setEnabled(false);
 		
 		vHospName = new JLabel("병원명");
-		xHospName = new JTextField(10);
+		xHospName = new JTextField(12);
 		xHospName.setEnabled(false);
 		
 		vDisease = new JLabel("병명");
-		xDisease = new JTextField(10);
+		xDisease = new JTextField(12);
 		xDisease.setEnabled(false);
 		
 		vInfecWhet = new JLabel("전염여부");
-		xInfecWhet = new JTextField(10);
+		xInfecWhet = new JTextField(12);
 		xInfecWhet.setEnabled(false);
 		
 		vCureType = new JLabel("치료구분");
-		xCureType = new JTextField(10);
+		xCureType = new JTextField(12);
 		xCureType.setEnabled(false);
 		
 		vHsptzDate = new JLabel("입원일자");
-		xHsptzDate = new JTextField(10);
+		xHsptzDate = new JTextField(12);
 		xHsptzDate.setEnabled(false);
 		
 		vDschDate = new JLabel("퇴원일자");
-		xDschDate = new JTextField(10);
+		xDschDate = new JTextField(12);
 		xDschDate.setEnabled(false);
 		buttonIcon = ImageIO.read(new File("images/cal1.png"));
 		imageButton = new JButton(new ImageIcon(buttonIcon));
@@ -134,11 +161,11 @@ public class DiagAniList extends JPanel{
 		
 		
 		vDeathType = new JLabel("사망구분");
-		xDeathType = new JTextField(10);
+		xDeathType = new JTextField(12);
 		xDeathType.setEnabled(false);
 		
 		vDeathReason = new JLabel("사망사유");
-		xDeathReason = new JTextField(10);
+		xDeathReason = new JTextField(12);
 		xDeathReason.setEnabled(false);
 		
 		vDiagContent = new JLabel("진료내용");
@@ -151,10 +178,17 @@ public class DiagAniList extends JPanel{
 		modify = new JButton("수정");
 		modify.setBackground(blue);
 		modify.setForeground(white);
+		modify.addActionListener(diagAniListButtonListener);
 		
 		cancel = new JButton("취소");
+		cancel.addActionListener(diagAniListButtonListener);
 		
 		DiagAniListView();
+		
+		JComponent[] vComps = {vDiagDate, vDiagType, vIndiResult, vIndiVtrnName, vOudiResult, vHospName, vDisease, vInfecWhet, vCureType, vHsptzDate, vDschDate, vDeathType, vDeathReason, vDiagContent};
+		ChangeFont(vComps, new Font("나눔고딕", Font.PLAIN, 16));
+		JComponent[] bComps = {diagRegister, imageButton, modify, cancel};
+		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 16));
 		
 	}
 
@@ -168,11 +202,15 @@ public class DiagAniList extends JPanel{
 		gridBagConstraints.weighty=1.0;
 		
 		gridbagAdd(vProtAniList, 0, 0, 1, 1);
-		gridbagAdd(diagRegister, 2, 0, 1, 1);
-		gridbagAdd(protAniListScroll, 0, 1, 3, 1);
+		gridbagAdd(diagRegister, 4, 0, 1, 1);
+		JPanel plainPanel = new JPanel();
+		plainPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
+		plainPanel.add(protAniListScroll);
+		plainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 20));
+		gridbagAdd(plainPanel, 0, 1, 5, 1);
 		
-		gridbagAdd(vDiagList, 3, 0, 1, 1);
-		gridbagAdd(diagListScroll, 3, 1, 3, 1);
+		gridbagAdd(vDiagList, 5, 0, 1, 1);
+		gridbagAdd(diagListScroll, 5, 1, 5, 1);
 		
 		gridbagAdd(vDiagInfo, 0, 2, 1, 1);
 		
@@ -257,6 +295,35 @@ public class DiagAniList extends JPanel{
 		}
 	}
 	
+	class DiagAniListButtonListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(diagRegister)) {
+				try {
+					new DiagRegister();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			else if(e.getSource().equals(modify)) {
+				modify.setText("확인");
+				JComponent[] changeStatusComps = {xDiagContent};
+				for(JComponent cop: changeStatusComps) {
+					cop.setEnabled(true);	
+				}
+			}
+			else if(e.getSource().equals(cancel)) {
+				modify.setText("수정");
+				JComponent[] changeStatusComps = {xDiagContent};
+				for(JComponent cop: changeStatusComps) {
+					cop.setEnabled(false);		
+				}
+			}
+		} 
+	}	
 	class ProtAniListMouseListener extends MouseAdapter{
 
 		@Override
@@ -292,6 +359,13 @@ public class DiagAniList extends JPanel{
 			imageButton.setEnabled(true);
 	}
 	
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
+	
 	public static void main(String[] args) {
+	
 	}
 }
