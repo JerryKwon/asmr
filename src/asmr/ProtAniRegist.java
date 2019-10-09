@@ -25,7 +25,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
-public class ProtAniRegist extends JPanel{
+public class ProtAniRegist extends JFrame{
 	private JLabel vProtAniRegist, vAbanAniType, vRscuNo, vParAbanAniName, vAbanAniName, vAge, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vFeature, vPicture, vCage;
 	private JTextField xRscuNo, xParAbanAniName, xAbanAniName, xAge, xKind, xColor;
 	private JComboBox<String> cbAbanAniType, cbAniType, cbSex, cbNeutWhet, cbAniSize, cbCage;
@@ -58,8 +58,8 @@ public class ProtAniRegist extends JPanel{
 		protAniRegistItemListener = new ProtAniRegistItemListener();
 		protAniRegistButtonListener = new ProtAniRegistButtonListener();
 		
-		vProtAniRegist = new JLabel("º¸È£µ¿¹°µî·Ï");
-		vProtAniRegist.setFont(new Font("³ª´®°íµñ", Font.BOLD, 20));
+//		vProtAniRegist = new JLabel("º¸È£µ¿¹°µî·Ï");
+//		vProtAniRegist.setFont(new Font("³ª´®°íµñ", Font.BOLD, 20));
 		
 		
 		vAbanAniType = new JLabel("À¯±âµ¿¹°±¸ºÐ");
@@ -133,7 +133,7 @@ public class ProtAniRegist extends JPanel{
 		ChangeFont(vComps, new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		
 		JComponent[] bComps = {searchRscu, searchPar, pictureManage, register, cancel};
-		ChangeFont(bComps, new Font("³ª´®°íµñ", Font.BOLD, 16));
+		ChangeFont(bComps, new Font("³ª´®°íµñ", Font.BOLD, 12));
 		
 		activateRscu();
 		
@@ -142,6 +142,7 @@ public class ProtAniRegist extends JPanel{
 	
 	private void ProtAniRegistView() {
 		setLayout(gridBagLayout);
+		setTitle("º¸È£µ¿¹°µî·Ï");
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -149,7 +150,7 @@ public class ProtAniRegist extends JPanel{
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
 	
-		gridbagAdd(vProtAniRegist, 0, 0, 1, 1);
+//		gridbagAdd(vProtAniRegist, 0, 0, 1, 1);
 		
 		gridbagAdd(vAbanAniType, 0, 1, 1, 1);
 		gridbagAdd(cbAbanAniType, 1, 1, 1, 1);
@@ -199,6 +200,11 @@ public class ProtAniRegist extends JPanel{
 		CombinePanel buttonPanel = new CombinePanel(cops, true);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 225, 0, 0));
 		gridbagAdd(buttonPanel, 0, 10, 6, 1);
+		
+		pack();
+		setLocationRelativeTo(null);
+		setResizable(false);
+		setVisible(true);
 			
 	}
 	
@@ -293,8 +299,7 @@ public class ProtAniRegist extends JPanel{
 				
 			}
 			else if(e.getSource().equals(cancel)) {
-				//ÆË¾÷À¸·Î ¹Ù²Ù°í ³ª¼­ È°¼ºÈ­
-				//				dispose();
+				dispose();
 			}
 		}
     	
