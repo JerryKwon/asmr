@@ -242,18 +242,18 @@ public class MainFrame extends JFrame {
 				//revalidate();
 				//repaint();
 				break;
-			case "직원등록":
-				ContentPanel.removeAll();
-				try {
-					pContents = new EmpRegister();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				ContentPanel.add(pContents);
-				revalidate();
-				repaint();
-				break;
+//			case "직원등록":
+//				ContentPanel.removeAll();
+//				try {
+//					pContents = new EmpRegister();
+//				} catch (IOException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//				ContentPanel.add(pContents);
+//				revalidate();
+//				repaint();
+//				break;
 				
 			case "직원조회":
 				ContentPanel.removeAll();
@@ -262,13 +262,13 @@ public class MainFrame extends JFrame {
 				revalidate();
 				repaint();
 				break;
-			case "동물등록":
-				ContentPanel.removeAll();
-				pContents = new ProtAniRegist();
-				ContentPanel.add(pContents);
-				revalidate();
-				repaint();
-				break;
+//			case "동물등록":
+//				ContentPanel.removeAll();
+//				pContents = new ProtAniRegist();
+//				ContentPanel.add(pContents);
+//				revalidate();
+//				repaint();
+//				break;
 			case "보호":
 				ContentPanel.removeAll();
 				try {
