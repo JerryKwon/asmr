@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -19,6 +20,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -64,7 +66,7 @@ public class DiagRegister extends JFrame{
 		oudiResultItemListener = new OudiResultItemListener();
 		cureTypeItemListener = new CureTypeItemListener();
 		
-		vDiagRegister = new JLabel("진료등록");
+//		vDiagRegister = new JLabel("진료등록");
 		
 		vDiagDate = new JLabel("진료일자");
 		xDiagDate = new JTextField(10);
@@ -136,6 +138,11 @@ public class DiagRegister extends JFrame{
 		cancel = new JButton("취소");
 		cancel.addActionListener(diagRegisterButtonListener);
 		
+		JComponent[] vComps = {vDiagDate, vDiagType, vIndiResult, vIndiVtrnName, vOudiResult, vHospName, vDisease, vInfecWhet, vCureType, vHsptzDate, vDschDate,vDeathType, vDeathReason, vDiagContent};
+		ChangeFont(vComps, new Font("나눔고딕", Font.PLAIN, 16));
+		
+		JComponent[] bComps = {register, cancel};
+		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 12));
 		activateIndi();
 		
 		DiagRegisterView();
@@ -143,6 +150,7 @@ public class DiagRegister extends JFrame{
 	
 	private void DiagRegisterView() {
 		setLayout(gridBagLayout);
+		setTitle("진료등록");
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -150,7 +158,7 @@ public class DiagRegister extends JFrame{
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
 		
-		gridbagAdd(vDiagRegister, 0, 0, 1, 1);
+//		gridbagAdd(vDiagRegister, 0, 0, 1, 1);
 		
 		gridbagAdd(vDiagDate, 0, 1, 1, 1);
 		Component[] cops1 = {xDiagDate, imageButton1};
@@ -204,6 +212,7 @@ public class DiagRegister extends JFrame{
 		gridbagAdd(buttonPanel, 0, 9, 4, 1);
 		
 		pack();
+		setLocationRelativeTo(null);
 		setResizable(false);
 		setVisible(true);
 	}
@@ -377,6 +386,12 @@ public class DiagRegister extends JFrame{
 		imageButton2.setEnabled(true);
 	}
 	
+   private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
+		
 	public static void main(String[] args) throws IOException {
 		new DiagRegister();
 	}
