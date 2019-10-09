@@ -3,8 +3,11 @@ package asmr;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,12 +17,13 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class EmpRegister extends JPanel{
+public class EmpRegister extends JFrame{
 	private JLabel vEmpRegist,vEmpName,vBelongCenter,vEmpType,vWorkType,vBirthDate,vGender,vAddress,vPhoneNum;
 	private JTextField xEmpName,xBelongCenter,xBirthDate,xAddress,xPhoneNum;
 	private JButton centerSearch,addressSearch, imageButton, register, cancel;
@@ -33,6 +37,8 @@ public class EmpRegister extends JPanel{
 	private Color blue = new Color(22,155,213);
 	private Color white = new Color(255,255,255);
 	
+	EmpRegisterButtonListener empRegisterButtonListener;
+	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
@@ -40,6 +46,8 @@ public class EmpRegister extends JPanel{
 	
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
+		
+		empRegisterButtonListener = new EmpRegisterButtonListener();
 		
 		vEmpRegist = new JLabel("직원등록");
 		
@@ -53,6 +61,7 @@ public class EmpRegister extends JPanel{
 		centerSearch = new JButton("검색");
 		centerSearch.setBackground(blue);
 		centerSearch.setForeground(white);
+		centerSearch.addActionListener(empRegisterButtonListener);
 		
 		vEmpType = new JLabel("직원구분");
 		cbEmpType = new JComboBox<String>(empTypeDiv);
@@ -78,6 +87,7 @@ public class EmpRegister extends JPanel{
 		addressSearch = new JButton("검색");
 		addressSearch.setBackground(blue);
 		addressSearch.setForeground(white);
+		addressSearch.addActionListener(empRegisterButtonListener);
 		
 		vPhoneNum = new JLabel("전화번호");
 		xPhoneNum = new JTextField(10);
@@ -85,16 +95,24 @@ public class EmpRegister extends JPanel{
 		register = new JButton("등록");
 		register.setBackground(blue);
 		register.setForeground(white);
+		register.addActionListener(empRegisterButtonListener);
 		
 		cancel = new JButton("취소");
+		cancel.addActionListener(empRegisterButtonListener);
 		
 		EmpRegisterView();
 		
+		JComponent[] vComps = {vEmpName,vBelongCenter,vEmpType,vWorkType,vBirthDate,vGender,vAddress,vPhoneNum};
+		ChangeFont(vComps, new Font("나눔고딕", Font.PLAIN, 16));
+		
+		JComponent[] bComps = {centerSearch,addressSearch, imageButton, register, cancel};
+		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 12));
 	}
 	
 	private void EmpRegisterView() {
 		
 		setLayout(gridBagLayout);
+		setTitle("직원등록");
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -102,7 +120,7 @@ public class EmpRegister extends JPanel{
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
 		
-		gridbagAdd(vEmpRegist, 0, 0, 1, 1);
+//		gridbagAdd(vEmpRegist, 0, 0, 1, 1);
 		
 		gridbagAdd(vEmpName, 0, 1, 1, 1);
 		gridbagAdd(xEmpName, 1, 1, 1, 1);
@@ -134,6 +152,11 @@ public class EmpRegister extends JPanel{
 		CombinePanel registerAndCancel = new CombinePanel(register, cancel,true);
 		registerAndCancel.setBorder(BorderFactory.createEmptyBorder(0, 220, 0, 0));
 		gridbagAdd(registerAndCancel, 0, 6, 5, 1);
+		
+		pack();
+		setLocationRelativeTo(null);
+		setResizable(false);
+		setVisible(true);
 
 	}
 	
@@ -147,6 +170,27 @@ public class EmpRegister extends JPanel{
 		gridBagLayout.setConstraints(c, gridBagConstraints);
 		
 		add(c);
+	}
+	
+	class EmpRegisterButtonListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(centerSearch)) {
+				new CenterSearch();
+			}
+			else if(e.getSource().equals(addressSearch)) {
+				
+			}
+			else if(e.getSource().equals(register)) {
+				
+			}
+			else if(e.getSource().equals(cancel)) {
+				dispose();
+			}
+		}
+		
 	}
 	
 	//두개의 컴포넌트를 하나의 패널로 묶는 JPanel
@@ -163,6 +207,11 @@ public class EmpRegister extends JPanel{
 		}
 	}
 	
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
 	
 	public static void main(String[] args) throws IOException {
 		new EmpRegister();
