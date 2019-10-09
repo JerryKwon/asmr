@@ -14,6 +14,8 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -31,12 +33,15 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
+import com.toedter.calendar.JDateChooser;
+
 public class DiagAniList extends JPanel{
 	private JLabel vProtAniList, vDiagList, vDiagInfo, vDiagDate, vDiagType, vIndiResult, vIndiVtrnName, vOudiResult, vHospName, vDisease, vInfecWhet, vCureType, vHsptzDate, vDschDate, vDeathType, vDeathReason, vDiagContent;
 	private JTextField xDiagDate, xDiagType, xIndiResult, xIndiVtrnName, xOudiResult, xHospName, xDisease, xInfecWhet, xCureType, xHsptzDate, xDschDate, xDeathType, xDeathReason;
 	private JButton diagRegister, imageButton, modify, cancel;
 	private JTextArea xDiagContent; 
 	private BufferedImage buttonIcon;
+	private JDateChooser chooser;
 	
 	private final String[] col1 = {"유기동물명","동물종류","품종","나이(개월)","크기"};
 	private final String[] col2 = {"진료일자","진료구분","내용"};
@@ -151,13 +156,19 @@ public class DiagAniList extends JPanel{
 		xHsptzDate.setEnabled(false);
 		
 		vDschDate = new JLabel("퇴원일자");
-		xDschDate = new JTextField(12);
-		xDschDate.setEnabled(false);
-		buttonIcon = ImageIO.read(new File("images/cal1.png"));
-		imageButton = new JButton(new ImageIcon(buttonIcon));
-		imageButton.setBorderPainted(false);
-		imageButton.setContentAreaFilled(false);
-		imageButton.setFocusPainted(false);
+		
+		LocalDate now = LocalDate.now();
+		Date date = Date.valueOf(now);
+		chooser = new JDateChooser(date,"YYYY.MM.dd");
+		chooser.setEnabled(false);
+		
+//		xDschDate = new JTextField(12);
+//		xDschDate.setEnabled(false);
+//		buttonIcon = ImageIO.read(new File("images/cal1.png"));
+//		imageButton = new JButton(new ImageIcon(buttonIcon));
+//		imageButton.setBorderPainted(false);
+//		imageButton.setContentAreaFilled(false);
+//		imageButton.setFocusPainted(false);
 		
 		
 		vDeathType = new JLabel("사망구분");
@@ -187,7 +198,7 @@ public class DiagAniList extends JPanel{
 		
 		JComponent[] vComps = {vDiagDate, vDiagType, vIndiResult, vIndiVtrnName, vOudiResult, vHospName, vDisease, vInfecWhet, vCureType, vHsptzDate, vDschDate, vDeathType, vDeathReason, vDiagContent};
 		ChangeFont(vComps, new Font("나눔고딕", Font.PLAIN, 16));
-		JComponent[] bComps = {diagRegister, imageButton, modify, cancel};
+		JComponent[] bComps = {diagRegister, modify, cancel};
 		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 16));
 		
 	}
@@ -245,11 +256,14 @@ public class DiagAniList extends JPanel{
 		gridbagAdd(xHsptzDate, 3, 7, 1, 1);
 		
 		gridbagAdd(vDschDate, 2, 8, 1, 1);
-		Component[] cops1 = {xDschDate,imageButton};
-		CombinePanel dschDatePanel = new CombinePanel(cops1, false);
-		gridbagAdd(dschDatePanel, 3, 8, 1, 1);
-//		gridbagAdd(xDschDate, 3, 8, 1, 1);
-//		gridbagAdd(imageButton, 4, 8, 1, 1);
+				
+//		Component[] cops1 = {xDschDate,imageButton};
+//		CombinePanel dschDatePanel = new CombinePanel(cops1, false);
+//		gridbagAdd(dschDatePanel, 3, 8, 1, 1);
+
+		gridbagAdd(chooser, 3, 8, 1, 1);
+
+		
 		
 		gridbagAdd(vDeathType, 0, 9, 1, 1);
 		gridbagAdd(xDeathType, 1, 9, 1, 1);
@@ -310,14 +324,14 @@ public class DiagAniList extends JPanel{
 			}
 			else if(e.getSource().equals(modify)) {
 				modify.setText("확인");
-				JComponent[] changeStatusComps = {xDiagContent};
+				JComponent[] changeStatusComps = {xDiagContent,chooser};
 				for(JComponent cop: changeStatusComps) {
 					cop.setEnabled(true);	
 				}
 			}
 			else if(e.getSource().equals(cancel)) {
 				modify.setText("수정");
-				JComponent[] changeStatusComps = {xDiagContent};
+				JComponent[] changeStatusComps = {xDiagContent,chooser};
 				for(JComponent cop: changeStatusComps) {
 					cop.setEnabled(false);		
 				}
