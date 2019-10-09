@@ -74,7 +74,14 @@ public class EmpList extends JPanel {
 		register.setForeground(white);
 		register.addActionListener(empListButtonListener);
 		
-		eEmpList = new JTable(model1);
+//		eEmpList = new JTable(model1);
+		eEmpList = new JTable(model1) {
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		scrollpane = new JScrollPane(eEmpList);
 		scrollpane.setPreferredSize(new Dimension(600,100));
 		
@@ -228,7 +235,12 @@ public class EmpList extends JPanel {
 				
 			}
 			else if(e.getSource().equals(register)) {
-
+				try {
+					new EmpRegister();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 			else if(e.getSource().equals(centerSearch)) {
 				new CenterSearch();
