@@ -14,6 +14,8 @@ import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -29,6 +31,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
+import com.toedter.calendar.JDateChooser;
+
 
 public class DiagRegister extends JFrame{
 	private JLabel vDiagRegister, vDiagDate, vDiagType, vIndiResult, vIndiVtrnName, vOudiResult, vHospName, vDisease, vInfecWhet, vCureType, vHsptzDate, vDschDate,vDeathType, vDeathReason, vDiagContent; 
@@ -37,6 +41,7 @@ public class DiagRegister extends JFrame{
 	private JButton imageButton1, imageButton2, register, cancel;
 	private JTextArea xDiagContent;
 	private BufferedImage buttonIcon;
+	private JDateChooser diagDateChooser, hsptzDateChooser, dschDateChooser;
 	
 	private JScrollPane diagContentScroll;
 	
@@ -70,14 +75,19 @@ public class DiagRegister extends JFrame{
 		
 		vDiagDate = new JLabel("진료일자");
 		xDiagDate = new JTextField(10);
-		xDiagDate.setEnabled(false);
-		xDiagDate.setEnabled(false);
-		buttonIcon = ImageIO.read(new File("images/cal1.png"));
-		imageButton1 = new JButton(new ImageIcon(buttonIcon));
-		imageButton1.setBorderPainted(false);
-		imageButton1.setContentAreaFilled(false);
-		imageButton1.setFocusPainted(false);
 		
+		LocalDate now = LocalDate.now();
+		Date date = Date.valueOf(now);
+		diagDateChooser = new JDateChooser(date,"YYYY.MM.dd");
+		
+//		xDiagDate.setEnabled(false);
+//		xDiagDate.setEnabled(false);
+//		buttonIcon = ImageIO.read(new File("images/cal1.png"));
+//		imageButton1 = new JButton(new ImageIcon(buttonIcon));
+//		imageButton1.setBorderPainted(false);
+//		imageButton1.setContentAreaFilled(false);
+//		imageButton1.setFocusPainted(false);
+//		
 		
 		vDiagType = new JLabel("진료구분");
 		cbDiagType = new JComboBox<String>(diagTypeDiv);
@@ -108,14 +118,18 @@ public class DiagRegister extends JFrame{
 //		xCureType = new JTextField(10);
 		
 		vHsptzDate = new JLabel("입원일자");
-		xHsptzDate = new JTextField(10);
+		hsptzDateChooser = new JDateChooser(date,"YYYY.MM.dd");
+		
+//		xHsptzDate = new JTextField(10);
 		
 		vDschDate = new JLabel("퇴원일자");
-		xDschDate = new JTextField(10);
-		imageButton2 = new JButton(new ImageIcon(buttonIcon));
-		imageButton2.setBorderPainted(false);
-		imageButton2.setContentAreaFilled(false);
-		imageButton2.setFocusPainted(false);
+		dschDateChooser = new JDateChooser(null,"YYYY.MM.dd");
+
+//		xDschDate = new JTextField(10);
+//		imageButton2 = new JButton(new ImageIcon(buttonIcon));
+//		imageButton2.setBorderPainted(false);
+//		imageButton2.setContentAreaFilled(false);
+//		imageButton2.setFocusPainted(false);
 		
 		vDeathType = new JLabel("사망구분");
 		cbDeathType = new JComboBox<String>(deathTypeDiv);
@@ -161,9 +175,10 @@ public class DiagRegister extends JFrame{
 //		gridbagAdd(vDiagRegister, 0, 0, 1, 1);
 		
 		gridbagAdd(vDiagDate, 0, 1, 1, 1);
-		Component[] cops1 = {xDiagDate, imageButton1};
-		CombinePanel diagDatePanel = new CombinePanel(cops1, false);
-		gridbagAdd(diagDatePanel, 1, 1, 1, 1);
+//		Component[] cops1 = {xDiagDate, imageButton1};
+//		CombinePanel diagDatePanel = new CombinePanel(cops1, false);
+//		gridbagAdd(diagDatePanel, 1, 1, 1, 1);
+		gridbagAdd(diagDateChooser, 1, 1, 1, 1);
 		
 		gridbagAdd(vDiagType, 2, 1, 1, 1);
 		gridbagAdd(cbDiagType, 3, 1, 1, 1);
@@ -190,12 +205,14 @@ public class DiagRegister extends JFrame{
 		gridbagAdd(cbCureType, 1, 5, 1, 1);
 		
 		gridbagAdd(vHsptzDate, 2, 5, 1, 1);
-		gridbagAdd(xHsptzDate, 3, 5, 1, 1);
+		gridbagAdd(hsptzDateChooser, 3, 5, 1, 1);
+//		gridbagAdd(xHsptzDate, 3, 5, 1, 1);
 		
 		gridbagAdd(vDschDate, 2, 6, 1, 1);
-		Component[] cops2 = {xDschDate, imageButton2};
-		CombinePanel dschDatePanel = new CombinePanel(cops2, false);
-		gridbagAdd(dschDatePanel, 3, 6, 1, 1);
+		gridbagAdd(dschDateChooser, 3, 6, 1, 1);
+//		Component[] cops2 = {xDschDate, imageButton2};
+//		CombinePanel dschDatePanel = new CombinePanel(cops2, false);
+//		gridbagAdd(dschDatePanel, 3, 6, 1, 1);
 		
 		gridbagAdd(vDeathType, 0, 7, 1, 1);
 		gridbagAdd(cbDeathType, 1, 7, 1, 1);
@@ -320,9 +337,11 @@ public class DiagRegister extends JFrame{
 		xDisease.setEnabled(false);
 		xInfecWhet.setEnabled(false);
 		cbCureType.setEnabled(false);
-		xHsptzDate.setEnabled(false);
-		xDschDate.setEnabled(false);
-		imageButton2.setEnabled(false);
+//		xHsptzDate.setEnabled(false);
+//		xDschDate.setEnabled(false);
+//		imageButton2.setEnabled(false);
+		hsptzDateChooser.setEnabled(false);
+		dschDateChooser.setEnabled(false);
 		cbDeathType.setEnabled(false);
 		xDeathReason.setEnabled(false);
 	}
@@ -336,9 +355,11 @@ public class DiagRegister extends JFrame{
 		xDisease.setEnabled(true);
 		xInfecWhet.setEnabled(true);
 		cbCureType.setEnabled(true);
-		xHsptzDate.setEnabled(true);
-		xDschDate.setEnabled(false);
-		imageButton2.setEnabled(false);
+//		xHsptzDate.setEnabled(true);
+//		xDschDate.setEnabled(false);
+//		imageButton2.setEnabled(false);
+		hsptzDateChooser.setEnabled(true);
+		dschDateChooser.setEnabled(false);
 		cbDeathType.setEnabled(false);
 		xDeathReason.setEnabled(false);
 	}
@@ -349,9 +370,11 @@ public class DiagRegister extends JFrame{
 		xDisease.setEnabled(true);
 		xInfecWhet.setEnabled(true);
 		cbCureType.setEnabled(true);
-		xHsptzDate.setEnabled(true);
-		xDschDate.setEnabled(false);
-		imageButton2.setEnabled(false);
+//		xHsptzDate.setEnabled(true);
+//		xDschDate.setEnabled(false);
+//		imageButton2.setEnabled(false);
+		hsptzDateChooser.setEnabled(true);
+		dschDateChooser.setEnabled(false);
 		
 		cbDeathType.setEnabled(false);
 		xDeathReason.setEnabled(false);
@@ -363,9 +386,11 @@ public class DiagRegister extends JFrame{
 		xDisease.setEnabled(false);
 		xInfecWhet.setEnabled(false);
 		cbCureType.setEnabled(false);
-		xHsptzDate.setEnabled(false);
-		xDschDate.setEnabled(false);
-		imageButton2.setEnabled(false);
+//		xHsptzDate.setEnabled(false);
+//		xDschDate.setEnabled(false);
+//		imageButton2.setEnabled(false);
+		hsptzDateChooser.setEnabled(false);
+		dschDateChooser.setEnabled(false);
 		
 		cbDeathType.setEnabled(true);
 		xDeathReason.setEnabled(true);	
@@ -373,17 +398,21 @@ public class DiagRegister extends JFrame{
 	
 	
 	private void activateHsptz() {
-		xHsptzDate.setEnabled(true);
+//		xHsptzDate.setEnabled(true);
+		hsptzDateChooser.setEnabled(true);
 		
-		xDschDate.setEnabled(false);
-		imageButton2.setEnabled(false);
+//		xDschDate.setEnabled(false);
+//		imageButton2.setEnabled(false);
+		dschDateChooser.setEnabled(false);
 	}
 	
 	private void activateDsch() {
-		xHsptzDate.setEnabled(true);
+//		xHsptzDate.setEnabled(true);
+		hsptzDateChooser.setEnabled(true);
 		
-		xDschDate.setEnabled(true);
-		imageButton2.setEnabled(true);
+//		xDschDate.setEnabled(true);
+//		imageButton2.setEnabled(true);
+		dschDateChooser.setEnabled(true);
 	}
 	
    private void ChangeFont(JComponent[] comps, Font font) {
