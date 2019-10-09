@@ -85,7 +85,7 @@ public class CenterSearch extends JFrame{
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
 		
-		vCenterSearch.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
+		vCenterSearch.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		gridbagAdd(vCenterSearch, 0, 0, 1, 1);
 		
 		JPanel panel = new JPanel();
