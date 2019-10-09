@@ -50,7 +50,8 @@ public class CenterManagerSearch extends JFrame{
 		centerManagerSearchButtonListener = new CenterManagerSearchButtonListener();
 		centerManagerSearchMouseListener = new CenterManagerSearchMouseListener();
 		
-//		vCenterManagerSerach = new JLabel("센터장검색");
+		vCenterManagerSerach = new JLabel("센터장목록");
+		vCenterManagerSerach.setFont(new Font("나눔고딕", Font.BOLD, 16));
 		
 //		eCenterManagerList = new JTable(model1);
 		eCenterManagerList = new JTable(model1) {
@@ -63,6 +64,7 @@ public class CenterManagerSearch extends JFrame{
 		eCenterManagerList.addMouseListener(centerManagerSearchMouseListener);
 		scrollpane = new JScrollPane(eCenterManagerList);
 		scrollpane.setPreferredSize(new Dimension(200,100));
+		
 		
 		confirm = new JButton("확인");
 		confirm.setBackground(blue);
@@ -85,9 +87,13 @@ public class CenterManagerSearch extends JFrame{
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
 		
-//		gridbagAdd(vCenterManagerSerach, 0, 0, 1, 1);
+		gridbagAdd(vCenterManagerSerach, 0, 0, 1, 1);
 		
-		gridbagAdd(scrollpane, 0, 1, 2, 1);
+		JPanel scrollPanel = new JPanel();
+		scrollPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
+		scrollPanel.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
+		scrollPanel.add(scrollpane);
+		gridbagAdd(scrollPanel, 0, 1, 2, 1);
 		
 		JComponent[] bComps = {confirm,cancel};
 		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 12));
