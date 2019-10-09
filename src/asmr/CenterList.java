@@ -84,7 +84,7 @@ public class CenterList extends JPanel{
 		
 		eCenterList.addMouseListener(centerListMouseListener);
 		scrollpane1 = new JScrollPane(eCenterList);
-		scrollpane1.setPreferredSize(new Dimension(600,100));
+		scrollpane1.setPreferredSize(new Dimension(600,200));
 		
 		//케이지목록
 		vCageList = new JLabel("케이지목록");
@@ -99,7 +99,7 @@ public class CenterList extends JPanel{
 	    };
 
 		scrollpane2 = new JScrollPane(eCageList);
-		scrollpane2.setPreferredSize(new Dimension(300,100));
+		scrollpane2.setPreferredSize(new Dimension(300,200));
 		
 		vCenterInfo = new JLabel("센터정보");
 		vCenterInfo.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
