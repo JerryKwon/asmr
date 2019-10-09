@@ -11,6 +11,12 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -23,12 +29,16 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.toedter.calendar.JCalendar;
+import com.toedter.calendar.JDateChooser;
+
 public class EmpRegister extends JFrame{
 	private JLabel vEmpRegist,vEmpName,vBelongCenter,vEmpType,vWorkType,vBirthDate,vGender,vAddress,vPhoneNum;
 	private JTextField xEmpName,xBelongCenter,xBirthDate,xAddress,xPhoneNum;
 	private JButton centerSearch,addressSearch, imageButton, register, cancel;
 	private JComboBox<String> cbEmpType,cbWorkType,cbGender;
 	private BufferedImage buttonIcon;
+	private JDateChooser chooser;
 	
 	private final String[] empTypeDiv = {"정규직","계약직"};
 	private final String[] workTypeDiv = {"센터장","관리직원","수의사","보호관리직원","사무직종사자","유기동물구조원"};
@@ -72,6 +82,11 @@ public class EmpRegister extends JFrame{
 		vBirthDate = new JLabel("생년월일");
 		xBirthDate = new JTextField(10);
 		xBirthDate.setEnabled(false);
+		
+		LocalDate now = LocalDate.now();
+		Date date = Date.valueOf(now);
+		chooser = new JDateChooser(date,"YYYY.MM.dd");
+		
 		buttonIcon = ImageIO.read(new File("images/cal1.png"));
 		imageButton = new JButton(new ImageIcon(buttonIcon));
 		imageButton.setBorderPainted(false);
@@ -136,20 +151,24 @@ public class EmpRegister extends JFrame{
 		gridbagAdd(cbWorkType, 3, 2, 1, 1);
 		
 		gridbagAdd(vBirthDate, 0, 3, 1, 1);
-		CombinePanel birthDatePanel = new CombinePanel(xBirthDate,imageButton,false);
+//		JComponent[] bdSet = {xBirthDate,chooser};
+		JComponent[] bdSet = {chooser};
+		CombinePanel birthDatePanel = new CombinePanel(bdSet, 0 , 0);
 		gridbagAdd(birthDatePanel, 1, 3, 1, 1);
 		
 		gridbagAdd(vGender, 2, 3, 1, 1);
 		gridbagAdd(cbGender, 3, 3, 1, 1);
 		
 		gridbagAdd(vAddress, 0, 4, 1, 1);
-		CombinePanel addressSearchPanel = new CombinePanel(xAddress, addressSearch,false);
+		JComponent[] addrSet = {xAddress, addressSearch};
+		CombinePanel addressSearchPanel = new CombinePanel(addrSet, 0, 0);
 		gridbagAdd(addressSearchPanel, 1, 4, 1, 1);
 
 		gridbagAdd(vPhoneNum, 0, 5, 1, 1);
 		gridbagAdd(xPhoneNum, 1, 5, 1, 1);
 
-		CombinePanel registerAndCancel = new CombinePanel(register, cancel,true);
+		JComponent[] buttons = {register, cancel};
+		CombinePanel registerAndCancel = new CombinePanel(buttons, 15, 0);
 		registerAndCancel.setBorder(BorderFactory.createEmptyBorder(0, 220, 0, 0));
 		gridbagAdd(registerAndCancel, 0, 6, 5, 1);
 		
@@ -193,17 +212,16 @@ public class EmpRegister extends JFrame{
 		
 	}
 	
-	//두개의 컴포넌트를 하나의 패널로 묶는 JPanel
 	class CombinePanel extends JPanel {
 		//컴포넌트 1, 컴포넌트 2, 패널 구성시 좌,우 margin 공간을 없애기 위한 Flag
-		public CombinePanel(Component c1, Component c2, boolean isBorder) {
+		public CombinePanel(Component[] cops, int borderWidth, int borderHeight) {
 			//Margin이 필요하지 않을 때
-			if(!isBorder) {
-				setLayout(new FlowLayout(FlowLayout.LEFT,0,0));	
-			}
 			
-			add(c1);
-			add(c2);
+			setLayout(new FlowLayout(FlowLayout.LEFT,borderWidth,borderHeight));
+			
+			for (Component c: cops) {
+				add(c);
+			}
 		}
 	}
 	
