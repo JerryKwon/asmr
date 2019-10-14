@@ -200,7 +200,7 @@ public class EmpRegister extends JFrame{
 				new CenterSearch();
 			}
 			else if(e.getSource().equals(addressSearch)) {
-				
+				new AddressSearch();
 			}
 			else if(e.getSource().equals(register)) {
 				
