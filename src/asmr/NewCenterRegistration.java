@@ -282,7 +282,7 @@ public class NewCenterRegistration extends JFrame{
 				new CenterManagerSearch();
 			}
 			else if(e.getSource().equals(addressSearch)) {
-				
+				new AddressSearch();
 			}
 			else if(e.getSource().equals(register)) {
 				
