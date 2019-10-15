@@ -6,10 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -27,10 +23,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class AddressSearch extends JFrame {
-	private JLabel vCityProv, vSgg, vRoadNm, vBldgNum, vRoadNmAddr1, vRoadNmAddr2, vDtilAddr;
-	private JTextField xRoadNm, xBldgNum, xRoadNmAddr, xDtilAddr;
+	private JLabel vCityProv, vRoadNm, vBldgNum, vRoadNmAddr1, vRoadNmAddr2, vDtilAddr;
+	private JTextField xRoadNm, xBldgNum, xDtilAddr;
 	private JButton search, confirm, cancel;
-	private JComboBox<String> cbCityProv,cbSgg;
+	private JComboBox<String> cbCityProv;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "addrmon";
@@ -44,33 +40,19 @@ public class AddressSearch extends JFrame {
 	private Color blue = new Color(22,155,213);
 	private Color white = new Color(255,255,255);
 	
-	private boolean isFirst = true;
-	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
 	GridBagLayout btGridBagLayout;
 	GridBagConstraints btGridBagConstraints;
 	
-	AddrSearchCbListener addrSearchCbListener;
-	AddrSearchButtonListener addrSearchButtonListener;
-	
 	public AddressSearch() {
 		// TODO Auto-generated constructor stub
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
 		
-		addrSearchCbListener = new AddrSearchCbListener();
-		addrSearchButtonListener = new AddrSearchButtonListener();
-		
 		vCityProv = new JLabel("½Ãµµ*");
 		cbCityProv = new JComboBox<String>();
-//		cbCityProv.setSelectedIndex(anIndex);
-		cbCityProv.addItemListener(addrSearchCbListener);
-//		cbCityProv.addActionListener(addrSearchCbActionListener);
-		
-		vSgg= new JLabel("½Ã±º±¸*");
-		cbSgg = new JComboBox<String>();
 		
 		vRoadNm = new JLabel("µµ·Î¸í*");
 		xRoadNm = new JTextField(10);
@@ -81,15 +63,9 @@ public class AddressSearch extends JFrame {
 		search = new JButton("°Ë»ö");
 		search.setBackground(blue);
 		search.setForeground(white);
-		search.addActionListener(addrSearchButtonListener);
 		
 		vRoadNmAddr1 = new JLabel("µµ·Î¸íÁÖ¼Ò");
 		vRoadNmAddr1.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
-		
-		xRoadNmAddr = new JTextField(15);
-//		xRoadNmAddr.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, right));
-		xRoadNmAddr.setEditable(false);
-		
 		vRoadNmAddr2 = new JLabel("");
 		vRoadNmAddr2.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
 		
@@ -99,15 +75,11 @@ public class AddressSearch extends JFrame {
 		confirm = new JButton("È®ÀÎ");
 		confirm.setBackground(blue);
 		confirm.setForeground(white);
-		confirm.addActionListener(addrSearchButtonListener);
 		
 		cancel = new JButton("Ãë¼Ò");
-		cancel.addActionListener(addrSearchButtonListener);
 		
-		JComponent[] vComps = {vCityProv,vSgg,vRoadNm,vBldgNum,vRoadNmAddr1,vDtilAddr};
+		JComponent[] vComps = {vCityProv,vRoadNm,vBldgNum,vRoadNmAddr1,vRoadNmAddr2,vDtilAddr};
 		ChangeFont(vComps, new Font("³ª´®°íµñ", Font.PLAIN, 16));
-		
-		vRoadNmAddr2.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 8));
 		
 		JComponent[] bComps = {search,confirm,cancel};
 		ChangeFont(bComps, new Font("³ª´®°íµñ", Font.BOLD, 12));
@@ -129,34 +101,27 @@ public class AddressSearch extends JFrame {
 		
 		gridbagAdd(vCityProv, 0, 0, 1, 1);
 		gridbagAdd(cbCityProv, 1, 0, 1, 1);
-
-		gridbagAdd(vSgg, 0, 1, 1, 1);
-		gridbagAdd(cbSgg, 1, 1, 2, 1);
+//		
+		gridbagAdd(vRoadNm, 0, 1, 1, 1);
+		gridbagAdd(xRoadNm, 1, 1, 1, 1);
 		
-		gridbagAdd(vRoadNm, 0, 2, 1, 1);
-		gridbagAdd(xRoadNm, 1, 2, 1, 1);
-		
-		gridbagAdd(vBldgNum, 0, 3, 1, 1);
-		gridbagAdd(xBldgNum, 1, 3, 1, 1);
-		gridbagAdd(search, 2, 3, 1, 1);
+		gridbagAdd(vBldgNum, 0, 2, 1, 1);
+		gridbagAdd(xBldgNum, 1, 2, 1, 1);
+		gridbagAdd(search, 2, 2, 1, 1);
 		
 //		BottomPanel bottomPanel = new BottomPanel();
 //		gridbagAdd(bottomPanel, 0, 3, 1, 1);
 //		
-		gridbagAdd(vRoadNmAddr1, 0, 4, 1, 1);
-		JPanel plainPanel = new JPanel();
-		plainPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
-		plainPanel.add(xRoadNmAddr);
-		plainPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
-		gridbagAdd(plainPanel, 1, 4, 2, 1);
+		gridbagAdd(vRoadNmAddr1, 0, 3, 1, 1);
+		gridbagAdd(vRoadNmAddr2, 1, 3, 1, 1);
 		
-		gridbagAdd(vDtilAddr, 0, 5, 1, 1);
-		gridbagAdd(xDtilAddr, 1, 5, 1, 1);
+		gridbagAdd(vDtilAddr, 0, 4, 1, 1);
+		gridbagAdd(xDtilAddr, 1, 4, 1, 1);
 		
 		JComponent[] buttons = {confirm,cancel};
 		CombinePanel buttonPanel = new CombinePanel(buttons, 10, 0);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 70, 0, 0));
-		gridbagAdd(buttonPanel, 0, 6, 3, 1);
+		gridbagAdd(buttonPanel, 0, 5, 3, 1);
 		
 		pack();
 		setLocationRelativeTo(null);
@@ -222,32 +187,32 @@ public class AddressSearch extends JFrame {
 
 
 	
-//	class BottomPanel extends JPanel{
-//		public BottomPanel() {
-//			// TODO Auto-generated constructor stub
-//			btGridBagLayout = new GridBagLayout();
-//			btGridBagConstraints = new GridBagConstraints();
-//			
-//			setLayout(btGridBagLayout);
-//			
-//			btGridBagConstraints.anchor = GridBagConstraints.WEST;
-//			btGridBagConstraints.ipadx = 7;
-//			
-//			btGridBagConstraints.weightx=1.0;
-//			btGridBagConstraints.weighty=1.0;
-//			
-//			btGridbagAdd(vRoadNmAddr1, 0, 0, 1, 1);
-//			btGridbagAdd(vRoadNmAddr2, 1, 0, 1, 1);
-//			
-//			btGridbagAdd(vDtilAddr, 0, 1, 1, 1);
-//			btGridbagAdd(xDtilAddr, 1, 1, 1, 1);
-//			
-//			JComponent[] buttons = {confirm,cancel};
-//			CombinePanel buttonPanel = new CombinePanel(buttons, 10, 0);
-//			btGridbagAdd(buttonPanel, 0, 2, 3, 1);
-//		}
-//	}
-//	
+	class BottomPanel extends JPanel{
+		public BottomPanel() {
+			// TODO Auto-generated constructor stub
+			btGridBagLayout = new GridBagLayout();
+			btGridBagConstraints = new GridBagConstraints();
+			
+			setLayout(btGridBagLayout);
+			
+			btGridBagConstraints.anchor = GridBagConstraints.WEST;
+			btGridBagConstraints.ipadx = 7;
+			
+			btGridBagConstraints.weightx=1.0;
+			btGridBagConstraints.weighty=1.0;
+			
+			btGridbagAdd(vRoadNmAddr1, 0, 0, 1, 1);
+			btGridbagAdd(vRoadNmAddr2, 1, 0, 1, 1);
+			
+			btGridbagAdd(vDtilAddr, 0, 1, 1, 1);
+			btGridbagAdd(xDtilAddr, 1, 1, 1, 1);
+			
+			JComponent[] buttons = {confirm,cancel};
+			CombinePanel buttonPanel = new CombinePanel(buttons, 10, 0);
+			btGridbagAdd(buttonPanel, 0, 2, 3, 1);
+		}
+	}
+	
 	
 	private void gridbagAdd(Component c, int x, int y, int w , int h) {
 		
@@ -292,95 +257,7 @@ public class AddressSearch extends JFrame {
     		comp.setFont(font);
     	}
     }
-    
-    class AddrSearchCbListener implements ItemListener{
-
-		@Override
-		public void itemStateChanged(ItemEvent e) {
-			// TODO Auto-generated method stub
-			if(e.getStateChange()==ItemEvent.SELECTED) {				
-				if(!isFirst) {
-					String cityProvNm = cbCityProv.getSelectedItem().toString();
-					connection();
-					cbSgg.removeAllItems();
-					
-					try {
-						String query="select distinct sgg_nm from road_nm_code where city_prov_nm='"+cityProvNm+"' order by 1";
-						pstmt = con.prepareStatement(query);
-						rs = pstmt.executeQuery();
-						while(rs.next()) {
-							cbSgg.addItem(rs.getString("sgg_nm"));
-						}
-					
-					}
-					catch(SQLException e1){
-						e1.printStackTrace();
-					}
-					
-					
-					
-					disconnection();
-				}
-				else isFirst=false;
-			}
-		}
-    	
-    }
-    
-    class AddrSearchButtonListener implements ActionListener{
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			if(e.getSource().equals(search)) {
-				String cityProvNm = cbCityProv.getSelectedItem().toString();
-				String sggNm = cbSgg.getSelectedItem().toString();
-				String roadNm = xRoadNm.getText().toString();
-				String bldgNum = xBldgNum.getText().toString();
-				
-				connection();
-				cbSgg.removeAllItems();
-				
-				try {
-					String query=
-							"SELECT rd.city_prov_nm||LPAD(rd.sgg_nm,8)||LPAD(rd.road_nm,10)||LPAD(ad.bldg_pr_num,5)||'('||ai.admn_d_nm||','||ai.sgg_bldg_nm||')' result \r\n" + 
-							"FROM(\r\n" + 
-							"   SELECT *\r\n" + 
-							"   FROM road_nm_code\r\n" + 
-							"   WHERE CITY_PROV_NM='"+cityProvNm+"'\r\n" + 
-							"   AND SGG_NM='"+sggNm+"' AND ROAD_NM='"+roadNm+"'\r\n" + 
-							"   ) rd LEFT OUTER JOIN \r\n" +
-							"   address ad \r\n"	+
-							"	ON rd.road_nm_code = ad.road_nm_code and rd.umd_sri_num = ad.umd_sri_num \r\n" +
-							"		LEFT OUTER JOIN \r\n" +
-							"	add_info ai \r\n" +
-							"	ON ad.man_num = ai.man_num \r\n" +
-							"WHERE ad.bldg_pr_num ='"+bldgNum+"'";
-					pstmt = con.prepareStatement(query);
-					rs = pstmt.executeQuery();
-					while(rs.next()) {
-						xRoadNmAddr.setText(rs.getString("result"));
-					}
-				
-				}
-				catch(SQLException e1){
-					e1.printStackTrace();
-				}
-				
-				
-				
-				disconnection();
-			}
-			else if(e.getSource().equals(confirm)) {
-				
-			}
-			else if(e.getSource().equals(cancel)) {
-				dispose();
-			}
-		}
-    	
-    }
-    
+	
 	public static void main(String[] args) {
 		new AddressSearch();
 	}
