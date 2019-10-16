@@ -1,4 +1,4 @@
-package asmr;
+package src.asmr;
 
 import java.awt.Component;
 import java.awt.Dimension;

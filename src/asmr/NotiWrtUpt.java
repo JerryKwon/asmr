@@ -1,5 +1,5 @@
 // 버튼 배치 이상함
-package asmr;
+package src.asmr;
 
 import java.awt.Component;
 import java.awt.GridBagConstraints;

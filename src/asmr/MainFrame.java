@@ -1,4 +1,4 @@
-package asmr;
+package src.asmr;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 

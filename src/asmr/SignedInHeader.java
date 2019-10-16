@@ -1,4 +1,4 @@
-package asmr;
+package src.asmr;
 
 import javax.swing.*;
 import java.awt.*;
