@@ -51,8 +51,6 @@ public class RprtAssignment extends JPanel {
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
 	
-	private Button btn;
-	
 	RprtAniListMouseListener rprtAniListMouseListener;
 	
 	private final String[] col1 = {"신고일시","동물종류","동물크기","설명","배정센터명"};
@@ -134,7 +132,7 @@ public class RprtAssignment extends JPanel {
 		Imagebutton.setContentAreaFilled(false);
 		Imagebutton.setFocusPainted(false);
 		
-		btn = new Button();
+		new Button();
 		
 		RprtAssignmentView();
 	}
