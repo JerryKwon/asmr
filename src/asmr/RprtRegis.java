@@ -1,4 +1,4 @@
-package src.asmr;
+package asmr;
 
 import java.awt.Button;
 import java.awt.Color;
