@@ -1,0 +1,19 @@
+# 무시 목록 #
+
+# 컴파일된 class파일 #
+*.class
+
+
+# 패키지 파일 #
+*.jar
+
+# 이클립스 #
+.project
+.metadata
+.classpath
+.settings/
+.loadpath
+
+# 디렉토리 #
+/bin/
+bin/**
