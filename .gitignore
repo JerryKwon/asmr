@@ -1,0 +1,26 @@
+<<<<<<< HEAD
+# 무시 목록 #
+
+# 컴파일된 class파일 #
+*.class
+
+
+# 패키지 파일 #
+*.jar
+
+# 이클립스 #
+.project
+.metadata
+.classpath
+.settings/
+.loadpath
+
+# 디렉토리 #
+/bin/
+bin/**
+=======
+.classpath
+.project
+.settings/
+bin/asmr
+>>>>>>> fba297e3cb1f7b37be7403cdd3cb62e8521183d9
