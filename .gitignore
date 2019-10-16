@@ -15,5 +15,4 @@
 .loadpath
 
 # 디렉토리 #
-/bin/
-bin/**
+bin/asmr/
