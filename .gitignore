@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 무시 목록 #
 
 # 컴파일된 class파일 #
@@ -17,3 +18,9 @@
 # 디렉토리 #
 /bin/
 bin/**
+=======
+.classpath
+.project
+.settings/
+bin/asmr
+>>>>>>> fba297e3cb1f7b37be7403cdd3cb62e8521183d9
