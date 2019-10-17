@@ -106,7 +106,7 @@ public class NewCenterRegistration extends JFrame{
 		//林家
 		vAddress = new JLabel("林家");
 		xAddress = new JTextField(20);
-		xAddress.setEnabled(false);
+		xAddress.setEditable(false);
 		addressSearch = new JButton("八祸");
 		addressSearch.setBackground(blue);
 		addressSearch.setForeground(white);
@@ -282,7 +282,7 @@ public class NewCenterRegistration extends JFrame{
 				new CenterManagerSearch();
 			}
 			else if(e.getSource().equals(addressSearch)) {
-				new AddressSearch();
+				new AddressSearch(xAddress);
 			}
 			else if(e.getSource().equals(register)) {
 				
