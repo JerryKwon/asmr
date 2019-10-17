@@ -23,13 +23,12 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class AddressSearch extends JFrame {
 	private JLabel vCityProv, vSgg, vRoadNm, vBldgNum, vRoadNmAddr1, vRoadNmAddr2, vDtilAddr;
-	private JTextField xRoadNm, xBldgNum, xRoadNmAddr, xDtilAddr, xAddress;
+	private JTextField xRoadNm, xBldgNum, xRoadNmAddr, xDtilAddr;
 	private JButton search, confirm, cancel;
 	private JComboBox<String> cbCityProv,cbSgg;
 	
@@ -56,9 +55,7 @@ public class AddressSearch extends JFrame {
 	AddrSearchCbListener addrSearchCbListener;
 	AddrSearchButtonListener addrSearchButtonListener;
 	
-	public AddressSearch(JTextField xAddress) {
-		this.xAddress = xAddress;
-		
+	public AddressSearch() {
 		// TODO Auto-generated constructor stub
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
@@ -336,85 +333,46 @@ public class AddressSearch extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(search)) {
-
-				String cityProvNm = null;
-				String sggNm = null;
-				String roadNm = null;
-				String bldgNum = null;
-			
-				if(cbCityProv.getSelectedItem().toString().isEmpty() 
-						|| cbSgg.getSelectedItem() == null
-						|| xRoadNm.getText().toString().isEmpty()
-						|| xBldgNum.getText().toString().isEmpty()) {
-					JOptionPane.showMessageDialog(null, "필수사항을 모두 입력해주세요","경고",JOptionPane.WARNING_MESSAGE);
+				String cityProvNm = cbCityProv.getSelectedItem().toString();
+				String sggNm = cbSgg.getSelectedItem().toString();
+				String roadNm = xRoadNm.getText().toString();
+				String bldgNum = xBldgNum.getText().toString();
+				
+				connection();
+				cbSgg.removeAllItems();
+				
+				try {
+					String query=
+							"SELECT rd.city_prov_nm||LPAD(rd.sgg_nm,8)||LPAD(rd.road_nm,10)||LPAD(ad.bldg_pr_num,5)||'('||ai.admn_d_nm||','||ai.sgg_bldg_nm||')' result \r\n" + 
+							"FROM(\r\n" + 
+							"   SELECT *\r\n" + 
+							"   FROM road_nm_code\r\n" + 
+							"   WHERE CITY_PROV_NM='"+cityProvNm+"'\r\n" + 
+							"   AND SGG_NM='"+sggNm+"' AND ROAD_NM='"+roadNm+"'\r\n" + 
+							"   ) rd LEFT OUTER JOIN \r\n" +
+							"   address ad \r\n"	+
+							"	ON rd.road_nm_code = ad.road_nm_code and rd.umd_sri_num = ad.umd_sri_num \r\n" +
+							"		LEFT OUTER JOIN \r\n" +
+							"	add_info ai \r\n" +
+							"	ON ad.man_num = ai.man_num \r\n" +
+							"WHERE ad.bldg_pr_num ='"+bldgNum+"'";
+					pstmt = con.prepareStatement(query);
+					rs = pstmt.executeQuery();
+					while(rs.next()) {
+						xRoadNmAddr.setText(rs.getString("result"));
+					}
+				
+				}
+				catch(SQLException e1){
+					e1.printStackTrace();
 				}
 				
-//				try {
-//					cityProvNm = cbCityProv.getSelectedItem().toString();
-//					sggNm = cbSgg.getSelectedItem().toString();
-//					roadNm = xRoadNm.getText().toString();
-//					bldgNum = xBldgNum.getText().toString();
-//				}catch(Exception e1) {
-//					JOptionPane.showMessageDialog(null, "필수사항을 모두 입력해주세요","경고",JOptionPane.WARNING_MESSAGE);
-//				}
-				else {
-					
-					cityProvNm = cbCityProv.getSelectedItem().toString();
-					sggNm = cbSgg.getSelectedItem().toString();
-					roadNm = xRoadNm.getText().toString();
-					bldgNum = xBldgNum.getText().toString();
-					
-					connection();
-					cbSgg.removeAllItems();
-					
-					try {
-						StringBuffer query = new StringBuffer("SELECT rd.city_prov_nm||' '||rd.sgg_nm||' '||rd.road_nm||' '||ad.bldg_pr_num||'('||ai.admn_d_nm||','||ai.sgg_bldg_nm||')' result ");
-								query.append("FROM("); 
-								query.append("   SELECT *"); 
-								query.append("   FROM road_nm_code"); 
-								query.append("   WHERE CITY_PROV_NM='");
-								query.append(cityProvNm);
-								query.append("'"); 
-								query.append("   AND SGG_NM='");
-								query.append(sggNm);
-								query.append("' AND ROAD_NM='");
-								query.append(roadNm);
-								query.append("'");  
-								query.append("   ) rd LEFT OUTER JOIN ");
-								query.append("   address ad ");
-								query.append("	ON rd.road_nm_code = ad.road_nm_code and rd.umd_sri_num = ad.umd_sri_num ");
-								query.append("		LEFT OUTER JOIN ");
-								query.append("	add_info ai ");
-								query.append("	ON ad.man_num = ai.man_num ");
-								query.append("WHERE ad.bldg_pr_num ='");
-								query.append(bldgNum);
-								query.append("'");
-						
-						pstmt = con.prepareStatement(query.toString());
-						rs = pstmt.executeQuery();
-						while(rs.next()) {
-							xRoadNmAddr.setText(rs.getString("result"));
-						}
-					
-					}
-					catch(SQLException e1){
-						e1.printStackTrace();
-						JOptionPane.showMessageDialog(null, "주소를 정확히 입력해주세요","경고",JOptionPane.WARNING_MESSAGE);
-					}
-					
-					
-					
-					disconnection();
-					}
+				
+				
+				disconnection();
 			}
 			else if(e.getSource().equals(confirm)) {
-				StringBuffer totalAddress = new StringBuffer(xRoadNmAddr.getText().toString());
-				totalAddress.append(" ");
-				totalAddress.append(xDtilAddr.getText().toString());
 				
-				xAddress.setText(totalAddress.toString());
-				
-				dispose();
 			}
 			else if(e.getSource().equals(cancel)) {
 				dispose();
@@ -424,6 +382,6 @@ public class AddressSearch extends JFrame {
     }
     
 	public static void main(String[] args) {
-//		new AddressSearch();
+		new AddressSearch();
 	}
 }

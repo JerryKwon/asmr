@@ -98,7 +98,7 @@ public class EmpRegister extends JFrame{
 		
 		vAddress = new JLabel("주소");
 		xAddress = new JTextField(15);
-		xAddress.setEditable(false);
+		xAddress.setEnabled(false);
 		addressSearch = new JButton("검색");
 		addressSearch.setBackground(blue);
 		addressSearch.setForeground(white);
@@ -200,7 +200,7 @@ public class EmpRegister extends JFrame{
 				new CenterSearch();
 			}
 			else if(e.getSource().equals(addressSearch)) {
-				new AddressSearch(xAddress);
+				new AddressSearch();
 			}
 			else if(e.getSource().equals(register)) {
 				

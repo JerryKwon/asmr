@@ -329,13 +329,13 @@ public class MainFrame extends JFrame {
 				revalidate();
 				repaint();
 				break;
-			case "공고목록":
-				ContentPanel.removeAll();
-				pContents = new AnncList();
-				ContentPanel.add(pContents);
-				revalidate();
-				repaint();
-				break;
+//			case "공고목록":
+//				ContentPanel.removeAll();
+//				pContents = new AnncList();
+//				ContentPanel.add(pContents);
+//				revalidate();
+//				repaint();
+//				break;
 			case "신청목록":
 				ContentPanel.removeAll();
 				try {
