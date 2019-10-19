@@ -206,7 +206,7 @@ public class AddressSearch extends JFrame {
 
     }
 
-
+    // 데이터베이스 연결 해제
     public void disconnection() {
 
         try {
@@ -359,7 +359,7 @@ public class AddressSearch extends JFrame {
 					cbSgg.removeAllItems();
 					
 					try {
-						StringBuffer query = new StringBuffer("SELECT rd.city_prov_nm||' '||rd.sgg_nm||' '||rd.road_nm||' '||ad.bldg_pr_num||'('||ai.admn_d_nm||','||ai.sgg_bldg_nm||')' result "); 
+						StringBuffer query = new StringBuffer("SELECT rd.city_prov_nm||' '||rd.sgg_nm||' '||rd.road_nm||' '||ad.bldg_pr_num||' ('||ai.admn_d_nm||CASE when ai.sgg_bldg_nm is null then ')' ELSE ', '||ai.sgg_bldg_nm||')' END result "); 
 								query.append("FROM(");  
 								query.append("   SELECT *"); 
 								query.append("   FROM road_nm_code"); 
