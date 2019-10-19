@@ -11,6 +11,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -29,6 +36,15 @@ public class CenterManagerSearch extends JFrame{
 	private JTable eCenterManagerList;
 	private JScrollPane scrollpane;
 	private JButton confirm,cancel;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
 	private final String[] col1 = {"이름","생년월일"};
 	
@@ -101,6 +117,8 @@ public class CenterManagerSearch extends JFrame{
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,35,0,0));
 		gridbagAdd(buttonPanel, 0, 2, 1, 1);
 		
+		readCenterManager();
+		
 		pack();
 		setLocationRelativeTo(null);
 		setResizable(false);
@@ -120,6 +138,71 @@ public class CenterManagerSearch extends JFrame{
 		add(c);
 	}
 
+	
+	private void readCenterManager() {
+		connection();
+		
+		try {
+			StringBuffer query= new StringBuffer("SELECT e.EMP_NAME name, e.BRTH_YEAR_MNTH_DAY bdate ");
+			query.append("FROM EMP e LEFT OUTER JOIN (");
+			query.append("	SELECT * FROM EMP_WORK_HIST");
+			query.append("	WHERE WORK_END_DATE = to_date('9999-12-31')");
+			query.append("	AND BIZ_FILD = 'c') cm ");
+			query.append("	ON e.EMP_NO = cm.EMP_NO");
+			
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				String[] bdate = rs.getString("bdate").split(" ");
+				
+				model1.addRow(new Object[] {rs.getString("name"),bdate[0]});
+			}
+		
+			
+		}
+		catch(SQLException e1){
+			e1.printStackTrace();
+		}
+		
+		disconnection();
+	}
+	
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
+	
 	class CombinePanel extends JPanel {
 		//컴포넌트 1, 컴포넌트 2, 패널 구성시 좌,우 margin 공간을 없애기 위한 Flag
 		public CombinePanel(Component[] cops, int borderWidth, int borderHeight) {
