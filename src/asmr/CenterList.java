@@ -12,6 +12,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -31,6 +37,15 @@ public class CenterList extends JPanel{
 	private JLabel vCenterList,vCageList,vCenterInfo,vCenterNum,vEstDate,vCenterName,vPhoneNum,vArea,vOperTime,vOperTimeDash,vCenterManager,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount;
 	private JTextField xCenterNum,xEstDate,xCenterName,xPhoneNum,xArea,xCenterManager,xCageBig,xCageMid,xCageSmall;
 	private JComboBox<String> cbOperTimeOpen,cbOperTimeClose;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
 	//테이블과 스크롤 패널
 	private JTable eCenterList, eCageList;
@@ -85,6 +100,9 @@ public class CenterList extends JPanel{
 		eCenterList.addMouseListener(centerListMouseListener);
 		scrollpane1 = new JScrollPane(eCenterList);
 		scrollpane1.setPreferredSize(new Dimension(600,200));
+		eCenterList.getColumnModel().getColumn(0).setPreferredWidth(150);
+		eCenterList.getColumnModel().getColumn(1).setPreferredWidth(350);
+		eCenterList.getColumnModel().getColumn(2).setPreferredWidth(100);
 		
 		//케이지목록
 		vCageList = new JLabel("케이지목록");
@@ -199,6 +217,8 @@ public class CenterList extends JPanel{
 		ChangeFont(vContextComps, new Font("나눔고딕", Font.BOLD, 16));
 		
 		CenterListView();
+		
+		GetCenterList();
 	}
 
 	//Component 배치
@@ -302,6 +322,152 @@ public class CenterList extends JPanel{
 		add(c);
 	}
 	
+	// 센터 목록 가져오기
+	private void GetCenterList() {
+		connection();
+		
+		try {
+			StringBuffer query= new StringBuffer("SELECT c.CNTR_NAME name, c.ADDR addr, SUBSTR(c.OPEN_TIME,1,2)||':'||SUBSTR(c.OPEN_TIME,3,2)||'-'||SUBSTR(c.CLSE_TIME,1,2)||':'||SUBSTR(c.CLSE_TIME,3,2) opr_time ");
+			query.append("FROM CNTR c");
+			
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {		
+				model1.addRow(new Object[] {rs.getString("name"),rs.getString("addr"),rs.getString("opr_time")});
+			}
+		
+		}catch(Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		disconnection();
+	}
+	
+	private void GetCenter() {
+		int clickedRow = eCenterList.getSelectedRow();
+		String cntrName = (String)eCenterList.getValueAt(clickedRow, 0);
+		
+		GetCenter1(cntrName);
+		GetCenter2(cntrName);
+	}
+	
+	private void GetCenter1(String cntrName) {
+		connection();
+		
+		try {
+			StringBuffer query= new StringBuffer("SELECT t.CNTR_NO, t.CNTR_NAME, t.ADDR, t.TEL_NO, t.\"AREA\" ,SUBSTR(OPEN_TIME,1,2)||':'||SUBSTR(OPEN_TIME,3,2) OPEN_TIME, SUBSTR(CLSE_TIME,1,2)||':'||SUBSTR(CLSE_TIME,3,2) CLSE_TIME, ESTB_DATE,CNTR_TP,e.EMP_NO,e.EMP_NAME ");
+			query.append("FROM (");
+			query.append("	SELECT c1.*,wh.EMP_NO");
+			query.append("	FROM(");
+			query.append("		SELECT * ");
+			query.append("		FROM CNTR");
+			query.append("		WHERE CNTR_NAME='"+cntrName+"') c1 LEFT OUTER JOIN EMP_WORK_HIST wh ");
+			query.append("			ON c1.CNTR_NO = wh.CNTR_NO ");
+			query.append("			AND wh.WORK_END_DATE = to_date('9999-12-31','YYYY-MM-DD') ");
+			query.append("			AND wh.BIZ_FILD = 'c') t RIGHT OUTER JOIN EMP e ");
+			query.append("				ON t.EMP_NO = e.EMP_NO ");
+				
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				String[] estbDate = rs.getString("ESTB_DATE").split(" ");
+				
+				xCenterNum.setText(rs.getString("CNTR_NO"));
+				xCenterName.setText(rs.getString("CNTR_NAME"));
+				xArea.setText(rs.getString("AREA"));
+				xCenterManager.setText(rs.getString("EMP_NAME"));
+				xEstDate.setText(estbDate[0]);
+				xPhoneNum.setText(rs.getString("TEL_NO"));
+				cbOperTimeOpen.setSelectedItem(rs.getString("OPEN_TIME"));
+				cbOperTimeClose.setSelectedItem(rs.getString("CLSE_TIME"));
+			}
+				
+		}catch(Exception e2) {
+			e2.printStackTrace();
+		}
+		
+		disconnection();
+	}
+	
+	private void GetCenter2(String cntrName) {
+		connection();
+		
+		try {
+			StringBuffer query= new StringBuffer("SELECT ct.CAGE_TYPE, NVL(c.CNT,0) CNT ");
+			query.append("FROM (");
+			query.append("	SELECT 'b' CAGE_TYPE FROM DUAL ");
+			query.append("	UNION ALL ");
+			query.append("	SELECT 'm' FROM DUAL ");
+			query.append("	UNION ALL ");
+			query.append("	SELECT 's' FROM DUAL ");
+			query.append(") ct LEFT OUTER JOIN (SELECT t.CAGE_SIZE, COUNT(*) CNT ");
+			query.append("				FROM (SELECT c1.*,c2.CAGE_ORNU,c2.CAGE_SIZE ");
+			query.append("					FROM ( ");
+			query.append("							SELECT CNTR_NO ");
+			query.append("							FROM CNTR ");
+			query.append("							WHERE CNTR_NAME='서울서초보호센터') c1 LEFT OUTER JOIN CAGE c2 ");
+			query.append("																ON c1.CNTR_NO=c2.CNTR_NO ) t ");
+			query.append("				GROUP BY t.CAGE_SIZE) c ");
+			query.append("		ON ct.CAGE_TYPE=c.CAGE_SIZE ");
+			
+			
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				switch(rs.getString("CAGE_TYPE")) {
+					case "b":
+						xCageBig.setText(rs.getString("CNT"));
+					case "m":
+						xCageMid.setText(rs.getString("CNT"));
+					case "s":
+						xCageSmall.setText(rs.getString("CNT"));
+				}
+			}
+			
+		}catch(Exception e3) {
+			e3.printStackTrace();
+		}
+		
+		disconnection();
+	}
+	
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
+
+	
 	//케이지 형태별 구분을 나열을 위한 Bottom Panel 선언
 	class BottomPanel extends JPanel{
 		public BottomPanel() {
@@ -384,7 +550,7 @@ public class CenterList extends JPanel{
 //			https://blaseed.tistory.com/18			
 			//1:좌클릭, 3:우클릭
 			if(e.getButton() == 1) {
-				
+				GetCenter();
 			}
 		}
 	}
