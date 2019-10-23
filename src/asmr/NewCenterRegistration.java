@@ -8,10 +8,18 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 import javax.imageio.ImageIO;
@@ -22,6 +30,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -36,6 +45,17 @@ public class NewCenterRegistration extends JFrame{
 	private JComboBox<String> cbCenterType,cbOperTimeOpen,cbOperTimeClose;
 	private BufferedImage buttonIcon;
 	private JDateChooser chooser;
+	
+	private String cntrManagerBdate = null;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
 	private final String[] centerTypeDiv = {"본부","일반"};
 	private final String[] operTimeOpenDiv = {"08:00","08:30","09:00","09:30","10:00","10:30","11:00"};
@@ -79,7 +99,7 @@ public class NewCenterRegistration extends JFrame{
 		LocalDate now = LocalDate.now();
 		Date date = Date.valueOf(now);
 		chooser = new JDateChooser(date,"YYYY.MM.dd");
-
+		
 //		xEstDate = new JTextField(10); 
 //		xEstDate.setEnabled(false);		
 //		buttonIcon = ImageIO.read(new File("images/cal1.png"));
@@ -272,6 +292,185 @@ public class NewCenterRegistration extends JFrame{
 			}
 		}
 	}
+
+	private void RegistCenter() {
+		connection();
+		
+		String centerName = xCenterName.getText();
+		String addr = xAddress.getText();
+		String telNo = xPhoneNum.getText();
+		String area = xArea.getText();
+		String openTime = (String)cbOperTimeOpen.getSelectedItem();
+		String clseTime = (String)cbOperTimeClose.getSelectedItem();
+		String estbDate = ((JTextField)chooser.getDateEditor().getUiComponent()).getText();
+		String centerType = (String)cbCenterType.getSelectedItem();
+		
+		String newOpenTime = null;
+		String newClseTime = null;
+		String newCenterType = null;
+		
+		String[] openTimes = openTime.split(":");
+		String[] clseTimes = clseTime.split(":");
+		
+		StringBuffer sb1 = new StringBuffer(openTimes[0]);
+		sb1.append(openTimes[1]);
+		newOpenTime = sb1.toString();
+		
+		StringBuffer sb2 = new StringBuffer(clseTimes[0]);
+		sb2.append(clseTimes[1]);
+		newClseTime = sb2.toString();
+		
+		switch(centerType) {
+		case "본부":
+			newCenterType = "h";
+			break;
+		case "일반":
+			newCenterType = "n";
+			break;
+		}
+		
+		try {
+			StringBuffer query = new StringBuffer("INSERT INTO CNTR ");
+			query.append("SELECT ");
+			query.append("	CASE WHEN SUBSTR(CNTR_NO,2,1)=9 ");
+			query.append("			THEN to_char(SUBSTR(CNTR_NO,1,1)+1) ");
+			query.append("		ELSE SUBSTR(CNTR_NO,1,1) END || (SUBSTR(CNTR_NO,2,1)+1) CNTR_NO, ");
+			query.append("	'"+centerName+"' CNTR_NAME, ");
+			query.append("	'"+addr+"' ADDR, ");
+			query.append("	'"+telNo+"' TEL_NO, ");
+			query.append("	'"+area+"' AREA, ");
+			query.append("	'"+newOpenTime+"' OPEN_TIME, ");
+			query.append("	'"+newClseTime+"' CLSE_TIME, ");
+			query.append("	 TO_DATE('"+newClseTime+"','YYYY.MM.DD') ESTB_DATE, ");
+			query.append("	'"+newCenterType+"' CNTR_TP ");
+			query.append("FROM( ");
+			query.append("	SELECT NVL(CNTR_NO,0) CNTR_NO ");
+			query.append("	FROM CNTR) ");
+			
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+		}catch(Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		disconnection();
+	};
+	
+	private void RegistEmpWorkHist() {
+		connection();
+		
+		String cntrManagerName = xCenterManager.getText();
+		
+		try {
+			StringBuffer query = new StringBuffer("INSERT INTO EMP_WORK_HIST(EMP_NO,WORK_START_DATE,CNTR_NO,EMP_TP,BIZ_FILD) ");
+			query.append("SELECT EMP_NO, ");
+			query.append("		 TRUNC(SYSDATE) WORK_START_DATE, ");
+			query.append("		 (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
+			query.append("		  FROM CNTR c ");
+			query.append("		  WHERE ROWNUM = 1) CNTR_NO, ");
+			query.append("		  EMP_TP, ");
+			query.append("		  BIZ_FILD ");
+			query.append("FROM EMP_WORK_HIST ");
+			query.append("WHERE EMP_NO = ( ");
+			query.append("	SELECT EMP_NO FROM EMP ");
+			query.append("	WHERE EMP_NAME='"+cntrManagerName+"' ");
+			query.append("	AND BRTH_YEAR_MNTH_DAY=to_date('"+cntrManagerBdate+"','YYYY-MM-DD') ");
+			query.append(") ");
+			
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+		}catch(Exception e1) {
+			
+		}
+		
+		disconnection();
+	};
+	
+	private void InitRegistCage() {
+		connection();
+		
+		String bigCageNum = xCageBig.getText();
+		String midCageNum = xCageMid.getText();
+		String smallCageNum = xCageSmall.getText();
+		
+		try {
+			StringBuffer query = new StringBuffer("INSERT INTO CAGE ");
+			query.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
+			query.append("		  FROM CNTR c ");
+			query.append("		  WHERE ROWNUM = 1) CNTR_NO, ROWNUM CAGE_ORNU, t3.CAGE_SIZE ");
+			query.append("FROM( ");
+			query.append("		SELECT * ");
+			query.append("		FROM( ");
+			query.append("			SELECT LEVEL FROM DUAL ");
+			query.append("			CONNECT BY LEVEL<"+bigCageNum+" ");
+			query.append("		) t1, (SELECT 'b' CAGE_SIZE FROM DUAL) t2 ");
+			query.append("		UNION ALL ");
+			query.append("		SELECT * ");
+			query.append("		FROM( ");
+			query.append("			SELECT LEVEL FROM DUAL ");
+			query.append("			CONNECT BY LEVEL<"+midCageNum+" ");
+			query.append("		) t1, (SELECT 'm' CAGE_SIZE FROM DUAL) t2 ");
+			query.append("		UNION ALL ");
+			query.append("		SELECT * ");
+			query.append("		FROM( ");
+			query.append("			SELECT LEVEL FROM DUAL ");
+			query.append("			CONNECT BY LEVEL<"+smallCageNum+" ");
+			query.append("		) t1, (SELECT 's' CAGE_SIZE FROM DUAL) t2 ");
+			query.append(")t3 ");
+			
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+		}catch(Exception e1) {
+			
+		}
+		
+		disconnection();
+	};
+	
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
 	
 	class NewCenterRegistButtonListener implements ActionListener{
 
@@ -279,13 +478,33 @@ public class NewCenterRegistration extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(centerManagerSearch)) {
-				new CenterManagerSearch();
+				CenterManagerSearch centerManagerSearch = new CenterManagerSearch(xCenterManager,cntrManagerBdate);
+				centerManagerSearch.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						// TODO Auto-generated method stub
+						super.windowClosed(e);
+						String nameAndBdate= xCenterManager.getText();
+						String[] stringArray = nameAndBdate.split(",");
+						xCenterManager.setText(stringArray[0]);
+						cntrManagerBdate = stringArray[1];
+					}
+					
+				});
 			}
 			else if(e.getSource().equals(addressSearch)) {
 				new AddressSearch(xAddress);
 			}
 			else if(e.getSource().equals(register)) {
-				
+				int result = JOptionPane.showConfirmDialog(null, "신규 센터를 등록하시겠습니까?", "센터 등록 확인", JOptionPane.YES_NO_OPTION);
+				switch(result) {
+				case JOptionPane.YES_OPTION:
+					RegistCenter();
+					RegistEmpWorkHist();
+					InitRegistCage();
+					dispose();
+				}
 			}
 			else if(e.getSource().equals(cancel)) {
 				dispose();

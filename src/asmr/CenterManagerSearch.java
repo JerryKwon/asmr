@@ -27,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import asmr.CenterManagerSearch.CenterManagerSearchButtonListener;
@@ -36,6 +37,9 @@ public class CenterManagerSearch extends JFrame{
 	private JTable eCenterManagerList;
 	private JScrollPane scrollpane;
 	private JButton confirm,cancel;
+	private JTextField xCenterManager;
+	
+	private String cntrManagerBdate = null;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -59,7 +63,10 @@ public class CenterManagerSearch extends JFrame{
 	CenterManagerSearchButtonListener centerManagerSearchButtonListener;
 	CenterManagerSearchMouseListener centerManagerSearchMouseListener;
 	
-	public CenterManagerSearch() {
+	public CenterManagerSearch(JTextField xCenterManager, String cntrManagerBdate) {
+		this.xCenterManager = xCenterManager;
+		this.cntrManagerBdate = cntrManagerBdate;
+		
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
 		
@@ -222,7 +229,11 @@ public class CenterManagerSearch extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(confirm)) {
-				
+				int clickedRow = eCenterManagerList.getSelectedRow();
+				String centerMangerName = (String) eCenterManagerList.getValueAt(clickedRow, 0);
+				cntrManagerBdate = (String) eCenterManagerList.getValueAt(clickedRow, 1);
+				xCenterManager.setText(centerMangerName+","+cntrManagerBdate);
+				dispose();
 			}
 			else if(e.getSource().equals(cancel)) {
 				dispose();
@@ -252,6 +263,6 @@ public class CenterManagerSearch extends JFrame{
     
 //  버튼 기능 구현으로 인하여 메인 메서드를 삭제합니다.	
 	public static void main(String[] args) {
-		new CenterManagerSearch();
+		new CenterManagerSearch(new JTextField(),null);
 	}
 }

@@ -11,6 +11,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -37,6 +40,8 @@ public class CenterList extends JPanel{
 	private JLabel vCenterList,vCageList,vCenterInfo,vCenterNum,vEstDate,vCenterName,vPhoneNum,vArea,vOperTime,vOperTimeDash,vCenterManager,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount;
 	private JTextField xCenterNum,xEstDate,xCenterName,xPhoneNum,xArea,xCenterManager,xCageBig,xCageMid,xCageSmall;
 	private JComboBox<String> cbOperTimeOpen,cbOperTimeClose;
+	
+	private String cntrManagerBdate = null;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -324,6 +329,8 @@ public class CenterList extends JPanel{
 	
 	// 센터 목록 가져오기
 	private void GetCenterList() {
+		model1.setRowCount(0);
+		
 		connection();
 		
 		try {
@@ -417,15 +424,58 @@ public class CenterList extends JPanel{
 				switch(rs.getString("CAGE_TYPE")) {
 					case "b":
 						xCageBig.setText(rs.getString("CNT"));
+						break;
 					case "m":
 						xCageMid.setText(rs.getString("CNT"));
+						break;
 					case "s":
 						xCageSmall.setText(rs.getString("CNT"));
+						break;
 				}
 			}
 			
 		}catch(Exception e3) {
 			e3.printStackTrace();
+		}
+		
+		disconnection();
+	}
+	
+	private void GetCageList() {
+		model2.setRowCount(0);
+		
+		connection();
+		
+		try {
+			StringBuffer query = new StringBuffer("SELECT c1.CNTR_NO,c2.CAGE_ORNU,c2.CAGE_SIZE ");
+			query.append("FROM ( ");
+			query.append("	SELECT * FROM CNTR ");
+			query.append("	WHERE CNTR_NAME='서울서초보호센터') c1 INNER JOIN CAGE c2 ");
+			query.append("										ON c1.CNTR_NO = c2.CNTR_NO ");
+			
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				String korCageSize = null;
+				
+				switch(rs.getString("CAGE_SIZE")) {
+				case "b":
+					korCageSize = "대형";
+					break;
+				case "m":
+					korCageSize = "중형";
+					break;
+				case "s":
+					korCageSize = "소형";
+					break;
+				
+				}
+				model2.addRow(new Object[] {rs.getString("CAGE_ORNU"),korCageSize});
+			}
+			
+		}catch(Exception e4) {
+			e4.printStackTrace();
 		}
 		
 		disconnection();
@@ -506,7 +556,18 @@ public class CenterList extends JPanel{
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(centerRegist)) {
 				try {
-					new NewCenterRegistration();
+					NewCenterRegistration newCenterRegistration= new NewCenterRegistration();
+					newCenterRegistration.addWindowListener(new WindowAdapter() {
+
+						@Override
+						public void windowClosed(WindowEvent e) {
+							// TODO Auto-generated method stub
+							super.windowClosed(e);
+							GetCenterList();
+						}
+					
+					
+					});
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -514,10 +575,23 @@ public class CenterList extends JPanel{
 			}
 			
 			if(e.getSource().equals(cageRegist)) {
-				new CageRegister();
+				int clickedRow = eCenterList.getSelectedRow();
+				String cntrName = (String)eCenterList.getValueAt(clickedRow, 0);
+				CageRegister cageRegister = new CageRegister(cntrName);
+				cageRegister.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						// TODO Auto-generated method stub
+						super.windowClosed(e);
+						GetCageList();
+						GetCenter2(cntrName);
+					}
+					
+				});
 			}
 			if(e.getSource().equals(searchManager)) {
-				new CenterManagerSearch();
+				new CenterManagerSearch(xCenterManager,cntrManagerBdate);
 			}
 			if(e.getSource().equals(modify)) {
 				modify.setText("확인");
@@ -550,6 +624,7 @@ public class CenterList extends JPanel{
 //			https://blaseed.tistory.com/18			
 			//1:좌클릭, 3:우클릭
 			if(e.getButton() == 1) {
+				GetCageList();
 				GetCenter();
 			}
 		}
