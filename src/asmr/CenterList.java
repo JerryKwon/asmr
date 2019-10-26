@@ -379,7 +379,6 @@ public class CenterList extends JPanel{
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				String[] estbDate = rs.getString("ESTB_DATE").split(" ");
-				
 				xCenterNum.setText(rs.getString("CNTR_NO"));
 				xCenterName.setText(rs.getString("CNTR_NAME"));
 				xArea.setText(rs.getString("AREA"));
@@ -595,7 +594,8 @@ public class CenterList extends JPanel{
 				});
 			}
 			if(e.getSource().equals(searchManager)) {
-				new CenterManagerSearch(xCenterManager);
+				CenterManagerSearch centerManagerSearch = new CenterManagerSearch(xCenterManager);
+				cntrManagerBdate = centerManagerSearch.getCntrManagerBdate();
 			}
 			if(e.getSource().equals(modify)) {
 				modify.setText("»Æ¿Œ");
