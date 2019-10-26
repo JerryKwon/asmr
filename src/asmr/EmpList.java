@@ -10,7 +10,15 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -33,6 +41,15 @@ public class EmpList extends JPanel {
 	private JTable eEmpList;
 	private JScrollPane scrollpane;
 	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
+	
 	private final String[] searchTypeDiv = {"이름","소속"};
 	private final String[] empTypeDiv = {"정규직","계약직"};
 	private final String[] workTypeDiv = {"센터장","관리직원","수의사","보호관리직원","사무직종사자","유기동물구조원"};
@@ -46,6 +63,7 @@ public class EmpList extends JPanel {
 	private Color red = new Color(217,0,27);
 	
 	EmpListButtonListener empListButtonListener;
+	EmpListMouseListener empListMouseListener;
 	
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
@@ -57,6 +75,7 @@ public class EmpList extends JPanel {
 		gridBagConstraints = new GridBagConstraints();
 
 		empListButtonListener = new EmpListButtonListener();
+		empListMouseListener = new EmpListMouseListener();
 		
 		vEmpList = new JLabel("직원목록");
 		vEmpList.setFont(new Font("나눔고딕", Font.BOLD, 24));
@@ -82,6 +101,7 @@ public class EmpList extends JPanel {
 	                return false;               
 	        };
 	    };
+	    eEmpList.addMouseListener(empListMouseListener);
 		scrollpane = new JScrollPane(eEmpList);
 		scrollpane.setPreferredSize(new Dimension(600,200));
 		
@@ -143,6 +163,7 @@ public class EmpList extends JPanel {
 		
 		EmpListView();
 		
+		GetEmpList();
 	}
 	
 	private void EmpListView() {
@@ -232,7 +253,16 @@ public class EmpList extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(empSearch)) {
-				
+				String searchType = (String)cbSearchType.getSelectedItem();
+				String typedName = xEmpNameSearch.getText();
+				switch(searchType) {
+				case "이름":
+					SearchEmp(typedName,true);
+					break;
+				case "소속":
+					SearchEmp(typedName,false);
+					break;
+				}
 			}
 			else if(e.getSource().equals(register)) {
 				try {
@@ -243,7 +273,7 @@ public class EmpList extends JPanel {
 				}
 			}
 			else if(e.getSource().equals(centerSearch)) {
-				new CenterSearch();
+				new CenterSearch(xBelongCenter);
 			}
 			else if(e.getSource().equals(modify)) {
 				modify.setText("확인");
@@ -266,20 +296,233 @@ public class EmpList extends JPanel {
 		
 	}
 	
-	//두개의 컴포넌트를 하나의 패널로 묶는 JPanel
-		class CombinePanel extends JPanel {
-			//컴포넌트 1, 컴포넌트 2, 패널 구성시 좌,우 margin 공간을 없애기 위한 Flag
-			public CombinePanel(Component[] cops, int borderWidth, int borderHeight) {
-				//Margin이 필요하지 않을 때
-				
-				setLayout(new FlowLayout(FlowLayout.LEFT,borderWidth,borderHeight));
-				
-				for (Component c: cops) {
-					add(c);
-				}
+//  직원 목록테이블 클릭시 발생하는 리스너
+	class EmpListMouseListener extends MouseAdapter{
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			super.mouseClicked(e);
+			
+//			https://blaseed.tistory.com/18			
+			//1:좌클릭, 3:우클릭
+			if(e.getButton() == 1) {
+				int clickedRow = eEmpList.getSelectedRow();
+				String empNo = (String)eEmpList.getValueAt(clickedRow, 0);
+				String cntrName = (String)eEmpList.getValueAt(clickedRow, 2);
+				GetEmp(empNo, cntrName);
 			}
 		}
+	}
+	
+	//두개의 컴포넌트를 하나의 패널로 묶는 JPanel
+	class CombinePanel extends JPanel {
+		//컴포넌트 1, 컴포넌트 2, 패널 구성시 좌,우 margin 공간을 없애기 위한 Flag
+		public CombinePanel(Component[] cops, int borderWidth, int borderHeight) {
+			//Margin이 필요하지 않을 때
 			
+			setLayout(new FlowLayout(FlowLayout.LEFT,borderWidth,borderHeight));
+			
+			for (Component c: cops) {
+				add(c);
+			}
+		}
+	}
+	
+	// 직원 목록 가져오기
+	private void GetEmpList() {
+		model1.setRowCount(0);
+		
+		connection();
+		
+		try {
+			StringBuffer query= new StringBuffer("SELECT e.EMP_NO emp_no, wh.WORK_START_DATE, e.EMP_NAME emp_name, c.CNTR_NAME cntr_name ");
+			query.append("FROM ( SELECT EMP_NO, EMP_NAME FROM EMP) e INNER JOIN( ");
+			query.append("	SELECT  EMP_NO, WORK_START_DATE, CNTR_NO ");
+			query.append("	FROM EMP_WORK_HIST ");
+			query.append("	WHERE WORK_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) wh ");
+			query.append("	ON e.EMP_NO = wh.EMP_NO INNER JOIN( ");
+			query.append("		SELECT CNTR_NO, CNTR_NAME FROM CNTR) c ");
+			query.append("		ON wh.CNTR_NO = c.CNTR_NO ");
+			query.append("ORDER BY 1,2 ASC ");
+			
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {		
+				model1.addRow(new Object[] {rs.getString("emp_no"),rs.getString("emp_name"),rs.getString("cntr_name")});
+			}
+		
+		}catch(Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		disconnection();
+	}
+	
+	private void GetEmp(String empNo, String cntrName) {
+		connection();
+		
+		try {
+			StringBuffer query= new StringBuffer("SELECT e.EMP_NO , c.CNTR_NAME, wh.EMP_TP, wh.BIZ_FILD, e.EMP_NAME, e.BRTH_YEAR_MNTH_DAY BDATE, e.TEL_NO ");
+			query.append("FROM ( ");
+			query.append("	SELECT EMP_NO, EMP_NAME, BRTH_YEAR_MNTH_DAY, TEL_NO FROM EMP ");
+			query.append("	WHERE EMP_NO='"+empNo+"') e LEFT OUTER JOIN ( ");
+			query.append("		SELECT EMP_NO, WORK_END_DATE, CNTR_NO, EMP_TP, BIZ_FILD FROM EMP_WORK_HIST) wh ");
+			query.append("		ON e.EMP_NO = wh.EMP_NO ");
+			query.append("		AND wh.WORK_END_DATE=to_date('9999-12-31','YYYY-MM-DD') INNER JOIN ( ");
+			query.append("			SELECT * FROM CNTR WHERE CNTR_NAME='"+cntrName+"') c ");
+			query.append("			ON wh.CNTR_NO = c.CNTR_NO ");
+				
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+
+			
+			while(rs.next()) {
+
+				String empType = rs.getString("EMP_TP");
+				String korEmpType = null;
+				
+				String bizFild = rs.getString("BIZ_FILD");
+				String korBizFild = null;
+				
+				switch(empType) {
+				case "f":
+					korEmpType = "정규직";
+					break;
+				case "c":
+					korEmpType = "계약직";
+					break;
+				}
+				
+				switch(bizFild) {
+				case "c":
+					korBizFild = "센터장";
+					break;
+				case "m":
+					korBizFild = "관리직원";
+					break;
+				case "d":
+					korBizFild = "수의사";
+					break;
+				case "o":
+					korBizFild = "사무직종사자";
+					break;
+				case "r":
+					korBizFild = "유기동물구조원";
+					break;
+				case "p":
+					korBizFild = "보호관리직원";
+					break;
+				}
+				
+				xEmpNo.setText(rs.getString("EMP_NO"));
+				xBelongCenter.setText(rs.getString("CNTR_NAME"));
+				cbEmptype.setSelectedItem(korEmpType);
+				cbWorkType.setSelectedItem(korBizFild);
+				xEmpName.setText(rs.getString("EMP_NAME"));
+				xBirthDate.setText(rs.getString("BDATE").split(" ")[0]);
+				xPhoneNum.setText(rs.getString("TEL_NO"));
+				
+			}
+				
+		}catch(Exception e2) {
+			e2.printStackTrace();
+		}
+		
+		disconnection();
+	}
+	
+	private void SearchEmp(String name, boolean isEmp) {
+		model1.setRowCount(0);
+		
+		connection();
+		
+		StringBuffer query = new StringBuffer();
+		
+		if(isEmp) {
+			query.append("SELECT e.EMP_NO, wh.WORK_START_DATE, e.EMP_NAME, c.CNTR_NAME ");
+			query.append("FROM ( ");
+			query.append("	SELECT EMP_NO, EMP_NAME  ");
+			query.append("	FROM EMP ");
+			query.append("	WHERE EMP_NAME='"+name+"') e INNER JOIN( ");
+			query.append("		SELECT  EMP_NO, WORK_START_DATE, CNTR_NO ");
+			query.append("		FROM EMP_WORK_HIST ");
+			query.append("		WHERE WORK_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) wh ");
+			query.append("		ON e.EMP_NO = wh.EMP_NO INNER JOIN( ");
+			query.append("			SELECT CNTR_NO, CNTR_NAME FROM CNTR) c ");
+			query.append("			ON wh.CNTR_NO = c.CNTR_NO ");
+			query.append("ORDER BY 1,2 ASC ");
+			
+		}
+		else {
+			query.append("SELECT e.EMP_NO, wh.WORK_START_DATE, e.EMP_NAME, c.CNTR_NAME ");
+			query.append("FROM ( ");
+			query.append("	SELECT EMP_NO, EMP_NAME  ");
+			query.append("	FROM EMP) e INNER JOIN( ");
+			query.append("		SELECT  EMP_NO, WORK_START_DATE, CNTR_NO ");
+			query.append("		FROM EMP_WORK_HIST ");
+			query.append("		WHERE WORK_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) wh ");
+			query.append("		ON e.EMP_NO = wh.EMP_NO INNER JOIN( ");
+			query.append("			SELECT CNTR_NO, CNTR_NAME ");
+			query.append("			FROM CNTR ");
+			query.append("			WHERE CNTR_NAME='"+name+"') c ");
+			query.append("			ON wh.CNTR_NO = c.CNTR_NO ");
+			query.append("ORDER BY 1,2 ASC ");
+			
+		}
+		
+		try {
+		pstmt = con.prepareStatement(query.toString());
+		rs = pstmt.executeQuery();
+		
+		while(rs.next()) {
+			model1.addRow(new Object[] {rs.getString("emp_no"),rs.getString("emp_name"),rs.getString("cntr_name")});
+		}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+	}
+	
+	// 데이터베이스 연결
+
+    public void connection() {
+
+         try {
+
+                  Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                  con = DriverManager.getConnection(url,user,password);
+
+
+         } catch (ClassNotFoundException e) {
+        	 e.printStackTrace();
+         } catch (SQLException e) {
+        	 e.printStackTrace();
+         }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+             if(pstmt != null) pstmt.close();
+
+             if(rs != null) rs.close();
+
+             if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
+		
+		
+		
 	private void ChangeFont(JComponent[] comps, Font font) {
     	for(JComponent comp: comps) {
     		comp.setFont(font);

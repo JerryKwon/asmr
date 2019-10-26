@@ -8,10 +8,18 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 import javax.imageio.ImageIO;
@@ -22,6 +30,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -36,6 +45,17 @@ public class NewCenterRegistration extends JFrame{
 	private JComboBox<String> cbCenterType,cbOperTimeOpen,cbOperTimeClose;
 	private BufferedImage buttonIcon;
 	private JDateChooser chooser;
+	
+	private String cntrManagerBdate = null;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
 	private final String[] centerTypeDiv = {"본부","일반"};
 	private final String[] operTimeOpenDiv = {"08:00","08:30","09:00","09:30","10:00","10:30","11:00"};
@@ -78,8 +98,8 @@ public class NewCenterRegistration extends JFrame{
 
 		LocalDate now = LocalDate.now();
 		Date date = Date.valueOf(now);
-		chooser = new JDateChooser(date,"YYYY.MM.dd");
-
+		chooser = new JDateChooser(date,"YYYY-MM-dd");
+		
 //		xEstDate = new JTextField(10); 
 //		xEstDate.setEnabled(false);		
 //		buttonIcon = ImageIO.read(new File("images/cal1.png"));
@@ -272,6 +292,353 @@ public class NewCenterRegistration extends JFrame{
 			}
 		}
 	}
+
+	private void RegistNewCenter() {
+		connection();
+		
+		//센터 등록 관련 데이터
+		String centerName = xCenterName.getText();
+		String addr = xAddress.getText();
+		String telNo = xPhoneNum.getText();
+		String area = xArea.getText();
+		String openTime = (String)cbOperTimeOpen.getSelectedItem();
+		String clseTime = (String)cbOperTimeClose.getSelectedItem();
+		String estbDate = ((JTextField)chooser.getDateEditor().getUiComponent()).getText();
+		String centerType = (String)cbCenterType.getSelectedItem();
+		
+		String newOpenTime = null;
+		String newClseTime = null;
+		String newCenterType = null;
+		
+		String[] openTimes = openTime.split(":");
+		String[] clseTimes = clseTime.split(":");
+		
+		StringBuffer sb1 = new StringBuffer(openTimes[0]);
+		sb1.append(openTimes[1]);
+		newOpenTime = sb1.toString();
+		
+		StringBuffer sb2 = new StringBuffer(clseTimes[0]);
+		sb2.append(clseTimes[1]);
+		newClseTime = sb2.toString();
+		
+		switch(centerType) {
+		case "본부":
+			newCenterType = "h";
+			break;
+		case "일반":
+			newCenterType = "n";
+			break;
+		}
+	
+		// 직원근무이력 관련
+		String cntrManagerName = xCenterManager.getText();
+		
+		
+		// 신규케이지 등록 관련
+		int bigCageNum = Integer.parseInt(xCageBig.getText());
+		int midCageNum = Integer.parseInt(xCageMid.getText());
+		int smallCageNum = Integer.parseInt(xCageSmall.getText());
+		
+		try {
+			StringBuffer query1 = new StringBuffer("INSERT INTO CNTR ");
+			query1.append("SELECT ");
+			query1.append("	CASE WHEN SUBSTR(CNTR_NO,2,1)=9 ");
+			query1.append("		THEN to_char(SUBSTR(CNTR_NO,1,1)+1) ");
+			query1.append("		ELSE SUBSTR(CNTR_NO,1,1) END || ");
+			query1.append("	CASE WHEN SUBSTR(CNTR_NO,2,1)=9 ");
+			query1.append("		THEN '0' ");
+			query1.append("		ELSE to_char((SUBSTR(CNTR_NO,2,1)+1)) END CNTR_NO, ");
+			query1.append("	'"+centerName+"' CNTR_NAME, ");
+			query1.append("	'"+addr+"' ADDR, ");
+			query1.append("	'"+telNo+"' TEL_NO, ");
+			query1.append("	'"+area+"' AREA, ");
+			query1.append("	'"+newOpenTime+"' OPEN_TIME, ");
+			query1.append("	'"+newClseTime+"' CLSE_TIME, ");
+			query1.append("	 TO_DATE('"+estbDate+"','YYYY-MM-DD') ESTB_DATE, ");
+			query1.append("	'"+newCenterType+"' CNTR_TP ");
+			query1.append("FROM( ");
+			query1.append("	SELECT /*+ INDEX_DESC(CNTR CNTR_PK)*/ CNTR_NO ");
+			query1.append("	FROM CNTR ");
+			query1.append("	WHERE ROWNUM=1 ) ");
+			
+			pstmt = con.prepareStatement(query1.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+			
+			// 할당시에 오늘 일자로 무조건 WORK_START_DATE가 시작하기 때문에 한명의 직원은 변경처리를 하지 않고는 당일 내에 새로운 센터로 배정불가
+			StringBuffer query2 = new StringBuffer("INSERT INTO EMP_WORK_HIST(EMP_NO,WORK_START_DATE,CNTR_NO,EMP_TP,BIZ_FILD) ");
+			query2.append("SELECT DISTINCT EMP_NO, ");
+			query2.append("		 TRUNC(SYSDATE) WORK_START_DATE, ");
+			query2.append("		 (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
+			query2.append("		  FROM CNTR c ");
+			query2.append("		  WHERE ROWNUM = 1) CNTR_NO, ");
+			query2.append("		  EMP_TP, ");
+			query2.append("		  BIZ_FILD ");
+			query2.append("FROM EMP_WORK_HIST ");
+			query2.append("WHERE EMP_NO = ( ");
+			query2.append("	SELECT EMP_NO FROM EMP ");
+			query2.append("	WHERE EMP_NAME='"+cntrManagerName+"' ");
+			query2.append("	AND BRTH_YEAR_MNTH_DAY=to_date('"+cntrManagerBdate+"','YYYY-MM-DD') ");
+			query2.append(") ");
+			
+			pstmt = con.prepareStatement(query2.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+			
+			String query3 = null;
+			
+			if(bigCageNum >= 1 || midCageNum >= 1 || smallCageNum >= 1) {
+				query3 = RegistCage(bigCageNum,midCageNum,smallCageNum);
+			
+			
+				pstmt = con.prepareStatement(query3.toString());
+				rs = pstmt.executeQuery();
+				if(rs.next()) {
+					con.commit();
+				}	
+			}
+		}catch(Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		disconnection();
+		
+	}
+	
+	private String RegistCage(int bigCageNum, int midCageNum, int smallCageNum) {
+		
+		bigCageNum+=1;
+		midCageNum+=1;
+		smallCageNum+=1;
+		
+		StringBuffer query3 = new StringBuffer();
+		
+		if (bigCageNum != 1 && midCageNum != 1 && smallCageNum != 1) {
+				
+			query3.append("INSERT INTO CAGE ");
+			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
+			query3.append("		  FROM CNTR c ");
+			query3.append("		  WHERE ROWNUM = 1) CNTR_NO, ROWNUM CAGE_ORNU, t3.CAGE_SIZE ");
+			query3.append("FROM( ");
+			query3.append("		SELECT * ");
+			query3.append("		FROM( ");
+			query3.append("			SELECT LEVEL FROM DUAL ");
+			query3.append("			CONNECT BY LEVEL<"+bigCageNum+" ");
+			query3.append("		) t1, (SELECT 'b' CAGE_SIZE FROM DUAL) t2 ");
+			query3.append("		UNION ALL ");
+			query3.append("		SELECT * ");
+			query3.append("		FROM( ");
+			query3.append("			SELECT LEVEL FROM DUAL ");
+			query3.append("			CONNECT BY LEVEL<"+midCageNum+" ");
+			query3.append("		) t1, (SELECT 'm' CAGE_SIZE FROM DUAL) t2 ");
+			query3.append("		UNION ALL ");
+			query3.append("		SELECT * ");
+			query3.append("		FROM( ");
+			query3.append("			SELECT LEVEL FROM DUAL ");
+			query3.append("			CONNECT BY LEVEL<"+smallCageNum+" ");
+			query3.append("		) t1, (SELECT 's' CAGE_SIZE FROM DUAL) t2 ");
+			query3.append(")t3 ");
+
+		}
+		else if(bigCageNum==1) {
+			query3.append("INSERT INTO CAGE ");
+			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
+			query3.append("		  FROM CNTR c ");
+			query3.append("		  WHERE ROWNUM = 1) CNTR_NO, ROWNUM CAGE_ORNU, t3.CAGE_SIZE ");
+			query3.append("FROM( ");
+//			query3.append("		SELECT * ");
+//			query3.append("		FROM( ");
+//			query3.append("			SELECT LEVEL FROM DUAL ");
+//			query3.append("			CONNECT BY LEVEL<"+bigCageNum+" ");
+//			query3.append("		) t1, (SELECT 'b' CAGE_SIZE FROM DUAL) t2 ");
+//			query3.append("		UNION ALL ");
+			query3.append("		SELECT * ");
+			query3.append("		FROM( ");
+			query3.append("			SELECT LEVEL FROM DUAL ");
+			query3.append("			CONNECT BY LEVEL<"+midCageNum+" ");
+			query3.append("		) t1, (SELECT 'm' CAGE_SIZE FROM DUAL) t2 ");
+			query3.append("		UNION ALL ");
+			query3.append("		SELECT * ");
+			query3.append("		FROM( ");
+			query3.append("			SELECT LEVEL FROM DUAL ");
+			query3.append("			CONNECT BY LEVEL<"+smallCageNum+" ");
+			query3.append("		) t1, (SELECT 's' CAGE_SIZE FROM DUAL) t2 ");
+			query3.append(")t3 ");
+		}
+		
+		else if(midCageNum==1) {
+			query3.append("INSERT INTO CAGE ");
+			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
+			query3.append("		  FROM CNTR c ");
+			query3.append("		  WHERE ROWNUM = 1) CNTR_NO, ROWNUM CAGE_ORNU, t3.CAGE_SIZE ");
+			query3.append("FROM( ");
+			query3.append("		SELECT * ");
+			query3.append("		FROM( ");
+			query3.append("			SELECT LEVEL FROM DUAL ");
+			query3.append("			CONNECT BY LEVEL<"+bigCageNum+" ");
+			query3.append("		) t1, (SELECT 'b' CAGE_SIZE FROM DUAL) t2 ");
+			query3.append("		UNION ALL ");
+//			query3.append("		SELECT * ");
+//			query3.append("		FROM( ");
+//			query3.append("			SELECT LEVEL FROM DUAL ");
+//			query3.append("			CONNECT BY LEVEL<"+midCageNum+" ");
+//			query3.append("		) t1, (SELECT 'm' CAGE_SIZE FROM DUAL) t2 ");
+//			query3.append("		UNION ALL ");
+			query3.append("		SELECT * ");
+			query3.append("		FROM( ");
+			query3.append("			SELECT LEVEL FROM DUAL ");
+			query3.append("			CONNECT BY LEVEL<"+smallCageNum+" ");
+			query3.append("		) t1, (SELECT 's' CAGE_SIZE FROM DUAL) t2 ");
+			query3.append(")t3 ");
+		}
+		
+		else if(smallCageNum==1) {
+			query3.append("INSERT INTO CAGE ");
+			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
+			query3.append("		  FROM CNTR c ");
+			query3.append("		  WHERE ROWNUM = 1) CNTR_NO, ROWNUM CAGE_ORNU, t3.CAGE_SIZE ");
+			query3.append("FROM( ");
+			query3.append("		SELECT * ");
+			query3.append("		FROM( ");
+			query3.append("			SELECT LEVEL FROM DUAL ");
+			query3.append("			CONNECT BY LEVEL<"+bigCageNum+" ");
+			query3.append("		) t1, (SELECT 'b' CAGE_SIZE FROM DUAL) t2 ");
+			query3.append("		UNION ALL ");
+			query3.append("		SELECT * ");
+			query3.append("		FROM( ");
+			query3.append("			SELECT LEVEL FROM DUAL ");
+			query3.append("			CONNECT BY LEVEL<"+midCageNum+" ");
+			query3.append("		) t1, (SELECT 'm' CAGE_SIZE FROM DUAL) t2 ");
+//			query3.append("		UNION ALL ");
+//			query3.append("		SELECT * ");
+//			query3.append("		FROM( ");
+//			query3.append("			SELECT LEVEL FROM DUAL ");
+//			query3.append("			CONNECT BY LEVEL<"+smallCageNum+" ");
+//			query3.append("		) t1, (SELECT 's' CAGE_SIZE FROM DUAL) t2 ");
+			query3.append(")t3 ");
+		}
+		
+		else if(bigCageNum==1 && midCageNum==1) {
+			query3.append("INSERT INTO CAGE ");
+			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
+			query3.append("		  FROM CNTR c ");
+			query3.append("		  WHERE ROWNUM = 1) CNTR_NO, ROWNUM CAGE_ORNU, t3.CAGE_SIZE ");
+			query3.append("FROM( ");
+//			query3.append("		SELECT * ");
+//			query3.append("		FROM( ");
+//			query3.append("			SELECT LEVEL FROM DUAL ");
+//			query3.append("			CONNECT BY LEVEL<"+bigCageNum+" ");
+//			query3.append("		) t1, (SELECT 'b' CAGE_SIZE FROM DUAL) t2 ");
+//			query3.append("		UNION ALL ");
+//			query3.append("		SELECT * ");
+//			query3.append("		FROM( ");
+//			query3.append("			SELECT LEVEL FROM DUAL ");
+//			query3.append("			CONNECT BY LEVEL<"+midCageNum+" ");
+//			query3.append("		) t1, (SELECT 'm' CAGE_SIZE FROM DUAL) t2 ");
+//			query3.append("		UNION ALL ");
+			query3.append("		SELECT * ");
+			query3.append("		FROM( ");
+			query3.append("			SELECT LEVEL FROM DUAL ");
+			query3.append("			CONNECT BY LEVEL<"+smallCageNum+" ");
+			query3.append("		) t1, (SELECT 's' CAGE_SIZE FROM DUAL) t2 ");
+			query3.append(")t3 ");
+		}
+		
+		else if(bigCageNum==1 && smallCageNum==1) {
+			query3.append("INSERT INTO CAGE ");
+			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
+			query3.append("		  FROM CNTR c ");
+			query3.append("		  WHERE ROWNUM = 1) CNTR_NO, ROWNUM CAGE_ORNU, t3.CAGE_SIZE ");
+			query3.append("FROM( ");
+//			query3.append("		SELECT * ");
+//			query3.append("		FROM( ");
+//			query3.append("			SELECT LEVEL FROM DUAL ");
+//			query3.append("			CONNECT BY LEVEL<"+bigCageNum+" ");
+//			query3.append("		) t1, (SELECT 'b' CAGE_SIZE FROM DUAL) t2 ");
+//			query3.append("		UNION ALL ");
+			query3.append("		SELECT * ");
+			query3.append("		FROM( ");
+			query3.append("			SELECT LEVEL FROM DUAL ");
+			query3.append("			CONNECT BY LEVEL<"+midCageNum+" ");
+			query3.append("		) t1, (SELECT 'm' CAGE_SIZE FROM DUAL) t2 ");
+//			query3.append("		UNION ALL ");
+//			query3.append("		SELECT * ");
+//			query3.append("		FROM( ");
+//			query3.append("			SELECT LEVEL FROM DUAL ");
+//			query3.append("			CONNECT BY LEVEL<"+smallCageNum+" ");
+//			query3.append("		) t1, (SELECT 's' CAGE_SIZE FROM DUAL) t2 ");
+			query3.append(")t3 ");
+		}
+		
+		else if(midCageNum==1 && smallCageNum==1) {
+			query3.append("INSERT INTO CAGE ");
+			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
+			query3.append("		  FROM CNTR c ");
+			query3.append("		  WHERE ROWNUM = 1) CNTR_NO, ROWNUM CAGE_ORNU, t3.CAGE_SIZE ");
+			query3.append("FROM( ");
+			query3.append("		SELECT * ");
+			query3.append("		FROM( ");
+			query3.append("			SELECT LEVEL FROM DUAL ");
+			query3.append("			CONNECT BY LEVEL<"+bigCageNum+" ");
+			query3.append("		) t1, (SELECT 'b' CAGE_SIZE FROM DUAL) t2 ");
+//			query3.append("		UNION ALL ");
+//			query3.append("		SELECT * ");
+//			query3.append("		FROM( ");
+//			query3.append("			SELECT LEVEL FROM DUAL ");
+//			query3.append("			CONNECT BY LEVEL<"+midCageNum+" ");
+//			query3.append("		) t1, (SELECT 'm' CAGE_SIZE FROM DUAL) t2 ");
+//			query3.append("		UNION ALL ");
+//			query3.append("		SELECT * ");
+//			query3.append("		FROM( ");
+//			query3.append("			SELECT LEVEL FROM DUAL ");
+//			query3.append("			CONNECT BY LEVEL<"+smallCageNum+" ");
+//			query3.append("		) t1, (SELECT 's' CAGE_SIZE FROM DUAL) t2 ");
+			query3.append(")t3 ");
+		}
+		
+		String result = query3.toString();
+		return result;
+	}
+	
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
 	
 	class NewCenterRegistButtonListener implements ActionListener{
 
@@ -279,13 +646,34 @@ public class NewCenterRegistration extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(centerManagerSearch)) {
-				new CenterManagerSearch();
+				CenterManagerSearch centerManagerSearch = new CenterManagerSearch(xCenterManager);
+				centerManagerSearch.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						// TODO Auto-generated method stub
+						super.windowClosed(e);
+//						String nameAndBdate= xCenterManager.getText();
+//						String[] stringArray = nameAndBdate.split(",");
+//						cntrManager= xCenterManager.getText();
+						cntrManagerBdate = centerManagerSearch.getCntrManagerBdate();
+					}
+					
+				});
 			}
 			else if(e.getSource().equals(addressSearch)) {
 				new AddressSearch(xAddress);
 			}
 			else if(e.getSource().equals(register)) {
-				
+				int result = JOptionPane.showConfirmDialog(null, "신규 센터를 등록하시겠습니까?", "센터 등록 확인", JOptionPane.YES_NO_OPTION);
+				switch(result) {
+				case JOptionPane.YES_OPTION:
+					RegistNewCenter();
+//					RegistCenter();
+//					RegistEmpWorkHist();
+//					InitRegistCage();
+					dispose();
+				}
 			}
 			else if(e.getSource().equals(cancel)) {
 				dispose();

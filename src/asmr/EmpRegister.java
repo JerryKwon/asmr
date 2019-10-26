@@ -11,7 +11,13 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -39,6 +45,15 @@ public class EmpRegister extends JFrame{
 	private JComboBox<String> cbEmpType,cbWorkType,cbGender;
 	private BufferedImage buttonIcon;
 	private JDateChooser chooser;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
 	private final String[] empTypeDiv = {"정규직","계약직"};
 	private final String[] workTypeDiv = {"센터장","관리직원","수의사","보호관리직원","사무직종사자","유기동물구조원"};
@@ -85,7 +100,7 @@ public class EmpRegister extends JFrame{
 		
 		LocalDate now = LocalDate.now();
 		Date date = Date.valueOf(now);
-		chooser = new JDateChooser(date,"YYYY.MM.dd");
+		chooser = new JDateChooser(date,"YYYY-MM-dd");
 		
 		buttonIcon = ImageIO.read(new File("images/cal1.png"));
 		imageButton = new JButton(new ImageIcon(buttonIcon));
@@ -197,13 +212,14 @@ public class EmpRegister extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(centerSearch)) {
-				new CenterSearch();
+				new CenterSearch(xBelongCenter);
 			}
 			else if(e.getSource().equals(addressSearch)) {
 				new AddressSearch(xAddress);
 			}
 			else if(e.getSource().equals(register)) {
-				
+				RegistEmp();
+				dispose();
 			}
 			else if(e.getSource().equals(cancel)) {
 				dispose();
@@ -224,6 +240,160 @@ public class EmpRegister extends JFrame{
 			}
 		}
 	}
+	
+	private void RegistEmp() {
+		connection();
+		
+		String empName = xEmpName.getText();
+		String cntrName = xBelongCenter.getText();
+		String korEmpType = (String)cbEmpType.getSelectedItem();
+		String korBizFild = (String)cbWorkType.getSelectedItem();
+		String bdate = ((JTextField)chooser.getDateEditor().getUiComponent()).getText();
+		String korGender = (String)cbGender.getSelectedItem();
+		String addr = xAddress.getText();
+		String telNo = xPhoneNum.getText();
+		
+		String engEmpType = null;
+		String engBizFild = null;
+		String engGender = null;
+		
+		switch(korEmpType) {
+		case "정규직":
+			engEmpType="f";
+			break;
+		case "계약직":
+			engEmpType="c";
+			break;
+		}
+		
+		switch(korBizFild) {
+		case "센터장":
+			engBizFild = "c";
+			break;
+		case "관리직원":
+			engBizFild = "m";
+			break;
+		case "수의사":
+			engBizFild = "d";
+			break;
+		case "보호관리직원":
+			engBizFild = "p";
+			break;
+		case "사무직종사자":
+			engBizFild = "o";
+			break;
+		case "유기동물구조원":
+			engBizFild = "r";
+			break;
+		}
+		
+		switch(korGender) {
+		case "남":
+			engGender = "m";
+			break;
+		case "여":
+			engGender = "f";
+			break;
+		}
+		
+		String[] pwds = bdate.split("-");
+		StringBuffer sb = new StringBuffer("");
+		for(String element:pwds) {
+			sb.append(element);
+		}
+		String pwd = sb.toString();
+		
+		try {
+			StringBuffer query1 = new StringBuffer("INSERT INTO EMP ");
+			query1.append("SELECT ");
+			query1.append("	CASE WHEN SUBSTR(EMP_NO,2,1)=9 AND SUBSTR(EMP_NO,3,1)=9 AND SUBSTR(EMP_NO,4,1)=9 ");
+			query1.append("		THEN to_char(SUBSTR(EMP_NO,1,1)+1) ");
+			query1.append("		ELSE SUBSTR(EMP_NO,1,1) END || ");
+			query1.append("	CASE WHEN SUBSTR(EMP_NO,3,1)=9 AND SUBSTR(EMP_NO,4,1)=9 ");
+			query1.append("		THEN to_char(SUBSTR(EMP_NO,2,1)+1) ");
+			query1.append("		ELSE SUBSTR(EMP_NO,2,1) END || ");
+			query1.append("	CASE WHEN SUBSTR(EMP_NO,4,1)=9 ");
+			query1.append("		THEN to_char(SUBSTR(EMP_NO,3,1)+1) ");
+			query1.append("		ELSE SUBSTR(EMP_NO,3,1) END || ");
+			query1.append("	CASE WHEN SUBSTR(EMP_NO,4,1) = 9 ");
+			query1.append("		THEN '0' ");
+			query1.append("		ELSE to_char((SUBSTR(EMP_NO,4,1)+1)) END EMP_NO, ");
+			query1.append("	'"+empName+"' EMP_NAME, ");
+			query1.append("	'"+bdate+"' BDATE, ");
+			query1.append("	'"+addr+"' ADDR, ");
+			query1.append("	'"+engGender+"' SEX, ");
+			query1.append("	'"+telNo+"' TEL_NO, ");
+			query1.append("	'"+pwd+"' PWD ");
+			query1.append("FROM( ");
+			query1.append("	SELECT /*+ INDEX_DESC(EMP EMP_PK) */ NVL(EMP_NO,0) EMP_NO ");
+			query1.append("	FROM EMP ");
+			query1.append("	WHERE ROWNUM=1) e ");
+			
+			pstmt = con.prepareStatement(query1.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+			
+			StringBuffer query2 = new StringBuffer("INSERT INTO EMP_WORK_HIST(EMP_NO,WORK_START_DATE,CNTR_NO,EMP_TP,BIZ_FILD) ");
+			query2.append("SELECT EMP_NO, ");
+			query2.append("		  TRUNC(SYSDATE) WORK_START_DATE, ");
+			query2.append("		  c.CNTR_NO, ");
+			query2.append("		  '"+engEmpType+"' EMP_TP, ");
+			query2.append("		  '"+engBizFild+"' BIZ_FILD ");
+			query2.append("FROM( ");
+			query2.append("	SELECT /*+ INDEX_DESC(EMP EMP_PK) */ NVL(EMP_NO,0) EMP_NO ");
+			query2.append("	FROM EMP ");
+			query2.append("	WHERE ROWNUM=1) e, (SELECT * FROM CNTR WHERE CNTR_NAME='"+cntrName+"') c ");
+			
+			pstmt = con.prepareStatement(query2.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+	}
+	
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
 	
     private void ChangeFont(JComponent[] comps, Font font) {
     	for(JComponent comp: comps) {

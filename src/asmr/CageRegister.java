@@ -8,6 +8,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -15,6 +21,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -23,6 +30,15 @@ public class CageRegister extends JFrame {
 	private JTextField xCenterName;
 	private JComboBox<String> cbCageSize;
 	private JButton register,cancel;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
 	private final String[] cageSizeDiv = {"대","중","소"};
 	
@@ -34,7 +50,7 @@ public class CageRegister extends JFrame {
 	
 	CageRegisterButtonListener cageRegisterButtonListener;
 	
-	public CageRegister() {
+	public CageRegister(String cntrName) {
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
 		
@@ -45,6 +61,7 @@ public class CageRegister extends JFrame {
 		vCenterName = new JLabel("센터명");
 		xCenterName = new JTextField(10);
 		xCenterName.setEnabled(false);
+		xCenterName.setText(cntrName);
 		
 		vCageSize = new JLabel("케이지크기");
 		cbCageSize = new JComboBox<String>(cageSizeDiv);
@@ -125,13 +142,98 @@ public class CageRegister extends JFrame {
 		}
 	}
 	
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
+
+	
+	private void RegistCage() {
+		connection();
+		
+		String korCageSize = (String) cbCageSize.getSelectedItem();
+		String engCageSize = null;
+		
+		switch(korCageSize) {
+		case "대":
+			engCageSize = "b";
+			break;
+		case "중":
+			engCageSize = "m";
+			break;
+		case "소":	
+			engCageSize = "s";
+			break;
+		}
+		
+		try {
+			StringBuffer query = new StringBuffer("INSERT INTO CAGE ");
+			query.append("SELECT CNTR_NO,MAX(CAGE_ORNU)+1 CAGE_ORNU, '"+engCageSize+"' ");
+			query.append("FROM( ");
+			query.append("	SELECT c1.CNTR_NO,NVL(c2.CAGE_ORNU,0) CAGE_ORNU ");
+			query.append("	FROM( ");
+			query.append("		SELECT * FROM CNTR ");
+			query.append("		WHERE CNTR_NAME='서울서초보호센터') c1 LEFT OUTER JOIN CAGE c2 ");
+			query.append("											ON c1.CNTR_NO = c2.CNTR_NO ");
+			query.append(") ");
+			query.append("GROUP BY CNTR_NO ");
+			
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+	}
+	
 	class CageRegisterButtonListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(register)) {
-				
+				int result = JOptionPane.showConfirmDialog(null, "신규 케이지를 등록하시겠습니까?", "케이지 등록 확인", JOptionPane.YES_NO_OPTION);
+				switch(result) {
+				case JOptionPane.YES_OPTION:
+					RegistCage();
+					dispose();
+				}
 			}
 			else if (e.getSource().equals(cancel)) {
 				dispose();
@@ -148,6 +250,6 @@ public class CageRegister extends JFrame {
 	
 //	리스너 작업으로 인하여 main 메서드 삭제
 	public static void main(String[] args) {
-		new CageRegister();
+		new CageRegister("Test");
 	}
 }

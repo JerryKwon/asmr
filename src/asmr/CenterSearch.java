@@ -11,6 +11,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -20,14 +26,25 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class CenterSearch extends JFrame{
 	private JLabel vCenterSearch;
 	private JButton confirm, cancel;
+	private JTextField xBelongCenter;
 	
 	private JTable eCenterList;
 	private JScrollPane scrollpane;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
 	private final String[] col1 = {"센터명","주소"};
 	
@@ -42,12 +59,14 @@ public class CenterSearch extends JFrame{
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
-	public CenterSearch() {
+	public CenterSearch(JTextField xBelongCenter) {
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
 		
 		centerSearchButtonListener = new CenterSearchButtonListener();
 		centerSearchMouseListener = new CenterSearchMouseListener();
+		
+		this.xBelongCenter = xBelongCenter;
 		
 		vCenterSearch = new JLabel("센터목록");
 		
@@ -62,7 +81,9 @@ public class CenterSearch extends JFrame{
 		
 		eCenterList.addMouseListener(centerSearchMouseListener);
 		scrollpane = new JScrollPane(eCenterList);
-		scrollpane.setPreferredSize(new Dimension(250,100));
+		scrollpane.setPreferredSize(new Dimension(450,100));
+		eCenterList.getColumnModel().getColumn(0).setPreferredWidth(125);
+		eCenterList.getColumnModel().getColumn(1).setPreferredWidth(325);
 		
 		confirm = new JButton("확인");
 		confirm.setBackground(blue);
@@ -73,6 +94,8 @@ public class CenterSearch extends JFrame{
 		cancel.addActionListener(centerSearchButtonListener);
 		
 		CenterSearchView();
+		
+		GetCenterList();
 	}
 	
 	private void CenterSearchView() {
@@ -96,7 +119,7 @@ public class CenterSearch extends JFrame{
 		JComponent[] cops = {confirm,cancel};
 		ChangeFont(cops, new Font("나눔고딕", Font.BOLD, 12));
 		CombinePanel buttonPanel = new CombinePanel(cops, true);
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,70,0,0));
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,175,0,0));
 		gridbagAdd(buttonPanel, 0, 2, 1, 1);
 		
 		pack();
@@ -141,7 +164,10 @@ public class CenterSearch extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(confirm)) {
-				
+				int clickedRow = eCenterList.getSelectedRow();
+				String cntrName = (String)eCenterList.getValueAt(clickedRow, 0);
+				xBelongCenter.setText(cntrName);
+				dispose();
 			}
 			else if(e.getSource().equals(cancel)) {
 				dispose();
@@ -164,7 +190,66 @@ public class CenterSearch extends JFrame{
 		
 	}
 
-    private void ChangeFont(JComponent[] comps, Font font) {
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
+	
+    private void GetCenterList() {
+    	connection();
+    	
+    	try {
+    		
+			StringBuffer query= new StringBuffer("SELECT CNTR_NO, CNTR_NAME, ADDR ");
+			query.append("FROM CNTR ");
+			query.append("ORDER BY 1 ");
+			
+    		pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {	
+				model1.addRow(new Object[] {rs.getString("CNTR_NAME"),rs.getString("ADDR")});
+			}
+    		
+    	}catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	
+    	disconnection();
+    }
+    
+	private void ChangeFont(JComponent[] comps, Font font) {
     	for(JComponent comp: comps) {
     		comp.setFont(font);
     	}
@@ -172,6 +257,6 @@ public class CenterSearch extends JFrame{
 	
 //  리스너 작업 종료로 메인 메서드 주석처리하였습니다.
 	public static void main(String[] args) {
-		new CenterSearch();
+		new CenterSearch(new JTextField());
 	}
 }
