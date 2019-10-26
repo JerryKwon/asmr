@@ -332,7 +332,6 @@ public class NewCenterRegistration extends JFrame{
 	
 		// 직원근무이력 관련
 		String cntrManagerName = xCenterManager.getText();
-				
 		
 		
 		// 신규케이지 등록 관련
@@ -344,8 +343,11 @@ public class NewCenterRegistration extends JFrame{
 			StringBuffer query1 = new StringBuffer("INSERT INTO CNTR ");
 			query1.append("SELECT ");
 			query1.append("	CASE WHEN SUBSTR(CNTR_NO,2,1)=9 ");
-			query1.append("			THEN to_char(SUBSTR(CNTR_NO,1,1)+1) ");
-			query1.append("		ELSE SUBSTR(CNTR_NO,1,1) END || (SUBSTR(CNTR_NO,2,1)+1) CNTR_NO, ");
+			query1.append("		THEN to_char(SUBSTR(CNTR_NO,1,1)+1) ");
+			query1.append("		ELSE SUBSTR(CNTR_NO,1,1) END || ");
+			query1.append("	CASE WHEN SUBSTR(CNTR_NO,2,1)=9 ");
+			query1.append("		THEN '0' ");
+			query1.append("		ELSE to_char((SUBSTR(CNTR_NO,2,1)+1)) END CNTR_NO, ");
 			query1.append("	'"+centerName+"' CNTR_NAME, ");
 			query1.append("	'"+addr+"' ADDR, ");
 			query1.append("	'"+telNo+"' TEL_NO, ");
@@ -355,8 +357,9 @@ public class NewCenterRegistration extends JFrame{
 			query1.append("	 TO_DATE('"+estbDate+"','YYYY-MM-DD') ESTB_DATE, ");
 			query1.append("	'"+newCenterType+"' CNTR_TP ");
 			query1.append("FROM( ");
-			query1.append("	SELECT NVL(CNTR_NO,0) CNTR_NO ");
-			query1.append("	FROM CNTR) ");
+			query1.append("	SELECT /*+ INDEX_DESC(CNTR CNTR_PK)*/ CNTR_NO ");
+			query1.append("	FROM CNTR ");
+			query1.append("	WHERE ROWNUM=1 ) ");
 			
 			pstmt = con.prepareStatement(query1.toString());
 			rs = pstmt.executeQuery();
@@ -364,8 +367,9 @@ public class NewCenterRegistration extends JFrame{
 				con.commit();
 			}
 			
+			// 할당시에 오늘 일자로 무조건 WORK_START_DATE가 시작하기 때문에 한명의 직원은 변경처리를 하지 않고는 당일 내에 새로운 센터로 배정불가
 			StringBuffer query2 = new StringBuffer("INSERT INTO EMP_WORK_HIST(EMP_NO,WORK_START_DATE,CNTR_NO,EMP_TP,BIZ_FILD) ");
-			query2.append("SELECT EMP_NO, ");
+			query2.append("SELECT DISTINCT EMP_NO, ");
 			query2.append("		 TRUNC(SYSDATE) WORK_START_DATE, ");
 			query2.append("		 (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
 			query2.append("		  FROM CNTR c ");
@@ -599,150 +603,6 @@ public class NewCenterRegistration extends JFrame{
 		String result = query3.toString();
 		return result;
 	}
-	
-//	private void RegistCenter() {
-//		connection();
-//		
-//		String centerName = xCenterName.getText();
-//		String addr = xAddress.getText();
-//		String telNo = xPhoneNum.getText();
-//		String area = xArea.getText();
-//		String openTime = (String)cbOperTimeOpen.getSelectedItem();
-//		String clseTime = (String)cbOperTimeClose.getSelectedItem();
-//		String estbDate = ((JTextField)chooser.getDateEditor().getUiComponent()).getText();
-//		String centerType = (String)cbCenterType.getSelectedItem();
-//		
-//		String newOpenTime = null;
-//		String newClseTime = null;
-//		String newCenterType = null;
-//		
-//		String[] openTimes = openTime.split(":");
-//		String[] clseTimes = clseTime.split(":");
-//		
-//		StringBuffer sb1 = new StringBuffer(openTimes[0]);
-//		sb1.append(openTimes[1]);
-//		newOpenTime = sb1.toString();
-//		
-//		StringBuffer sb2 = new StringBuffer(clseTimes[0]);
-//		sb2.append(clseTimes[1]);
-//		newClseTime = sb2.toString();
-//		
-//		switch(centerType) {
-//		case "본부":
-//			newCenterType = "h";
-//			break;
-//		case "일반":
-//			newCenterType = "n";
-//			break;
-//		}
-//		
-//		
-//		try {
-//			StringBuffer query = new StringBuffer("INSERT INTO CNTR ");
-//			query.append("SELECT ");
-//			query.append("	CASE WHEN SUBSTR(CNTR_NO,2,1)=9 ");
-//			query.append("			THEN to_char(SUBSTR(CNTR_NO,1,1)+1) ");
-//			query.append("		ELSE SUBSTR(CNTR_NO,1,1) END || (SUBSTR(CNTR_NO,2,1)+1) CNTR_NO, ");
-//			query.append("	'"+centerName+"' CNTR_NAME, ");
-//			query.append("	'"+addr+"' ADDR, ");
-//			query.append("	'"+telNo+"' TEL_NO, ");
-//			query.append("	'"+area+"' AREA, ");
-//			query.append("	'"+newOpenTime+"' OPEN_TIME, ");
-//			query.append("	'"+newClseTime+"' CLSE_TIME, ");
-//			query.append("	 TO_DATE('"+newClseTime+"','YYYY.MM.DD') ESTB_DATE, ");
-//			query.append("	'"+newCenterType+"' CNTR_TP ");
-//			query.append("FROM( ");
-//			query.append("	SELECT NVL(CNTR_NO,0) CNTR_NO ");
-//			query.append("	FROM CNTR) ");
-//			
-//			pstmt = con.prepareStatement(query.toString());
-//			rs = pstmt.executeQuery();
-//			if(rs.next()) {
-//				con.commit();
-//			}
-//		}catch(Exception e1) {
-//			e1.printStackTrace();
-//		}
-//		
-//		disconnection();
-//	}
-	
-//	private void RegistEmpWorkHist() {
-//		connection();
-//		
-//		String cntrManagerName = xCenterManager.getText();
-//		
-//		try {
-//			StringBuffer query = new StringBuffer("INSERT INTO EMP_WORK_HIST(EMP_NO,WORK_START_DATE,CNTR_NO,EMP_TP,BIZ_FILD) ");
-//			query.append("SELECT EMP_NO, ");
-//			query.append("		 TRUNC(SYSDATE) WORK_START_DATE, ");
-//			query.append("		 (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
-//			query.append("		  FROM CNTR c ");
-//			query.append("		  WHERE ROWNUM = 1) CNTR_NO, ");
-//			query.append("		  EMP_TP, ");
-//			query.append("		  BIZ_FILD ");
-//			query.append("FROM EMP_WORK_HIST ");
-//			query.append("WHERE EMP_NO = ( ");
-//			query.append("	SELECT EMP_NO FROM EMP ");
-//			query.append("	WHERE EMP_NAME='"+cntrManagerName+"' ");
-//			query.append("	AND BRTH_YEAR_MNTH_DAY=to_date('"+cntrManagerBdate+"','YYYY-MM-DD') ");
-//			query.append(") ");
-//			
-//			pstmt = con.prepareStatement(query.toString());
-//			rs = pstmt.executeQuery();
-//			if(rs.next()) {
-//				con.commit();
-//			}
-//		}catch(Exception e1) {
-//			
-//		}
-//		
-//		disconnection();
-//	};
-	
-	private void InitRegistCage() {
-		connection();
-		
-		String bigCageNum = xCageBig.getText();
-		String midCageNum = xCageMid.getText();
-		String smallCageNum = xCageSmall.getText();
-		
-		try {
-			StringBuffer query = new StringBuffer("INSERT INTO CAGE ");
-			query.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
-			query.append("		  FROM CNTR c ");
-			query.append("		  WHERE ROWNUM = 1) CNTR_NO, ROWNUM CAGE_ORNU, t3.CAGE_SIZE ");
-			query.append("FROM( ");
-			query.append("		SELECT * ");
-			query.append("		FROM( ");
-			query.append("			SELECT LEVEL FROM DUAL ");
-			query.append("			CONNECT BY LEVEL<"+bigCageNum+" ");
-			query.append("		) t1, (SELECT 'b' CAGE_SIZE FROM DUAL) t2 ");
-			query.append("		UNION ALL ");
-			query.append("		SELECT * ");
-			query.append("		FROM( ");
-			query.append("			SELECT LEVEL FROM DUAL ");
-			query.append("			CONNECT BY LEVEL<"+midCageNum+" ");
-			query.append("		) t1, (SELECT 'm' CAGE_SIZE FROM DUAL) t2 ");
-			query.append("		UNION ALL ");
-			query.append("		SELECT * ");
-			query.append("		FROM( ");
-			query.append("			SELECT LEVEL FROM DUAL ");
-			query.append("			CONNECT BY LEVEL<"+smallCageNum+" ");
-			query.append("		) t1, (SELECT 's' CAGE_SIZE FROM DUAL) t2 ");
-			query.append(")t3 ");
-			
-			pstmt = con.prepareStatement(query.toString());
-			rs = pstmt.executeQuery();
-			if(rs.next()) {
-				con.commit();
-			}
-		}catch(Exception e1) {
-			
-		}
-		
-		disconnection();
-	};
 	
     // 데이터베이스 연결
 
