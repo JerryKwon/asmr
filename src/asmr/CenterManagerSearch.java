@@ -63,9 +63,9 @@ public class CenterManagerSearch extends JFrame{
 	CenterManagerSearchButtonListener centerManagerSearchButtonListener;
 	CenterManagerSearchMouseListener centerManagerSearchMouseListener;
 	
-	public CenterManagerSearch(JTextField xCenterManager, String cntrManagerBdate) {
+	public CenterManagerSearch(JTextField xCenterManager) {
 		this.xCenterManager = xCenterManager;
-		this.cntrManagerBdate = cntrManagerBdate;
+//		this.cntrManagerBdate = cntrManagerBdate;
 		
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
@@ -152,8 +152,8 @@ public class CenterManagerSearch extends JFrame{
 		try {
 			StringBuffer query= new StringBuffer("SELECT e.EMP_NAME name, e.BRTH_YEAR_MNTH_DAY bdate ");
 			query.append("FROM EMP e LEFT OUTER JOIN (");
-			query.append("	SELECT * FROM EMP_WORK_HIST");
-			query.append("	WHERE WORK_END_DATE = to_date('9999-12-31')");
+			query.append("	SELECT DISTINCT EMP_NO FROM EMP_WORK_HIST");
+			query.append("	WHERE WORK_END_DATE = to_date('9999-12-31','YYYY-MM-DD')");
 			query.append("	AND BIZ_FILD = 'c') cm ");
 			query.append("	ON e.EMP_NO = cm.EMP_NO");
 			
@@ -231,8 +231,8 @@ public class CenterManagerSearch extends JFrame{
 			if(e.getSource().equals(confirm)) {
 				int clickedRow = eCenterManagerList.getSelectedRow();
 				String centerMangerName = (String) eCenterManagerList.getValueAt(clickedRow, 0);
-				cntrManagerBdate = (String) eCenterManagerList.getValueAt(clickedRow, 1);
-				xCenterManager.setText(centerMangerName+","+cntrManagerBdate);
+//				cntrManagerBdate = (String) eCenterManagerList.getValueAt(clickedRow, 1);
+				xCenterManager.setText(centerMangerName);
 				dispose();
 			}
 			else if(e.getSource().equals(cancel)) {
@@ -248,21 +248,27 @@ public class CenterManagerSearch extends JFrame{
 			// TODO Auto-generated method stub
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
-				
+				int clickedRow = eCenterManagerList.getSelectedRow();
+				cntrManagerBdate = (String)eCenterManagerList.getValueAt(clickedRow, 1);
 			}
 		}
 		
 	}
 	
-	
-    private void ChangeFont(JComponent[] comps, Font font) {
+    public String getCntrManagerBdate() {
+		return cntrManagerBdate;
+	}
+
+	private void ChangeFont(JComponent[] comps, Font font) {
     	for(JComponent comp: comps) {
     		comp.setFont(font);
     	}
     }
     
+    
+    
 //  버튼 기능 구현으로 인하여 메인 메서드를 삭제합니다.	
 	public static void main(String[] args) {
-		new CenterManagerSearch(new JTextField(),null);
+		new CenterManagerSearch(new JTextField());
 	}
 }
