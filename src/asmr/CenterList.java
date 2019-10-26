@@ -334,8 +334,9 @@ public class CenterList extends JPanel{
 		connection();
 		
 		try {
-			StringBuffer query= new StringBuffer("SELECT c.CNTR_NAME name, c.ADDR addr, SUBSTR(c.OPEN_TIME,1,2)||':'||SUBSTR(c.OPEN_TIME,3,2)||'-'||SUBSTR(c.CLSE_TIME,1,2)||':'||SUBSTR(c.CLSE_TIME,3,2) opr_time ");
-			query.append("FROM CNTR c");
+			StringBuffer query= new StringBuffer("SELECT c.CNTR_NO ,c.CNTR_NAME name, c.ADDR addr, SUBSTR(c.OPEN_TIME,1,2)||':'||SUBSTR(c.OPEN_TIME,3,2)||'-'||SUBSTR(c.CLSE_TIME,1,2)||':'||SUBSTR(c.CLSE_TIME,3,2) opr_time ");
+			query.append("FROM CNTR c ");
+			query.append("ORDER BY 1 ");
 			
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
@@ -412,7 +413,7 @@ public class CenterList extends JPanel{
 			query.append("					FROM ( ");
 			query.append("							SELECT CNTR_NO ");
 			query.append("							FROM CNTR ");
-			query.append("							WHERE CNTR_NAME='서울서초보호센터') c1 LEFT OUTER JOIN CAGE c2 ");
+			query.append("							WHERE CNTR_NAME='"+cntrName+"') c1 LEFT OUTER JOIN CAGE c2 ");
 			query.append("																ON c1.CNTR_NO=c2.CNTR_NO ) t ");
 			query.append("				GROUP BY t.CAGE_SIZE) c ");
 			query.append("		ON ct.CAGE_TYPE=c.CAGE_SIZE ");
@@ -444,13 +445,16 @@ public class CenterList extends JPanel{
 	private void GetCageList() {
 		model2.setRowCount(0);
 		
+		int clickedRow = eCenterList.getSelectedRow();
+		String cntrName= (String)eCenterList.getValueAt(clickedRow, 0);
+		
 		connection();
 		
 		try {
 			StringBuffer query = new StringBuffer("SELECT c1.CNTR_NO,c2.CAGE_ORNU,c2.CAGE_SIZE ");
 			query.append("FROM ( ");
 			query.append("	SELECT * FROM CNTR ");
-			query.append("	WHERE CNTR_NAME='서울서초보호센터') c1 INNER JOIN CAGE c2 ");
+			query.append("	WHERE CNTR_NAME='"+cntrName+"') c1 INNER JOIN CAGE c2 ");
 			query.append("										ON c1.CNTR_NO = c2.CNTR_NO ");
 			
 			pstmt = con.prepareStatement(query.toString());
@@ -591,7 +595,7 @@ public class CenterList extends JPanel{
 				});
 			}
 			if(e.getSource().equals(searchManager)) {
-				new CenterManagerSearch(xCenterManager,cntrManagerBdate);
+				new CenterManagerSearch(xCenterManager);
 			}
 			if(e.getSource().equals(modify)) {
 				modify.setText("확인");
