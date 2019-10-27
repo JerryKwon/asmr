@@ -372,13 +372,14 @@ public class CenterList extends JPanel{
 			query.append("		WHERE CNTR_NAME='"+cntrName+"') c1 LEFT OUTER JOIN EMP_WORK_HIST wh ");
 			query.append("			ON c1.CNTR_NO = wh.CNTR_NO ");
 			query.append("			AND wh.WORK_END_DATE = to_date('9999-12-31','YYYY-MM-DD') ");
-			query.append("			AND wh.BIZ_FILD = 'c') t RIGHT OUTER JOIN EMP e ");
+			query.append("			AND wh.BIZ_FILD = 'c') t INNER JOIN EMP e ");
 			query.append("				ON t.EMP_NO = e.EMP_NO ");
 				
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				String[] estbDate = rs.getString("ESTB_DATE").split(" ");
+				
 				xCenterNum.setText(rs.getString("CNTR_NO"));
 				xCenterName.setText(rs.getString("CNTR_NAME"));
 				xArea.setText(rs.getString("AREA"));
