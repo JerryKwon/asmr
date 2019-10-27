@@ -191,6 +191,7 @@ public class ProtAniList extends JPanel {
 		
 		vDescription = new JLabel("Ό³Έν");
 		xDescription = new JTextArea();
+		xDescription.setLineWrap(true);
 		xDescription.setEditable(false);
 		descriptionScroll = new JScrollPane(xDescription);
 		descriptionScroll.setPreferredSize(new Dimension(400,150));
