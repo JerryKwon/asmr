@@ -11,6 +11,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -20,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import asmr.NewCenterRegistration.NewCenterRegistButtonListener;
@@ -28,6 +36,19 @@ public class RscuSearch extends JFrame{
 	JLabel vRscuList;
 	JTable eRscuList;
 	JButton confirm,cancel;
+	JTextField xRscuNo;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
+	
+	//구조번호를 담기 위한 배열
+	private ArrayList<Integer> rscuNos = new ArrayList<Integer>();
 	
 	JScrollPane scrollPane = new JScrollPane();
 	
@@ -44,12 +65,14 @@ public class RscuSearch extends JFrame{
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
-	public RscuSearch() {
+	public RscuSearch(JTextField xRscuNo) {
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
 		
 		rscuSearchButtonListener = new RscuSearchButtonListener();
 		rscuSearchMouseListener = new RscuSearchMouseListener();
+		
+		this.xRscuNo = xRscuNo;
 		
 		vRscuList = new JLabel("구조목록");
 		vRscuList.setFont(new Font("나눔고딕", Font.PLAIN, 16));
@@ -64,7 +87,13 @@ public class RscuSearch extends JFrame{
 	    };
 		eRscuList.addMouseListener(rscuSearchMouseListener);
 		scrollPane = new JScrollPane(eRscuList);
-		scrollPane.setPreferredSize(new Dimension(400,100));
+		scrollPane.setPreferredSize(new Dimension(525,100));
+		
+		eRscuList.getColumnModel().getColumn(0).setPreferredWidth(150);
+		eRscuList.getColumnModel().getColumn(1).setPreferredWidth(75);
+		eRscuList.getColumnModel().getColumn(2).setPreferredWidth(50);
+		eRscuList.getColumnModel().getColumn(3).setPreferredWidth(250);
+		
 		
 		confirm = new JButton("확인");
 		confirm.setBackground(blue);
@@ -75,6 +104,8 @@ public class RscuSearch extends JFrame{
 		cancel.addActionListener(rscuSearchButtonListener);
 		
 		RscuSearchView();
+		
+		
 	}
 	
 	private void RscuSearchView() {
@@ -94,10 +125,13 @@ public class RscuSearch extends JFrame{
 		
 		Component[] cops = {confirm, cancel};
 		CombinePanel buttonPanel = new CombinePanel(cops, 5, 5);
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,140,0,0));
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,200,0,0));
 		gridbagAdd(buttonPanel, 0, 2, 1, 1);
 		
+		GetRscuList();
+		
 		pack();
+		setLocationRelativeTo(null);
 		setResizable(false);
 		setVisible(true);
 	}
@@ -138,12 +172,10 @@ public class RscuSearch extends JFrame{
 					JOptionPane.showMessageDialog(null, "아무것도 선택되지 않았습니다.", "에러", JOptionPane.WARNING_MESSAGE);
 				}
 				else {
-					int result = JOptionPane.showConfirmDialog(null, "해당 구조를 선택하시겠습니까?", "구조선택",JOptionPane.QUESTION_MESSAGE);
-					if(result == JOptionPane.OK_OPTION) {
-						JOptionPane.showMessageDialog(null, "선택되었습니다.","선택확인",JOptionPane.PLAIN_MESSAGE);
-						//구조번호가 보호동물등록팝업에 연결될 수 있도록!
-						dispose();
-					}
+					int clickedRow = eRscuList.getSelectedRow();
+					int rscuNo = rscuNos.get(clickedRow);
+					xRscuNo.setText(String.valueOf(rscuNo));
+					dispose();
 				}
 			}
 			else if(e.getSource().equals(cancel)) {
@@ -160,13 +192,80 @@ public class RscuSearch extends JFrame{
 			// TODO Auto-generated method stub
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
-				
+
 			}
 		}
 		
 	}
 	
+	private void GetRscuList() {
+		connection();
+		
+		try {
+			StringBuffer query= new StringBuffer("SELECT rs.RSCU_NO,rs.RSCU_DTTM,rp.ANML_KINDS,rp.ANML_SIZE,rs.RSCU_LOC ");
+			query.append("FROM( ");
+			query.append("	SELECT RSCU_NO,RSCU_DTTM,RSCU_LOC ");
+			query.append("	FROM RSCU) rs INNER JOIN (SELECT ASSG_NO,RPRT_NO ");
+			query.append("		FROM ASSG ");
+			query.append("		WHERE ASSG_RES='a') a ");
+			query.append("		ON rs.RSCU_NO=a.ASSG_NO INNER JOIN (SELECT RPRT_NO,ANML_KINDS,ANML_SIZE ");
+			query.append("			FROM RPRT) rp ");
+			query.append("			ON a.RPRT_NO = rp.RPRT_NO ");
+			
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				
+				rscuNos.add(rs.getInt("RSCU_NO"));
+				
+				model1.addRow(new Object[] {rs.getString("RSCU_DTTM"),rs.getString("ANML_KINDS"),rs.getString("ANML_SIZE"),rs.getString("RSCU_LOC")});
+			}
+		
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+	}
+	
+	// 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
+	
 	public static void main(String[] args) {
-		new RscuSearch();
+		new RscuSearch(new JTextField());
 	}
 }
