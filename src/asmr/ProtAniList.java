@@ -16,6 +16,13 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -23,7 +30,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -44,6 +50,18 @@ public class ProtAniList extends JPanel {
 	private JScrollPane aniListScroll;
 	
 	private JScrollPane descriptionScroll;
+	
+	private ArrayList<String> cntrNos;
+	private ArrayList<String> abanNos;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
 	private final String[] col1 = {"유기동물명","동물종류","품종","나이(개월)","크기","설명"};
 	
@@ -75,6 +93,9 @@ public class ProtAniList extends JPanel {
 		protAniListMouseListener = new ProtAniListMouseListener();
 		protAniListButtonListener = new ProtAniListButtonListener();
 		
+		cntrNos = new ArrayList<String>();
+		abanNos = new ArrayList<String>();
+		
 		vProtAniRegister = new JLabel("보호동물목록");
 		vProtAniRegister.setFont(new Font("나눔고딕", Font.BOLD, 24));
 		
@@ -94,41 +115,49 @@ public class ProtAniList extends JPanel {
 		eProtAniList.addMouseListener(protAniListMouseListener);
 		aniListScroll = new JScrollPane(eProtAniList);
 		aniListScroll.setPreferredSize(new Dimension(1400,200));
+		eProtAniList.getColumnModel().getColumn(0).setPreferredWidth(150);
+		eProtAniList.getColumnModel().getColumn(1).setPreferredWidth(75);
+		eProtAniList.getColumnModel().getColumn(2).setPreferredWidth(150);
+		eProtAniList.getColumnModel().getColumn(3).setPreferredWidth(75);
+		eProtAniList.getColumnModel().getColumn(4).setPreferredWidth(50);
+		eProtAniList.getColumnModel().getColumn(5).setPreferredWidth(900);
+		
+		
 		
 		vProtAniInfo = new JLabel("보호동물정보");
 		vProtAniInfo.setFont(new Font("나눔고딕", Font.BOLD, 20));
 		
 		vAbanAniNo = new JLabel("유기동물번호");
 		xAbanAniNo = new JTextField(12);
-		xAbanAniNo.setEnabled(false);
+		xAbanAniNo.setEditable(false);
 		
 		vAbanAniType = new JLabel("유기동물구분");
 		xAbanAniType = new JTextField(12);
-		xAbanAniType.setEnabled(false);
+		xAbanAniType.setEditable(false);
 		
 		vRescueNo = new JLabel("구조번호");
 		xRescueNo = new JTextField(12);
-		xRescueNo.setEnabled(false);
+		xRescueNo.setEditable(false);
 		
 		vAbanAniName = new JLabel("유기동물명");
 		xAbanAniName = new JTextField(12);
-		xAbanAniName.setEnabled(false);
+		xAbanAniName.setEditable(false);
 		
 		vAge = new JLabel("나이(개월)");
 		xAge = new JTextField(12);
-		xAge.setEnabled(false);
+		xAge.setEditable(false);
 		
 		vParAniName = new JLabel("어미유기동물명");
 		xParAniName = new JTextField(12);
-		xParAniName.setEnabled(false);
+		xParAniName.setEditable(false);
 		
 		vAniType = new JLabel("동물종류");
 		xAniType = new JTextField(12);
-		xAniType.setEnabled(false);
+		xAniType.setEditable(false);
 		
 		vKind = new JLabel("품종");
 		xKind = new JTextField(12);
-		xKind.setEnabled(false);
+		xKind.setEditable(false);
 		
 		vSex = new JLabel("성별");
 		cbSex = new JComboBox<String>(sexDiv);
@@ -140,7 +169,7 @@ public class ProtAniList extends JPanel {
 		
 		vColor = new JLabel("색상");
 		xColor = new JTextField(12);
-		xColor.setEnabled(false);
+		xColor.setEditable(false);
 		
 		vAniSize = new JLabel("동물크기");
 		cbAniSize = new JComboBox<String>(aniSizeDiv);
@@ -148,26 +177,26 @@ public class ProtAniList extends JPanel {
 		
 		vRegisDate = new JLabel("등록일자");
 		xRegisDate = new JTextField(12);
-		xRegisDate.setEnabled(false);
+		xRegisDate.setEditable(false);
 		
 		vDescription = new JLabel("설명");
 		xDescription = new JTextArea();
-		xDescription.setEnabled(false);
+		xDescription.setEditable(false);
 		descriptionScroll = new JScrollPane(xDescription);
 		descriptionScroll.setPreferredSize(new Dimension(400,150));
 		descriptionScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
 		vDscvDate = new JLabel("발견일시");
 		xDscvDate = new JTextField(12);
-		xDscvDate.setEnabled(false);
+		xDscvDate.setEditable(false);
 		
 		vCage = new JLabel("케이지");
-		cbCage = new JComboBox<String>(cageDiv);
+		cbCage = new JComboBox<String>();
 		cbCage.setEnabled(false);
 		
 		vDscvPlace = new JLabel("발견장소");
 		xDscvPlace = new JTextField(12);
-		xDscvPlace.setEnabled(false);
+		xDscvPlace.setEditable(false);
 		
 		modify = new JButton("수정");
 		modify.setBackground(blue);
@@ -189,7 +218,7 @@ public class ProtAniList extends JPanel {
 		pictureManage.addActionListener(protAniListButtonListener);
 		
 		
-		File input = new File("images/dog_400_400.jpg");
+		File input = new File("images/NoImage.png");
 		BufferedImage image = ImageIO.read(input);
 		BufferedImage resized = resize(image,200,200);
 		imageLabel = new JLabel();
@@ -207,6 +236,7 @@ public class ProtAniList extends JPanel {
 		JComponent[] fontComps2 = {register,modify,cancel,returning,pictureManage};
 		ChangeFont(fontComps2, new Font("나눔고딕", Font.BOLD, 16));
 
+		GetProtAniList();
 		
 		ProtAniListView();
 	}
@@ -332,7 +362,8 @@ public class ProtAniList extends JPanel {
 			}
 			else if(e.getSource().equals(pictureManage)) {
 				try {
-					new PictureManage();
+					// 0001 => ABAN_NO
+					new PictureManage("0001");
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -346,17 +377,19 @@ public class ProtAniList extends JPanel {
 			}
 			else if(e.getSource().equals(modify)) {
 				modify.setText("확인");
-				JComponent[] changeStatusComps = {cbSex,cbNeutWhet,cbAniSize,xDescription,cbCage,pictureManage};
+				JComponent[] changeStatusComps = {cbSex,cbNeutWhet,cbAniSize,cbCage,pictureManage};
 				for(JComponent cop: changeStatusComps) {
 					cop.setEnabled(true);
 				}
+				xDescription.setEditable(true);
 			}
 			else if(e.getSource().equals(cancel)) {
 				modify.setText("수정");
-				JComponent[] changeStatusComps = {cbSex,cbNeutWhet,cbAniSize,xDescription,cbCage,pictureManage};
+				JComponent[] changeStatusComps = {cbSex,cbNeutWhet,cbAniSize,cbCage,pictureManage};
 				for(JComponent cop: changeStatusComps) {
 					cop.setEnabled(false);
 				}
+				xDescription.setEditable(false);
 			}
 			else if(e.getSource().equals(returning)) {
 				new ReqPrsnRegist();
@@ -364,7 +397,7 @@ public class ProtAniList extends JPanel {
 		}
 		
 	}
-	
+
 	//두개의 컴포넌트를 하나의 패널로 묶는 JPanel
 	class CombinePanel extends JPanel {
 		//컴포넌트 1, 컴포넌트 2, 패널 구성시 좌,우 margin 공간을 없애기 위한 Flag
@@ -403,11 +436,246 @@ public class ProtAniList extends JPanel {
 			// TODO Auto-generated method stub
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
-				
+				GetProtAni();
 			}
 		}
 		
 	}
+	
+	private void GetProtAni() {
+		int clickedRow = eProtAniList.getSelectedRow();
+		String cntrNo = cntrNos.get(clickedRow);
+		String abanNo = abanNos.get(clickedRow);
+		
+		StringBuffer query1 = new StringBuffer("SELECT a.ABAN_NO,a.ABAN_TP, rs.RSCU_NO, a.ABAN_NAME, a.AGE, a.MOM_ABAN_NO, a.ANML_KINDS, a.KIND, a.SEX, a.NEUT_WHET, a.COLOR, a.ANML_SIZE, a.REGIS_DATE, a.FEAT, rp.DSCV_DTTM, rp.DSCV_LOC ");
+		query1.append("FROM (SELECT RSCU_NO FROM RSCU) rs INNER JOIN (SELECT * FROM ABAN WHERE ABAN_NO='"+abanNo+"') a ");
+		query1.append(" ON rs.rscu_no = a.rscu_no INNER JOIN (SELECT * FROM ASSG WHERE ASSG_RES = 'a') a2 ");
+		query1.append(" ON a2.assg_no = rs.rscu_no INNER JOIN RPRT rp ON rp.rprt_no = a2.rprt_no ");
+	
+		StringBuffer query2 = new StringBuffer("SELECT '케이지'||c.CAGE_ORNU||'('||CASE c.CAGE_SIZE WHEN 's' THEN '소' WHEN 'm' THEN '중' WHEN 'b' THEN '대' END||')' cages ");
+		query2.append("FROM (SELECT * ");
+		query2.append("	FROM CAGE ");
+		query2.append("	WHERE CNTR_NO = '"+cntrNo+"') c INNER JOIN (SELECT * ");
+		query2.append("FROM( ");
+		query2.append("SELECT CAGE_ORNU FROM CAGE ");
+		query2.append("WHERE CNTR_NO ='"+cntrNo+"' ");
+		query2.append("MINUS ");
+		query2.append("SELECT CAGE_ORNU FROM PROT ");
+		query2.append("WHERE CNTR_NO='"+cntrNo+"' ");
+		query2.append("AND PROT_END_DATE=to_date('9999-12-31','YYYY-MM-DD') ");
+		query2.append("UNION ALL ");
+		query2.append("SELECT c.CAGE_ORNU ");
+		query2.append("FROM CAGE c INNER JOIN (SELECT * FROM PROT ");
+		query2.append("	WHERE ABAN_NO ='"+abanNo+"' ");
+		query2.append("	AND PROT_END_DATE = to_date('9999-12-31','YYYY-MM-DD')) p ");
+		query2.append("	ON c.cntr_no = p.cntr_no AND c.cage_ornu = p.cage_ornu) ");
+		query2.append("ORDER BY 1 ");
+		query2.append(") c2 ON c.CAGE_ORNU = c2.CAGE_ORNU ");
+		
+		StringBuffer query3 = new StringBuffer("SELECT '케이지'||c.CAGE_ORNU||'('||CASE c.CAGE_SIZE WHEN 's' THEN '소' WHEN 'm' THEN '중' WHEN 'b' THEN '대' END||')' cages ");
+		query3.append("FROM CAGE c INNER JOIN (SELECT * FROM PROT ");
+		query3.append("	WHERE ABAN_NO ='"+abanNo+"' ");
+		query3.append("	AND PROT_END_DATE = to_date('9999-12-31','YYYY-MM-DD')) p ");
+		query3.append("	ON c.cntr_no = p.cntr_no AND c.cage_ornu = p.cage_ornu ");
+		
+		connection();
+		
+		try {
+			//query1
+			pstmt = con.prepareStatement(query1.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				
+				String abanType = rs.getString("ABAN_TP");
+				String anmlKinds = rs.getString("ANML_KINDS");
+				String sex = rs.getString("SEX");
+				String anmlSize = rs.getString("ANML_SIZE");
+				
+				String korAbanType = null;
+				String korAnmlKinds = null;
+				String korSex = null;
+				String korAnmlSize = null;
+				
+				switch(abanType) {
+				case "r":
+					korAbanType="구조";
+					break;
+				case "b":
+					korAbanType="탄생";
+					break;
+				}
+				
+				switch(anmlKinds) {
+				case "d":
+					korAnmlKinds="개";
+					break;
+				case "c":
+					korAnmlKinds="고양이";
+					break;
+				case "e":
+					korAnmlKinds="기타";
+					break;
+				}
+				
+				switch(sex) {
+				case "m":
+					korSex="수컷";
+					break;
+				case "f":
+					korSex="암컷";
+					break;
+				case "u":
+					korSex="미상";
+					break;
+				}
+				
+				switch(anmlSize) {
+				case "b":
+					korAnmlSize="대";
+					break;
+				case "m":
+					korAnmlSize="중";
+					break;
+				case "s":
+					korAnmlSize="소";
+					break;
+				}
+				
+				xAbanAniNo.setText(rs.getString("ABAN_NO"));
+				xAbanAniType.setText(korAbanType);
+				xRescueNo.setText(rs.getString("RSCU_NO"));
+				xAbanAniName.setText(rs.getString("ABAN_NAME"));
+				xAge.setText(rs.getString("AGE"));
+				xParAniName.setText(rs.getString("MOM_ABAN_NO"));
+				xAniType.setText(korAnmlKinds);
+				xKind.setText(rs.getString("KIND"));
+				cbSex.setSelectedItem(korSex);
+				cbNeutWhet.setSelectedItem(rs.getString("NEUT_WHET"));
+				xColor.setText(rs.getString("COLOR"));
+				cbAniSize.setSelectedItem(korAnmlSize);
+				xRegisDate.setText(rs.getString("REGIS_DATE").split(" ")[0]);
+				xDescription.setText(rs.getString("FEAT"));
+				xDscvDate.setText(rs.getString("DSCV_DTTM"));
+				xDscvPlace.setText(rs.getString("DSCV_LOC"));
+			}
+			
+			//query2
+			pstmt = con.prepareStatement(query2.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				cbCage.addItem(rs.getString("cages"));
+			}
+			
+			//query2
+			pstmt = con.prepareStatement(query3.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				cbCage.setSelectedItem(rs.getString("cages"));
+			}
+			
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+	}
+	
+    private void GetProtAniList() {
+    	connection();
+    	
+    	StringBuffer query = new StringBuffer("SELECT p.CNTR_NO, a.ABAN_NO, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE, a.FEAT ");
+    	query.append("FROM ABAN a INNER JOIN (SELECT * FROM PROT ");
+    	query.append("	WHERE PROT_END_DATE = to_date('9999-12-31','YYYY-MM-DD')) p ");
+    	query.append("	ON a.ABAN_NO = p.ABAN_NO ");
+    	query.append("ORDER BY 1,2 ");
+    	
+    	try {
+    		
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				
+				cntrNos.add(rs.getString("CNTR_NO"));
+				abanNos.add(rs.getString("ABAN_NO"));
+				
+				String anmlKinds = rs.getString("ANML_KINDS");
+				String anmlSize = rs.getString("ANML_SIZE");
+				
+				String korAnmlKinds = null;
+				String korAnmlSize = null;
+				
+				switch(anmlKinds) {
+				case "d":
+					korAnmlKinds="개";
+					break;
+				case "c":
+					korAnmlKinds="고양이";
+					break;
+				case "e":
+					korAnmlKinds="기타";
+					break;
+				}
+				
+				switch(anmlSize) {
+				case "b":
+					korAnmlSize="대";
+					break;
+				case "m":
+					korAnmlSize="중";
+					break;
+				case "s":
+					korAnmlSize="소";
+					break;
+				}
+								
+				model1.addRow(new Object[] {rs.getString("ABAN_NAME"),korAnmlKinds,rs.getString("KIND"),rs.getString("AGE"),korAnmlSize,rs.getString("FEAT")});
+			}
+    		
+    	}catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	
+    	disconnection();
+    }
+	
+	
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
 	
 	public static void main(String[] args) throws IOException {
 		new ProtAniList();
