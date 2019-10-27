@@ -329,13 +329,18 @@ public class MainFrame extends JFrame {
 				revalidate();
 				repaint();
 				break;
-//			case "공고목록":
-//				ContentPanel.removeAll();
-//				pContents = new AnncList();
-//				ContentPanel.add(pContents);
-//				revalidate();
-//				repaint();
-//				break;
+			case "공고목록":
+				ContentPanel.removeAll();
+				try {
+					pContents = new AnncList();
+				} catch (IOException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+				break;
 			case "신청목록":
 				ContentPanel.removeAll();
 				try {

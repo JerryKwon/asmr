@@ -1,6 +1,7 @@
 package asmr;
 
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.image.BufferedImage;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -55,6 +57,10 @@ public class Annc extends JPanel {
 		imageButton.setContentAreaFilled(false);
 		imageButton.setFocusPainted(false);
 		
+		
+		JComponent[] vComps2 = {vRegisDate, vAnmlKinds, vKind, vSex, vDscvLoc, vFeat};
+		ChangeFont(vComps2, new Font("³ª´®°íµñ", Font.PLAIN, 16));
+		
 		AnncView();
 	}
 	
@@ -91,6 +97,12 @@ public class Annc extends JPanel {
 		
 	}
 	
+	private void ChangeFont(JComponent[] comps, Font font) {
+	    	for(JComponent comp: comps) {
+	    		comp.setFont(font);
+	    	}
+	    }	
+	
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
 		
 		gridbagConstraints.gridx = x;		
@@ -109,6 +121,7 @@ public class Annc extends JPanel {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
+		
 
 	}
 

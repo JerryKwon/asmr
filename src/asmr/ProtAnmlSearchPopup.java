@@ -1,11 +1,17 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -14,6 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class ProtAnmlSearchPopup extends JFrame {
+	
+	ProtAnmlSearchPopupButtonListener protAnmlSearchPopupButtonListener;
 	
 	private JLabel vProtAnmlSearch, vAbanName;
 	
@@ -28,10 +36,17 @@ public class ProtAnmlSearchPopup extends JFrame {
 	GridBagLayout gridbagLayout;
 	GridBagConstraints gridbagConstraints;
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	private Color black = new Color(0,0,0);
+
+	
 	private final String[] col1 = {"À¯±âµ¿¹°¸í","µ¿¹°Á¾·ù","Ç°Á¾","Æ¯Â¡","ÄÉÀÌÁö"};
 	private DefaultTableModel model1 = new DefaultTableModel(col1,0);
 	
 	public ProtAnmlSearchPopup() {
+		
+		protAnmlSearchPopupButtonListener = new ProtAnmlSearchPopupButtonListener();
 		// TODO Auto-generated constructor stub
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
@@ -41,14 +56,32 @@ public class ProtAnmlSearchPopup extends JFrame {
 		scrollPane1.setPreferredSize(new Dimension(500,100));
 		
 		vProtAnmlSearch = new JLabel("º¸È£µ¿¹°°Ë»ö");
+		vProtAnmlSearch.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		
 		vAbanName = new JLabel("À¯±âµ¿¹°¸í");
 		xAbanName = new JTextField(20);
+		vAbanName.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 12));
+		
+		
 		search = new JButton("°Ë»ö");
+		search.setBackground(blue);
+		search.setForeground(white);
+		search.addActionListener(protAnmlSearchPopupButtonListener);
+		search.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
 		
 		confirm = new JButton("È®ÀÎ");
-		cancel = new JButton("Ãë¼Ò");
+		confirm.setBackground(blue);
+		confirm.setForeground(white);
+		confirm.addActionListener(protAnmlSearchPopupButtonListener);
+		confirm.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
 		
+		cancel = new JButton("Ãë¼Ò");
+		cancel.setBackground(white);
+		cancel.setForeground(black);
+		cancel.addActionListener(protAnmlSearchPopupButtonListener);
+		cancel.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		
+
 		ProtAnmlSearchPopupView();
 	}
 	
@@ -98,6 +131,24 @@ public class ProtAnmlSearchPopup extends JFrame {
 	   add(c);			
 				
 	   }
+	
+	class ProtAnmlSearchPopupButtonListener implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(search)) {	
+				
+			}
+			else if (e.getSource().equals(confirm)) {
+				
+			}
+			else if(e.getSource().equals(cancel)) {
+				dispose();
+			}
+		}
+		
+	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

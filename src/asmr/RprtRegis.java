@@ -3,6 +3,7 @@ package asmr;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -15,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -94,8 +96,8 @@ public class RprtRegis extends JPanel implements ActionListener{
 		rprtContentScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		vDscvDttm = new JLabel("¹ß°ßÀÏ½Ã");
-		xDscvDttm = new JTextField(20);
-		xDscvDttm.setEditable(false);
+		//xDscvDttm = new JTextField(20);
+		//xDscvDttm.setEditable(false);
 
 		vDscvLoc = new JLabel("¹ß°ßÀå¼Ò");
 		xDscvLoc = new JTextField(20);
@@ -130,6 +132,13 @@ public class RprtRegis extends JPanel implements ActionListener{
 		timeEditor = new JSpinner.DateEditor(timeSpinner, "yyyy.MM.dd HH:mm:ss");
 		timeSpinner.setEditor(timeEditor);
 		//timeSpinner.setValue(new Date());
+		
+		JComponent[] vComps2 = {vRprtName, vTelNo, vRprtTp, vAnmlKinds, vAnmlSize, vExpln ,
+				vDscvDttm, vDscvLoc, vPic};
+		ChangeFont(vComps2, new Font("³ª´®°íµñ", Font.PLAIN, 16));
+		
+		JComponent[] bComps = {regist, cancel, fc};
+		ChangeFont(bComps, new Font("³ª´®°íµñ", Font.BOLD, 12));
 		
 		RprtRegisView();
 	}
@@ -173,6 +182,12 @@ public class RprtRegis extends JPanel implements ActionListener{
 		
 	}
 	
+	   private void ChangeFont(JComponent[] comps, Font font) {
+	    	for(JComponent comp: comps) {
+	    		comp.setFont(font);
+	    	}
+	    }
+	
 	
 	
 	
@@ -202,9 +217,9 @@ public class RprtRegis extends JPanel implements ActionListener{
 		gridbagAdd(vExpln, 0, 3, 1, 1);
 		gridbagAdd(xExpln, 2, 3, 11, 1);
 		gridbagAdd(vDscvDttm, 0, 6, 1, 1);
-		gridbagAdd(xDscvDttm, 2, 6, 1, 1);
-		gridbagAdd(Imagebutton, 4,6,1,1);
-		gridbagAdd(timeSpinner, 8,6,1,1);
+		gridbagAdd(timeSpinner, 2, 6, 1, 1);
+		//gridbagAdd(Imagebutton, 4,6,1,1);
+		//gridbagAdd(timeSpinner, 8,6,1,1);
 		
 		gridbagAdd(vDscvLoc, 0, 7, 1, 1);
 		gridbagAdd(xDscvLoc, 2, 7, 1, 1);

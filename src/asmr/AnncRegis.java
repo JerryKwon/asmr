@@ -1,30 +1,53 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 
 public class AnncRegis extends JFrame {
 	
+	AnncRegisButtonListener anncRegisButtonListener;
+	
 	private JLabel vAnncRegis, vAbanName, vAnmlKinds, vKind, vSex, vAge,vColor, vNeutWhet, vAnmlSize, vFeat, vExpln;   
 	
-	private JTextField xAbanName, xAnmlKinds, xKind, xSex, xAge, xColor, xNeutWhet, xAnmlSize, xFeat, xExpln;
+	private JTextField xAbanName, xAnmlKinds, xKind, xSex, xAge, xColor, xNeutWhet, xAnmlSize;
+	
+	private JTextArea xFeat, xExpln;
 	
 	private JButton confirm, cancel, search;
 	
 	GridBagLayout gridbagLayout;
 	GridBagConstraints gridbagConstraints;
 	
+	private JScrollPane anncContentScroll1,anncContentScroll2;
+	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	private Color black = new Color(0,0,0);
+	
 	public AnncRegis() {
+		
+		anncRegisButtonListener = new AnncRegisButtonListener();
+		
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
 		
 		vAnncRegis = new JLabel("°ø°íµî·Ï");
+		vAnncRegis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 
 		vAbanName = new JLabel("À¯±âµ¿¹°¸í");
 		xAbanName = new JTextField(20);
@@ -51,14 +74,36 @@ public class AnncRegis extends JFrame {
 		xAnmlSize = new JTextField(20);
 		
 		vFeat = new JLabel("Æ¯Â¡");
-		xFeat = new JTextField(20);
+		xFeat = new JTextArea(4,75);
+		anncContentScroll1 = new JScrollPane(xFeat);
+		anncContentScroll1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
 		vExpln= new JLabel("¼³¸í");   
-		xExpln = new JTextField(20);
+		xExpln = new JTextArea(4,75);
+		anncContentScroll2 = new JScrollPane(xExpln);
+		anncContentScroll2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
 		search = new JButton("°Ë»ö");
+		search.setBackground(blue);
+		search.setForeground(white);
+		search.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		search.addActionListener(anncRegisButtonListener);
+		
 		confirm = new JButton("µî·Ï");
+		confirm.setBackground(blue);
+		confirm.setForeground(white);
+		confirm.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		confirm.addActionListener(anncRegisButtonListener);
+		
 		cancel = new JButton("Ãë¼Ò");
+		cancel.setBackground(white);
+		cancel.setForeground(black);
+		cancel.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		cancel.addActionListener(anncRegisButtonListener);
+		
+		JComponent[] vComps = {vAbanName, vAnmlKinds, vKind, vSex, vAge, vColor, vNeutWhet,
+				vAnmlSize, vFeat, vExpln};
+		ChangeFont(vComps, new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		
 		AnncRegisView();
 		
@@ -101,15 +146,15 @@ public class AnncRegis extends JFrame {
 		gridbagAdd(xAnmlSize, 6, 5, 1, 1);
 		
 		gridbagAdd(vFeat, 0, 6, 1, 1);
-		gridbagAdd(xFeat, 2, 6, 1, 1);
+		gridbagAdd(xFeat, 2, 6, 6, 1);
 		
 		gridbagAdd(vExpln, 0, 7, 1, 1);
-		gridbagAdd(xExpln, 2, 7, 1, 1);
+		gridbagAdd(xExpln, 2, 7, 6, 1);
 		
 		
 		
-		gridbagAdd(confirm,2, 8, 1, 1);
-		gridbagAdd(cancel, 3, 8, 1, 1);
+		gridbagAdd(confirm,3, 8, 1, 1);
+		gridbagAdd(cancel, 4, 8, 1, 1);
 		
 		pack();
 		setResizable(false);
@@ -131,6 +176,30 @@ public class AnncRegis extends JFrame {
 	   add(c);			
 				
 	   }	
+	
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
+    
+	class AnncRegisButtonListener implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(search)) {
+				new ProtAnmlSearchPopup();	
+			}
+			else if (e.getSource().equals(confirm)) {
+				
+			}
+			else if(e.getSource().equals(cancel)) {
+				dispose();
+			}
+		}
+		
+	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

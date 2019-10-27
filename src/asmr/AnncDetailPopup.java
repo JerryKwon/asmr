@@ -1,8 +1,12 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +14,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -25,15 +30,24 @@ public class AnncDetailPopup extends JFrame {
 	GridBagLayout gridbagLayout;
 	GridBagConstraints gridbagConstraints;
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	private Color black = new Color(0,0,0);
+	
 	private BufferedImage buttonIcon;
 	
-	private JButton imageButton;
+	AnncDetailPopupButtonListener anncDetailPopupButtonListener;
+	
+	private JButton previous, next, imageButton;
 	
 	public AnncDetailPopup() throws IOException {
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
 		
+		anncDetailPopupButtonListener = new AnncDetailPopupButtonListener();
+		
 		vAnncRegis = new JLabel("»ó¼¼Á¤º¸");
+		vAnncRegis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		
 		vProtCntrName = new JLabel("º¸È£¼¾ÅÍ¸í");
 		xProtCntrName = new JTextField(20);
@@ -71,13 +85,34 @@ public class AnncDetailPopup extends JFrame {
 		xExpln = new JTextField(20);
 		
 		confirm = new JButton("ÀÔ¾ç½ÅÃ»");
+		confirm.setBackground(blue);
+		confirm.setForeground(white);
+		confirm.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		confirm.addActionListener(anncDetailPopupButtonListener);
+		
 		cancel = new JButton("Ãë¼Ò");
+		cancel.setBackground(white);
+		cancel.setForeground(black);
+		cancel.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		cancel.addActionListener(anncDetailPopupButtonListener);
+		
+		previous = new JButton("<<");
+		previous.addActionListener(anncDetailPopupButtonListener);
+		previous.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		
+		next = new JButton(">>");
+		next.addActionListener(anncDetailPopupButtonListener);
+		next.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
 		
 		buttonIcon = ImageIO.read(new File("./images/cat1.png"));
 		imageButton = new JButton(new ImageIcon(buttonIcon));
 		imageButton.setBorderPainted(false);
 		imageButton.setContentAreaFilled(false);
 		imageButton.setFocusPainted(false);
+		
+		JComponent[] vComps = {vProtCntrName, vAbanName, vAnmlKinds, vKind, vSex, vAge, vColor, vNeutWhet,
+				vAnmlSize, vRscuDate,vRscuLoc, vExpln};
+		ChangeFont(vComps, new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		
 		
 		AnncDetailPopupView();
@@ -131,6 +166,9 @@ public class AnncDetailPopup extends JFrame {
 		
 		gridbagAdd(imageButton, 3,8,1,3);
 		
+		gridbagAdd(previous,3, 11, 1, 1);
+		gridbagAdd(next, 4, 11, 1, 1);
+		
 		gridbagAdd(confirm,3, 12, 1, 1);
 		gridbagAdd(cancel, 4, 12, 1, 1);
 		
@@ -154,6 +192,30 @@ public class AnncDetailPopup extends JFrame {
 	   add(c);			
 				
 	   }	
+	
+	class AnncDetailPopupButtonListener implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if (e.getSource().equals(previous)) {
+				
+			}
+			else if(e.getSource().equals(next)) {
+				
+			}
+			else if(e.getSource().equals(cancel)) {
+				dispose();
+			}
+		}
+		
+	}
+	
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub

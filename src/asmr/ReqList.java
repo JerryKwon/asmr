@@ -1,17 +1,20 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -19,7 +22,11 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import com.toedter.calendar.JDateChooser;
+
 public class ReqList extends JPanel {
+	
+	ReqListButtonListener reqListButtonListener;
 	
 	private JLabel vReqList, vAdopEva, vAnmlInfo,
 	vAbanName, vAnmlKinds, vKind, vSex, vAge,
@@ -34,11 +41,13 @@ public class ReqList extends JPanel {
 	
 	private JComboBox<String> cbRes;
 	
-	private JButton regis, cancel, imageButton;
+	private JButton regis, cancel;
 	
 	private JTable eReqList;
 	
 	private JScrollPane scrollPane1;
+	
+	private JDateChooser chooser;
 	
 	GridBagLayout gridbagLayout;
 	GridBagConstraints gridbagConstraints;
@@ -46,69 +55,104 @@ public class ReqList extends JPanel {
 	private final String[] col1 = {"신청일시","유기동물명","동물종류","품종","신청인명","전화번호", "주소"};
 	private DefaultTableModel model1 = new DefaultTableModel(col1,0);
 
-	private BufferedImage buttonIcon;
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	private Color black = new Color(0,0,0);
 	
 	public ReqList() throws IOException {
+		
+		reqListButtonListener = new ReqListButtonListener();
+		
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
 		
 		vReqList = new JLabel("신청목록");
+		vReqList.setFont(new Font("나눔고딕", Font.BOLD, 24));
 		
 		eReqList = new JTable(model1);
 		scrollPane1 = new JScrollPane(eReqList);
 		scrollPane1.setPreferredSize(new Dimension(1000,100));
 		
 		vAdopEva = new JLabel("입양심사");
+		vAdopEva.setFont(new Font("나눔고딕", Font.BOLD, 24));
 		
 		vAnmlInfo = new JLabel("동물정보");
+		vAnmlInfo.setFont(new Font("나눔고딕", Font.BOLD, 20));
 		
 		vAbanName = new JLabel("유기동물명");
 		xAbanName = new JTextField(20);
+		xAbanName.setEnabled(false);
 		
 		vAnmlKinds = new JLabel("동물종류");
 		xAnmlKinds = new JTextField(20);
+		xAnmlKinds.setEnabled(false);
 		
 		vKind = new JLabel("품종");
 		xKind = new JTextField(20);
+		xKind.setEnabled(false);
 		
 		vSex = new JLabel("성별");
 		xSex = new JTextField(20);
+		xSex.setEnabled(false);
 		
 		vAge = new JLabel("나이");
 		xAge = new JTextField(20);
+		xAge.setEnabled(false);
 		
 		vReqPrsnInfo = new JLabel("신청자정보");
+		vReqPrsnInfo.setFont(new Font("나눔고딕", Font.BOLD, 20));
 		
 		vWarn = new JLabel("신청자 정보(연락처, 주소)가 맞는지 다시 한 번 확인해주세요.");
+		vWarn.setFont(new Font("나눔고딕", Font.BOLD, 16));
+		
 		
 		vReqPrsnName = new JLabel("신청자명");
 		xReqPrsnName = new JTextField(20);
+		xReqPrsnName.setEnabled(false);
 		
 		vTelNo = new JLabel("전화번호");
 		xTelNo = new JTextField(20);
+		xTelNo.setEnabled(false);
 		
 		vAddr = new JLabel("주소");
 		xAddr = new JTextField(20);
+		xAddr.setEnabled(false);
 		
 		vEvaRes = new JLabel("심사결과");
+		vEvaRes.setFont(new Font("나눔고딕", Font.BOLD, 20));
+		vEvaRes.setEnabled(false);
 		
 		vRes = new JLabel("결과");
 		cbRes = new JComboBox<String>(resDiv);
+		cbRes.setEnabled(false);
 		
 		vReas = new JLabel("사유");
 		xReas = new JTextField(20);
+		xReas.setEnabled(false);
 		
 		vAdopDate = new JLabel("입양일자");
 		xAdopDate = new JTextField(20);
+		xAdopDate.setEnabled(false);
+		
+		LocalDate now = LocalDate.now();
+		Date date = Date.valueOf(now);
+		chooser = new JDateChooser(date,"YYYY-MM-dd");
 		
 		regis = new JButton("등록");
-		cancel = new JButton("취소");
+		regis.setBackground(blue);
+		regis.setForeground(white);
+		regis.addActionListener(reqListButtonListener);
+		regis.setFont(new Font("나눔고딕", Font.BOLD, 16));
 		
-		buttonIcon = ImageIO.read(new File("./images/cal1.png"));
-		imageButton = new JButton(new ImageIcon(buttonIcon));
-		imageButton.setBorderPainted(false);
-		imageButton.setContentAreaFilled(false);
-		imageButton.setFocusPainted(false);
+		cancel = new JButton("취소");
+		cancel.setBackground(white);
+		cancel.setForeground(black);
+		cancel.addActionListener(reqListButtonListener);
+		cancel.setFont(new Font("나눔고딕", Font.BOLD, 16));
+		
+		JComponent[] vComps = {vAbanName, vAnmlKinds, vKind, vSex, vAge, vReqPrsnName, vTelNo, vAddr,
+				vRes, vReas, vAdopDate};
+		ChangeFont(vComps, new Font("나눔고딕", Font.PLAIN, 16));
 
 		ReqListView();
 	
@@ -164,8 +208,7 @@ public class ReqList extends JPanel {
 		gridbagAdd(xReas, 2, 12, 1, 1);
 		
 		gridbagAdd(vAdopDate, 0, 13, 1, 1);
-		gridbagAdd(xAdopDate, 2, 13, 1, 1);
-		gridbagAdd(imageButton, 3, 13, 1, 1);
+		gridbagAdd(chooser, 2, 13, 1, 1);
 		
 		gridbagAdd(regis, 3, 14, 1, 1);
 		gridbagAdd(cancel, 4, 14, 1, 1);
@@ -191,6 +234,27 @@ public class ReqList extends JPanel {
 	   add(c);			
 				
 	   }	
+	
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
+    
+    class ReqListButtonListener implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(regis)) {	
+				
+			}
+			else if(e.getSource().equals(cancel)) {
+				
+			}
+		}
+		
+	}
 	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub

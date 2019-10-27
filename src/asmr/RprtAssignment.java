@@ -3,8 +3,11 @@ package asmr;
 import java.awt.Button;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -15,6 +18,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -24,7 +28,11 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 
+import asmr.ProtAniList.ProtAniListButtonListener;
+
 public class RprtAssignment extends JPanel {
+	
+	RprtAssignmentButtonListener rprtAssignmentButtonListener;
 	
 	private JLabel vRprtNo, vRprtDttm, vRprtName, vTelNo, vRprtTp, vWrtPrsnTp, vAnmlKinds,
 	vAnmlSize, vExpln, vDscvDttm, vDscvLoc, vRprtList, vCageList, vRprtInfo;
@@ -37,7 +45,7 @@ public class RprtAssignment extends JPanel {
 	
 	private JTable eRprtList, eCageList;
 	
-	private JScrollPane scrollpane1, scrollpane2, rprtContentScroll;;
+	private JScrollPane scrollpane1, scrollpane2, rprtContentScroll;
 	
 	private String[] rprtDiv = {"발견", "인계"};
 	private String[] wrtPrsnDiv = {"직원","사용자"};
@@ -46,12 +54,12 @@ public class RprtAssignment extends JPanel {
 	
 	private BufferedImage buttonIcon;
 	
-	private JButton Imagebutton;
+	private JButton previous, next, Imagebutton;
 	
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
 	
-	RprtAniListMouseListener rprtAniListMouseListener;
+	RprtAssignmentMouseListener rprtAssignmentMouseListener;
 	
 	private final String[] col1 = {"신고일시","동물종류","동물크기","설명","배정센터명"};
 	private final String[] col2 = {"센터명","주소","여유케이지(대)","여유케이지(중)","여유케이지(소)"};
@@ -60,25 +68,34 @@ public class RprtAssignment extends JPanel {
 	private DefaultTableModel model2 = new DefaultTableModel(col2,0);
 	
 	public RprtAssignment() throws IOException {
+		
+		rprtAssignmentButtonListener = new RprtAssignmentButtonListener();
+		
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
 		
 		// eRprtList, eCageList
 		
-		rprtAniListMouseListener = new RprtAniListMouseListener();
+		rprtAssignmentMouseListener = new RprtAssignmentMouseListener();
 		
 		vRprtList = new JLabel("신고목록");
+		vRprtList.setFont(new Font("나눔고딕", Font.BOLD, 24));
+		
 		eRprtList = new JTable(model1);
-		eRprtList.addMouseListener(rprtAniListMouseListener);
+		eRprtList.addMouseListener(rprtAssignmentMouseListener);
 		scrollpane1 = new JScrollPane(eRprtList);
-		scrollpane1.setPreferredSize(new Dimension(300,100));
+		scrollpane1.setPreferredSize(new Dimension(600,200));
 		
 		vCageList = new JLabel("센터별케이지현황");
+		vCageList.setFont(new Font("나눔고딕", Font.BOLD, 24));
+		
 		eCageList = new JTable(model2);
+		eCageList.addMouseListener(rprtAssignmentMouseListener);
 		scrollpane2 = new JScrollPane(eCageList);
-		scrollpane2.setPreferredSize(new Dimension(300,100));
+		scrollpane2.setPreferredSize(new Dimension(600,200));
 		
 		vRprtInfo = new JLabel("신고정보");
+		vRprtInfo.setFont(new Font("나눔고딕", Font.BOLD, 20));
 		
 		vRprtNo = new JLabel("신고번호");
 		xRprtNo = new JTextField(20);
@@ -132,6 +149,17 @@ public class RprtAssignment extends JPanel {
 		Imagebutton.setContentAreaFilled(false);
 		Imagebutton.setFocusPainted(false);
 		
+		previous = new JButton("<<");
+		previous.addActionListener(rprtAssignmentButtonListener);
+		previous.setFont(new Font("나눔고딕", Font.BOLD, 12));
+		next = new JButton(">>");
+		next.addActionListener(rprtAssignmentButtonListener);
+		next.setFont(new Font("나눔고딕", Font.BOLD, 12));
+		
+		JComponent[] vComps = {vRprtNo, vRprtDttm, vRprtName, vTelNo, vRprtTp, vWrtPrsnTp, vAnmlKinds,
+				vAnmlSize, vExpln, vDscvDttm, vDscvLoc};
+		ChangeFont(vComps, new Font("나눔고딕", Font.PLAIN, 16));
+		
 		new Button();
 		
 		RprtAssignmentView();
@@ -152,8 +180,8 @@ public class RprtAssignment extends JPanel {
 		gridbagAdd(vRprtList, 0, 0, 1, 1);
 		gridbagAdd(vCageList, 4, 0, 1, 1);
 		
-		gridbagAdd(scrollpane1, 0, 1, 4, 1);
-		gridbagAdd(scrollpane2, 4, 1, 4, 1);
+		gridbagAdd(scrollpane1, 0, 1, 4, 4);
+		gridbagAdd(scrollpane2, 4, 1, 4, 4);
 		
 		gridbagAdd(vRprtInfo, 0, 6, 1, 1);
 		
@@ -188,20 +216,37 @@ public class RprtAssignment extends JPanel {
 		gridbagAdd(vDscvLoc, 0, 13, 1, 1);
 		gridbagAdd(xDscvLoc, 2, 13, 1, 1);
 		
-		gridbagAdd(Imagebutton, 11,7,1,3);
+		gridbagAdd(Imagebutton, 11,7,5,3);
+		
+		gridbagAdd(previous, 12,11,1,3);
+		gridbagAdd(next, 13,11,1,3);
+		
+		
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
 		//pack();
 		//setResizable(false);
-		//setVisible(true);
-		
-		
-		
+		//setVisible(true);	
 		
 	}
 	
-	class RprtAniListMouseListener extends MouseAdapter{
+	class RprtAssignmentButtonListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(previous)) {
+				
+			}
+			else if(e.getSource().equals(next)) {
+				
+			}
+			
+		}
+	
+	}
+	
+	class RprtAssignmentMouseListener extends MouseAdapter{
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
@@ -213,6 +258,12 @@ public class RprtAssignment extends JPanel {
 		}
 		
 	}
+	
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
 
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
 		

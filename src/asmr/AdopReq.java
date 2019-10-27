@@ -1,8 +1,12 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -10,11 +14,14 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class AdopReq extends JFrame {
+public class AdopReq extends JPanel {
+	
+	AdopReqButtonListener adopReqButtonListener;
 
 	private JLabel vAdopReq, vAnmlInfo, vAbanName, vAnmlKinds, vKind, vSex, vAge,
 	vReqPrsnInfo, vReqPrsnName, vTelNo, vAddr, vWarn;
@@ -29,11 +36,19 @@ public class AdopReq extends JFrame {
 	GridBagLayout gridbagLayout;
 	GridBagConstraints gridbagConstraints;
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	private Color black = new Color(0,0,0);
+	
 	public AdopReq() throws IOException {
+		
+		adopReqButtonListener = new AdopReqButtonListener();
+		
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
 		
 		vAdopReq = new JLabel("ÀÔ¾ç½ÅÃ»");
+		vAdopReq.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		
 		vAnmlInfo = new JLabel("µ¿¹°Á¤º¸");
 		
@@ -65,7 +80,16 @@ public class AdopReq extends JFrame {
 		xAddr = new JTextField(20);
 		
 		req = new JButton("½ÅÃ»");
+		req.setBackground(blue);
+		req.setForeground(white);
+		req.addActionListener(adopReqButtonListener);
+		req.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		
 		cancel = new JButton("Ãë¼Ò");
+		cancel.setBackground(white);
+		cancel.setForeground(black);
+		cancel.addActionListener(adopReqButtonListener);
+		cancel.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
 		
 		buttonIcon = ImageIO.read(new File("./images/process.png"));
 		imageButton = new JButton(new ImageIcon(buttonIcon));
@@ -73,13 +97,19 @@ public class AdopReq extends JFrame {
 		imageButton.setContentAreaFilled(false);
 		imageButton.setFocusPainted(false);
 		
+		JComponent[] vComps1 = {vAnmlInfo, vReqPrsnInfo, vWarn};
+		ChangeFont(vComps1, new Font("³ª´®°íµñ", Font.BOLD, 16));
+		
+		JComponent[] vComps2 = {vAbanName, vAnmlKinds, vKind, vSex, vAge, vReqPrsnName, vTelNo, vAddr};
+		ChangeFont(vComps2, new Font("³ª´®°íµñ", Font.PLAIN, 16));
+		
 		
 		AdopReqView();
 	}
 	
 	private void AdopReqView() {
 		
-		setTitle("ÀÔ¾ç½ÅÃ»");
+		//setTitle("ÀÔ¾ç½ÅÃ»");
 		
 		gridbagConstraints.anchor = GridBagConstraints.WEST;
 		gridbagConstraints.ipadx = 7;
@@ -123,13 +153,13 @@ public class AdopReq extends JFrame {
 		gridbagAdd(req,3, 15, 1, 1);
 		gridbagAdd(cancel, 4, 15, 1, 1);
 		
-		pack();
-		setResizable(false);
-		setVisible(true);
+//		pack();
+//		setResizable(false);
+//		setVisible(true);
 		
 	}
 	
-private void gridbagAdd(Component c, int x, int y, int w, int h) {			
+	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
 		
 		gridbagConstraints.gridx = x;		
 		gridbagConstraints.gridy = y; 		
@@ -144,6 +174,27 @@ private void gridbagAdd(Component c, int x, int y, int w, int h) {
 	   add(c);			
 				
 	   }
+	
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
+    
+    class AdopReqButtonListener implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(req)) {	
+				
+			}
+			else if(e.getSource().equals(cancel)) {
+				
+			}
+		}
+		
+	}
 	
 
 	public static void main(String[] args) throws IOException {

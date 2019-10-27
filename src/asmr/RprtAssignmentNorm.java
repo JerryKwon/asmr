@@ -2,6 +2,7 @@ package asmr;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -16,6 +17,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -23,7 +25,11 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import asmr.RprtAssignment.RprtAssignmentButtonListener;
+
 public class RprtAssignmentNorm extends JPanel {
+	
+	RprtAssignmentNormButtonListener rprtAssignmentNormButtonListener;
 	
 	private JLabel vRprtNo, vRprtDttm, vRprtName, vTelNo, vRprtTp, vWrtPrsnTp, vAnmlKinds,
 	vAnmlSize, vExpln, vDscvDttm, vDscvLoc, vApprovalWaitList, vApprovalCompleteList, vRprtInfo;
@@ -43,7 +49,7 @@ public class RprtAssignmentNorm extends JPanel {
 	
 	private BufferedImage buttonIcon;
 	
-	private JButton Imagebutton, regis;
+	private JButton previous, next, Imagebutton, regis;
 	
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
@@ -59,30 +65,35 @@ public class RprtAssignmentNorm extends JPanel {
 	private Color blue = new Color(22,155,213);
 	private Color white = new Color(255,255,255);
 	
-	RprtRegisterButtonListener rprtRegisterButtonListener;
+	//RprtRegisterButtonListener rprtRegisterButtonListener;
 	
 	public RprtAssignmentNorm() throws IOException {
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
 		
-		rprtRegisterButtonListener = new RprtRegisterButtonListener();
-		
+		//rprtRegisterButtonListener = new RprtRegisterButtonListener();
+		rprtAssignmentNormButtonListener = new RprtAssignmentNormButtonListener();
 		approvalWaitListMouseListener = new ApprovalWaitListMouseListener();
 		
 		// eRprtList, eCageList
 		
 		vApprovalWaitList = new JLabel("½ÂÀÎ´ë±â¸ñ·Ï");
+		vApprovalWaitList.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
+		
 		eApprovalWaitList = new JTable(model1);
 		eApprovalWaitList.addMouseListener(approvalWaitListMouseListener);
 		scrollpane1 = new JScrollPane(eApprovalWaitList);
-		scrollpane1.setPreferredSize(new Dimension(300,100));
+		scrollpane1.setPreferredSize(new Dimension(600,200));
 		
 		vApprovalCompleteList = new JLabel("½ÂÀÎ¿Ï·á¸ñ·Ï");
+		vApprovalCompleteList.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
+		
 		eApprovalCompleteList = new JTable(model2);
 		scrollpane2 = new JScrollPane(eApprovalCompleteList);
-		scrollpane2.setPreferredSize(new Dimension(300,100));
+		scrollpane2.setPreferredSize(new Dimension(600,200));
 		
 		vRprtInfo = new JLabel("½Å°íÁ¤º¸");
+		vRprtInfo.setFont(new Font("³ª´®°íµñ", Font.BOLD, 20));
 		
 		vRprtNo = new JLabel("½Å°í¹øÈ£");
 		xRprtNo = new JTextField(20);
@@ -128,7 +139,7 @@ public class RprtAssignmentNorm extends JPanel {
 		xDscvLoc = new JTextField(20);
 		xDscvLoc.setEditable(false);
 		
-		buttonIcon = ImageIO.read(new File("./img/cat1.png"));
+		buttonIcon = ImageIO.read(new File("./images/cat1.png"));
 		Imagebutton = new JButton(new ImageIcon(buttonIcon));
 		Imagebutton.setBorderPainted(false);
 		Imagebutton.setContentAreaFilled(false);
@@ -137,7 +148,21 @@ public class RprtAssignmentNorm extends JPanel {
 		regis = new JButton("µî·Ï");
 		regis.setBackground(blue);
 		regis.setForeground(white);
-		regis.addActionListener(rprtRegisterButtonListener);
+		regis.addActionListener(rprtAssignmentNormButtonListener);
+		regis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		
+		previous = new JButton("<<");
+		previous.addActionListener(rprtAssignmentNormButtonListener);
+		previous.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		next = new JButton(">>");
+		next.addActionListener(rprtAssignmentNormButtonListener);
+		next.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		
+		
+		
+		JComponent[] vComps = {vRprtNo, vRprtDttm, vRprtName, vTelNo, vRprtTp, vWrtPrsnTp, vAnmlKinds,
+				vAnmlSize, vExpln, vDscvDttm, vDscvLoc};
+		ChangeFont(vComps, new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		
 		RprtAssignmentNormView();
 	}
@@ -156,7 +181,7 @@ public class RprtAssignmentNorm extends JPanel {
 
 		gridbagAdd(vApprovalWaitList, 0, 0, 1, 1);
 		gridbagAdd(vApprovalCompleteList, 4, 0, 1, 1);
-		gridbagAdd(regis, 8,0,1,1);
+		gridbagAdd(regis, 7,0,1,1);
 		
 		gridbagAdd(scrollpane1, 0, 1, 4, 1);
 		gridbagAdd(scrollpane2, 4, 1, 4, 1);
@@ -194,7 +219,11 @@ public class RprtAssignmentNorm extends JPanel {
 		gridbagAdd(vDscvLoc, 0, 13, 1, 1);
 		gridbagAdd(xDscvLoc, 2, 13, 1, 1);
 		
-		gridbagAdd(Imagebutton, 11,7,1,3);
+		gridbagAdd(Imagebutton, 11,7,5,3);
+		
+		gridbagAdd(previous, 12,13,1,3);
+		gridbagAdd(next, 13,13,1,3);
+		
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
@@ -204,7 +233,7 @@ public class RprtAssignmentNorm extends JPanel {
 		
 	}
 	
-	class RprtRegisterButtonListener implements ActionListener{
+	class RprtAssignmentNormButtonListener implements ActionListener{
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -217,9 +246,21 @@ public class RprtAssignmentNorm extends JPanel {
 					e1.printStackTrace();
 				}	
 			}
+			else if (e.getSource().equals(previous)) {
+				
+			}
+			else if(e.getSource().equals(next)) {
+				
+			}
 		}
 		
 	}
+	
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
 	
 	class ApprovalWaitListMouseListener extends MouseAdapter{
 
@@ -234,7 +275,7 @@ public class RprtAssignmentNorm extends JPanel {
 		
 	}
 	
-    
+
 
 
 
