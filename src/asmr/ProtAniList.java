@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +33,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -53,6 +56,11 @@ public class ProtAniList extends JPanel {
 	
 	private ArrayList<String> cntrNos;
 	private ArrayList<String> abanNos;
+	private ArrayList<String> abanPics;
+	private ArrayList<String> newPicPaths;
+	
+	private int picMax;
+	private int pnt;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -95,6 +103,8 @@ public class ProtAniList extends JPanel {
 		
 		cntrNos = new ArrayList<String>();
 		abanNos = new ArrayList<String>();
+		abanPics = new ArrayList<String>();
+		newPicPaths = new ArrayList<String>();
 		
 		vProtAniRegister = new JLabel("보호동물목록");
 		vProtAniRegister.setFont(new Font("나눔고딕", Font.BOLD, 24));
@@ -181,6 +191,7 @@ public class ProtAniList extends JPanel {
 		
 		vDescription = new JLabel("설명");
 		xDescription = new JTextArea();
+		xDescription.setLineWrap(true);
 		xDescription.setEditable(false);
 		descriptionScroll = new JScrollPane(xDescription);
 		descriptionScroll.setPreferredSize(new Dimension(400,150));
@@ -354,6 +365,13 @@ public class ProtAniList extends JPanel {
 	
 	class ProtAniListButtonListener implements ActionListener{
 
+
+//		File input = new File(abanPics.get(0));
+//		BufferedImage image = ImageIO.read(input);
+//		BufferedImage resized = resize(image,200,200);
+//		ImageIcon icon = new ImageIcon(resized);
+//		imageLabel.setIcon(icon);
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
@@ -363,17 +381,57 @@ public class ProtAniList extends JPanel {
 			else if(e.getSource().equals(pictureManage)) {
 				try {
 					// 0001 => ABAN_NO
-					new PictureManage("0001");
+					String abanNo = xAbanAniNo.getText();
+					PictureManage pictureManage = new PictureManage(abanNo);
+					pictureManage.addWindowListener(new WindowAdapter() {
+
+						@Override
+						public void windowClosed(WindowEvent e) {
+							// TODO Auto-generated method stub
+							super.windowClosed(e);
+							abanPics = pictureManage.getPaths();
+							picMax = abanPics.size();
+						}
+					
+					});
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 			else if(e.getSource().equals(previous)) {
-				
+				if(pnt > 0) {
+					pnt -= 1;
+					try {
+						File input = new File(abanPics.get(pnt));
+						BufferedImage image = ImageIO.read(input);
+						BufferedImage resized = resize(image,200,200);
+						ImageIcon icon = new ImageIcon(resized);
+						imageLabel.setIcon(icon);
+					} catch(IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "첫번째 사진입니다.", "경고", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 			else if(e.getSource().equals(next)) {
-				
+				if(pnt < picMax-1) {
+					pnt += 1;
+					try {
+						File input = new File(abanPics.get(pnt));
+						BufferedImage image = ImageIO.read(input);
+						BufferedImage resized = resize(image,200,200);
+						ImageIcon icon = new ImageIcon(resized);
+						imageLabel.setIcon(icon);
+					} catch(IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "마지막 사진입니다.", "경고", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 			else if(e.getSource().equals(modify)) {
 				modify.setText("확인");
@@ -478,6 +536,9 @@ public class ProtAniList extends JPanel {
 		query3.append("	AND PROT_END_DATE = to_date('9999-12-31','YYYY-MM-DD')) p ");
 		query3.append("	ON c.cntr_no = p.cntr_no AND c.cage_ornu = p.cage_ornu ");
 		
+		StringBuffer query4 = new StringBuffer("SELECT PATH FROM ABAN_PIC ");
+		query4.append("WHERE ABAN_NO='2019102701'");
+		
 		connection();
 		
 		try {
@@ -566,16 +627,35 @@ public class ProtAniList extends JPanel {
 				cbCage.addItem(rs.getString("cages"));
 			}
 			
-			//query2
+			//query3
 			pstmt = con.prepareStatement(query3.toString());
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				cbCage.setSelectedItem(rs.getString("cages"));
 			}
 			
+			abanPics.clear();
+			pstmt = con.prepareStatement(query4.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				abanPics.add(rs.getString("PATH"));
+			}
+			
+			pnt = 0;
+			picMax = abanPics.size();
+			File input = new File(abanPics.get(0));
+			BufferedImage image = ImageIO.read(input);
+			BufferedImage resized = resize(image,200,200);
+			ImageIcon icon = new ImageIcon(resized);
+			imageLabel.setIcon(icon);
+			
+			
+			
 			
 		}catch(SQLException e) {
 			e.printStackTrace();
+		}catch(IOException e1) {
+			e1.printStackTrace();
 		}
 		
 		disconnection();
