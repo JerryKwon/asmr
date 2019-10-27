@@ -9,7 +9,6 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -17,7 +16,13 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.regex.Pattern;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -33,13 +38,24 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 
 public class PictureManage extends JFrame{
 	private JLabel vPictureManage, vPicturePath, vSelectedPicture, vPreview, imageLabel;
 	private JTextField xPicturePath;
 	private JButton pictureSearch, register, cancel, add, remove;
+	
+	private String abanNo;
+	private ArrayList<String> paths;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
 	private final String[] col1 = {"파일명"};
 	
@@ -68,7 +84,7 @@ public class PictureManage extends JFrame{
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
-	public PictureManage() throws IOException {
+	public PictureManage(String abanNo) throws IOException {
 		
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
@@ -76,6 +92,9 @@ public class PictureManage extends JFrame{
 		pictureManageButtonListener = new PictureManageButtonListener();
 		pictureManageFileMouseListener = new PictureManageFileMouseListener();
 		pictureManageSeletedFileMouseListener = new PictureManageSeletedFileMouseListener();
+		
+		this.abanNo = abanNo;
+		paths = new ArrayList<String>();
 		
 		vPictureManage = new JLabel("사진관리");
 		
@@ -90,7 +109,7 @@ public class PictureManage extends JFrame{
 		
 		fc = new JFileChooser();
 		
-		fc.setMultiSelectionEnabled(true);
+		fc.setMultiSelectionEnabled(false);
 		
 		
 //		ePictureList = new JTable(model1);
@@ -152,6 +171,8 @@ public class PictureManage extends JFrame{
 		
 		JComponent[] bComps = {pictureSearch, register, cancel, add, remove};
 		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 12));
+		
+		GetAbanPics(abanNo);
 		
 		PictureManageView();
 	}
@@ -281,12 +302,14 @@ public class PictureManage extends JFrame{
 				int column = 0;
 				int sRow = ePictureList.getSelectedRow();
 				String value = ePictureList.getModel().getValueAt(sRow, column).toString();
+				paths.add(value);
 				model.addRow(new Object[] {value});
 			}
 			else if (e.getSource().equals(remove)){
 				DefaultTableModel model = (DefaultTableModel)eSelectedPictureList.getModel();
 				int column = 0;
 				int sRow = eSelectedPictureList.getSelectedRow();
+				paths.remove(sRow);
 				model.removeRow(sRow);
 				ImageIcon icon = new ImageIcon(noImage);
 				imageLabel.setIcon(icon);
@@ -354,13 +377,76 @@ public class PictureManage extends JFrame{
     	
     }
     
-    private void ChangeFont(JComponent[] comps, Font font) {
+    private void GetAbanPics(String abanNo) {
+    	connection();
+    	
+    	try {
+    		
+			StringBuffer query= new StringBuffer("SELECT ANML_PIC_ORNU,PATH FROM ABAN_PIC ");
+			query.append("WHERE ABAN_NO = '"+abanNo+"' ");
+			query.append("ORDER BY 1 ");
+			
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				
+				paths.add(rs.getString("PATH"));
+				model2.addRow(new Object[] {rs.getString("PATH")});
+			}	
+    	}catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	
+    	disconnection();
+    }
+	
+	// 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
+    
+    public ArrayList<String> getPaths() {
+		return paths;
+	}
+
+	private void ChangeFont(JComponent[] comps, Font font) {
     	for(JComponent comp: comps) {
     		comp.setFont(font);
     	}
     }
     
 	public static void main(String[] args) throws IOException {
-		new PictureManage();
+		new PictureManage(null);
 	}
 }

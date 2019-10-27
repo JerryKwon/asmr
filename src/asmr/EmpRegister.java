@@ -296,15 +296,15 @@ public class EmpRegister extends JFrame{
 			break;
 		}
 		
-		String[] pwds = bdate.split("-");
-		StringBuffer sb = new StringBuffer("");
-		for(String element:pwds) {
-			sb.append(element);
-		}
-		String pwd = sb.toString();
+//		String[] pwds = bdate.split("-");
+//		StringBuffer sb = new StringBuffer("");
+//		for(String element:pwds) {
+//			sb.append(element);
+//		}
+//		String pwd = sb.toString();
 		
 		try {
-			StringBuffer query1 = new StringBuffer("INSERT INTO EMP ");
+			StringBuffer query1 = new StringBuffer("INSERT INTO EMP(EMP_NO, EMP_NAME, BRTH_YEAR_MNTH_DAY, ADDR, SEX, TEL_NO) ");
 			query1.append("SELECT ");
 			query1.append("	CASE WHEN SUBSTR(EMP_NO,2,1)=9 AND SUBSTR(EMP_NO,3,1)=9 AND SUBSTR(EMP_NO,4,1)=9 ");
 			query1.append("		THEN to_char(SUBSTR(EMP_NO,1,1)+1) ");
@@ -322,8 +322,7 @@ public class EmpRegister extends JFrame{
 			query1.append("	'"+bdate+"' BDATE, ");
 			query1.append("	'"+addr+"' ADDR, ");
 			query1.append("	'"+engGender+"' SEX, ");
-			query1.append("	'"+telNo+"' TEL_NO, ");
-			query1.append("	'"+pwd+"' PWD ");
+			query1.append("	'"+telNo+"' TEL_NO ");
 			query1.append("FROM( ");
 			query1.append("	SELECT /*+ INDEX_DESC(EMP EMP_PK) */ NVL(EMP_NO,0) EMP_NO ");
 			query1.append("	FROM EMP ");
