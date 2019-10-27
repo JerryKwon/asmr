@@ -1,6 +1,8 @@
 package asmr;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -16,8 +18,8 @@ public class MainFrame extends JFrame {
 	private JMenu mCenter, mEmp, mAban, mReport, mAdop, mPost;
 	
 	private String[] mlCenter = {"센터목록"};
-	private String[] mlEmp = {"직원등록", "직원조회"};
-	private String[] mlAban = {"동물등록", "보호", "진료"};
+	private String[] mlEmp = {"직원조회"};
+	private String[] mlAban = {"보호", "진료"};
 	private String[] mlReport = {"신고등록", "신고배정(본부센터)", "신고배정(일반센터)"};
 	private String[] mlAdop = {"공고목록", "신청목록", "입양목록"};
 	private String[] mlPost = {"공지사항", "문의/답변"};
@@ -34,6 +36,26 @@ public class MainFrame extends JFrame {
 		setLayout(null);
 		
 		MenuActionListener listener = new MenuActionListener();
+		MenuListener l = new MenuListener() {
+			
+			@Override
+			public void menuSelected(MenuEvent e) {
+				// TODO Auto-generated method stub
+				System.out.print("센터");
+			}
+			
+			@Override
+			public void menuDeselected(MenuEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void menuCanceled(MenuEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		};
 		
 		ImageIcon iMainIcon = new ImageIcon("images/main.png");
 		Image iMainLogo = iMainIcon.getImage();
@@ -76,6 +98,7 @@ public class MainFrame extends JFrame {
 		}
 		mCenter.setPreferredSize(new Dimension(220, 50));
 		mCenter.setBorder(new EmptyBorder(0,90,0,0));
+		mCenter.addMenuListener(l);
 		mBar.add(mCenter);
 		
 		//mBar.add(new JSeparator(JSeparator.VERTICAL));
@@ -242,18 +265,6 @@ public class MainFrame extends JFrame {
 				//revalidate();
 				//repaint();
 				break;
-//			case "직원등록":
-//				ContentPanel.removeAll();
-//				try {
-//					pContents = new EmpRegister();
-//				} catch (IOException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-//				ContentPanel.add(pContents);
-//				revalidate();
-//				repaint();
-//				break;
 				
 			case "직원조회":
 				ContentPanel.removeAll();
@@ -262,13 +273,6 @@ public class MainFrame extends JFrame {
 				revalidate();
 				repaint();
 				break;
-//			case "동물등록":
-//				ContentPanel.removeAll();
-//				pContents = new ProtAniRegist();
-//				ContentPanel.add(pContents);
-//				revalidate();
-//				repaint();
-//				break;
 			case "보호":
 				ContentPanel.removeAll();
 				try {
