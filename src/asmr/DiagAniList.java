@@ -11,11 +11,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -42,6 +51,18 @@ public class DiagAniList extends JPanel{
 	private JTextArea xDiagContent; 
 	private BufferedImage buttonIcon;
 	private JDateChooser chooser;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
+	
+	private ArrayList<String> protNos;
+	private String protNo;
 	
 	private final String[] col1 = {"유기동물명","동물종류","품종","나이(개월)","크기"};
 	private final String[] col2 = {"진료일자","진료구분","내용"};
@@ -74,6 +95,9 @@ public class DiagAniList extends JPanel{
 		diagAniListButtonListener = new DiagAniListButtonListener();
 		protAniListMouseListener = new ProtAniListMouseListener();
 		diagListMouseListener = new DiagListMouseListener();
+		
+		protNos = new ArrayList<String>();
+		protNo = null;
 		
 		vProtAniList = new JLabel("보호동물목록");
 		vProtAniList.setFont(new Font("나눔고딕", Font.BOLD, 24));
@@ -193,6 +217,8 @@ public class DiagAniList extends JPanel{
 		
 		cancel = new JButton("취소");
 		cancel.addActionListener(diagAniListButtonListener);
+		
+		GetProtAniList();
 		
 		DiagAniListView();
 		
@@ -316,7 +342,17 @@ public class DiagAniList extends JPanel{
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(diagRegister)) {
 				try {
-					new DiagRegister();
+					DiagRegister diagRegister = new DiagRegister(protNo);
+					diagRegister.addWindowListener(new WindowAdapter() {
+
+						@Override
+						public void windowClosed(WindowEvent e) {
+							// TODO Auto-generated method stub
+							super.windowClosed(e);
+							GetDiagAniList();
+						}
+			
+					});
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -345,7 +381,9 @@ public class DiagAniList extends JPanel{
 			// TODO Auto-generated method stub
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
-				
+				int clickedRow = eProtAniList.getSelectedRow();
+				protNo = protNos.get(clickedRow);
+				GetDiagAniList();
 			}
 		}
 		
@@ -368,9 +406,9 @@ public class DiagAniList extends JPanel{
 	private void checkDiagType() {
 		String target = xDiagType.getText();
 		if(target=="내진")
-			imageButton.setEnabled(false);
+			chooser.setEnabled(false);
 		else if(target=="외진")
-			imageButton.setEnabled(true);
+			chooser.setEnabled(true);
 	}
 	
     private void ChangeFont(JComponent[] comps, Font font) {
@@ -379,6 +417,130 @@ public class DiagAniList extends JPanel{
     	}
     }
 	
+    private void GetDiagAniList() {
+    	connection();
+    	
+    	StringBuffer query = new StringBuffer("SELECT d.DIAG_ORNU,d.DIAG_DATE,d.DIAG_TP,d.DIAG_CONT ");
+    	query.append("FROM (SELECT * FROM PROT WHERE PROT_NO='2019102701') p INNER JOIN DIAG d ");
+    	query.append("	ON p.PROT_NO = d.PROT_NO ");
+    	query.append("ORDER BY 1 ");
+    	
+    	try {
+    		pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				String diagType = rs.getString("DIAG_TP");
+				String korDiagType = null;
+				
+				switch(diagType) {
+				case "i":
+					korDiagType = "내진";
+					break;
+				case "o":
+					korDiagType = "외진";
+					break;
+				}
+				
+				model2.addRow(new Object[] {rs.getString("DIAG_DATE"),korDiagType,rs.getString("DIAG_CONT")});
+			}
+    	}catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	
+    	disconnection();
+    }
+    
+    private void GetProtAniList() {
+    	connection();
+    	
+    	StringBuffer query = new StringBuffer("SELECT p.CNTR_NO, a.ABAN_NO, p.PROT_NO, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE ");
+    	query.append("FROM ABAN a INNER JOIN(SELECT * FROM PROT ");
+    	query.append("	WHERE PROT_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) p ");
+    	query.append("	ON a.ABAN_NO = p.ABAN_NO ");
+    	query.append("ORDER BY 1,2 ");
+    	
+    	try {
+    		pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				String anmlKinds = rs.getString("ANML_KINDS");
+				String anmlSize = rs.getString("ANML_SIZE");
+				
+				String korAnmlKinds = null;
+				String korAnmlSize = null;
+				
+				switch(anmlKinds) {
+				case "d":
+					korAnmlKinds="개";
+					break;
+				case "c":
+					korAnmlKinds="고영이";
+					break;
+				case "e":
+					korAnmlKinds="기타";
+					break;
+				}
+				
+				switch(anmlSize) {
+				case "b":
+					korAnmlSize="대";
+					break;
+				case "m":
+					korAnmlSize="중";
+					break;
+				case "s":
+					korAnmlSize="소";
+					break;
+				}
+				
+				protNos.add(rs.getString("PROT_NO"));
+				
+				model1.addRow(new Object[] {rs.getString("ABAN_NAME"),korAnmlKinds,rs.getString("KIND"),rs.getString("AGE"),korAnmlSize});
+			}
+    	}catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	
+    	disconnection();
+    }
+    
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
+	
+    
 	public static void main(String[] args) {
 	
 	}
