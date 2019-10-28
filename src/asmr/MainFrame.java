@@ -30,32 +30,11 @@ public class MainFrame extends JFrame {
 	private Login Login;
 	public static int LoginState;
 	
-	public MainFrame() {
-		
-		LoginState = 1;
+	public MainFrame(int ls) {
+		LoginState = ls;
 		setLayout(null);
 		
 		MenuActionListener listener = new MenuActionListener();
-		MenuListener l = new MenuListener() {
-			
-			@Override
-			public void menuSelected(MenuEvent e) {
-				// TODO Auto-generated method stub
-				System.out.print("센터");
-			}
-			
-			@Override
-			public void menuDeselected(MenuEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void menuCanceled(MenuEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		};
 		
 		ImageIcon iMainIcon = new ImageIcon("images/main.png");
 		Image iMainLogo = iMainIcon.getImage();
@@ -98,7 +77,6 @@ public class MainFrame extends JFrame {
 		}
 		mCenter.setPreferredSize(new Dimension(220, 50));
 		mCenter.setBorder(new EmptyBorder(0,90,0,0));
-		mCenter.addMenuListener(l);
 		mBar.add(mCenter);
 		
 		//mBar.add(new JSeparator(JSeparator.VERTICAL));
@@ -228,11 +206,12 @@ public class MainFrame extends JFrame {
 				repaint();
 				break;
 			case "로그인":
-				ContentPanel.removeAll();
-				pContents = new Login();
-				ContentPanel.add(pContents);
-				revalidate();
-				repaint();
+				setLogin();
+				//ContentPanel.removeAll();
+				//pContents = new Login();
+				//ContentPanel.add(pContents);
+				//revalidate();
+				//repaint();
 				break;
 			case "회원가입":
 				ContentPanel.removeAll();
@@ -256,10 +235,11 @@ public class MainFrame extends JFrame {
 				repaint();
 				break;
 			case "로그아웃":
-				new MainFrame();
-				dispose();
-				ContentPanel.removeAll();
-				pContents = new MainPage();
+				setLogout();
+				//new MainFrame();
+				//dispose();
+				//ContentPanel.removeAll();
+				//pContents = new MainPage();
 				//LoginState = 0;
 				//ContentPanel.add(pContents);
 				//revalidate();
@@ -392,19 +372,25 @@ public class MainFrame extends JFrame {
 			//setBackground(Color.WHITE);
 		}
 	}
+	public void setLogout() {
+		dispose();
+		new MainFrame(0);
+	}
 	public void setLogin() {
-		this.remove(bLogin);
-		this.remove(bRegister);
-		ContentPanel.removeAll();
-		this.add(vCenterName);
-		this.add(bUserName);
-		this.add(vWelcome);
-		revalidate();
-		repaint();
+		dispose();
+		new MainFrame(1);
+//		this.remove(bLogin);
+//		this.remove(bRegister);
+//		ContentPanel.removeAll();
+//		this.add(vCenterName);
+//		this.add(bUserName);
+//		this.add(vWelcome);
+//		revalidate();
+//		repaint();
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		MainFrame main = new MainFrame();
+		MainFrame main = new MainFrame(0);
 	}
 
 }
