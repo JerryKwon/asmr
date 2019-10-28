@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -86,9 +88,9 @@ public class DiagRegister extends JFrame{
 		gridBagConstraints = new GridBagConstraints();
 	
 		diagRegisterButtonListener = new DiagRegisterButtonListener();
-//		diagTypeItemListener = new DiagTypeItemListener();
-//		oudiResultItemListener = new OudiResultItemListener();
-//		cureTypeItemListener = new CureTypeItemListener();
+		diagTypeItemListener = new DiagTypeItemListener();
+		oudiResultItemListener = new OudiResultItemListener();
+		cureTypeItemListener = new CureTypeItemListener();
 		
 		this.protNo = protNo;
 		
@@ -105,7 +107,7 @@ public class DiagRegister extends JFrame{
 		
 		vDiagType = new JLabel("진료구분");
 		cbDiagType = new JComboBox<String>(diagTypeDiv);
-//		cbDiagType.addItemListener(diagTypeItemListener);
+		cbDiagType.addItemListener(diagTypeItemListener);
 		
 		vIndiResult = new JLabel("내진결과");
 		cbIndiResult = new JComboBox<String>(indiResultDiv);
@@ -120,7 +122,7 @@ public class DiagRegister extends JFrame{
 		
 		vOudiResult = new JLabel("외진결과");
 		cbOudiResult = new JComboBox<String>(oudiResultDiv);
-//		cbOudiResult.addItemListener(oudiResultItemListener);
+		cbOudiResult.addItemListener(oudiResultItemListener);
 		
 		vHospName = new JLabel("병원명");
 		xHospName = new JTextField(10);
@@ -133,7 +135,7 @@ public class DiagRegister extends JFrame{
 		
 		vCureType = new JLabel("치료구분");
 		cbCureType = new JComboBox<String>(cureTypeDiv);
-//		cbCureType.addItemListener(cureTypeItemListener);
+		cbCureType.addItemListener(cureTypeItemListener);
 		
 		vHsptzDate = new JLabel("입원일자");
 		hsptzDateChooser = new JDateChooser(date,"yyyy-MM-dd");
@@ -167,7 +169,7 @@ public class DiagRegister extends JFrame{
 		
 		JComponent[] bComps = {search, register, cancel};
 		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 12));
-//		activateIndi();
+		activateIndi();
 		
 		DiagRegisterView();
 	}
@@ -277,7 +279,16 @@ public class DiagRegister extends JFrame{
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(search)) {
 				VtrnSearch vtrnSearch = new VtrnSearch(xIndiVtrnName);
-				vtrnDate = vtrnSearch.getVtrnBdate();
+				vtrnSearch.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						// TODO Auto-generated method stub
+						super.windowClosed(e);
+						vtrnDate = vtrnSearch.getVtrnBdate();
+					}
+					
+				});
 			}
 			if(e.getSource().equals(register)) {
 				int result = JOptionPane.showConfirmDialog(null, "진료를 등록하시겠습니까?", "진료등록", JOptionPane.YES_NO_OPTION);
@@ -346,15 +357,19 @@ public class DiagRegister extends JFrame{
 		String vtrnName = xIndiVtrnName.getText();
 		String diagContent = xDiagContent.getText();
 		
-		StringBuffer query = new StringBuffer("INSERT INTO DIAG(PROT_NO,DIAG_ORNU,DIAG_DATE,DIAG_TP,DIAG_CONTENT,VTRN_NO) ");
+		System.out.println(protNo);
+		System.out.println(vtrnDate);
+		System.out.println(diagDate);
+		
+		StringBuffer query = new StringBuffer("INSERT INTO DIAG(PROT_NO,DIAG_ORNU,DIAG_DATE,DIAG_TP,DIAG_CONT,VTRN_NO) ");
 		query.append("SELECT '"+protNo+"' PROT_NO, ");
 		query.append("	(SELECT NVL(DIAG_ORNU,0)+1 ");
 		query.append("	FROM( ");
 		query.append("		SELECT /*+INDEX_DESC(DIAG DIAG_PK)*/ MAX(DIAG_ORNU) DIAG_ORNU FROM DIAG ");
-		query.append("	WHERE PROT_NO='2019102701')) DIAG_ORNU, ");
-		query.append("	'"+diagDate+"' DIAG_DATE, ");
+		query.append("	WHERE PROT_NO='"+protNo+"')) DIAG_ORNU, ");
+		query.append("	to_date('"+diagDate+"','YYYY-MM-DD') DIAG_DATE, ");
 		query.append("	'"+diagType+"' DIAG_TP, ");
-		query.append("	'"+diagContent+"' DIAG_CONTENT, ");
+		query.append("	'"+diagContent+"' DIAG_CONT, ");
 		query.append("	(SELECT EMP_NO FROM EMP WHERE EMP_NAME='"+vtrnName+"' AND BRTH_YEAR_MNTH_DAY=to_date('"+vtrnDate+"','YYYY-MM-DD')) VTRN_NO ");
 		query.append("FROM DUAL ");
 		
