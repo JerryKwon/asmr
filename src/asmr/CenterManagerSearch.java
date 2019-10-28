@@ -33,7 +33,7 @@ import javax.swing.table.DefaultTableModel;
 import asmr.CenterManagerSearch.CenterManagerSearchButtonListener;
 
 public class CenterManagerSearch extends JFrame{
-	private JLabel vCenterManagerSerach;
+	private JLabel vCenterManagerSearch;
 	private JTable eCenterManagerList;
 	private JScrollPane scrollpane;
 	private JButton confirm,cancel;
@@ -73,8 +73,8 @@ public class CenterManagerSearch extends JFrame{
 		centerManagerSearchButtonListener = new CenterManagerSearchButtonListener();
 		centerManagerSearchMouseListener = new CenterManagerSearchMouseListener();
 		
-		vCenterManagerSerach = new JLabel("ºæ≈Õ¿Â∏Ò∑œ");
-		vCenterManagerSerach.setFont(new Font("≥™¥Æ∞ÌµÒ", Font.BOLD, 16));
+		vCenterManagerSearch = new JLabel("ºæ≈Õ¿Â∏Ò∑œ");
+		vCenterManagerSearch.setFont(new Font("≥™¥Æ∞ÌµÒ", Font.BOLD, 16));
 		
 //		eCenterManagerList = new JTable(model1);
 		eCenterManagerList = new JTable(model1) {
@@ -110,7 +110,7 @@ public class CenterManagerSearch extends JFrame{
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
 		
-		gridbagAdd(vCenterManagerSerach, 0, 0, 1, 1);
+		gridbagAdd(vCenterManagerSearch, 0, 0, 1, 1);
 		
 		JPanel scrollPanel = new JPanel();
 		scrollPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
@@ -151,7 +151,7 @@ public class CenterManagerSearch extends JFrame{
 		
 		try {
 			StringBuffer query= new StringBuffer("SELECT e.EMP_NAME name, e.BRTH_YEAR_MNTH_DAY bdate ");
-			query.append("FROM EMP e LEFT OUTER JOIN (");
+			query.append("FROM EMP e INNER JOIN (");
 			query.append("	SELECT DISTINCT EMP_NO FROM EMP_WORK_HIST");
 			query.append("	WHERE WORK_END_DATE = to_date('9999-12-31','YYYY-MM-DD')");
 			query.append("	AND BIZ_FILD = 'c') cm ");
