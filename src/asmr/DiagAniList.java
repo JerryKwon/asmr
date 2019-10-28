@@ -134,6 +134,9 @@ public class DiagAniList extends JPanel{
 		eDiagList.addMouseListener(diagListMouseListener);
 		diagListScroll = new JScrollPane(eDiagList);
 		diagListScroll.setPreferredSize(new Dimension(450,200));
+		eDiagList.getColumnModel().getColumn(0).setPreferredWidth(100);
+		eDiagList.getColumnModel().getColumn(1).setPreferredWidth(75);
+		eDiagList.getColumnModel().getColumn(2).setPreferredWidth(275);
 		
 		vDiagInfo = new JLabel("진료정보");
 		vDiagInfo.setFont(new Font("나눔고딕", Font.BOLD, 20));
@@ -183,7 +186,7 @@ public class DiagAniList extends JPanel{
 		
 		LocalDate now = LocalDate.now();
 		Date date = Date.valueOf(now);
-		chooser = new JDateChooser(date,"YYYY.MM.dd");
+		chooser = new JDateChooser(date,"yyyy-MM-dd");
 		chooser.setEnabled(false);
 		
 //		xDschDate = new JTextField(12);
@@ -289,8 +292,6 @@ public class DiagAniList extends JPanel{
 
 		gridbagAdd(chooser, 3, 8, 1, 1);
 
-		
-		
 		gridbagAdd(vDeathType, 0, 9, 1, 1);
 		gridbagAdd(xDeathType, 1, 9, 1, 1);
 
@@ -342,6 +343,7 @@ public class DiagAniList extends JPanel{
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(diagRegister)) {
 				try {
+					if(protNo!=null) {
 					DiagRegister diagRegister = new DiagRegister(protNo);
 					diagRegister.addWindowListener(new WindowAdapter() {
 
@@ -353,6 +355,7 @@ public class DiagAniList extends JPanel{
 						}
 			
 					});
+					}
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -396,19 +399,93 @@ public class DiagAniList extends JPanel{
 			// TODO Auto-generated method stub
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
-				checkDiagType();
+				int clickedRow = eDiagList.getSelectedRow();
+				GetDiagInfo(protNo,clickedRow+1);
 			}
 		}
 		
 	}
 	
 	//진료목록이 element를 읽은 후에 그 element의 진료구분에 따라 달력 imageButton을 활성화/비활성화합니다.
-	private void checkDiagType() {
-		String target = xDiagType.getText();
-		if(target=="내진")
-			chooser.setEnabled(false);
-		else if(target=="외진")
-			chooser.setEnabled(true);
+	private void GetDiagInfo(String protNo,int ornu) {
+		
+		StringBuffer query = new StringBuffer("SELECT * FROM DIAG ");
+		query.append("WHERE PROT_NO='"+protNo+"' AND DIAG_ORNU="+ornu+" ");
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				String diagType = rs.getString("DIAG_TP");
+				String oudiRes = rs.getString("OUDI_RES");
+				String cureType = rs.getString("CURE_TP");
+				String deathType = rs.getString("DTH_TP");
+				
+				String korDiagType = null;
+				String korOudiRes = null;
+				String korCureType = null;
+				String korDeathType = null;
+				
+				switch(diagType) {
+				case "i":
+					korDiagType = "내진";
+					break;
+				case "o":
+					korDiagType = "외진";
+					break;
+				}
+				
+				switch(oudiRes) {
+				case "c":
+					korOudiRes = "치료";
+					break;
+				case "d":
+					korOudiRes = "사망";
+					break;
+				}
+				
+				switch(cureType) {
+				case "v":
+					korCureType = "통원";
+					break;
+				case "a":
+					korCureType = "입원";
+					break;
+				}
+				
+				switch(deathType) {
+				case "n":
+					korDeathType = "자연사";
+					break;
+				case "e":
+					korDeathType = "안락사";
+					break;
+				}
+				
+				xDiagDate.setText(rs.getString("DIAG_DATE"));
+				xDiagType.setText(korDiagType);
+				xIndiResult.setText(rs.getString("INDI_RES"));
+				xIndiVtrnName.setText(rs.getString("VTRN_NO"));
+				xOudiResult.setText(korOudiRes);
+				xHospName.setText(rs.getString("HOSP_NAME"));
+				xDisease.setText(rs.getString("DISE"));
+				xInfecWhet.setText(rs.getString("INFEC_WHET"));
+				xCureType.setText(korCureType);
+				xHsptzDate.setText(rs.getString("HSPTZ_DATE"));
+				((JTextField)chooser.getDateEditor().getUiComponent()).setText(rs.getString("DSCH_DATE"));
+				xDeathType.setText(korDeathType);
+				xDeathReason.setText(rs.getString("REAS"));
+				xDiagContent.setText(rs.getString("DIAG_CONT"));
+				
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+	
+		disconnection();
+		
 	}
 	
     private void ChangeFont(JComponent[] comps, Font font) {
@@ -419,6 +496,8 @@ public class DiagAniList extends JPanel{
 	
     private void GetDiagAniList() {
     	connection();
+    	
+    	model2.setRowCount(0);
     	
     	StringBuffer query = new StringBuffer("SELECT d.DIAG_ORNU,d.DIAG_DATE,d.DIAG_TP,d.DIAG_CONT ");
     	query.append("FROM (SELECT * FROM PROT WHERE PROT_NO='2019102701') p INNER JOIN DIAG d ");
@@ -441,7 +520,7 @@ public class DiagAniList extends JPanel{
 					break;
 				}
 				
-				model2.addRow(new Object[] {rs.getString("DIAG_DATE"),korDiagType,rs.getString("DIAG_CONT")});
+				model2.addRow(new Object[] {rs.getString("DIAG_DATE").split(" ")[0],korDiagType,rs.getString("DIAG_CONT")});
 			}
     	}catch(SQLException e) {
     		e.printStackTrace();
