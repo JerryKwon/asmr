@@ -14,7 +14,13 @@ import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 import javax.imageio.ImageIO;
@@ -25,6 +31,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -38,12 +45,24 @@ public class DiagRegister extends JFrame{
 	private JLabel vDiagRegister, vDiagDate, vDiagType, vIndiResult, vIndiVtrnName, vOudiResult, vHospName, vDisease, vInfecWhet, vCureType, vHsptzDate, vDschDate,vDeathType, vDeathReason, vDiagContent; 
 	private JTextField xDiagDate, xIndiVtrnName, xHospName, xDisease, xInfecWhet, xCureType, xHsptzDate, xDschDate, xDeathType, xDeathReason;
 	private JComboBox<String> cbDiagType, cbIndiResult, cbOudiResult, cbCureType, cbDeathType;
-	private JButton imageButton1, imageButton2, register, cancel;
+	private JButton imageButton1, imageButton2, search, register, cancel;
 	private JTextArea xDiagContent;
 	private BufferedImage buttonIcon;
 	private JDateChooser diagDateChooser, hsptzDateChooser, dschDateChooser;
 	
+	private String protNo;
+	private String vtrnDate = null;
+	
 	private JScrollPane diagContentScroll;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
 	private String[] diagTypeDiv = {"내진","외진"};
 	private String[] indiResultDiv = {"좋음","보통","나쁨"};
@@ -62,14 +81,16 @@ public class DiagRegister extends JFrame{
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
-	public DiagRegister() throws IOException {
+	public DiagRegister(String protNo) throws IOException {
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
 	
 		diagRegisterButtonListener = new DiagRegisterButtonListener();
-		diagTypeItemListener = new DiagTypeItemListener();
-		oudiResultItemListener = new OudiResultItemListener();
-		cureTypeItemListener = new CureTypeItemListener();
+//		diagTypeItemListener = new DiagTypeItemListener();
+//		oudiResultItemListener = new OudiResultItemListener();
+//		cureTypeItemListener = new CureTypeItemListener();
+		
+		this.protNo = protNo;
 		
 //		vDiagRegister = new JLabel("진료등록");
 		
@@ -78,30 +99,28 @@ public class DiagRegister extends JFrame{
 		
 		LocalDate now = LocalDate.now();
 		Date date = Date.valueOf(now);
-		diagDateChooser = new JDateChooser(date,"YYYY.MM.dd");
-		
-//		xDiagDate.setEnabled(false);
-//		xDiagDate.setEnabled(false);
-//		buttonIcon = ImageIO.read(new File("images/cal1.png"));
-//		imageButton1 = new JButton(new ImageIcon(buttonIcon));
-//		imageButton1.setBorderPainted(false);
-//		imageButton1.setContentAreaFilled(false);
-//		imageButton1.setFocusPainted(false);
-//		
+		diagDateChooser = new JDateChooser(date, "yyyy-MM-dd");
+		JTextField textField= (JTextField) diagDateChooser.getDateEditor().getUiComponent();
+		textField.setEditable(false);
 		
 		vDiagType = new JLabel("진료구분");
 		cbDiagType = new JComboBox<String>(diagTypeDiv);
-		cbDiagType.addItemListener(diagTypeItemListener);
+//		cbDiagType.addItemListener(diagTypeItemListener);
 		
 		vIndiResult = new JLabel("내진결과");
 		cbIndiResult = new JComboBox<String>(indiResultDiv);
 		
 		vIndiVtrnName = new JLabel("내진수의사명");
 		xIndiVtrnName =  new JTextField(10);
+		search = new JButton("검색");
+		search.setBackground(blue);
+		search.setForeground(white);
+		search.addActionListener(diagRegisterButtonListener);
+		
 		
 		vOudiResult = new JLabel("외진결과");
 		cbOudiResult = new JComboBox<String>(oudiResultDiv);
-		cbOudiResult.addItemListener(oudiResultItemListener);
+//		cbOudiResult.addItemListener(oudiResultItemListener);
 		
 		vHospName = new JLabel("병원명");
 		xHospName = new JTextField(10);
@@ -114,32 +133,23 @@ public class DiagRegister extends JFrame{
 		
 		vCureType = new JLabel("치료구분");
 		cbCureType = new JComboBox<String>(cureTypeDiv);
-		cbCureType.addItemListener(cureTypeItemListener);
-//		xCureType = new JTextField(10);
+//		cbCureType.addItemListener(cureTypeItemListener);
 		
 		vHsptzDate = new JLabel("입원일자");
-		hsptzDateChooser = new JDateChooser(date,"YYYY.MM.dd");
-		
-//		xHsptzDate = new JTextField(10);
-		
+		hsptzDateChooser = new JDateChooser(date,"yyyy-MM-dd");
+				
 		vDschDate = new JLabel("퇴원일자");
-		dschDateChooser = new JDateChooser(null,"YYYY.MM.dd");
+		dschDateChooser = new JDateChooser(null,"yyyy-MM-dd");
 
-//		xDschDate = new JTextField(10);
-//		imageButton2 = new JButton(new ImageIcon(buttonIcon));
-//		imageButton2.setBorderPainted(false);
-//		imageButton2.setContentAreaFilled(false);
-//		imageButton2.setFocusPainted(false);
-		
 		vDeathType = new JLabel("사망구분");
 		cbDeathType = new JComboBox<String>(deathTypeDiv);
-//		xDeathType = new JTextField(10);
 		
 		vDeathReason = new JLabel("사망사유");
 		xDeathReason = new JTextField(10);
 		
 		vDiagContent = new JLabel("진료내용");
 		xDiagContent = new JTextArea();
+		xDiagContent.setLineWrap(true);
 		diagContentScroll = new JScrollPane(xDiagContent);
 		diagContentScroll.setPreferredSize(new Dimension(400,150));
 		diagContentScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -155,9 +165,9 @@ public class DiagRegister extends JFrame{
 		JComponent[] vComps = {vDiagDate, vDiagType, vIndiResult, vIndiVtrnName, vOudiResult, vHospName, vDisease, vInfecWhet, vCureType, vHsptzDate, vDschDate,vDeathType, vDeathReason, vDiagContent};
 		ChangeFont(vComps, new Font("나눔고딕", Font.PLAIN, 16));
 		
-		JComponent[] bComps = {register, cancel};
+		JComponent[] bComps = {search, register, cancel};
 		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 12));
-		activateIndi();
+//		activateIndi();
 		
 		DiagRegisterView();
 	}
@@ -175,9 +185,6 @@ public class DiagRegister extends JFrame{
 //		gridbagAdd(vDiagRegister, 0, 0, 1, 1);
 		
 		gridbagAdd(vDiagDate, 0, 1, 1, 1);
-//		Component[] cops1 = {xDiagDate, imageButton1};
-//		CombinePanel diagDatePanel = new CombinePanel(cops1, false);
-//		gridbagAdd(diagDatePanel, 1, 1, 1, 1);
 		gridbagAdd(diagDateChooser, 1, 1, 1, 1);
 		
 		gridbagAdd(vDiagType, 2, 1, 1, 1);
@@ -188,6 +195,7 @@ public class DiagRegister extends JFrame{
 		
 		gridbagAdd(vIndiVtrnName, 2, 2, 1, 1);
 		gridbagAdd(xIndiVtrnName, 3, 2, 1, 1);
+		gridbagAdd(search, 4, 2, 1, 1);
 		
 		gridbagAdd(vOudiResult, 0, 3, 1, 1);
 		gridbagAdd(cbOudiResult, 1, 3, 1, 1);
@@ -221,7 +229,7 @@ public class DiagRegister extends JFrame{
 		gridbagAdd(xDeathReason, 3, 7, 1, 1);
 		
 		gridbagAdd(vDiagContent, 0, 8, 1, 1);
-		gridbagAdd(diagContentScroll, 1, 8, 3, 1);
+		gridbagAdd(diagContentScroll, 1, 8, 4, 1);
 		
 		Component[] cops3 = {register, cancel};
 		CombinePanel buttonPanel = new CombinePanel(cops3,true);
@@ -267,8 +275,16 @@ public class DiagRegister extends JFrame{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
+			if(e.getSource().equals(search)) {
+				VtrnSearch vtrnSearch = new VtrnSearch(xIndiVtrnName);
+				vtrnDate = vtrnSearch.getVtrnBdate();
+			}
 			if(e.getSource().equals(register)) {
-				
+				int result = JOptionPane.showConfirmDialog(null, "진료를 등록하시겠습니까?", "진료등록", JOptionPane.YES_NO_OPTION);
+				if(result == JOptionPane.YES_OPTION) {
+					SelectCase();
+					dispose();
+				}
 			}
 			if(e.getSource().equals(cancel)) {
 				dispose();
@@ -276,6 +292,102 @@ public class DiagRegister extends JFrame{
 		}
 		
 	}
+	
+	private void SelectCase() {
+		String diagType = (String)cbDiagType.getSelectedItem();
+		
+		if(diagType == "내진") {
+			String engDiagType = "i";
+			RegistDiag1(engDiagType);
+		}
+		else {
+			//외진
+			String engDiagType = "o";
+			String oudiRes = (String) cbOudiResult.getSelectedItem();
+			
+			if(oudiRes == "치료") {
+				String engOudiRes = "c";
+				
+				String cureType = (String) cbCureType.getSelectedItem();
+				
+				if(cureType == "통원") {
+					String engCureType = "v";
+					RegistDiag2(engDiagType,engOudiRes,engCureType);
+				}else {
+					//입원
+					String engCureType = "a";
+					RegistDiag3(engDiagType,engOudiRes,engCureType);
+				}
+			}else {
+				//사망
+				String engOudiRes = "d";
+				
+				String deathType = (String) cbDeathType.getSelectedItem();
+				String engDeathType = null;
+				switch(deathType) {
+				case "자연사":
+					engDeathType="n";
+					break;
+				case "안락사":
+					engDeathType="e";
+					break;
+				}
+				//사망, 
+				RegistDiag4(engDiagType,engOudiRes,engDeathType);
+ 			}
+		}
+	}
+	
+	//내진등록
+	private void RegistDiag1(String diagType) {
+		connection();
+		
+		String diagDate = ((JTextField)diagDateChooser.getDateEditor().getUiComponent()).getText();
+		String vtrnName = xIndiVtrnName.getText();
+		String diagContent = xDiagContent.getText();
+		
+		StringBuffer query = new StringBuffer("INSERT INTO DIAG(PROT_NO,DIAG_ORNU,DIAG_DATE,DIAG_TP,DIAG_CONTENT,VTRN_NO) ");
+		query.append("SELECT '"+protNo+"' PROT_NO, ");
+		query.append("	(SELECT NVL(DIAG_ORNU,0)+1 ");
+		query.append("	FROM( ");
+		query.append("		SELECT /*+INDEX_DESC(DIAG DIAG_PK)*/ MAX(DIAG_ORNU) DIAG_ORNU FROM DIAG ");
+		query.append("	WHERE PROT_NO='2019102701')) DIAG_ORNU, ");
+		query.append("	'"+diagDate+"' DIAG_DATE, ");
+		query.append("	'"+diagType+"' DIAG_TP, ");
+		query.append("	'"+diagContent+"' DIAG_CONTENT, ");
+		query.append("	(SELECT EMP_NO FROM EMP WHERE EMP_NAME='"+vtrnName+"' AND BRTH_YEAR_MNTH_DAY=to_date('"+vtrnDate+"','YYYY-MM-DD')) VTRN_NO ");
+		query.append("FROM DUAL ");
+		
+		try {
+		pstmt = con.prepareStatement(query.toString());
+		rs = pstmt.executeQuery();
+		if(rs.next()) {
+			con.commit();
+		}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+	};
+	
+
+	//외진(통원)등록
+	private void RegistDiag2(String diagType,String oudiRes,String cureType) {
+		
+	};
+	
+
+	//외진(입원)등록
+	private void RegistDiag3(String diagType,String oudiRes,String cureType) {
+		
+	};
+	
+
+	//외진(사망)등록
+	private void RegistDiag4(String diagType,String oudiRes,String deathType) {
+		
+	};
 	
 	class DiagTypeItemListener implements ItemListener{
 
@@ -358,7 +470,7 @@ public class DiagRegister extends JFrame{
 //		xHsptzDate.setEnabled(true);
 //		xDschDate.setEnabled(false);
 //		imageButton2.setEnabled(false);
-		hsptzDateChooser.setEnabled(true);
+		hsptzDateChooser.setEnabled(false);
 		dschDateChooser.setEnabled(false);
 		cbDeathType.setEnabled(false);
 		xDeathReason.setEnabled(false);
@@ -399,7 +511,7 @@ public class DiagRegister extends JFrame{
 	
 	private void activateHsptz() {
 //		xHsptzDate.setEnabled(true);
-		hsptzDateChooser.setEnabled(true);
+		hsptzDateChooser.setEnabled(false);
 		
 //		xDschDate.setEnabled(false);
 //		imageButton2.setEnabled(false);
@@ -415,6 +527,44 @@ public class DiagRegister extends JFrame{
 		dschDateChooser.setEnabled(true);
 	}
 	
+    
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
+	
+	
    private void ChangeFont(JComponent[] comps, Font font) {
     	for(JComponent comp: comps) {
     		comp.setFont(font);
@@ -422,6 +572,6 @@ public class DiagRegister extends JFrame{
     }
 		
 	public static void main(String[] args) throws IOException {
-		new DiagRegister();
+		new DiagRegister(null);
 	}
 }
