@@ -27,11 +27,8 @@ public class MainFrame extends JFrame {
 	private JPanel pContents;
 	private ContentPanel ContentPanel;	
 	
-	private Login Login;
-	public static int LoginState;
-	
-	public MainFrame(int ls) {
-		LoginState = ls;
+	public MainFrame(Login lg) {
+		Login l = new Login();
 		setLayout(null);
 		
 		MenuActionListener listener = new MenuActionListener();
@@ -178,21 +175,50 @@ public class MainFrame extends JFrame {
 		this.add(bMainButton);
 		this.add(mBar);
 		this.add(ContentPanel);
-		if(LoginState == 0) {
-			this.add(bLogin);
-			this.add(bRegister);
-		}
-		else if(LoginState == 1) {
-			this.add(bLogout);
-			this.add(vCenterName);
-			this.add(bUserName);
-			this.add(vWelcome);
-		}
+		
+		// 비로그인 파트
+		this.add(bLogin);
+		this.add(bRegister);
+		
+		// 로그인 파트
+		this.add(bLogout);
+		this.add(vCenterName);
+		this.add(bUserName);
+		this.add(vWelcome);
+		
+		
+		bLogin.setVisible(false);
+		bRegister.setVisible(false);
 		
 		pack();
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
+	}
+
+	class ContentPanel extends JPanel {
+		public void ContentPanel() {
+			setPreferredSize(new Dimension(1800, 900));
+			//setBackground(Color.WHITE);
+		}
+	}
+	public void setLogout() {
+		bLogin.setVisible(true);
+		bRegister.setVisible(true);
+		bLogout.setVisible(false);
+		vCenterName.setVisible(false);
+		bUserName.setVisible(false);
+		vWelcome.setVisible(false);
+	}
+	public void setLogin() {
+
+	}
+	public void setTest() {
+		ContentPanel.removeAll();
+		pContents = new MainPage();
+		ContentPanel.add(pContents);
+		ContentPanel.revalidate();
+		ContentPanel.repaint();
 	}
 	class MenuActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
@@ -206,12 +232,12 @@ public class MainFrame extends JFrame {
 				repaint();
 				break;
 			case "로그인":
-				setLogin();
-				//ContentPanel.removeAll();
-				//pContents = new Login();
-				//ContentPanel.add(pContents);
-				//revalidate();
-				//repaint();
+				//setLogin();
+				ContentPanel.removeAll();
+				pContents = new Login();
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
 				break;
 			case "회원가입":
 				ContentPanel.removeAll();
@@ -366,31 +392,9 @@ public class MainFrame extends JFrame {
 			}
 		}
 	}
-	class ContentPanel extends JPanel {
-		public void ContentPanel() {
-			setPreferredSize(new Dimension(1800, 900));
-			//setBackground(Color.WHITE);
-		}
-	}
-	public void setLogout() {
-		dispose();
-		new MainFrame(0);
-	}
-	public void setLogin() {
-		dispose();
-		new MainFrame(1);
-//		this.remove(bLogin);
-//		this.remove(bRegister);
-//		ContentPanel.removeAll();
-//		this.add(vCenterName);
-//		this.add(bUserName);
-//		this.add(vWelcome);
-//		revalidate();
-//		repaint();
-	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		MainFrame main = new MainFrame(0);
+		MainFrame main = new MainFrame(null);
 	}
 
 }

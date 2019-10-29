@@ -10,12 +10,14 @@ public class Login extends JPanel implements ActionListener{
 	private JButton bLogin;
 	private JTextField xID;
 	private JPasswordField xPassword;
-	private MainFrame main;
 	
+	MainFrame mainFrame;
 	GridBagLayout gridbaglayout;				// 화면을 구성하는 레이아웃
 	GridBagConstraints gridbagconstraints;
 	
-	public Login() {
+	public Login(MainFrame parent) {
+		
+		mainFrame = parent;
 		gridbaglayout = new GridBagLayout();		
 		gridbagconstraints = new GridBagConstraints();
 		
@@ -32,7 +34,7 @@ public class Login extends JPanel implements ActionListener{
 
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(bLogin)){
-			main.removeAll();
+			mainFrame.setTest();
 		}
 	}
 
