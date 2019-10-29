@@ -1,8 +1,12 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -10,7 +14,12 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import asmr.InqRegis.InqRegisButtonListener;
+
 public class NonMemberInqRegis extends JFrame {
+	
+	InqRegisButtonListener inqRegisButtonListener;
+	
 	private JLabel vInq, vTit, vCont, vName, vTelNo;
 	
 	private JTextField xTit, xName, xTelNo;
@@ -22,27 +31,47 @@ public class NonMemberInqRegis extends JFrame {
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	private Color black = new Color(0,0,0);
+	
 	private NonMemberInqRegis() {
+		
+		inqRegisButtonListener = new InqRegisButtonListener();
 		
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
 		
 		vInq = new JLabel("¹®ÀÇµî·Ï");
+		vInq.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		
 		vTit = new JLabel("Á¦¸ñ");
+		vTit.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xTit = new JTextField(20);
 		
 		vName = new JLabel("¼º¸í");
+		vName.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xName = new JTextField(20);
 		
 		vTelNo = new JLabel("ÀüÈ­¹øÈ£");
+		vTelNo.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xTelNo = new JTextField(20);
 		
 		vCont = new JLabel("³»¿ë");
+		vCont.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xCont = new JTextArea(5,50);
 		
 		regis = new JButton("µî·Ï");
+		regis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+		regis.setBackground(blue);
+		regis.setForeground(white);
+		regis.addActionListener(inqRegisButtonListener);
+		
 		cancel = new JButton("Ãë¼Ò");
+		cancel.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+		cancel.setBackground(white);
+		cancel.setForeground(black);
+		cancel.addActionListener(inqRegisButtonListener);
 		
 		NonMemberInqView();
 		
@@ -102,6 +131,21 @@ public class NonMemberInqRegis extends JFrame {
 	   add(c);			
 				
 	   }
+	
+	class InqRegisButtonListener implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(regis)) {	
+				
+			}
+			else if(e.getSource().equals(cancel)) {
+				dispose();
+			}
+		}
+		
+	}
 	
 	
 

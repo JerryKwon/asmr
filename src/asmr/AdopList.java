@@ -108,7 +108,13 @@ public class AdopList extends JPanel {
 //		imageButton2.setContentAreaFilled(false);
 //		imageButton2.setFocusPainted(false);
 		
-		eAdopList = new JTable(model1);
+		eAdopList = new JTable(model1){
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		scrollPane1 = new JScrollPane(eAdopList);
 		scrollPane1.setPreferredSize(new Dimension(1200,100));
 		
@@ -121,7 +127,13 @@ public class AdopList extends JPanel {
 		regis1.setForeground(white);
 		regis1.addActionListener(adopListButtonListener);
 		
-		eVisitList = new JTable(model2);
+		eVisitList = new JTable(model2){
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		scrollPane2 = new JScrollPane(eVisitList);
 		scrollPane2.setPreferredSize(new Dimension(1200,100));
 		
