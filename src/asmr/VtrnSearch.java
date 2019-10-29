@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,16 +29,15 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import asmr.CenterManagerSearch.CenterManagerSearchButtonListener;
-
-public class CenterManagerSearch extends JFrame{
-	private JLabel vCenterManagerSearch;
-	private JTable eCenterManagerList;
+public class VtrnSearch extends JFrame {
+	
+	private JLabel vVtrnSearch;
+	private JTable eVtrnList;
 	private JScrollPane scrollpane;
 	private JButton confirm,cancel;
-	private JTextField xCenterManager;
+	private JTextField xVtrn;
 	
-	private String cntrManagerBdate = null;
+	private String vtrnBdate = null;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -63,8 +61,8 @@ public class CenterManagerSearch extends JFrame{
 	CenterManagerSearchButtonListener centerManagerSearchButtonListener;
 	CenterManagerSearchMouseListener centerManagerSearchMouseListener;
 	
-	public CenterManagerSearch(JTextField xCenterManager) {
-		this.xCenterManager = xCenterManager;
+	public VtrnSearch(JTextField xVtrn) {
+		this.xVtrn = xVtrn;
 //		this.cntrManagerBdate = cntrManagerBdate;
 		
 		gridBagLayout = new GridBagLayout();
@@ -73,19 +71,19 @@ public class CenterManagerSearch extends JFrame{
 		centerManagerSearchButtonListener = new CenterManagerSearchButtonListener();
 		centerManagerSearchMouseListener = new CenterManagerSearchMouseListener();
 		
-		vCenterManagerSearch = new JLabel("센터장목록");
-		vCenterManagerSearch.setFont(new Font("나눔고딕", Font.BOLD, 16));
+		vVtrnSearch = new JLabel("수의사목록");
+		vVtrnSearch.setFont(new Font("나눔고딕", Font.BOLD, 16));
 		
 //		eCenterManagerList = new JTable(model1);
-		eCenterManagerList = new JTable(model1) {
+		eVtrnList = new JTable(model1) {
 	        private static final long serialVersionUID = 1L;
 
 	        public boolean isCellEditable(int row, int column) {                
 	                return false;               
 	        };
 	    };
-		eCenterManagerList.addMouseListener(centerManagerSearchMouseListener);
-		scrollpane = new JScrollPane(eCenterManagerList);
+	    eVtrnList.addMouseListener(centerManagerSearchMouseListener);
+		scrollpane = new JScrollPane(eVtrnList);
 		scrollpane.setPreferredSize(new Dimension(200,100));
 		
 		
@@ -102,7 +100,7 @@ public class CenterManagerSearch extends JFrame{
 	
 	private void CenterManagerSearchView() {
 		setLayout(gridBagLayout);
-		setTitle("센터장 검색");
+		setTitle("수의사 검색");
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -110,7 +108,7 @@ public class CenterManagerSearch extends JFrame{
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
 		
-		gridbagAdd(vCenterManagerSearch, 0, 0, 1, 1);
+		gridbagAdd(vVtrnSearch, 0, 0, 1, 1);
 		
 		JPanel scrollPanel = new JPanel();
 		scrollPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
@@ -154,7 +152,7 @@ public class CenterManagerSearch extends JFrame{
 			query.append("FROM EMP e INNER JOIN (");
 			query.append("	SELECT DISTINCT EMP_NO FROM EMP_WORK_HIST");
 			query.append("	WHERE WORK_END_DATE = to_date('9999-12-31','YYYY-MM-DD')");
-			query.append("	AND BIZ_FILD = 'c') cm ");
+			query.append("	AND BIZ_FILD = 'd') cm ");
 			query.append("	ON e.EMP_NO = cm.EMP_NO");
 			
 			pstmt = con.prepareStatement(query.toString());
@@ -229,10 +227,10 @@ public class CenterManagerSearch extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(confirm)) {
-				int clickedRow = eCenterManagerList.getSelectedRow();
-				String centerMangerName = (String) eCenterManagerList.getValueAt(clickedRow, 0);
+				int clickedRow = eVtrnList.getSelectedRow();
+				String vtrnName = (String) eVtrnList.getValueAt(clickedRow, 0);
 //				cntrManagerBdate = (String) eCenterManagerList.getValueAt(clickedRow, 1);
-				xCenterManager.setText(centerMangerName);
+				xVtrn.setText(vtrnName);
 				dispose();
 			}
 			else if(e.getSource().equals(cancel)) {
@@ -248,15 +246,15 @@ public class CenterManagerSearch extends JFrame{
 			// TODO Auto-generated method stub
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
-				int clickedRow = eCenterManagerList.getSelectedRow();
-				cntrManagerBdate = (String)eCenterManagerList.getValueAt(clickedRow, 1);
+				int clickedRow = eVtrnList.getSelectedRow();
+				vtrnBdate = (String)eVtrnList.getValueAt(clickedRow, 1);
 			}
 		}
 		
 	}
-	
-    public String getCntrManagerBdate() {
-		return cntrManagerBdate;
+
+	public String getVtrnBdate() {
+		return vtrnBdate;
 	}
 
 	private void ChangeFont(JComponent[] comps, Font font) {
@@ -265,10 +263,8 @@ public class CenterManagerSearch extends JFrame{
     	}
     }
     
-    
-    
-//  버튼 기능 구현으로 인하여 메인 메서드를 삭제합니다.	
+	
 	public static void main(String[] args) {
-		new CenterManagerSearch(new JTextField());
+		new VtrnSearch(null);
 	}
 }

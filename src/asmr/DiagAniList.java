@@ -11,11 +11,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -42,6 +51,18 @@ public class DiagAniList extends JPanel{
 	private JTextArea xDiagContent; 
 	private BufferedImage buttonIcon;
 	private JDateChooser chooser;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
+	
+	private ArrayList<String> protNos;
+	private String protNo;
 	
 	private final String[] col1 = {"유기동물명","동물종류","품종","나이(개월)","크기"};
 	private final String[] col2 = {"진료일자","진료구분","내용"};
@@ -74,6 +95,9 @@ public class DiagAniList extends JPanel{
 		diagAniListButtonListener = new DiagAniListButtonListener();
 		protAniListMouseListener = new ProtAniListMouseListener();
 		diagListMouseListener = new DiagListMouseListener();
+		
+		protNos = new ArrayList<String>();
+		protNo = null;
 		
 		vProtAniList = new JLabel("보호동물목록");
 		vProtAniList.setFont(new Font("나눔고딕", Font.BOLD, 24));
@@ -110,6 +134,9 @@ public class DiagAniList extends JPanel{
 		eDiagList.addMouseListener(diagListMouseListener);
 		diagListScroll = new JScrollPane(eDiagList);
 		diagListScroll.setPreferredSize(new Dimension(450,200));
+		eDiagList.getColumnModel().getColumn(0).setPreferredWidth(100);
+		eDiagList.getColumnModel().getColumn(1).setPreferredWidth(75);
+		eDiagList.getColumnModel().getColumn(2).setPreferredWidth(275);
 		
 		vDiagInfo = new JLabel("진료정보");
 		vDiagInfo.setFont(new Font("나눔고딕", Font.BOLD, 20));
@@ -159,7 +186,7 @@ public class DiagAniList extends JPanel{
 		
 		LocalDate now = LocalDate.now();
 		Date date = Date.valueOf(now);
-		chooser = new JDateChooser(date,"YYYY.MM.dd");
+		chooser = new JDateChooser(date,"yyyy-MM-dd");
 		chooser.setEnabled(false);
 		
 //		xDschDate = new JTextField(12);
@@ -193,6 +220,8 @@ public class DiagAniList extends JPanel{
 		
 		cancel = new JButton("취소");
 		cancel.addActionListener(diagAniListButtonListener);
+		
+		GetProtAniList();
 		
 		DiagAniListView();
 		
@@ -263,8 +292,6 @@ public class DiagAniList extends JPanel{
 
 		gridbagAdd(chooser, 3, 8, 1, 1);
 
-		
-		
 		gridbagAdd(vDeathType, 0, 9, 1, 1);
 		gridbagAdd(xDeathType, 1, 9, 1, 1);
 
@@ -316,7 +343,19 @@ public class DiagAniList extends JPanel{
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(diagRegister)) {
 				try {
-					new DiagRegister();
+					if(protNo!=null) {
+					DiagRegister diagRegister = new DiagRegister(protNo);
+					diagRegister.addWindowListener(new WindowAdapter() {
+
+						@Override
+						public void windowClosed(WindowEvent e) {
+							// TODO Auto-generated method stub
+							super.windowClosed(e);
+							GetDiagAniList();
+						}
+			
+					});
+					}
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -345,7 +384,9 @@ public class DiagAniList extends JPanel{
 			// TODO Auto-generated method stub
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
-				
+				int clickedRow = eProtAniList.getSelectedRow();
+				protNo = protNos.get(clickedRow);
+				GetDiagAniList();
 			}
 		}
 		
@@ -358,19 +399,141 @@ public class DiagAniList extends JPanel{
 			// TODO Auto-generated method stub
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
-				checkDiagType();
+				int clickedRow = eDiagList.getSelectedRow();
+				GetDiagInfo(protNo,clickedRow+1);
+				if(eDiagList.getValueAt(clickedRow, 1) =="내진")
+					GetVtrnName(xIndiVtrnName.getText());
 			}
 		}
 		
 	}
 	
 	//진료목록이 element를 읽은 후에 그 element의 진료구분에 따라 달력 imageButton을 활성화/비활성화합니다.
-	private void checkDiagType() {
-		String target = xDiagType.getText();
-		if(target=="내진")
-			imageButton.setEnabled(false);
-		else if(target=="외진")
-			imageButton.setEnabled(true);
+	private void GetDiagInfo(String protNo,int ornu) {
+		
+		clearAll();
+		
+		StringBuffer query = new StringBuffer("SELECT * FROM DIAG ");
+		query.append("WHERE PROT_NO='"+protNo+"' AND DIAG_ORNU="+ornu+" ");
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				String diagType = rs.getString("DIAG_TP");
+				String oudiRes = rs.getString("OUDI_RES");
+				String cureType = rs.getString("CURE_TP");
+				String deathType = rs.getString("DTH_TP");
+				
+				String korDiagType = null;
+				String korOudiRes = null;
+				String korCureType = null;
+				String korDeathType = null;
+				
+				if (diagType!=null) {
+					switch(diagType) {
+					case "i":
+						korDiagType = "내진";
+						break;
+					case "o":
+						korDiagType = "외진";
+						break;
+					}
+				}
+				
+				if(oudiRes!=null) {	
+					switch(oudiRes) {
+					case "c":
+						korOudiRes = "치료";
+						break;
+					case "d":
+						korOudiRes = "사망";
+						break;
+					}
+				}
+				
+				if(cureType!=null) { 
+					switch(cureType) {
+					case "v":
+						korCureType = "통원";
+						break;
+					case "a":
+						korCureType = "입원";
+						break;
+					}
+				}
+				
+				if(deathType!=null) {
+					switch(deathType) {
+					case "n":
+						korDeathType = "자연사";
+						break;
+					case "e":
+						korDeathType = "안락사";
+						break;
+					}
+				}
+				
+				String diagDate = null;
+				String hsptzDate = null;
+				String dschDate = null;
+				
+				if(rs.getString("DIAG_DATE") != null)
+					diagDate= rs.getString("DIAG_DATE").split(" ")[0];
+				
+				if(rs.getString("HSPTZ_DATE") != null)
+					hsptzDate= rs.getString("HSPTZ_DATE").split(" ")[0];
+				
+				if(rs.getString("DSCH_DATE") != null)
+					dschDate= rs.getString("DSCH_DATE").split(" ")[0];
+				
+				
+				xDiagDate.setText(diagDate);
+				xDiagType.setText(korDiagType);
+				xIndiResult.setText(rs.getString("INDI_RES"));
+				xIndiVtrnName.setText(rs.getString("VTRN_NO"));
+				xOudiResult.setText(korOudiRes);
+				xHospName.setText(rs.getString("HOSP_NAME"));
+				xDisease.setText(rs.getString("DISE"));
+				xInfecWhet.setText(rs.getString("INFEC_WHET"));
+				xCureType.setText(korCureType);
+				xHsptzDate.setText(hsptzDate);
+				((JTextField)chooser.getDateEditor().getUiComponent()).setText(dschDate);
+				xDeathType.setText(korDeathType);
+				xDeathReason.setText(rs.getString("REAS"));
+				xDiagContent.setText(rs.getString("DIAG_CONT"));
+				
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+	
+		disconnection();
+		
+	}
+	
+	private void clearAll() {
+		xDiagDate.removeAll();
+	}
+	
+	private void GetVtrnName(String vtrnNo) {
+		connection();
+		
+		StringBuffer query = new StringBuffer("SELECT EMP_NAME FROM EMP WHERE EMP_NO='"+vtrnNo+"' ");
+		
+		try {
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				xIndiVtrnName.setText(rs.getString("EMP_NAME"));
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		disconnection();
 	}
 	
     private void ChangeFont(JComponent[] comps, Font font) {
@@ -379,6 +542,132 @@ public class DiagAniList extends JPanel{
     	}
     }
 	
+    private void GetDiagAniList() {
+    	connection();
+    	
+    	model2.setRowCount(0);
+    	
+    	StringBuffer query = new StringBuffer("SELECT d.DIAG_ORNU,d.DIAG_DATE,d.DIAG_TP,d.DIAG_CONT ");
+    	query.append("FROM (SELECT * FROM PROT WHERE PROT_NO='2019102701') p INNER JOIN DIAG d ");
+    	query.append("	ON p.PROT_NO = d.PROT_NO ");
+    	query.append("ORDER BY 1 ");
+    	
+    	try {
+    		pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				String diagType = rs.getString("DIAG_TP");
+				String korDiagType = null;
+				
+				switch(diagType) {
+				case "i":
+					korDiagType = "내진";
+					break;
+				case "o":
+					korDiagType = "외진";
+					break;
+				}
+				
+				model2.addRow(new Object[] {rs.getString("DIAG_DATE").split(" ")[0],korDiagType,rs.getString("DIAG_CONT")});
+			}
+    	}catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	
+    	disconnection();
+    }
+    
+    private void GetProtAniList() {
+    	connection();
+    	
+    	StringBuffer query = new StringBuffer("SELECT p.CNTR_NO, a.ABAN_NO, p.PROT_NO, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE ");
+    	query.append("FROM ABAN a INNER JOIN(SELECT * FROM PROT ");
+    	query.append("	WHERE PROT_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) p ");
+    	query.append("	ON a.ABAN_NO = p.ABAN_NO ");
+    	query.append("ORDER BY 1,2 ");
+    	
+    	try {
+    		pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				String anmlKinds = rs.getString("ANML_KINDS");
+				String anmlSize = rs.getString("ANML_SIZE");
+				
+				String korAnmlKinds = null;
+				String korAnmlSize = null;
+				
+				switch(anmlKinds) {
+				case "d":
+					korAnmlKinds="개";
+					break;
+				case "c":
+					korAnmlKinds="고영이";
+					break;
+				case "e":
+					korAnmlKinds="기타";
+					break;
+				}
+				
+				switch(anmlSize) {
+				case "b":
+					korAnmlSize="대";
+					break;
+				case "m":
+					korAnmlSize="중";
+					break;
+				case "s":
+					korAnmlSize="소";
+					break;
+				}
+				
+				protNos.add(rs.getString("PROT_NO"));
+				
+				model1.addRow(new Object[] {rs.getString("ABAN_NAME"),korAnmlKinds,rs.getString("KIND"),rs.getString("AGE"),korAnmlSize});
+			}
+    	}catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	
+    	disconnection();
+    }
+    
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
+	
+    
 	public static void main(String[] args) {
 	
 	}
