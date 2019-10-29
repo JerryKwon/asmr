@@ -80,7 +80,13 @@ public class RprtAssignmentNorm extends JPanel {
 		vApprovalWaitList = new JLabel("½ÂÀÎ´ë±â¸ñ·Ï");
 		vApprovalWaitList.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		
-		eApprovalWaitList = new JTable(model1);
+		eApprovalWaitList = new JTable(model1){
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		eApprovalWaitList.addMouseListener(approvalWaitListMouseListener);
 		scrollpane1 = new JScrollPane(eApprovalWaitList);
 		scrollpane1.setPreferredSize(new Dimension(600,200));
@@ -88,7 +94,13 @@ public class RprtAssignmentNorm extends JPanel {
 		vApprovalCompleteList = new JLabel("½ÂÀÎ¿Ï·á¸ñ·Ï");
 		vApprovalCompleteList.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		
-		eApprovalCompleteList = new JTable(model2);
+		eApprovalCompleteList = new JTable(model2){
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		scrollpane2 = new JScrollPane(eApprovalCompleteList);
 		scrollpane2.setPreferredSize(new Dimension(600,200));
 		

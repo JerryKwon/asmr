@@ -45,18 +45,22 @@ public class NotiPost extends JPanel {
 		vNoti.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		
 		vWrt = new JLabel("ÀÛ¼ºÀÚ");
+		vWrt.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xWrt = new JTextField(20);
 		xWrt.setEditable(false);
 		
 		vWrtDttm = new JLabel("ÀÛ¼ºÀÏ½Ã");
+		vWrtDttm.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xWrtDttm = new JTextField(20);
 		xWrtDttm.setEditable(false);
 		
 		vTit = new JLabel("Á¦¸ñ");
+		vTit.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xTit = new JTextField(20);
 		xTit.setEditable(false);
 		
 		vCont = new JLabel("³»¿ë");
+		vCont.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xCont = new JTextArea(5,50);
 		xCont.setEditable(false);
 		

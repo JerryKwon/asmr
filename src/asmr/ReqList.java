@@ -69,7 +69,13 @@ public class ReqList extends JPanel {
 		vReqList = new JLabel("½ÅÃ»¸ñ·Ï");
 		vReqList.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		
-		eReqList = new JTable(model1);
+		eReqList = new JTable(model1){
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		scrollPane1 = new JScrollPane(eReqList);
 		scrollPane1.setPreferredSize(new Dimension(1000,100));
 		

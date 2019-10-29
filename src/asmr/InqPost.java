@@ -1,8 +1,12 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,6 +15,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class InqPost extends JFrame {
+	
+	InqPostButtonListener inqPostButtonListener;
 	
 	private JLabel vInq, vWrt, vWrtDttm, vTit, vCont;
 	
@@ -23,29 +29,60 @@ public class InqPost extends JFrame {
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	private Color black = new Color(0,0,0);
+	private Color red = new Color(217,0,27);
+	
 	private InqPost() {
+		
+		inqPostButtonListener = new InqPostButtonListener();
 		
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
 		
 		vInq = new JLabel("°øÁö»çÇ×");
+		vInq.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		
 		vWrt = new JLabel("ÀÛ¼ºÀÚ");
+		vWrt.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xWrt = new JTextField(20);
+		xWrt.setEditable(false);
 		
 		vWrtDttm = new JLabel("ÀÛ¼ºÀÏ½Ã");
+		vWrtDttm.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xWrtDttm = new JTextField(20);
+		xWrtDttm.setEditable(false);
 		
 		vTit = new JLabel("Á¦¸ñ");
+		vTit.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xTit = new JTextField(20);
+		xTit.setEditable(false);
 		
 		vCont = new JLabel("³»¿ë");
+		vCont.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xCont = new JTextArea(5,50);
+		xCont.setEditable(false);
 		
 		
 		update = new JButton("¼öÁ¤");
+		update.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+		update.setBackground(blue);
+		update.setForeground(white);
+		update.addActionListener(inqPostButtonListener);
+		
 		ans = new JButton("´äº¯");
+		ans.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+		ans.setBackground(red);
+		ans.setForeground(white);
+		ans.addActionListener(inqPostButtonListener);
+		
+		
 		getBack = new JButton("¸ñ·ÏÀ¸·Î");
+		getBack.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+		getBack.setBackground(white);
+		getBack.setForeground(black);
+		getBack.addActionListener(inqPostButtonListener);
 		
 		InqPostView();
 		
@@ -103,6 +140,24 @@ public class InqPost extends JFrame {
 	   add(c);			
 				
 	   }
+	
+    class InqPostButtonListener implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(update)) {	
+				
+			}
+			else if(e.getSource().equals(getBack)) {
+				
+			}
+			else if(e.getSource().equals(ans)) {
+				
+			}
+		}
+		
+	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

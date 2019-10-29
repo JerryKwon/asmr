@@ -41,8 +41,6 @@ public class NotiBoard extends JPanel {
 	
 	private final String[] col = {"번호","제목","작성자","작성일시"};
 	
-	private Container contain;
-	
 	private DefaultTableModel model = new DefaultTableModel(col,0);
 	
 	GridBagLayout gridbaglayout;
@@ -59,7 +57,13 @@ public class NotiBoard extends JPanel {
 		
 		vNoti = new JLabel("공지사항");
 		vNoti.setFont(new Font("나눔고딕", Font.BOLD, 24));
-		eNoticeList = new JTable(model);
+		eNoticeList = new JTable(model){
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		scrollPane = new JScrollPane(eNoticeList);
 		scrollPane.setPreferredSize(new Dimension(700,300));
 		

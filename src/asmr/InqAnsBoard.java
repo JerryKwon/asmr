@@ -56,7 +56,13 @@ public class InqAnsBoard extends JPanel {
 		
 		vInqAns = new JLabel("문의답변게시판");
 		vInqAns.setFont(new Font("나눔고딕", Font.BOLD, 24));
-		eInqAnsList = new JTable(model);
+		eInqAnsList = new JTable(model){
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		scrollPane = new JScrollPane(eInqAnsList);
 		scrollPane.setPreferredSize(new Dimension(700,300));
 		

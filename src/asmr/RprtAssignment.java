@@ -81,7 +81,13 @@ public class RprtAssignment extends JPanel {
 		vRprtList = new JLabel("신고목록");
 		vRprtList.setFont(new Font("나눔고딕", Font.BOLD, 24));
 		
-		eRprtList = new JTable(model1);
+		eRprtList = new JTable(model1){
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		eRprtList.addMouseListener(rprtAssignmentMouseListener);
 		scrollpane1 = new JScrollPane(eRprtList);
 		scrollpane1.setPreferredSize(new Dimension(600,200));
@@ -89,7 +95,13 @@ public class RprtAssignment extends JPanel {
 		vCageList = new JLabel("센터별케이지현황");
 		vCageList.setFont(new Font("나눔고딕", Font.BOLD, 24));
 		
-		eCageList = new JTable(model2);
+		eCageList = new JTable(model2){
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		eCageList.addMouseListener(rprtAssignmentMouseListener);
 		scrollpane2 = new JScrollPane(eCageList);
 		scrollpane2.setPreferredSize(new Dimension(600,200));
