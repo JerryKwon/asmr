@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -28,6 +29,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -42,6 +44,9 @@ public class EmpList extends JPanel {
 	
 	private JTable eEmpList;
 	private JScrollPane scrollpane;
+	
+	private ArrayList<String> empNos;
+	private ArrayList<String> workStartDates;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -78,6 +83,9 @@ public class EmpList extends JPanel {
 
 		empListButtonListener = new EmpListButtonListener();
 		empListMouseListener = new EmpListMouseListener();
+		
+		empNos = new ArrayList<String>();
+		workStartDates = new ArrayList<String>();
 		
 		vEmpList = new JLabel("직원목록");
 		vEmpList.setFont(new Font("나눔고딕", Font.BOLD, 24));
@@ -303,6 +311,16 @@ public class EmpList extends JPanel {
 			}
 			else if(e.getSource().equals(resign)) {
 				
+				int clickedRow = eEmpList.getSelectedRow();
+				if(clickedRow != -1) {
+					String empNo = empNos.get(clickedRow);
+					String workStartDate = workStartDates.get(clickedRow).split(" ")[0];
+					int result = JOptionPane.showConfirmDialog(null, "해당 직원을 퇴사처리하시겠습니까?", "퇴사 처리", JOptionPane.YES_NO_OPTION);
+					if(result == JOptionPane.OK_OPTION) {
+						ResignEmp(empNo,workStartDate);
+						GetEmpList();
+					}
+				}
 			}
 		}
 		
@@ -341,6 +359,28 @@ public class EmpList extends JPanel {
 		}
 	}
 	
+	//직원 퇴사처리
+	private void ResignEmp(String empNo,String workStartDate) {
+		
+		StringBuffer query =new StringBuffer("UPDATE EMP_WORK_HIST ");
+		query.append("SET WORK_END_DATE=trunc(sysdate) ");
+		query.append("WHERE emp_no='"+empNo+"' AND work_start_date=to_date('"+workStartDate+"','YYYY-MM-DD') ");
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+	}
+	
 	// 직원 목록 가져오기
 	private void GetEmpList() {
 		model1.setRowCount(0);
@@ -361,6 +401,9 @@ public class EmpList extends JPanel {
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
 			while(rs.next()) {		
+				empNos.add(rs.getString("emp_no"));
+				workStartDates.add(rs.getString("work_start_date"));
+				
 				model1.addRow(new Object[] {rs.getString("emp_no"),rs.getString("emp_name"),rs.getString("cntr_name")});
 			}
 		
