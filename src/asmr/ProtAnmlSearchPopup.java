@@ -51,7 +51,13 @@ public class ProtAnmlSearchPopup extends JFrame {
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
 		
-		eProtAnmlList = new JTable(model1);
+		eProtAnmlList = new JTable(model1){
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
 		scrollPane1 = new JScrollPane(eProtAnmlList);
 		scrollPane1.setPreferredSize(new Dimension(500,100));
 		
@@ -111,6 +117,7 @@ public class ProtAnmlSearchPopup extends JFrame {
 		gridbagConstraints.anchor = GridBagConstraints.CENTER;
 
 		pack();
+		setLocationRelativeTo(null);
 		setResizable(false);
 		setVisible(true);
 		
