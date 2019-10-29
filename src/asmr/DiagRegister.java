@@ -46,7 +46,7 @@ import com.toedter.calendar.JDateChooser;
 public class DiagRegister extends JFrame{
 	private JLabel vDiagRegister, vDiagDate, vDiagType, vIndiResult, vIndiVtrnName, vOudiResult, vHospName, vDisease, vInfecWhet, vCureType, vHsptzDate, vDschDate,vDeathType, vDeathReason, vDiagContent; 
 	private JTextField xDiagDate, xIndiVtrnName, xHospName, xDisease, xInfecWhet, xCureType, xHsptzDate, xDschDate, xDeathType, xDeathReason;
-	private JComboBox<String> cbDiagType, cbIndiResult, cbOudiResult, cbCureType, cbDeathType;
+	private JComboBox<String> cbDiagType, cbIndiResult, cbOudiResult, cbInfectWhet, cbCureType, cbDeathType;
 	private JButton imageButton1, imageButton2, search, register, cancel;
 	private JTextArea xDiagContent;
 	private BufferedImage buttonIcon;
@@ -69,6 +69,7 @@ public class DiagRegister extends JFrame{
 	private String[] diagTypeDiv = {"내진","외진"};
 	private String[] indiResultDiv = {"좋음","보통","나쁨"};
 	private String[] oudiResultDiv = {"치료","사망"};
+	private String[] infectWhetDiv = {"Y","N"};
 	private String[] cureTypeDiv = {"통원","입원"};
 	private String[] deathTypeDiv = {"자연사","안락사"};
 	
@@ -114,6 +115,7 @@ public class DiagRegister extends JFrame{
 		
 		vIndiVtrnName = new JLabel("내진수의사명");
 		xIndiVtrnName =  new JTextField(10);
+		xIndiVtrnName.setEditable(false);
 		search = new JButton("검색");
 		search.setBackground(blue);
 		search.setForeground(white);
@@ -131,7 +133,7 @@ public class DiagRegister extends JFrame{
 		xDisease = new JTextField(10);
 		
 		vInfecWhet = new JLabel("전염여부");
-		xInfecWhet = new JTextField(10);
+		cbInfectWhet = new JComboBox<String>(infectWhetDiv);
 		
 		vCureType = new JLabel("치료구분");
 		cbCureType = new JComboBox<String>(cureTypeDiv);
@@ -209,7 +211,7 @@ public class DiagRegister extends JFrame{
 		gridbagAdd(xDisease, 1, 4, 1, 1);
 		
 		gridbagAdd(vInfecWhet, 2, 4, 1, 1);
-		gridbagAdd(xInfecWhet, 3, 4, 1, 1);
+		gridbagAdd(cbInfectWhet, 3, 4, 1, 1);
 		
 		gridbagAdd(vCureType, 0, 5, 1, 1);
 		gridbagAdd(cbCureType, 1, 5, 1, 1);
@@ -345,6 +347,8 @@ public class DiagRegister extends JFrame{
 				}
 				//사망, 
 				RegistDiag4(engDiagType,engOudiRes,engDeathType);
+				//해당 동물의 보호를 종료시키는 함수
+				FinishProt();
  			}
 		}
 	}
@@ -356,10 +360,6 @@ public class DiagRegister extends JFrame{
 		String diagDate = ((JTextField)diagDateChooser.getDateEditor().getUiComponent()).getText();
 		String vtrnName = xIndiVtrnName.getText();
 		String diagContent = xDiagContent.getText();
-		
-		System.out.println(protNo);
-		System.out.println(vtrnDate);
-		System.out.println(diagDate);
 		
 		StringBuffer query = new StringBuffer("INSERT INTO DIAG(PROT_NO,DIAG_ORNU,DIAG_DATE,DIAG_TP,DIAG_CONT,VTRN_NO) ");
 		query.append("SELECT '"+protNo+"' PROT_NO, ");
@@ -374,10 +374,10 @@ public class DiagRegister extends JFrame{
 		query.append("FROM DUAL ");
 		
 		try {
-		pstmt = con.prepareStatement(query.toString());
-		rs = pstmt.executeQuery();
-		if(rs.next()) {
-			con.commit();
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
 		}
 		}catch(SQLException e) {
 			e.printStackTrace();
@@ -387,14 +387,90 @@ public class DiagRegister extends JFrame{
 	};
 	
 
-	//외진(통원)등록
+	//외진-치료-통원
 	private void RegistDiag2(String diagType,String oudiRes,String cureType) {
+		
+		String diagDate = ((JTextField)diagDateChooser.getDateEditor().getUiComponent()).getText();
+		String diagContent = xDiagContent.getText();
+		String hospName = xHospName.getText();
+		String dise = xDisease.getText();
+		String infectWhet = (String)cbInfectWhet.getSelectedItem();
+		
+		StringBuffer query = new StringBuffer("INSERT INTO DIAG(PROT_NO,DIAG_ORNU,DIAG_DATE,DIAG_TP,DIAG_CONT,HOSP_NAME,OUDI_RES,DISE,INFEC_WHET,CURE_TP) ");
+		query.append("SELECT '"+protNo+"' PROT_NO, ");
+		query.append("	(SELECT NVL(DIAG_ORNU,0)+1 ");
+		query.append("	FROM( ");
+		query.append("		SELECT /*+INDEX_DESC(DIAG DIAG_PK)*/ MAX(DIAG_ORNU) DIAG_ORNU FROM DIAG ");
+		query.append("	WHERE PROT_NO='"+protNo+"')) DIAG_ORNU, ");
+		query.append("	to_date('"+diagDate+"','YYYY-MM-DD') DIAG_DATE, ");
+		query.append("	'"+diagType+"' DIAG_TP, ");
+		query.append("	'"+diagContent+"' DIAG_CONT, ");
+		query.append("	'"+hospName+"' HOSP_NAME, ");
+		query.append("	'"+oudiRes+"' OUDI_RES, ");
+		query.append("	'"+dise+"' DISE, ");
+		query.append("	'"+infectWhet+"' INFEC_WHET, ");
+		query.append("	'"+cureType+"' CURE_TP ");
+		query.append("FROM DUAL ");
+	
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+		}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
 		
 	};
 	
 
-	//외진(입원)등록
+	//외진-치료-입원
 	private void RegistDiag3(String diagType,String oudiRes,String cureType) {
+		
+		String diagDate = ((JTextField)diagDateChooser.getDateEditor().getUiComponent()).getText();
+		String diagContent = xDiagContent.getText();
+		String hospName = xHospName.getText();
+		String dise = xDisease.getText();
+		String infectWhet = (String)cbInfectWhet.getSelectedItem();
+		String hsptzDate= ((JTextField)hsptzDateChooser.getDateEditor().getUiComponent()).getText();
+		String dschDate= ((JTextField)dschDateChooser.getDateEditor().getUiComponent()).getText();
+		
+		StringBuffer query = new StringBuffer("INSERT INTO DIAG(PROT_NO,DIAG_ORNU,DIAG_DATE,DIAG_TP,DIAG_CONT,HOSP_NAME,OUDI_RES,DISE,INFEC_WHET,CURE_TP,HSPTZ_DATE,DSCH_DATE) ");
+		query.append("SELECT '"+protNo+"' PROT_NO, ");
+		query.append("	(SELECT NVL(DIAG_ORNU,0)+1 ");
+		query.append("	FROM( ");
+		query.append("		SELECT /*+INDEX_DESC(DIAG DIAG_PK)*/ MAX(DIAG_ORNU) DIAG_ORNU FROM DIAG ");
+		query.append("	WHERE PROT_NO='"+protNo+"')) DIAG_ORNU, ");
+		query.append("	to_date('"+diagDate+"','YYYY-MM-DD') DIAG_DATE, ");
+		query.append("	'"+diagType+"' DIAG_TP, ");
+		query.append("	'"+diagContent+"' DIAG_CONT, ");
+		query.append("	'"+hospName+"' HOSP_NAME, ");
+		query.append("	'"+oudiRes+"' OUDI_RES, ");
+		query.append("	'"+dise+"' DISE, ");
+		query.append("	'"+infectWhet+"' INFEC_WHET, ");
+		query.append("	'"+cureType+"' CURE_TP, ");
+		query.append("	'"+hsptzDate+"' HSPTZ_DATE, ");
+		query.append("	'"+dschDate+"' DSCH_DATE ");
+		query.append("FROM DUAL ");
+	
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+		}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
 		
 	};
 	
@@ -402,7 +478,47 @@ public class DiagRegister extends JFrame{
 	//외진(사망)등록
 	private void RegistDiag4(String diagType,String oudiRes,String deathType) {
 		
+		String diagDate = ((JTextField)diagDateChooser.getDateEditor().getUiComponent()).getText();
+		String diagContent = xDiagContent.getText();
+		String hospName = xHospName.getText();
+		String reas = xDeathReason.getText();
+		
+		StringBuffer query = new StringBuffer("INSERT INTO DIAG(PROT_NO,DIAG_ORNU,DIAG_DATE,DIAG_TP,DIAG_CONT,HOSP_NAME,OUDI_RES,REAS,DTH_TP) ");
+		query.append("SELECT '"+protNo+"' PROT_NO, ");
+		query.append("	(SELECT NVL(DIAG_ORNU,0)+1 ");
+		query.append("	FROM( ");
+		query.append("		SELECT /*+INDEX_DESC(DIAG DIAG_PK)*/ MAX(DIAG_ORNU) DIAG_ORNU FROM DIAG ");
+		query.append("	WHERE PROT_NO='"+protNo+"')) DIAG_ORNU, ");
+		query.append("	to_date('"+diagDate+"','YYYY-MM-DD') DIAG_DATE, ");
+		query.append("	'"+diagType+"' DIAG_TP, ");
+		query.append("	'"+diagContent+"' DIAG_CONT, ");
+		query.append("	'"+hospName+"' HOSP_NAME, ");
+		query.append("	'"+oudiRes+"' OUDI_RES, ");
+		query.append("	'"+reas+"' REAS, ");
+		query.append("	'"+deathType+"' DTH_TP ");
+		query.append("FROM DUAL ");
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+		}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+	
+		
 	};
+	
+	//보호를 종료하는 함수
+	private void FinishProt() {
+		
+	}
 	
 	class DiagTypeItemListener implements ItemListener{
 
@@ -457,12 +573,12 @@ public class DiagRegister extends JFrame{
  
 	private void activateIndi() {
 		cbIndiResult.setEnabled(true);
-		xIndiVtrnName.setEnabled(true);
+		search.setEnabled(true);
 		
 		cbOudiResult.setEnabled(false);
 		xHospName.setEnabled(false);
 		xDisease.setEnabled(false);
-		xInfecWhet.setEnabled(false);
+		cbInfectWhet.setEnabled(false);
 		cbCureType.setEnabled(false);
 //		xHsptzDate.setEnabled(false);
 //		xDschDate.setEnabled(false);
@@ -475,12 +591,12 @@ public class DiagRegister extends JFrame{
 	
 	private void activateOudi() {
 		cbIndiResult.setEnabled(false);
-		xIndiVtrnName.setEnabled(false);
+		search.setEnabled(false);
 		
 		cbOudiResult.setEnabled(true);
 		xHospName.setEnabled(true);
 		xDisease.setEnabled(true);
-		xInfecWhet.setEnabled(true);
+		cbInfectWhet.setEnabled(true);
 		cbCureType.setEnabled(true);
 //		xHsptzDate.setEnabled(true);
 //		xDschDate.setEnabled(false);
@@ -495,7 +611,7 @@ public class DiagRegister extends JFrame{
 //		cbOudiResult.setEnabled(true);
 		xHospName.setEnabled(true);
 		xDisease.setEnabled(true);
-		xInfecWhet.setEnabled(true);
+		cbInfectWhet.setEnabled(true);
 		cbCureType.setEnabled(true);
 //		xHsptzDate.setEnabled(true);
 //		xDschDate.setEnabled(false);
@@ -511,7 +627,7 @@ public class DiagRegister extends JFrame{
 //		cbOudiResult.setEnabled(true);
 		xHospName.setEnabled(false);
 		xDisease.setEnabled(false);
-		xInfecWhet.setEnabled(false);
+		cbInfectWhet.setEnabled(false);
 		cbCureType.setEnabled(false);
 //		xHsptzDate.setEnabled(false);
 //		xDschDate.setEnabled(false);
