@@ -1,17 +1,20 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -19,18 +22,22 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import com.toedter.calendar.JDateChooser;
+
 public class AdopList extends JPanel {
+	
+	AdopListButtonListener adopListButtonListener;
 	
 	private JLabel vAdopList, vAdopDate, vWave,
 	vVisitList;
 	
-	private JTextField xSearch, xStartDate, xEndDate;
+	private JTextField xSearch;
 	
 	private String[] searchDiv = {"유기동물명", "입양자명"};
 	
 	private JComboBox<String> cbSearch;
 	
-	private JButton search, regis1, regis2, cancel, imageButton1, imageButton2;
+	private JButton search, regis1, regis2, cancel;
 	
 	private JTable eAdopList, eVisitList;
 	
@@ -39,7 +46,13 @@ public class AdopList extends JPanel {
 	GridBagLayout gridbagLayout;
 	GridBagConstraints gridbagConstraints;
 	
-	private BufferedImage buttonIcon1, buttonIcon2;
+//	private BufferedImage buttonIcon1, buttonIcon2;
+	
+	private JDateChooser chooser1, chooser2;
+	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+//	private Color black = new Color(0,0,0);
 	
 	private final String[] col1 = {"입양일자","유기동물명","동물종류","품종","입양자명","전화번호", "주소"};
 	private DefaultTableModel model1 = new DefaultTableModel(col1,0);
@@ -50,44 +63,79 @@ public class AdopList extends JPanel {
 	
 	public AdopList() throws IOException {
 		
+		adopListButtonListener = new AdopListButtonListener();
+		
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
 		
 		vAdopList = new JLabel("입양목록");
+		vAdopList.setFont(new Font("나눔고딕", Font.BOLD, 24));
 		
 		cbSearch = new JComboBox<String>(searchDiv);
 		xSearch = new JTextField(20);
 		search = new JButton("검색");
+		search.setFont(new Font("나눔고딕", Font.BOLD, 16));
+		search.setBackground(blue);
+		search.setForeground(white);
+		search.addActionListener(adopListButtonListener);
 		
 		vAdopDate = new JLabel("입양일자");
-		xStartDate = new JTextField(20);
+		vAdopDate.setFont(new Font("나눔고딕", Font.PLAIN, 16));
+		
+//		xStartDate = new JTextField(20);
+		
 		vWave = new JLabel("~");
-		buttonIcon1 = ImageIO.read(new File("./images/cal1.png"));
-		imageButton1 = new JButton(new ImageIcon(buttonIcon1));
-		imageButton1.setBorderPainted(false);
-		imageButton1.setContentAreaFilled(false);
-		imageButton1.setFocusPainted(false);
+		vWave.setFont(new Font("나눔고딕", Font.PLAIN, 16));
+//		buttonIcon1 = ImageIO.read(new File("./images/cal1.png"));
+		
+//		imageButton1 = new JButton(new ImageIcon(buttonIcon1));
+//		imageButton1.setBorderPainted(false);
+//		imageButton1.setContentAreaFilled(false);
+//		imageButton1.setFocusPainted(false);
+		
+		LocalDate now1 = LocalDate.now();
+		Date date1 = Date.valueOf(now1);
+		chooser1 = new JDateChooser(date1,"YYYY-MM-dd");
+		
+		LocalDate now2 = LocalDate.now();
+		Date date2 = Date.valueOf(now2);
+		chooser2 = new JDateChooser(date2,"YYYY-MM-dd");
 	
-		xEndDate = new JTextField(20);
-		buttonIcon2 = ImageIO.read(new File("./images/cal1.png"));
-		imageButton2 = new JButton(new ImageIcon(buttonIcon2));
-		imageButton2.setBorderPainted(false);
-		imageButton2.setContentAreaFilled(false);
-		imageButton2.setFocusPainted(false);
+//		xEndDate = new JTextField(20);
+//		buttonIcon2 = ImageIO.read(new File("./images/cal1.png"));
+//		imageButton2 = new JButton(new ImageIcon(buttonIcon2));
+//		imageButton2.setBorderPainted(false);
+//		imageButton2.setContentAreaFilled(false);
+//		imageButton2.setFocusPainted(false);
 		
 		eAdopList = new JTable(model1);
 		scrollPane1 = new JScrollPane(eAdopList);
 		scrollPane1.setPreferredSize(new Dimension(1200,100));
 		
 		vVisitList = new JLabel("방문목록");
+		vVisitList.setFont(new Font("나눔고딕", Font.BOLD, 24));
+		
 		regis1 = new JButton("등록");
+		regis1.setFont(new Font("나눔고딕", Font.BOLD, 16));
+		regis1.setBackground(blue);
+		regis1.setForeground(white);
+		regis1.addActionListener(adopListButtonListener);
 		
 		eVisitList = new JTable(model2);
 		scrollPane2 = new JScrollPane(eVisitList);
 		scrollPane2.setPreferredSize(new Dimension(1200,100));
 		
-		regis2 = new JButton("등록");
-		cancel = new JButton("취소");
+//		regis2 = new JButton("등록");
+//		regis2.setFont(new Font("나눔고딕", Font.BOLD, 16));
+//		regis2.setBackground(blue);
+//		regis2.setForeground(white);
+//		regis2.addActionListener(adopListButtonListener);
+//		
+//		cancel = new JButton("취소");
+//		cancel.setFont(new Font("나눔고딕", Font.BOLD, 16));
+//		cancel.setBackground(white);
+//		cancel.setForeground(black);
+//		cancel.addActionListener(adopListButtonListener);
 		
 		AdopListView();
 		
@@ -111,11 +159,11 @@ public class AdopList extends JPanel {
 		gridbagAdd(xSearch, 2, 1, 1, 1);
 		gridbagAdd(search, 3, 1, 1, 1);
 		gridbagAdd(vAdopDate, 6, 1, 1, 1);
-		gridbagAdd(xStartDate, 8, 1, 1, 1);
-		gridbagAdd(imageButton1, 9, 1, 1, 1);
+		gridbagAdd(chooser1, 8, 1, 1, 1);
+//		gridbagAdd(imageButton1, 9, 1, 1, 1);
 		gridbagAdd(vWave, 10, 1, 1, 1);
-		gridbagAdd(xEndDate, 11, 1, 1, 1);
-		gridbagAdd(imageButton2, 12, 1, 1, 1);
+		gridbagAdd(chooser2, 11, 1, 1, 1);
+//		gridbagAdd(imageButton2, 12, 1, 1, 1);
 		
 		gridbagAdd(scrollPane1, 0, 2, 15, 1);
 		
@@ -124,8 +172,8 @@ public class AdopList extends JPanel {
 		
 		gridbagAdd(scrollPane2, 0, 4, 15, 1);
 		
-		gridbagAdd(regis2, 5, 5, 1, 1);
-		gridbagAdd(cancel, 6, 5, 1, 1);
+//		gridbagAdd(regis2, 5, 5, 1, 1);
+//		gridbagAdd(cancel, 6, 5, 1, 1);
 		
 		//pack();
 		//setResizable(false);
@@ -147,6 +195,39 @@ public class AdopList extends JPanel {
 	   add(c);			
 				
 	   }		
+	
+    private void ChangeFont(JComponent[] comps, Font font) {
+    	for(JComponent comp: comps) {
+    		comp.setFont(font);
+    	}
+    }
+    
+    class AdopListButtonListener implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(search)) {	
+				
+			}
+			else if(e.getSource().equals(cancel)) {
+				
+			}
+			else if(e.getSource().equals(regis1)) {
+				try {
+					new VisitRegisPopup();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+							
+			}
+			else if(e.getSource().equals(regis2)) {
+				
+			}
+		}
+		
+	}
 	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub

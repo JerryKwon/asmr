@@ -1,9 +1,13 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -15,6 +19,9 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class InqAnsBoard extends JPanel {
+	
+	InqAnsBoardButtonListener inqAnsBoardButtonListener;
+	
 	// ÆäÀÌÂ¡ ¹Ì±¸Çö, ÆäÀÌÂ¡ ¹øÈ£ ¾øÀ½!
 	private JLabel vInqAns;
 	
@@ -37,21 +44,35 @@ public class InqAnsBoard extends JPanel {
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
 	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	
 	public InqAnsBoard() {
+		
+		inqAnsBoardButtonListener = new InqAnsBoardButtonListener();
 		
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
 		
 		vInqAns = new JLabel("¹®ÀÇ´äº¯°Ô½ÃÆÇ");
+		vInqAns.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		eInqAnsList = new JTable(model);
 		scrollPane = new JScrollPane(eInqAnsList);
-		scrollPane.setPreferredSize(new Dimension(800,100));
+		scrollPane.setPreferredSize(new Dimension(700,300));
 		
 		regis = new JButton("µî·Ï");
+		regis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+		regis.setBackground(blue);
+		regis.setForeground(white);
+		regis.addActionListener(inqAnsBoardButtonListener);
 		
 		cbSearch = new JComboBox<String>(searchDiv);
 		xSearch = new JTextField(20);
 		search = new JButton("°Ë»ö");
+		search.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+		search.setBackground(blue);
+		search.setForeground(white);
+		search.addActionListener(inqAnsBoardButtonListener);
 		
 		InqAnsBoardView();
 	
@@ -102,6 +123,26 @@ public class InqAnsBoard extends JPanel {
 	   add(c);			
 				
 	   }
+	
+    class InqAnsBoardButtonListener implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(regis)) {	
+				MainFrame.qnaCase();
+				
+			}
+			else if(e.getSource().equals(search)) {
+				
+			}
+		}
+		
+	}
+	
+	
+	
+	
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

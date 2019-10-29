@@ -1,17 +1,23 @@
 // 버튼 배치 이상함
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class NotiWrtUpt extends JFrame {
+public class NotiWrtUpt extends JPanel {
+	
+	NotiWrtUptButtonListener notiWrtUptButtonListener;
 	
 	private JLabel vNoti, vTit, vCont;
 	
@@ -24,21 +30,39 @@ public class NotiWrtUpt extends JFrame {
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
 	
-	private NotiWrtUpt() {
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	private Color black = new Color(0,0,0);
+	
+	public NotiWrtUpt() {
+		
+		notiWrtUptButtonListener = new NotiWrtUptButtonListener();
 		
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
 		
 		vNoti = new JLabel("공지사항");
+		vNoti.setFont(new Font("나눔고딕", Font.BOLD, 24));
 		
 		vTit = new JLabel("제목");
 		xTit = new JTextField(20);
+		xTit.setFont(new Font("나눔고딕", Font.PLAIN, 16));
 		
 		vCont = new JLabel("내용");
 		xCont = new JTextArea(5,50);
+		xCont.setFont(new Font("나눔고딕", Font.PLAIN, 16));
 		
 		save = new JButton("저장");
+		save.setFont(new Font("나눔고딕", Font.BOLD, 16));
+		save.setBackground(blue);
+		save.setForeground(white);
+		save.addActionListener(notiWrtUptButtonListener);
+		
 		cancel = new JButton("취소");
+		cancel.setFont(new Font("나눔고딕", Font.BOLD, 16));
+		cancel.setBackground(white);
+		cancel.setForeground(black);
+		cancel.addActionListener(notiWrtUptButtonListener);
 		
 		NotiWrtUptView();
 		
@@ -46,7 +70,7 @@ public class NotiWrtUpt extends JFrame {
 	
 	private void NotiWrtUptView() {
 		
-		setTitle("신고배정_일반센터");	
+//		setTitle("신고배정_일반센터");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;
@@ -59,20 +83,20 @@ public class NotiWrtUpt extends JFrame {
 		gridbagAdd(vNoti, 0, 0, 1, 1);
 		
 		gridbagAdd(vTit, 0, 1, 1, 1);
-		gridbagAdd(xTit, 2, 1, 2, 1);
+		gridbagAdd(xTit, 2, 1, 3, 1);
 		
 		gridbagAdd(vCont, 0, 2, 1, 1);
-		gridbagAdd(xCont, 2, 2, 5, 1);
+		gridbagAdd(xCont, 2, 2, 7, 1);
 		
-		gridbagAdd(save, 4, 3, 1, 1);
-		gridbagAdd(cancel, 5, 3, 1, 1);
+		gridbagAdd(save, 5, 3, 1, 1);
+		gridbagAdd(cancel, 6, 3, 1, 1);
 		
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
-		pack();
-		setResizable(false);
-		setVisible(true);
+//		pack();
+//		setResizable(false);
+//		setVisible(true);
 		
 		
 	}
@@ -92,6 +116,23 @@ public class NotiWrtUpt extends JFrame {
 	   add(c);			
 				
 	   }
+	
+	
+    class NotiWrtUptButtonListener implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(save)) {	
+				
+			}
+			else if(e.getSource().equals(cancel)) {
+				
+			}
+		}
+		
+	}
+	
 	
 
 	public static void main(String[] args) {
