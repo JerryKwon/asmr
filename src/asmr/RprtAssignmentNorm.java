@@ -161,14 +161,14 @@ public class RprtAssignmentNorm extends JPanel {
 		regis.setBackground(blue);
 		regis.setForeground(white);
 		regis.addActionListener(rprtAssignmentNormButtonListener);
-		regis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		regis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
 		previous = new JButton("<<");
 		previous.addActionListener(rprtAssignmentNormButtonListener);
-		previous.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		previous.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		next = new JButton(">>");
 		next.addActionListener(rprtAssignmentNormButtonListener);
-		next.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		next.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
 		
 		

@@ -86,19 +86,19 @@ public class AnncRegis extends JFrame {
 		search = new JButton("°Ë»ö");
 		search.setBackground(blue);
 		search.setForeground(white);
-		search.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		search.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		search.addActionListener(anncRegisButtonListener);
 		
 		confirm = new JButton("µî·Ï");
 		confirm.setBackground(blue);
 		confirm.setForeground(white);
-		confirm.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		confirm.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		confirm.addActionListener(anncRegisButtonListener);
 		
 		cancel = new JButton("Ãë¼Ò");
 		cancel.setBackground(white);
 		cancel.setForeground(black);
-		cancel.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		cancel.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		cancel.addActionListener(anncRegisButtonListener);
 		
 		JComponent[] vComps = {vAbanName, vAnmlKinds, vKind, vSex, vAge, vColor, vNeutWhet,
@@ -157,6 +157,7 @@ public class AnncRegis extends JFrame {
 		gridbagAdd(cancel, 4, 8, 1, 1);
 		
 		pack();
+		setLocationRelativeTo(null);
 		setResizable(false);
 		setVisible(true);
 	}

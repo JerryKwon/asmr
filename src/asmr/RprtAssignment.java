@@ -163,10 +163,10 @@ public class RprtAssignment extends JPanel {
 		
 		previous = new JButton("<<");
 		previous.addActionListener(rprtAssignmentButtonListener);
-		previous.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		previous.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		next = new JButton(">>");
 		next.addActionListener(rprtAssignmentButtonListener);
-		next.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		next.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
 		JComponent[] vComps = {vRprtNo, vRprtDttm, vRprtName, vTelNo, vRprtTp, vWrtPrsnTp, vAnmlKinds,
 				vAnmlSize, vExpln, vDscvDttm, vDscvLoc};

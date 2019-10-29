@@ -35,21 +35,27 @@ public class Annc extends JPanel {
 		
 		vRegisDate = new JLabel("등록일자");
 		xRegisDate = new JTextField(20);
+		xRegisDate.setEditable(false);
 		
 		vAnmlKinds = new JLabel("동물종류");
 		xAnmlKinds = new JTextField(20);
+		xAnmlKinds.setEditable(false);
 		
 		vKind = new JLabel("품종");
 		xKind = new JTextField(20);
+		xKind.setEditable(false);
 		
 		vSex = new JLabel("성별");
 		xSex = new JTextField(20);
+		xSex.setEditable(false);
 		
 		vDscvLoc = new JLabel("발견장소");
 		xDscvLoc = new JTextField(20);
+		xDscvLoc.setEditable(false);
 		
 		vFeat = new JLabel("특징");
 		xFeat = new JTextField(20);
+		xFeat.setEditable(false);
 		
 		buttonIcon = ImageIO.read(new File("./images/cat1.png"));
 		imageButton = new JButton(new ImageIcon(buttonIcon));
