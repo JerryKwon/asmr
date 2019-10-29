@@ -56,7 +56,7 @@ public class AnncList extends JPanel{
 		
 		panelArray = new JPanel[8];
 		
-		for (int i =0 ; i<8; i++) {
+		for (int i =0 ; i<6; i++) {
 			panelArray[i] = new Annc();
 			panelArray[i].addMouseListener(anncListMouseListener);
 		}
@@ -89,8 +89,8 @@ public class AnncList extends JPanel{
 		gridbagAdd(panelArray[4], 0, 5, 2 , 2);
 		gridbagAdd(panelArray[5], 2, 5, 2 , 2);
 		
-		gridbagAdd(panelArray[6], 0, 7, 2 , 2);
-		gridbagAdd(panelArray[7], 2, 7, 2 , 2);
+//		gridbagAdd(panelArray[6], 0, 7, 2 , 2);
+//		gridbagAdd(panelArray[7], 2, 7, 2 , 2);
 		
 		
 //		pack();

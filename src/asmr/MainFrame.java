@@ -22,8 +22,8 @@ public class MainFrame extends JFrame {
 	private String[] mlAdop = {"공고목록", "신청목록", "입양목록"};
 	private String[] mlPost = {"공지사항", "문의/답변"};
 	
-	private JPanel pContents;
-	private ContentPanel ContentPanel;	
+	private static JPanel pContents;
+	private static ContentPanel ContentPanel;	
 	
 	private Login Login;
 	public static int LoginState;
@@ -380,8 +380,35 @@ public class MainFrame extends JFrame {
 				repaint();
 				break;
 			}
+			
 		}
 	}
+	
+	public static void notiCase() {
+		ContentPanel.removeAll();
+		pContents = new NotiWrtUpt();
+		ContentPanel.add(pContents);
+		ContentPanel.revalidate();
+		ContentPanel.repaint();
+	}
+	
+	public static void qnaCase() {
+		ContentPanel.removeAll();
+		pContents = new InqRegis();
+		ContentPanel.add(pContents);
+		ContentPanel.revalidate();
+		ContentPanel.repaint();
+	}
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
 	class ContentPanel extends JPanel {
 		public void ContentPanel() {
 			setPreferredSize(new Dimension(1800, 900));

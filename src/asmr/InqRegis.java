@@ -1,16 +1,23 @@
 package asmr;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class InqRegis extends JFrame {
+public class InqRegis extends JPanel {
+	
+	InqRegisButtonListener inqRegisButtonListener;
+	
 	private JLabel vInq, vTit, vCont;
 	
 	private JTextField xTit;
@@ -22,21 +29,39 @@ public class InqRegis extends JFrame {
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
 	
-	private InqRegis() {
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
+	private Color black = new Color(0,0,0);
+	
+	public InqRegis() {
+		
+		inqRegisButtonListener = new InqRegisButtonListener();
 		
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
 		
 		vInq = new JLabel("¹®ÀÇµî·Ï");
+		vInq.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		
 		vTit = new JLabel("Á¦¸ñ");
+		vTit.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xTit = new JTextField(20);
 		
 		vCont = new JLabel("³»¿ë");
+		vCont.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xCont = new JTextArea(5,50);
 		
 		regis = new JButton("µî·Ï");
+		regis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+		regis.setBackground(blue);
+		regis.setForeground(white);
+		regis.addActionListener(inqRegisButtonListener);
+		
 		cancel = new JButton("Ãë¼Ò");
+		cancel.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+		cancel.setBackground(white);
+		cancel.setForeground(black);
+		cancel.addActionListener(inqRegisButtonListener);
 		
 		InqRegisView();
 		
@@ -44,7 +69,7 @@ public class InqRegis extends JFrame {
 	
 	private void InqRegisView() {
 		
-		setTitle("¹®ÀÇµî·Ï");	
+//		setTitle("¹®ÀÇµî·Ï");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;
@@ -68,9 +93,9 @@ public class InqRegis extends JFrame {
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
-		pack();
-		setResizable(false);
-		setVisible(true);
+//		pack();
+//		setResizable(false);
+//		setVisible(true);
 		
 		
 	}
@@ -90,6 +115,21 @@ public class InqRegis extends JFrame {
 	   add(c);			
 				
 	   }
+	
+    class InqRegisButtonListener implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(regis)) {	
+				
+			}
+			else if(e.getSource().equals(cancel)) {
+				
+			}
+		}
+		
+	}
 		
 	
 
