@@ -2,11 +2,16 @@ package asmr;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -15,7 +20,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import com.toedter.calendar.JDateChooser;
+
 public class RscuRegisPopup extends JFrame {
+	
+	RscuRegisPopupButtonListener rscuRegisPopupButtonListener;
 	
 	private JLabel vRscuRegis, vRscuDttm, vRscuLoc, vRepRscuCrewName;
 	
@@ -23,29 +32,38 @@ public class RscuRegisPopup extends JFrame {
 	
 	private JButton confirm, cancel, imageButton, btnSearch;
 	
-	private BufferedImage buttonIcon;
+//	private BufferedImage buttonIcon;
 	
-	
-	GridBagLayout gridbagLayout;
-	GridBagConstraints gridbagConstraints;
+	private JDateChooser chooser;
 	
 	private Color blue = new Color(22,155,213);
 	private Color white = new Color(255,255,255);
+	private Color black = new Color(0,0,0);
 	
+	GridBagLayout gridbagLayout;
+	GridBagConstraints gridbagConstraints;
+
 	public RscuRegisPopup() throws IOException  {
+		
+		rscuRegisPopupButtonListener = new RscuRegisPopupButtonListener();
+		
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
 		
 		vRscuRegis = new JLabel("±¸Á¶µî·Ï");
+		vRscuRegis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		
 		vRscuDttm = new JLabel("±¸Á¶ÀÏ½Ã");
+		vRscuDttm.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xRscuDttm = new JTextField(20);
 		xRscuDttm.setEditable(false);
 		
 		vRscuLoc = new JLabel("±¸Á¶Àå¼Ò");
+		vRscuLoc.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xRscuLoc = new JTextField(20);
 		
 		vRepRscuCrewName = new JLabel("´ëÇ¥±¸Á¶´ë¿ø¸í");
+		vRepRscuCrewName.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		xRepRscuCrewName = new JTextField(20);
 		xRepRscuCrewName.setEditable(false);
 		
@@ -54,15 +72,27 @@ public class RscuRegisPopup extends JFrame {
 		btnSearch.setForeground(white);
 		
 		confirm = new JButton("È®ÀÎ");
+		confirm.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		confirm.setBackground(blue);
 		confirm.setForeground(white);
-		cancel = new JButton("Ãë¼Ò");
+		confirm.addActionListener(rscuRegisPopupButtonListener);
 		
-		buttonIcon = ImageIO.read(new File("./images/cal1.png"));
-		imageButton = new JButton(new ImageIcon(buttonIcon));
-		imageButton.setBorderPainted(false);
-		imageButton.setContentAreaFilled(false);
-		imageButton.setFocusPainted(false);
+		cancel = new JButton("Ãë¼Ò");
+		cancel.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+		cancel.setBackground(white);
+		cancel.setForeground(black);
+		cancel.addActionListener(rscuRegisPopupButtonListener);
+		
+//		buttonIcon = ImageIO.read(new File("./images/cal1.png"));
+//		imageButton = new JButton(new ImageIcon(buttonIcon));
+//		imageButton.setBorderPainted(false);
+//		imageButton.setContentAreaFilled(false);
+//		imageButton.setFocusPainted(false);
+		
+		LocalDate now = LocalDate.now();
+		Date date = Date.valueOf(now);
+		chooser = new JDateChooser(date,"YYYY-MM-dd");
+		chooser.setEnabled(false);
 		
 		RscuRegisPopupView();
 	}
@@ -82,8 +112,8 @@ public class RscuRegisPopup extends JFrame {
 		gridbagAdd(vRscuRegis, 0, 0, 1, 1);
 		
 		gridbagAdd(vRscuDttm, 0, 1, 1, 1);
-		gridbagAdd(xRscuDttm, 2, 1, 2, 1);
-		gridbagAdd(imageButton, 5, 1, 1, 1);
+		gridbagAdd(chooser, 2, 1, 2, 1);
+//		gridbagAdd(imageButton, 5, 1, 1, 1);
 		
 		gridbagAdd(vRscuLoc, 0, 2, 1, 1);
 		gridbagAdd(xRscuLoc, 2, 2, 2, 1);
@@ -116,7 +146,27 @@ public class RscuRegisPopup extends JFrame {
 				
 	   add(c);			
 				
-	   }			
+	   }		
+	
+    class RscuRegisPopupButtonListener implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource().equals(confirm)) {	
+				
+			}
+			else if(e.getSource().equals(cancel)) {
+				dispose();
+				
+			}
+			else if(e.getSource().equals(btnSearch)) {
+			
+				
+			}
+		}
+		
+	}
 	
 	public static void main(String[] args) throws IOException  {
 		// TODO Auto-generated method stub

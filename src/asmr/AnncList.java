@@ -52,7 +52,7 @@ public class AnncList extends JPanel{
 		regis.setBackground(blue);
 		regis.setForeground(white);
 		regis.addActionListener(anncListButtonListener);
-		regis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		regis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
 		panelArray = new JPanel[8];
 		

@@ -138,7 +138,7 @@ public class RprtRegis extends JPanel implements ActionListener{
 		ChangeFont(vComps2, new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		
 		JComponent[] bComps = {regist, cancel, fc};
-		ChangeFont(bComps, new Font("³ª´®°íµñ", Font.BOLD, 12));
+		ChangeFont(bComps, new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
 		RprtRegisView();
 	}

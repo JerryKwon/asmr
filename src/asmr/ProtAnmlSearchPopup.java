@@ -66,26 +66,26 @@ public class ProtAnmlSearchPopup extends JFrame {
 		
 		vAbanName = new JLabel("À¯±âµ¿¹°¸í");
 		xAbanName = new JTextField(20);
-		vAbanName.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 12));
+		vAbanName.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		
 		
 		search = new JButton("°Ë»ö");
 		search.setBackground(blue);
 		search.setForeground(white);
 		search.addActionListener(protAnmlSearchPopupButtonListener);
-		search.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		search.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
 		confirm = new JButton("È®ÀÎ");
 		confirm.setBackground(blue);
 		confirm.setForeground(white);
 		confirm.addActionListener(protAnmlSearchPopupButtonListener);
-		confirm.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		confirm.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
 		cancel = new JButton("Ãë¼Ò");
 		cancel.setBackground(white);
 		cancel.setForeground(black);
 		cancel.addActionListener(protAnmlSearchPopupButtonListener);
-		cancel.setFont(new Font("³ª´®°íµñ", Font.BOLD, 12));
+		cancel.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
 
 		ProtAnmlSearchPopupView();
