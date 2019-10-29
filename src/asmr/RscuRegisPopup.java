@@ -97,6 +97,7 @@ public class RscuRegisPopup extends JFrame {
 		gridbagAdd(cancel, 3, 5, 1, 1);
 		
 		pack();
+		setLocationRelativeTo(null);
 		setResizable(false);
 		setVisible(true);
 		

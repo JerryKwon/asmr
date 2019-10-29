@@ -110,6 +110,7 @@ public class VisitRegisPopup extends JFrame {
 		gridbagAdd(cancel, 4, 3, 1, 1);
 		
 		pack();
+		setLocationRelativeTo(null);
 		setResizable(false);
 		setVisible(true);
 		

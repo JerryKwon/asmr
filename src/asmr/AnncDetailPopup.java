@@ -173,6 +173,7 @@ public class AnncDetailPopup extends JFrame {
 		gridbagAdd(cancel, 4, 12, 1, 1);
 		
 		pack();
+		setLocationRelativeTo(null);
 		setResizable(false);
 		setVisible(true);
 	}

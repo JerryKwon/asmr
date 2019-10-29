@@ -188,6 +188,7 @@ public class VisitDetail extends JFrame {
 		
 	
 		pack();
+		setLocationRelativeTo(null);
 		setResizable(false);
 		setVisible(true);
 		
