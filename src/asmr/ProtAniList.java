@@ -450,7 +450,19 @@ public class ProtAniList extends JPanel {
 				xDescription.setEditable(false);
 			}
 			else if(e.getSource().equals(returning)) {
-				new ReqPrsnRegist();
+				int clickedRow = eProtAniList.getSelectedRow();
+				String abanNo = abanNos.get(clickedRow);
+				ReqPrsnRegist reqPrsnRegist = new ReqPrsnRegist(abanNo);
+				reqPrsnRegist.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						// TODO Auto-generated method stub
+						super.windowClosed(e);
+						GetProtAniList();
+					}
+				
+				});
 			}
 		}
 		
@@ -663,13 +675,16 @@ public class ProtAniList extends JPanel {
 	}
 	
     private void GetProtAniList() {
-    	connection();
+    	
+    	model1.setNumRows(0);
     	
     	StringBuffer query = new StringBuffer("SELECT p.CNTR_NO, a.ABAN_NO, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE, a.FEAT ");
     	query.append("FROM ABAN a INNER JOIN (SELECT * FROM PROT ");
     	query.append("	WHERE PROT_END_DATE = to_date('9999-12-31','YYYY-MM-DD')) p ");
     	query.append("	ON a.ABAN_NO = p.ABAN_NO ");
     	query.append("ORDER BY 1,2 ");
+    	
+    	connection();
     	
     	try {
     		
