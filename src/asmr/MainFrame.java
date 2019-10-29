@@ -1,6 +1,8 @@
 package asmr;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -16,8 +18,8 @@ public class MainFrame extends JFrame {
 	private JMenu mCenter, mEmp, mAban, mReport, mAdop, mPost;
 	
 	private String[] mlCenter = {"센터목록"};
-	private String[] mlEmp = {"직원등록", "직원조회"};
-	private String[] mlAban = {"동물등록", "보호", "진료"};
+	private String[] mlEmp = {"직원조회"};
+	private String[] mlAban = {"보호", "진료"};
 	private String[] mlReport = {"신고등록", "신고배정(본부센터)", "신고배정(일반센터)"};
 	private String[] mlAdop = {"공고목록", "신청목록", "입양목록"};
 	private String[] mlPost = {"공지사항", "문의/답변"};
@@ -28,9 +30,8 @@ public class MainFrame extends JFrame {
 	private Login Login;
 	public static int LoginState;
 	
-	public MainFrame() {
-		
-		LoginState = 1;
+	public MainFrame(int ls) {
+		LoginState = ls;
 		setLayout(null);
 		
 		MenuActionListener listener = new MenuActionListener();
@@ -205,11 +206,12 @@ public class MainFrame extends JFrame {
 				repaint();
 				break;
 			case "로그인":
-				ContentPanel.removeAll();
-				pContents = new Login();
-				ContentPanel.add(pContents);
-				revalidate();
-				repaint();
+				setLogin();
+				//ContentPanel.removeAll();
+				//pContents = new Login();
+				//ContentPanel.add(pContents);
+				//revalidate();
+				//repaint();
 				break;
 			case "회원가입":
 				ContentPanel.removeAll();
@@ -233,27 +235,16 @@ public class MainFrame extends JFrame {
 				repaint();
 				break;
 			case "로그아웃":
-				new MainFrame();
-				dispose();
-				ContentPanel.removeAll();
-				pContents = new MainPage();
+				setLogout();
+				//new MainFrame();
+				//dispose();
+				//ContentPanel.removeAll();
+				//pContents = new MainPage();
 				//LoginState = 0;
 				//ContentPanel.add(pContents);
 				//revalidate();
 				//repaint();
 				break;
-//			case "직원등록":
-//				ContentPanel.removeAll();
-//				try {
-//					pContents = new EmpRegister();
-//				} catch (IOException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-//				ContentPanel.add(pContents);
-//				revalidate();
-//				repaint();
-//				break;
 				
 			case "직원조회":
 				ContentPanel.removeAll();
@@ -262,13 +253,6 @@ public class MainFrame extends JFrame {
 				revalidate();
 				repaint();
 				break;
-//			case "동물등록":
-//				ContentPanel.removeAll();
-//				pContents = new ProtAniRegist();
-//				ContentPanel.add(pContents);
-//				revalidate();
-//				repaint();
-//				break;
 			case "보호":
 				ContentPanel.removeAll();
 				try {
@@ -415,19 +399,25 @@ public class MainFrame extends JFrame {
 			//setBackground(Color.WHITE);
 		}
 	}
+	public void setLogout() {
+		dispose();
+		new MainFrame(0);
+	}
 	public void setLogin() {
-		this.remove(bLogin);
-		this.remove(bRegister);
-		ContentPanel.removeAll();
-		this.add(vCenterName);
-		this.add(bUserName);
-		this.add(vWelcome);
-		revalidate();
-		repaint();
+		dispose();
+		new MainFrame(1);
+//		this.remove(bLogin);
+//		this.remove(bRegister);
+//		ContentPanel.removeAll();
+//		this.add(vCenterName);
+//		this.add(bUserName);
+//		this.add(vWelcome);
+//		revalidate();
+//		repaint();
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		MainFrame main = new MainFrame();
+		MainFrame main = new MainFrame(0);
 	}
 
 }
