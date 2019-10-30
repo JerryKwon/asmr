@@ -12,12 +12,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -30,8 +30,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import asmr.CenterManagerSearch.CenterManagerSearchButtonListener;
-
 public class CenterManagerSearch extends JFrame{
 	private JLabel vCenterManagerSearch;
 	private JTable eCenterManagerList;
@@ -39,7 +37,10 @@ public class CenterManagerSearch extends JFrame{
 	private JButton confirm,cancel;
 	private JTextField xCenterManager;
 	
-	private String cntrManagerBdate = null;
+//	private String cntrManagerBdate = null;
+	
+	private String cntrManagerNo = null;
+	private ArrayList<String> cntrManagerNos;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -66,12 +67,15 @@ public class CenterManagerSearch extends JFrame{
 	public CenterManagerSearch(JTextField xCenterManager) {
 		this.xCenterManager = xCenterManager;
 //		this.cntrManagerBdate = cntrManagerBdate;
+
 		
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
 		
 		centerManagerSearchButtonListener = new CenterManagerSearchButtonListener();
 		centerManagerSearchMouseListener = new CenterManagerSearchMouseListener();
+
+		cntrManagerNos = new ArrayList<String>();
 		
 		vCenterManagerSearch = new JLabel("ºæ≈Õ¿Â∏Ò∑œ");
 		vCenterManagerSearch.setFont(new Font("≥™¥Æ∞ÌµÒ", Font.BOLD, 16));
@@ -150,7 +154,7 @@ public class CenterManagerSearch extends JFrame{
 		connection();
 		
 		try {
-			StringBuffer query= new StringBuffer("SELECT e.EMP_NAME name, e.BRTH_YEAR_MNTH_DAY bdate ");
+			StringBuffer query= new StringBuffer("SELECT e.EMP_NO, e.EMP_NAME name, e.BRTH_YEAR_MNTH_DAY bdate ");
 			query.append("FROM EMP e INNER JOIN (");
 			query.append("	SELECT DISTINCT EMP_NO FROM EMP_WORK_HIST");
 			query.append("	WHERE WORK_END_DATE = to_date('9999-12-31','YYYY-MM-DD')");
@@ -161,6 +165,8 @@ public class CenterManagerSearch extends JFrame{
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				String[] bdate = rs.getString("bdate").split(" ");
+				
+				cntrManagerNos.add(rs.getString("EMP_NO"));
 				
 				model1.addRow(new Object[] {rs.getString("name"),bdate[0]});
 			}
@@ -249,14 +255,15 @@ public class CenterManagerSearch extends JFrame{
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
 				int clickedRow = eCenterManagerList.getSelectedRow();
-				cntrManagerBdate = (String)eCenterManagerList.getValueAt(clickedRow, 1);
+				cntrManagerNo = cntrManagerNos.get(clickedRow);
+//				cntrManagerBdate = (String)eCenterManagerList.getValueAt(clickedRow, 1);
 			}
 		}
 		
 	}
-	
-    public String getCntrManagerBdate() {
-		return cntrManagerBdate;
+
+	public String getCntrManagerNo() {
+		return cntrManagerNo;
 	}
 
 	private void ChangeFont(JComponent[] comps, Font font) {
