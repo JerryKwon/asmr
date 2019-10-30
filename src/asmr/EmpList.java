@@ -171,9 +171,9 @@ public class EmpList extends JPanel {
 		JComponent[] bComps = {empSearch,centerSearch, modify, cancel, resign, register};
 		ChangeFont(bComps, new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
-		EmpListView();
-		
 		GetEmpList();
+		
+		EmpListView();
 	}
 	
 	private void EmpListView() {
