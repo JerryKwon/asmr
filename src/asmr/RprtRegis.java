@@ -27,11 +27,12 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerDateModel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class RprtRegis extends JPanel implements ActionListener{
 	private JLabel vRprtName,  vTelNo, vRprtTp,vAnmlKinds,
-	vAnmlSize, vExpln,vDscvDttm, vDscvLoc, vPic;
+	vAnmlSize, vExpln,vDscvDttm, vDscvLoc, vPic, vTitle;
 	
 	private JTextField xRprtName, xTelNo, xDscvDttm,
 	xDscvLoc, xPic;
@@ -74,6 +75,10 @@ public class RprtRegis extends JPanel implements ActionListener{
 		
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
+		
+		vTitle = new JLabel("유기동물신고");
+		vTitle.setFont(new Font("나눔고딕", Font.BOLD, 24));
+		vTitle.setBorder(new EmptyBorder(0,10,20,0));
 
 		vRprtName = new JLabel("신고자명");
 		xRprtName = new JTextField(20);
@@ -203,34 +208,35 @@ public class RprtRegis extends JPanel implements ActionListener{
 		gridbagconstraints.weighty=1.0;
 
 		setLayout(gridbaglayout);
-
-		gridbagAdd(vRprtName, 0, 0, 1, 1);
-		gridbagAdd(xRprtName, 2, 0, 1, 1);
-		gridbagAdd(vTelNo, 10, 0, 1, 1);
-		gridbagAdd(xTelNo, 12, 0, 1, 1);
-		gridbagAdd(vRprtTp, 0, 1, 1, 1);
-		gridbagAdd(cbRprtTp, 2, 1, 1, 1);
-		gridbagAdd(vAnmlKinds, 0, 2, 1, 1);
-		gridbagAdd(cbAnmlKinds, 2, 2, 1, 1);
-		gridbagAdd(vAnmlSize, 10, 2, 1, 1);
-		gridbagAdd(cbAnmlSize, 12, 2, 1, 1);
-		gridbagAdd(vExpln, 0, 3, 1, 1);
-		gridbagAdd(xExpln, 2, 3, 11, 1);
-		gridbagAdd(vDscvDttm, 0, 6, 1, 1);
-		gridbagAdd(timeSpinner, 2, 6, 1, 1);
+		
+		gridbagAdd(vTitle, 0, 0, 2, 1);
+		gridbagAdd(vRprtName, 0, 1, 1, 1);
+		gridbagAdd(xRprtName, 2, 1, 1, 1);
+		gridbagAdd(vTelNo, 10, 1, 1, 1);
+		gridbagAdd(xTelNo, 12, 1, 1, 1);
+		gridbagAdd(vRprtTp, 0, 2, 1, 1);
+		gridbagAdd(cbRprtTp, 2, 2, 1, 1);
+		gridbagAdd(vAnmlKinds, 0, 3, 1, 1);
+		gridbagAdd(cbAnmlKinds, 2, 3, 1, 1);
+		gridbagAdd(vAnmlSize, 10, 3, 1, 1);
+		gridbagAdd(cbAnmlSize, 12, 3, 1, 1);
+		gridbagAdd(vExpln, 0, 4, 1, 1);
+		gridbagAdd(xExpln, 2, 4, 11, 1);
+		gridbagAdd(vDscvDttm, 0, 7, 1, 1);
+		gridbagAdd(timeSpinner, 2, 7, 1, 1);
 		//gridbagAdd(Imagebutton, 4,6,1,1);
 		//gridbagAdd(timeSpinner, 8,6,1,1);
 		
-		gridbagAdd(vDscvLoc, 0, 7, 1, 1);
-		gridbagAdd(xDscvLoc, 2, 7, 1, 1);
-		gridbagAdd(vPic, 0, 8, 1, 1);
-		gridbagAdd(xPic, 2, 8, 1, 1);
-		gridbagAdd(btnSearch, 4,8,1,1);
+		gridbagAdd(vDscvLoc, 0, 8, 1, 1);
+		gridbagAdd(xDscvLoc, 2, 8, 1, 1);
+		gridbagAdd(vPic, 0, 9, 1, 1);
+		gridbagAdd(xPic, 2, 9, 1, 1);
+		gridbagAdd(btnSearch, 4,9,1,1);
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
-		gridbagAdd(regist, 4, 9, 1, 1);
-		gridbagAdd(cancel, 6, 9, 1, 1);
+		gridbagAdd(regist, 4, 10, 1, 1);
+		gridbagAdd(cancel, 6, 10, 1, 1);
 
 		//pack();
 		//setResizable(false);

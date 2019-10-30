@@ -1,8 +1,19 @@
 package asmr;
-import javax.swing.*;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 
 public class Login extends JPanel implements ActionListener{
@@ -22,12 +33,19 @@ public class Login extends JPanel implements ActionListener{
 		gridbagconstraints = new GridBagConstraints();
 		
 		vLogin = new JLabel("·Î±×ÀÎ");
+		vLogin.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
+		vLogin.setBorder(new EmptyBorder(0, 10, 20, 0));
 		vID = new JLabel("¾ÆÀÌµð");
-		xID = new JTextField(20);
+		vID.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
+		xID = new JTextField(15);
+		xID.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		vPassword = new JLabel("ºñ¹Ð¹øÈ£");
-		xPassword = new JPasswordField(20);
+		vPassword.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
+		xPassword = new JPasswordField(15);
+		xPassword.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		
 		bLogin = new JButton("·Î±×ÀÎ");
+		bLogin.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		bLogin.addActionListener(this);
 		
 		empID = "0";
@@ -57,7 +75,8 @@ public class Login extends JPanel implements ActionListener{
 	private void LoginView() {
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;		
-		gridbagconstraints.ipadx = 7;		
+		gridbagconstraints.ipadx = 7;	
+		gridbagconstraints.insets = new Insets(5,5,5,5);
 				
 		gridbagconstraints.weightx=1.0;		
 		gridbagconstraints.weighty=1.0;		
@@ -80,7 +99,9 @@ public class Login extends JPanel implements ActionListener{
 	      //°¡Àå ¿ÞÂÊ À§ gridx, gridy°ªÀº 0 			
 				
 		gridbagconstraints.gridwidth  = w;	//³ÐÀÌ	
-		gridbagconstraints.gridheight = h;	//³ôÀÌ	
+		gridbagconstraints.gridheight = h;	//³ôÀÌ
+		
+
 	     			
 	      			
 	    gridbaglayout.setConstraints(c, gridbagconstraints); //ÄÄÆ÷³ÍÆ®¸¦ ÄÄÆ÷³ÍÆ® À§Ä¡+Å©±â Á¤º¸¿¡ µû¶ó GridBagLayout¿¡ ¹èÄ¡			

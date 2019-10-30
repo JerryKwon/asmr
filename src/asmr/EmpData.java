@@ -22,8 +22,6 @@ public class EmpData {
 	public static List<Map<String, Serializable>> empListData = new ArrayList<Map<String, Serializable>>();
 	
 	
-	
-	
 	static String getEmpName(int empNo){
 		query = "SELECT emp_name FROM emp WHERE emp_no="+empNo;
 		String empName = "";
@@ -56,10 +54,27 @@ public class EmpData {
 		}
 		return empPwd;
 	}
+	static String getEmpCntr(int empNo){
+		query = "SELECT cntr_name FROM emp_work_hist e, cntr c WHERE e.cntr_no = c.cntr_no and e.emp_no ="+empNo;
+		String empCntr = "";
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+				empCntr = rs.getString(1);
+			}
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+		return empCntr;
+		
+	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.println(getEmpPwd(0));
+		System.out.println(getEmpCntr(1));
 	}
 
 }

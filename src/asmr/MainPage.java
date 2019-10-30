@@ -1,8 +1,20 @@
 package asmr;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
 
-import java.awt.*;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 public class MainPage extends JPanel{
 
@@ -11,6 +23,7 @@ public class MainPage extends JPanel{
 				   vNowCenter, vNotice, vAnnc;
 	private JTextArea xNowCenter;
 	private JScrollPane sNowCenter, sNotice;
+	private JPanel pAnnc;
 	
 	private JTable eNotice;
 	private final String[] col = {"제목", "작성일시"};
@@ -25,9 +38,11 @@ public class MainPage extends JPanel{
 		gridbagconstraints = new GridBagConstraints();
 		
 		vMainBanner = new JLabel(new ImageIcon("images/mainbanner.jpg"));
+		vMainBanner.setBorder(new EmptyBorder(0,0,20,50));
 		
 		vMainProtect = new JLabel("현재 보호중인 유기동물");
 		vMainProtect.setFont(new Font("나눔고딕", Font.PLAIN, 20));
+		vMainProtect.setBorder(new EmptyBorder(0,0,0,250));
 		iDog = resize(new ImageIcon("images/dog1.png"), 70, 70);
 		iMainDog = new JLabel(new ImageIcon(iDog));
 		vMainDog = new JLabel("521");
@@ -45,6 +60,7 @@ public class MainPage extends JPanel{
 		
 		vNowCenter = new JLabel("지금 센터에서는");
 		vNowCenter.setFont(new Font("나눔고딕", Font.PLAIN, 20));
+		vNowCenter.setBorder(new EmptyBorder(0,0,10,0));
 		xNowCenter = new JTextArea();
 		xNowCenter.setText("[10:30] 서울서초센터 밍키 (고양이)가 등록되었습니다.\n"
 				+ "[11:31] 부산해운대센터 방울 (개)가 입양되었습니다.\n"
@@ -56,14 +72,22 @@ public class MainPage extends JPanel{
 		
 		vNotice = new JLabel("공지사항");
 		vNotice.setFont(new Font("나눔고딕", Font.PLAIN, 20));
+		vNotice.setBorder(new EmptyBorder(0,0,10,0));
 		eNotice = new JTable(model);
 		sNotice = new JScrollPane(eNotice);
-		sNotice.setPreferredSize(new Dimension(350,120));
+		sNotice.setPreferredSize(new Dimension(400,140));
 		sNotice.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
 		vAnnc = new JLabel("공고");
 		vAnnc.setFont(new Font("나눔고딕", Font.PLAIN, 20));
+		vAnnc.setBorder(new EmptyBorder(10,0,0,0));
 		
+//		try {
+//			pAnnc = new Annc();
+//		} catch (IOException e) {
+			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		MainPageView();
 	}
 	private Image resize(ImageIcon i, int w, int h) {
@@ -94,6 +118,7 @@ public class MainPage extends JPanel{
 		gridbagAdd(vNotice, 0, 5, 3, 1);
 		gridbagAdd(sNotice, 0, 6, 5, 2);
 		gridbagAdd(vAnnc, 4, 5, 3, 1);
+//		gridbagAdd(pAnnc, 4, 6, 3, 1);
 	}
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
 		

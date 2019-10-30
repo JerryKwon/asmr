@@ -13,20 +13,21 @@ public class MainFrame extends JFrame {
 	private JLabel vCenterName, vWelcome;
 	
 	private JMenuBar mBar;
-	private JMenu mCenter, mEmp, mAban, mReport, mAdop, mPost;
+	private JMenu mCenter, mEmp, mAban, mReport, mAdop, mPost, mReportManage, mAdopManage;
+	private JMenuItem mReportAni, mAdopAnnc;
 	
 	private String[] mlCenter = {"센터목록"};
 	private String[] mlEmp = {"직원조회"};
-	private String[] mlAban = {"보호", "진료"};
-	private String[] mlReport = {"유기동물신고", "신고배정(본부센터)", "신고배정(일반센터)"};
-	private String[] mlAdop = {"공고목록", "신청목록", "입양목록"};
+	private String[] mlAban = {"기본정보관리", "진료"};
+	private String[] mlReport = {"신고배정(본부센터)", "신고배정(일반센터)"};
+	private String[] mlAdop = {"입양신청관리", "입양완료목록"};
 	private String[] mlPost = {"공지사항", "문의/답변"};
 	
 	private static JPanel pContents;
 	private static ContentPanel ContentPanel;	
 	
 	Login login;
-	public static String empName, empID;
+	public static String empName, empID, empCntr;
 	
 	public MainFrame() {
 		login = new Login();
@@ -34,6 +35,7 @@ public class MainFrame extends JFrame {
 		
 		empID = login.empID;
 		empName = EmpData.getEmpName(Integer.parseInt(login.empID));
+		empCntr = EmpData.getEmpCntr(Integer.parseInt(login.empID));
 		
 		setLayout(null);
 		
@@ -58,13 +60,13 @@ public class MainFrame extends JFrame {
 		bLogout.addActionListener(listener);
 		
 		vWelcome = new JLabel("님 환영합니다.");
-		vCenterName = new JLabel("부산남구보호센터");
-		bUserName = new JButton(empName);
+		vCenterName = new JLabel(" ");
+		bUserName = new JButton(" ");
 		bUserName.addActionListener(listener);
 		bUserName.setContentAreaFilled(false);
 		bUserName.setFocusPainted(false);
 		bUserName.setBorderPainted(false);
-		bUserName.setForeground(Color.cyan);
+		bUserName.setForeground(new Color(0, 180, 255));
 		
 		mBar = new JMenuBar();
 		UIManager.put("Menu.font", new Font("나눔고딕", Font.BOLD, 20));
@@ -99,7 +101,7 @@ public class MainFrame extends JFrame {
 		mBar.add(mEmp);
 		mBar.add(Box.createHorizontalStrut(10));
 		
-		mAban = new JMenu("동물");
+		mAban = new JMenu("유기동물");
 		JMenuItem[] mlAbanItem = new JMenuItem[mlAban.length];
 		for (int i=0; i < mlAban.length; i++){
 			mlAbanItem[i] = new JMenuItem(mlAban[i]);
@@ -109,33 +111,56 @@ public class MainFrame extends JFrame {
 			mAban.add(mlAbanItem[i]);
 		}
 		mAban.setPreferredSize(new Dimension(220, 50));
-		mAban.setBorder(new EmptyBorder(0,90,0,0));
+		mAban.setBorder(new EmptyBorder(0,65,0,0));
 		mBar.add(mAban);
 		mBar.add(Box.createHorizontalStrut(10));
 		
 		mReport = new JMenu("신고");
+		mReportAni = new JMenuItem("유기동물신고");
+		mReportAni.addActionListener(listener);
+		mReportAni.setPreferredSize(new Dimension(218, 40));
+		mReportAni.setFont(new Font("나눔고딕", Font.BOLD, 17));
+		mReport.add(mReportAni);
+		
+		mReportManage = new JMenu("신고정보관리");
+		mReportManage.setPreferredSize(new Dimension(218, 40));
+		mReportManage.setFont(new Font("나눔고딕", Font.BOLD, 17));
 		JMenuItem[] mlReportItem = new JMenuItem[mlReport.length];
 		for (int i=0; i < mlReport.length; i++){
 			mlReportItem[i] = new JMenuItem(mlReport[i]);
 			mlReportItem[i].addActionListener(listener);
 			mlReportItem[i].setPreferredSize(new Dimension(218, 40));
 			mlReportItem[i].setFont(new Font("나눔고딕", Font.BOLD, 17));
-			mReport.add(mlReportItem[i]);
+			mReportManage.add(mlReportItem[i]);
 		}
 		mReport.setPreferredSize(new Dimension(220, 50));
 		mReport.setBorder(new EmptyBorder(0,90,0,0));
+		
+		
 		mBar.add(mReport);
+		mReport.add(mReportManage);
 		mBar.add(Box.createHorizontalStrut(10));
 		
+		
 		mAdop = new JMenu("입양");
+		mAdopAnnc = new JMenuItem("유기동물공고");
+		mAdopAnnc.addActionListener(listener);
+		mAdopAnnc.setPreferredSize(new Dimension(218, 40));
+		mAdopAnnc.setFont(new Font("나눔고딕", Font.BOLD, 17));
+		mAdop.add(mAdopAnnc);
+		mAdopManage = new JMenu("입양관리");
+		mAdopManage.setPreferredSize(new Dimension(218, 40));
+		mAdopManage.setFont(new Font("나눔고딕", Font.BOLD, 17));
+		
 		JMenuItem[] mlAdopItem = new JMenuItem[mlAdop.length];
 		for (int i=0; i < mlAdop.length; i++){
 			mlAdopItem[i] = new JMenuItem(mlAdop[i]);
 			mlAdopItem[i].addActionListener(listener);
 			mlAdopItem[i].setPreferredSize(new Dimension(218, 40));
 			mlAdopItem[i].setFont(new Font("나눔고딕", Font.BOLD, 17));
-			mAdop.add(mlAdopItem[i]);
+			mAdopManage.add(mlAdopItem[i]);
 		}
+		mAdop.add(mAdopManage);
 		mAdop.setPreferredSize(new Dimension(220, 50));
 		mAdop.setBorder(new EmptyBorder(0,90,0,0));
 		mBar.add(mAdop);
@@ -176,7 +201,7 @@ public class MainFrame extends JFrame {
 		vWelcome.setBounds(1770,130,150,20);
 		bLogout.setBounds(1810, 10, 100, 30);
 		
-		ContentPanel.setBounds(50, 300, 1800, 900);
+		ContentPanel.setBounds(50, 250, 1800, 1100);
 		
 		this.add(bMainButton);
 		this.add(mBar);
@@ -192,11 +217,18 @@ public class MainFrame extends JFrame {
 		this.add(bUserName);
 		this.add(vWelcome);
 		
-		
+		// 버튼 보이기 여부
 		bLogout.setVisible(false);
 		vCenterName.setVisible(false);
 		bUserName.setVisible(false);
 		vWelcome.setVisible(false);
+		
+		// 메뉴 접근 가능여부
+		mCenter.setEnabled(false);
+		mEmp.setEnabled(false);
+		mAban.setEnabled(false);
+		mReportManage.setEnabled(false);
+		mAdopManage.setEnabled(false);
 		
 		pack();
 		setResizable(false);
@@ -205,26 +237,45 @@ public class MainFrame extends JFrame {
 	}
 
 	public void setLogout() {
+		// 버튼 보이기 여부
 		bLogin.setVisible(true);
 		bRegister.setVisible(true);
 		bLogout.setVisible(false);
 		vCenterName.setVisible(false);
 		bUserName.setVisible(false);
 		vWelcome.setVisible(false);
+		
+		// 메뉴 접근 가능여부
+		mCenter.setEnabled(false);
+		mEmp.setEnabled(false);
+		mAban.setEnabled(false);
+		mReportManage.setEnabled(false);
+		mAdopManage.setEnabled(false);
 	}
 	public void setLogin() {
 		
+		// 버튼 보이기 여부
 		bLogin.setVisible(false);
 		bRegister.setVisible(false);
 		
 		bLogout.setVisible(true);
 		vWelcome.setVisible(true);
 		empName = EmpData.getEmpName(Integer.parseInt(login.empID));
-		vCenterName.setVisible(true);
 		bUserName.setText(empName);
 		bUserName.setVisible(true);
 		
-				
+		empCntr = EmpData.getEmpCntr(Integer.parseInt(login.empID));
+		vCenterName.setText(empCntr);
+		vCenterName.setVisible(true);
+		
+		// 메뉴 접근 가능여부
+		mCenter.setEnabled(true);
+		mEmp.setEnabled(true);
+		mAban.setEnabled(true);
+		mReportManage.setEnabled(true);
+		mAdopManage.setEnabled(true);
+		
+		//메인 페이지 로드
 		ContentPanel.removeAll();
 		pContents = new MainPage();
 		ContentPanel.add(pContents);
@@ -235,54 +286,45 @@ public class MainFrame extends JFrame {
 	class MenuActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			String cont = e.getActionCommand();
-			switch(cont) {
-			case " ":
+			if(cont == " "){
 				ContentPanel.removeAll();
 				pContents = new MainPage();
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-				break;
-			case "로그인":
+			}else if(cont == "로그인"){
 				ContentPanel.removeAll();
 				pContents = login;
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-				break;
-			case "회원가입":
-				ContentPanel.removeAll();
-				pContents = new UserRegister();
-				ContentPanel.add(pContents);
-				revalidate();
-				repaint();
-				break;
-			case "센터목록":
-				ContentPanel.removeAll();
-				pContents = new CenterList();
-				ContentPanel.add(pContents);
-				revalidate();
-				repaint();
-				break;
-			case "권영인":
+			}else if(cont == empName){
 				ContentPanel.removeAll();
 				pContents = new EmpMyPage();
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-				break;
-			case "로그아웃":
+			}else if(cont == "회원가입"){
+				ContentPanel.removeAll();
+				pContents = new UserRegister();
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+			}else if(cont == "센터목록"){
+				ContentPanel.removeAll();
+				pContents = new CenterList();
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+			}else if(cont == "로그아웃"){
 				setLogout();
-				break;
-				
-			case "직원조회":
+			}else if(cont == "직원조회"){
 				ContentPanel.removeAll();
 				pContents = new EmpList();
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-				break;
-			case "보호":
+			}else if(cont == "기본정보관리"){
 				ContentPanel.removeAll();
 				try {
 					pContents = new ProtAniList();
@@ -293,8 +335,7 @@ public class MainFrame extends JFrame {
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-				break;
-			case "진료":
+			}else if(cont == "진료"){
 				ContentPanel.removeAll();
 				try {
 					pContents = new DiagAniList();
@@ -305,8 +346,7 @@ public class MainFrame extends JFrame {
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-				break;
-			case "신고등록":
+			}else if(cont == "유기동물신고"){
 				ContentPanel.removeAll();
 				try {
 					pContents = new RprtRegis();
@@ -317,8 +357,7 @@ public class MainFrame extends JFrame {
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-				break;
-			case "신고배정(본부센터)":
+			}else if(cont == "신고배정(본부센터)"){
 				ContentPanel.removeAll();
 				try {
 					pContents = new RprtAssignment();
@@ -329,8 +368,7 @@ public class MainFrame extends JFrame {
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-				break;
-			case "신고배정(일반센터)":
+			}else if(cont == "신고배정(일반센터)"){
 				ContentPanel.removeAll();
 				try {
 					pContents = new RprtAssignmentNorm();
@@ -341,8 +379,7 @@ public class MainFrame extends JFrame {
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-				break;
-			case "공고목록":
+			}else if(cont == "유기동물공고"){
 				ContentPanel.removeAll();
 				try {
 					pContents = new AnncList();
@@ -353,8 +390,7 @@ public class MainFrame extends JFrame {
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-				break;
-			case "신청목록":
+			}else if(cont == "입양신청관리"){
 				ContentPanel.removeAll();
 				try {
 					pContents = new ReqList();
@@ -365,8 +401,7 @@ public class MainFrame extends JFrame {
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-				break;
-			case "입양목록":
+			}else if(cont == "입양완료목록"){
 				ContentPanel.removeAll();
 				try {
 					pContents = new AdopList();
@@ -377,26 +412,22 @@ public class MainFrame extends JFrame {
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-				break;
-			case "공지사항":
+			}else if(cont == "공지사항"){
 				ContentPanel.removeAll();
 				pContents = new NotiBoard();
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-				break;
-			case "문의/답변":
+			}else if(cont == "문의/답변"){
 				ContentPanel.removeAll();
 				pContents = new InqAnsBoard();
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-				break;
 			}
 			
 		}
 	}
-	
 	public static void notiCase() {
 		ContentPanel.removeAll();
 		pContents = new NotiWrtUpt();
@@ -416,8 +447,7 @@ public class MainFrame extends JFrame {
 	
 	class ContentPanel extends JPanel {
 		public void ContentPanel() {
-			setPreferredSize(new Dimension(1800, 900));
-			//setBackground(Color.WHITE);
+			this.setPreferredSize(new Dimension(1800, 1100));
 		}
 	}
 	public static void main(String[] args) {
