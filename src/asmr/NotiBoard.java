@@ -9,6 +9,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -17,11 +21,26 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class NotiBoard extends JPanel {
 	
-//	private Container contain;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	NotiData notiData;
+	NotiDAO notiDAO;
+	
+	Vector<String> data, col;
+	
+	public static Connection conn = DBConn.getConnection();
+	static String quary;
+	static PreparedStatement pstm = null;
+	static ResultSet rs = null;
+
 	
 	NotiBoardButtonListener notiBoardButtonListener;
 	// 페이징 미구현, 페이징 번호 없음!
@@ -39,16 +58,29 @@ public class NotiBoard extends JPanel {
 	
 	private JButton regis0, search;
 	
-	private final String[] col = {"번호","제목","작성자","작성일시"};
-	
-	private DefaultTableModel model = new DefaultTableModel(col,0);
+	//private final String[] col = {"번호","제목","작성자","작성일시"};
+		
+	//private DefaultTableModel model = new DefaultTableModel(col,0);
+	//private DefaultTableModel model = new DefaultTableModel(notiDAO.getScore(), col);
 	
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
 	
 	private Color blue = new Color(22,155,213);
 	private Color white = new Color(255,255,255);
+	
+
+	
+	
 	public NotiBoard() {
+		
+		col = new Vector<String>();
+		col.add("번호");
+		col.add("제목");
+		col.add("작성자");
+		col.add("작성일시");
+		
+		notiDAO = new NotiDAO();
 		
 		notiBoardButtonListener = new NotiBoardButtonListener();
 		
@@ -57,6 +89,7 @@ public class NotiBoard extends JPanel {
 		
 		vNoti = new JLabel("공지사항");
 		vNoti.setFont(new Font("나눔고딕", Font.BOLD, 24));
+		DefaultTableModel model = new DefaultTableModel(notiDAO.getScore(), col);
 		eNoticeList = new JTable(model){
 	        private static final long serialVersionUID = 1L;
 
@@ -132,6 +165,48 @@ public class NotiBoard extends JPanel {
 				
 	   }
 	
+	public void jTableRefresh() {
+	    // 테이블 수정 못하게 DefaultTableModel 사용
+	    DefaultTableModel model = new DefaultTableModel(notiDAO.getScore(), col) {
+	      /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+		public boolean isCellEditable(int row, int column) {
+	        return false;
+	      }
+	    };
+	    eNoticeList.setModel(model);
+	    jTableSet();
+	  } // jTableRefresh : 테이블 내용을 갱신하는 메서드
+	
+	public void jTableSet() {
+	    // 이동과 길이조절 여러개 선택 되는 것을 방지한다
+		eNoticeList.getTableHeader().setReorderingAllowed(false);
+		eNoticeList.getTableHeader().setResizingAllowed(false);
+		eNoticeList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+	     
+	    // 컬럼 정렬에 필요한 메서드
+	    DefaultTableCellRenderer celAlignCenter = new DefaultTableCellRenderer();
+	    celAlignCenter.setHorizontalAlignment(JLabel.CENTER);
+	    DefaultTableCellRenderer celAlignRight = new DefaultTableCellRenderer();
+	    celAlignRight.setHorizontalAlignment(JLabel.RIGHT);
+	    DefaultTableCellRenderer celAlignLeft = new DefaultTableCellRenderer();
+	    celAlignLeft.setHorizontalAlignment(JLabel.LEFT);
+	     
+	    // 컬럼별 사이즈 조절 & 정렬
+	    eNoticeList.getColumnModel().getColumn(0).setPreferredWidth(10);
+	    eNoticeList.getColumnModel().getColumn(0).setCellRenderer(celAlignCenter);
+	    eNoticeList.getColumnModel().getColumn(1).setPreferredWidth(10);
+	    eNoticeList.getColumnModel().getColumn(1).setCellRenderer(celAlignCenter);
+	    eNoticeList.getColumnModel().getColumn(2).setPreferredWidth(10);
+	    eNoticeList.getColumnModel().getColumn(2).setCellRenderer(celAlignCenter);
+	    eNoticeList.getColumnModel().getColumn(3).setPreferredWidth(10);
+	    eNoticeList.getColumnModel().getColumn(3).setCellRenderer(celAlignCenter);
+	  } // jTableRefresh : 테이블 옵션 설정하는 메서드
+
+
 	
     class NotiBoardButtonListener implements ActionListener{
 		
@@ -155,7 +230,8 @@ public class NotiBoard extends JPanel {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		//new NotiBoard();
+		new NotiBoard();
 	}
 
+	
 }
