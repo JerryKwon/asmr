@@ -1,8 +1,6 @@
 package asmr;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -20,18 +18,23 @@ public class MainFrame extends JFrame {
 	private String[] mlCenter = {"센터목록"};
 	private String[] mlEmp = {"직원조회"};
 	private String[] mlAban = {"보호", "진료"};
-	private String[] mlReport = {"신고등록", "신고배정(본부센터)", "신고배정(일반센터)"};
+	private String[] mlReport = {"유기동물신고", "신고배정(본부센터)", "신고배정(일반센터)"};
 	private String[] mlAdop = {"공고목록", "신청목록", "입양목록"};
 	private String[] mlPost = {"공지사항", "문의/답변"};
 	
 	private static JPanel pContents;
 	private static ContentPanel ContentPanel;	
 	
-	private Login Login;
-	public static int LoginState;
+	Login login;
+	public static String empName, empID;
 	
-	public MainFrame(int ls) {
-		LoginState = ls;
+	public MainFrame() {
+		login = new Login();
+		login.setMain(this);
+		
+		empID = login.empID;
+		empName = EmpData.getEmpName(Integer.parseInt(login.empID));
+		
 		setLayout(null);
 		
 		MenuActionListener listener = new MenuActionListener();
@@ -56,7 +59,7 @@ public class MainFrame extends JFrame {
 		
 		vWelcome = new JLabel("님 환영합니다.");
 		vCenterName = new JLabel("부산남구보호센터");
-		bUserName = new JButton("권영인");
+		bUserName = new JButton(empName);
 		bUserName.addActionListener(listener);
 		bUserName.setContentAreaFilled(false);
 		bUserName.setFocusPainted(false);
@@ -190,8 +193,10 @@ public class MainFrame extends JFrame {
 		this.add(vWelcome);
 		
 		
-		bLogin.setVisible(false);
-		bRegister.setVisible(false);
+		bLogout.setVisible(false);
+		vCenterName.setVisible(false);
+		bUserName.setVisible(false);
+		vWelcome.setVisible(false);
 		
 		pack();
 		setResizable(false);
@@ -199,12 +204,6 @@ public class MainFrame extends JFrame {
 		setVisible(true);
 	}
 
-	class ContentPanel extends JPanel {
-		public void ContentPanel() {
-			setPreferredSize(new Dimension(1800, 900));
-			//setBackground(Color.WHITE);
-		}
-	}
 	public void setLogout() {
 		bLogin.setVisible(true);
 		bRegister.setVisible(true);
@@ -214,15 +213,25 @@ public class MainFrame extends JFrame {
 		vWelcome.setVisible(false);
 	}
 	public void setLogin() {
-
-	}
-	public void setTest() {
+		
+		bLogin.setVisible(false);
+		bRegister.setVisible(false);
+		
+		bLogout.setVisible(true);
+		vWelcome.setVisible(true);
+		empName = EmpData.getEmpName(Integer.parseInt(login.empID));
+		vCenterName.setVisible(true);
+		bUserName.setText(empName);
+		bUserName.setVisible(true);
+		
+				
 		ContentPanel.removeAll();
 		pContents = new MainPage();
 		ContentPanel.add(pContents);
 		ContentPanel.revalidate();
 		ContentPanel.repaint();
 	}
+	
 	class MenuActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			String cont = e.getActionCommand();
@@ -235,9 +244,8 @@ public class MainFrame extends JFrame {
 				repaint();
 				break;
 			case "로그인":
-				//setLogin();
 				ContentPanel.removeAll();
-				pContents = new Login();
+				pContents = login;
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
@@ -265,14 +273,6 @@ public class MainFrame extends JFrame {
 				break;
 			case "로그아웃":
 				setLogout();
-				//new MainFrame();
-				//dispose();
-				//ContentPanel.removeAll();
-				//pContents = new MainPage();
-				//LoginState = 0;
-				//ContentPanel.add(pContents);
-				//revalidate();
-				//repaint();
 				break;
 				
 			case "직원조회":
@@ -396,7 +396,6 @@ public class MainFrame extends JFrame {
 			
 		}
 	}
-<<<<<<< HEAD
 	
 	public static void notiCase() {
 		ContentPanel.removeAll();
@@ -414,14 +413,6 @@ public class MainFrame extends JFrame {
 		ContentPanel.repaint();
 	}
 	
-
-	
-	
-	
-	
-	
-	
-	
 	
 	class ContentPanel extends JPanel {
 		public void ContentPanel() {
@@ -429,27 +420,9 @@ public class MainFrame extends JFrame {
 			//setBackground(Color.WHITE);
 		}
 	}
-	public void setLogout() {
-		dispose();
-		new MainFrame(0);
-	}
-	public void setLogin() {
-		dispose();
-		new MainFrame(1);
-//		this.remove(bLogin);
-//		this.remove(bRegister);
-//		ContentPanel.removeAll();
-//		this.add(vCenterName);
-//		this.add(bUserName);
-//		this.add(vWelcome);
-//		revalidate();
-//		repaint();
-	}
-=======
->>>>>>> choi
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		MainFrame main = new MainFrame(null);
+		MainFrame main = new MainFrame();
 	}
 
 }

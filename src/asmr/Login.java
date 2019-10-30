@@ -11,13 +11,13 @@ public class Login extends JPanel implements ActionListener{
 	private JTextField xID;
 	private JPasswordField xPassword;
 	
-	MainFrame mainFrame;
+	private MainFrame main;
+	static String empID, empPwd;
 	GridBagLayout gridbaglayout;				// 화면을 구성하는 레이아웃
 	GridBagConstraints gridbagconstraints;
 	
-	public Login(MainFrame parent) {
+	public Login() {
 		
-		mainFrame = parent;
 		gridbaglayout = new GridBagLayout();		
 		gridbagconstraints = new GridBagConstraints();
 		
@@ -29,15 +29,31 @@ public class Login extends JPanel implements ActionListener{
 		
 		bLogin = new JButton("로그인");
 		bLogin.addActionListener(this);
+		
+		empID = "0";
 		LoginView();
 	}
-
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource().equals(bLogin)){
-			mainFrame.setTest();
+	private void LoginCheck(String id, String pw){
+		int iid = Integer.parseInt(id);
+		if(pw.equals(EmpData.getEmpPwd(iid))){
+			main.setLogin();
+		}
+		else{
+			//비밀번호 틀림
+			JOptionPane.showMessageDialog(null, "ID 혹은 비밀번호를 확인해주세요.");
 		}
 	}
-
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource().equals(bLogin)){
+//			main.setLogin();
+			empID = xID.getText();
+			empPwd = new String(xPassword.getPassword());
+			LoginCheck(xID.getText(), new String(xPassword.getPassword()));
+		}
+	}
+	public void setMain(MainFrame main){
+		this.main = main;
+	}
 	private void LoginView() {
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;		
