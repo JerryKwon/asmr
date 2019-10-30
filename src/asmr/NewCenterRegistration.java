@@ -46,7 +46,9 @@ public class NewCenterRegistration extends JFrame{
 	private BufferedImage buttonIcon;
 	private JDateChooser chooser;
 	
-	private String cntrManagerBdate = null;
+//	private String cntrManagerBdate = null;
+	private String cntrManagerNo = null;
+	
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -377,10 +379,7 @@ public class NewCenterRegistration extends JFrame{
 			query2.append("		  EMP_TP, ");
 			query2.append("		  BIZ_FILD ");
 			query2.append("FROM EMP_WORK_HIST ");
-			query2.append("WHERE EMP_NO = ( ");
-			query2.append("	SELECT EMP_NO FROM EMP ");
-			query2.append("	WHERE EMP_NAME='"+cntrManagerName+"' ");
-			query2.append("	AND BRTH_YEAR_MNTH_DAY=to_date('"+cntrManagerBdate+"','YYYY-MM-DD') ");
+			query2.append("WHERE EMP_NO = '"+cntrManagerNo+"' ");
 			query2.append(") ");
 			
 			pstmt = con.prepareStatement(query2.toString());
@@ -656,7 +655,7 @@ public class NewCenterRegistration extends JFrame{
 //						String nameAndBdate= xCenterManager.getText();
 //						String[] stringArray = nameAndBdate.split(",");
 //						cntrManager= xCenterManager.getText();
-						cntrManagerBdate = centerManagerSearch.getCntrManagerBdate();
+						cntrManagerNo = centerManagerSearch.getCntrManagerNo();
 					}
 					
 				});
