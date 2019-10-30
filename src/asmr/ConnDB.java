@@ -15,7 +15,7 @@ public class ConnDB {
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			conn = DriverManager.getConnection(URL, USER, PASSWORD);
-			System.out.println("성공");
+			//System.out.println("성공");
 		}catch(ClassNotFoundException e){
 			e.printStackTrace();
 		}catch(SQLException e){
