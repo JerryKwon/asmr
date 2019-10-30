@@ -14,7 +14,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -26,12 +25,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -39,8 +35,8 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.JTextComponent;
 
 import com.toedter.calendar.JDateChooser;
 
@@ -352,6 +348,8 @@ public class DiagAniList extends JPanel{
 							// TODO Auto-generated method stub
 							super.windowClosed(e);
 							GetDiagAniList();
+							model2.setRowCount(0);
+							clearAll();
 						}
 			
 					});
@@ -410,8 +408,6 @@ public class DiagAniList extends JPanel{
 	
 	//진료목록이 element를 읽은 후에 그 element의 진료구분에 따라 달력 imageButton을 활성화/비활성화합니다.
 	private void GetDiagInfo(String protNo,int ornu) {
-		
-		clearAll();
 		
 		StringBuffer query = new StringBuffer("SELECT * FROM DIAG ");
 		query.append("WHERE PROT_NO='"+protNo+"' AND DIAG_ORNU="+ornu+" ");
@@ -516,7 +512,15 @@ public class DiagAniList extends JPanel{
 	}
 	
 	private void clearAll() {
-		xDiagDate.removeAll();
+		
+		JTextField xDschDate= (JTextField)chooser.getDateEditor().getUiComponent();
+		
+		JTextComponent[] jcomps = {xDiagDate,xDiagType,xIndiResult,xIndiVtrnName,xOudiResult,xHospName,xDisease,xInfecWhet,xCureType,xHsptzDate,xDschDate,xDeathType,xDeathReason,xDiagContent};
+		
+		for(JTextComponent jcomp:jcomps) {
+			jcomp.setText("");
+		}
+		
 	}
 	
 	private void GetVtrnName(String vtrnNo) {
@@ -548,7 +552,7 @@ public class DiagAniList extends JPanel{
     	model2.setRowCount(0);
     	
     	StringBuffer query = new StringBuffer("SELECT d.DIAG_ORNU,d.DIAG_DATE,d.DIAG_TP,d.DIAG_CONT ");
-    	query.append("FROM (SELECT * FROM PROT WHERE PROT_NO='2019102701') p INNER JOIN DIAG d ");
+    	query.append("FROM (SELECT * FROM PROT WHERE PROT_NO='"+protNo+"') p INNER JOIN DIAG d ");
     	query.append("	ON p.PROT_NO = d.PROT_NO ");
     	query.append("ORDER BY 1 ");
     	
@@ -578,13 +582,15 @@ public class DiagAniList extends JPanel{
     }
     
     private void GetProtAniList() {
-    	connection();
+    	model1.setNumRows(0);
     	
     	StringBuffer query = new StringBuffer("SELECT p.CNTR_NO, a.ABAN_NO, p.PROT_NO, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE ");
     	query.append("FROM ABAN a INNER JOIN(SELECT * FROM PROT ");
     	query.append("	WHERE PROT_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) p ");
     	query.append("	ON a.ABAN_NO = p.ABAN_NO ");
     	query.append("ORDER BY 1,2 ");
+    	
+    	connection();
     	
     	try {
     		pstmt = con.prepareStatement(query.toString());
