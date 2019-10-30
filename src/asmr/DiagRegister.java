@@ -483,29 +483,42 @@ public class DiagRegister extends JFrame{
 		String hospName = xHospName.getText();
 		String reas = xDeathReason.getText();
 		
-		StringBuffer query = new StringBuffer("INSERT INTO DIAG(PROT_NO,DIAG_ORNU,DIAG_DATE,DIAG_TP,DIAG_CONT,HOSP_NAME,OUDI_RES,REAS,DTH_TP) ");
-		query.append("SELECT '"+protNo+"' PROT_NO, ");
-		query.append("	(SELECT NVL(DIAG_ORNU,0)+1 ");
-		query.append("	FROM( ");
-		query.append("		SELECT /*+INDEX_DESC(DIAG DIAG_PK)*/ MAX(DIAG_ORNU) DIAG_ORNU FROM DIAG ");
-		query.append("	WHERE PROT_NO='"+protNo+"')) DIAG_ORNU, ");
-		query.append("	to_date('"+diagDate+"','YYYY-MM-DD') DIAG_DATE, ");
-		query.append("	'"+diagType+"' DIAG_TP, ");
-		query.append("	'"+diagContent+"' DIAG_CONT, ");
-		query.append("	'"+hospName+"' HOSP_NAME, ");
-		query.append("	'"+oudiRes+"' OUDI_RES, ");
-		query.append("	'"+reas+"' REAS, ");
-		query.append("	'"+deathType+"' DTH_TP ");
-		query.append("FROM DUAL ");
+		//사망등록
+		StringBuffer query1 = new StringBuffer("INSERT INTO DIAG(PROT_NO,DIAG_ORNU,DIAG_DATE,DIAG_TP,DIAG_CONT,HOSP_NAME,OUDI_RES,REAS,DTH_TP) ");
+		query1.append("SELECT '"+protNo+"' PROT_NO, ");
+		query1.append("	(SELECT NVL(DIAG_ORNU,0)+1 ");
+		query1.append("	FROM( ");
+		query1.append("		SELECT /*+INDEX_DESC(DIAG DIAG_PK)*/ MAX(DIAG_ORNU) DIAG_ORNU FROM DIAG ");
+		query1.append("	WHERE PROT_NO='"+protNo+"')) DIAG_ORNU, ");
+		query1.append("	to_date('"+diagDate+"','YYYY-MM-DD') DIAG_DATE, ");
+		query1.append("	'"+diagType+"' DIAG_TP, ");
+		query1.append("	'"+diagContent+"' DIAG_CONT, ");
+		query1.append("	'"+hospName+"' HOSP_NAME, ");
+		query1.append("	'"+oudiRes+"' OUDI_RES, ");
+		query1.append("	'"+reas+"' REAS, ");
+		query1.append("	'"+deathType+"' DTH_TP ");
+		query1.append("FROM DUAL ");
+		
+		
+		//동물 보호 종료처리
+		StringBuffer query2 = new StringBuffer("UPDATE PROT ");
+		query2.append("SET PROT_END_DATE = to_date('"+diagDate+"','YYYY-MM-DD HH24:MI:SS') ");
+		query2.append("WHERE PROT_NO='"+protNo+"' ");
+		
 		
 		connection();
 		
 		try {
-			pstmt = con.prepareStatement(query.toString());
+			pstmt = con.prepareStatement(query1.toString());
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				con.commit();
-		}
+			}
+			pstmt = con.prepareStatement(query2.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
