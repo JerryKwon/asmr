@@ -157,6 +157,7 @@ public class RprtRegis extends JPanel implements ActionListener{
 				
 			}
 			if(e.getSource().equals(cancel)) {
+				MainFrame.mainCase();
 				//dispose();
 			}
 		}
@@ -320,6 +321,8 @@ public class RprtRegis extends JPanel implements ActionListener{
 		
 		
 	}
+	
+	
 	
 	
 				

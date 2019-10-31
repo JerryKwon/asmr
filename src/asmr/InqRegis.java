@@ -125,7 +125,7 @@ public class InqRegis extends JPanel {
 				
 			}
 			else if(e.getSource().equals(cancel)) {
-				
+				MainFrame.qnaBoardCase();
 			}
 		}
 		

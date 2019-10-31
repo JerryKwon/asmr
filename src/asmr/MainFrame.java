@@ -436,9 +436,33 @@ public class MainFrame extends JFrame {
 		ContentPanel.repaint();
 	}
 	
+	public static void notiBoardCase() {
+		ContentPanel.removeAll();
+		pContents = new NotiBoard();
+		ContentPanel.add(pContents);
+		ContentPanel.revalidate();
+		ContentPanel.repaint();
+	}
+	
 	public static void qnaCase() {
 		ContentPanel.removeAll();
 		pContents = new InqRegis();
+		ContentPanel.add(pContents);
+		ContentPanel.revalidate();
+		ContentPanel.repaint();
+	}
+	
+	public static void qnaBoardCase() {
+		ContentPanel.removeAll();
+		pContents = new InqAnsBoard();
+		ContentPanel.add(pContents);
+		ContentPanel.revalidate();
+		ContentPanel.repaint();
+	}
+	
+	public static void mainCase() {
+		ContentPanel.removeAll();
+		pContents = new MainPage();
 		ContentPanel.add(pContents);
 		ContentPanel.revalidate();
 		ContentPanel.repaint();

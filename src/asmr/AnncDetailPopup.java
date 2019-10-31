@@ -51,38 +51,51 @@ public class AnncDetailPopup extends JFrame {
 		
 		vProtCntrName = new JLabel("보호센터명");
 		xProtCntrName = new JTextField(20);
+		xProtCntrName.setEditable(false);
 
 		vAbanName = new JLabel("유기동물명");
 		xAbanName = new JTextField(20);
+		xAbanName.setEditable(false);
 		
 		vAnmlKinds = new JLabel("동물종류");
 		xAnmlKinds = new JTextField(20);
+		xAnmlKinds.setEditable(false);
 		
 		vKind = new JLabel("품종");
 		xKind = new JTextField(20);
+		xKind.setEditable(false);
 		
 		vSex = new JLabel("성별");
 		xSex = new JTextField(20);
+		xSex.setEditable(false);
 		
 		vAge = new JLabel("나이");
 		xAge = new JTextField(20);
+		xAge.setEditable(false);
 		
 		vColor= new JLabel("색상");
 		xColor = new JTextField(20);
+		xColor.setEditable(false);
 		
 		vNeutWhet = new JLabel("중성화여부");
 		xNeutWhet = new JTextField(20);
+		xNeutWhet.setEditable(false);
 		
 		vAnmlSize = new JLabel("동물크기"); 
 		xAnmlSize = new JTextField(20);
+		xAnmlSize.setEditable(false);
 		
 		vRscuDate = new JLabel("구조일자");
 		xRscuDate = new JTextField(20);
+		xRscuDate.setEditable(false);
+		
 		vRscuLoc = new JLabel("구조장소");
 		xRscuLoc = new JTextField(20);
+		xRscuLoc.setEditable(false);
 		
 		vExpln= new JLabel("설명");   
 		xExpln = new JTextField(20);
+		xExpln.setEditable(false);
 		
 		confirm = new JButton("입양신청");
 		confirm.setBackground(blue);
