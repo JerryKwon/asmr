@@ -127,7 +127,7 @@ public class NotiWrtUpt extends JPanel {
 				
 			}
 			else if(e.getSource().equals(cancel)) {
-				
+				MainFrame.notiBoardCase();
 			}
 		}
 		
