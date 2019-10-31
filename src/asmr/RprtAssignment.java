@@ -13,6 +13,9 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -28,9 +31,14 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 
-import asmr.ProtAniList.ProtAniListButtonListener;
-
 public class RprtAssignment extends JPanel {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	List<Map<String, Serializable>> erprtListData;
 	
 	RprtAssignmentButtonListener rprtAssignmentButtonListener;
 	
@@ -174,6 +182,7 @@ public class RprtAssignment extends JPanel {
 		
 		new Button();
 		
+		getData();
 		RprtAssignmentView();
 	}
 	
@@ -291,6 +300,17 @@ public class RprtAssignment extends JPanel {
 				
 	   add(c);			
 				
+	   }
+	
+	 void getData() {
+	         for(int i=0; i < erprtListData.size(); i++) {
+	            model1.addRow(new Object[] {
+	                  erprtListData.get(i).get("신고일시"),
+	                  erprtListData.get(i).get("동물종류"),
+	                  erprtListData.get(i).get("동물크기"),
+	                  erprtListData.get(i).get("설명")
+	            });
+	         }
 	   }
 
 	public static void main(String[] args) throws IOException {

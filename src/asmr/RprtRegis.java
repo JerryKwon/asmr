@@ -259,6 +259,69 @@ public class RprtRegis extends JPanel implements ActionListener{
 	   add(c);			
 				
 	   }			
+	
+	private void RegistRprt() {
+		
+		String rprtName =  xRprtName.getText();
+		
+		String telNo = xTelNo.getText();
+		
+		String rprtTp = (String)cbRprtTp.getSelectedItem();
+		String engRprtTp = null;
+		
+		String anmlKinds = (String)cbAnmlKinds.getSelectedItem();
+		String engAnmlKinds = null;
+		
+		String anmlSize = (String)cbAnmlSize.getSelectedItem();
+		String engAnmlSize = null;
+		
+		String expln = xExpln.getText();
+		
+		String dscvDttm = xDscvDttm.getText();
+		
+		String dscvLoc = xDscvLoc.getText();
+		
+		String pic = xPic.getText();
+		
+		
+		switch(rprtTp) {
+		case "발견":
+			engRprtTp = "d";
+			break;
+		case "인계":
+			engRprtTp = "h";
+			break;
+		}
+		
+		switch(anmlKinds) {
+		case "개":
+			engAnmlKinds = "d";
+			break;
+		case "고양이":
+			engAnmlKinds = "c";
+			break;
+		case "기타":
+			engAnmlKinds = "e";
+			break;
+		}
+		
+		switch(anmlSize) {
+		case "대":
+    		engAnmlSize="b";
+    		break;
+    	case "중":
+    		engAnmlSize="m";
+    		break;
+    	case "소":
+    		engAnmlSize="s";
+    		break;
+		}
+		
+		
+		
+	}
+	
+	
 				
 	public static void main(String[] args) throws IOException {			
 		//new RprtRegis();		
