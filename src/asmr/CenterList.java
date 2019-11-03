@@ -773,11 +773,6 @@ public class CenterList extends JPanel{
 			}
 
 			if(e.getSource().equals(cancel)) {
-				modify.setText("수정");
-				JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose,searchManager};
-				for(JComponent cop: changeStatusComps) {
-					cop.setEnabled(false);
-				}
 				ClearAll();
 			}
 			
@@ -787,8 +782,16 @@ public class CenterList extends JPanel{
 	
 	private void ClearAll() {
 		
+		isClicked = false;
+		
 		eCenterList.getSelectionModel().clearSelection();
 		model2.setRowCount(0);
+		
+		modify.setText("수정");
+		JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose,searchManager};
+		for(JComponent cop: changeStatusComps) {
+			cop.setEnabled(false);
+		}
 		
 		JTextComponent[] jComps = {xCenterNum,xEstDate,xCenterName,xPhoneNum,xArea,xCenterManager,xCageBig,xCageMid,xCageSmall};
 		
