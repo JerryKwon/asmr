@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -40,6 +41,9 @@ public class CenterSearch extends JFrame{
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
 	private String password = "asmr";
+	
+	private ArrayList<String> cntrNos;
+	private String cntrNo = null;
 	
 	private Connection con = null;
 	private PreparedStatement pstmt = null;
@@ -67,6 +71,8 @@ public class CenterSearch extends JFrame{
 		centerSearchMouseListener = new CenterSearchMouseListener();
 		
 		this.xBelongCenter = xBelongCenter;
+		
+		cntrNos = new ArrayList<String>();
 		
 		vCenterSearch = new JLabel("센터목록");
 		
@@ -184,7 +190,8 @@ public class CenterSearch extends JFrame{
 			super.mouseClicked(e);
 			
 			if(e.getButton()==1) {
-				
+				int clickedRow = eCenterList.getSelectedRow();
+				cntrNo = cntrNos.get(clickedRow);
 			}
 		}
 		
@@ -239,6 +246,9 @@ public class CenterSearch extends JFrame{
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {	
+				
+				cntrNos.add(rs.getString("CNTR_NO"));
+				
 				model1.addRow(new Object[] {rs.getString("CNTR_NAME"),rs.getString("ADDR")});
 			}
     		
@@ -255,7 +265,13 @@ public class CenterSearch extends JFrame{
     	}
     }
 	
-//  리스너 작업 종료로 메인 메서드 주석처리하였습니다.
+	
+	
+	public String getCntrNo() {
+		return cntrNo;
+	}
+
+	//  리스너 작업 종료로 메인 메서드 주석처리하였습니다.
 	public static void main(String[] args) {
 		new CenterSearch(new JTextField());
 	}
