@@ -518,6 +518,8 @@ public class ProtAniList extends JPanel {
 									String cntrNo = cntrNos.get(clickedRow);
 									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,null,null);
 								}
+								clearAll();
+								GetProtAniList();
 							}
 						}
 					}
@@ -584,7 +586,7 @@ public class ProtAniList extends JPanel {
 		
 		//사진변경쿼리
 		StringBuffer query4 = new StringBuffer();
-		
+		StringBuffer query5 = new StringBuffer();
 		
 		//사진, 케이지, 정보 모두 변경
 		if(newCage!=null && newPics!=null) {
@@ -614,12 +616,34 @@ public class ProtAniList extends JPanel {
 			query3.append(") ");
 			
 			
+			query4.append("DELETE FROM ABAN_PIC WHERE ABAN_NO='"+abanNo+"' ");
 		
+			query5.append("INSERT INTO ABAN_PIC(ABAN_NO,ANML_PIC_ORNU,PATH)");
+			query5.append("SELECT '"+abanNo+"', ABAN_NO, ROWNUM ANML_PIC_ORNU, PATH PATH ");
+			query5.append("FROM( ");
+			for(int i=0;i<newPics.size()-1;i++) {
+				query5.append("SELECT '"+newPics.get(i)+"' path FROM DUAL");
+				query5.append("UNION ALL");
+			}
+			query5.append("SELECT '"+newPics.get(newPics.size()-1)+"' path FROM DUAL ");
+			query5.append(") ");
 		}
 		//케이지 변경 필요 X
 		else if(newCage==null && newPics!=null) {
 //			query1.append("UPDATE ABAN SET SEX=?, NEUT_WHET=?, ANML_SIZE=?, FEAT=? WHERE ABAN_NO=? ");
 		
+			query4.append("DELETE FROM ABAN_PIC WHERE ABAN_NO='"+abanNo+"' ");
+			
+			query5.append("INSERT INTO ABAN_PIC(ABAN_NO,ANML_PIC_ORNU,PATH)");
+			query5.append("SELECT '"+abanNo+"', ABAN_NO, ROWNUM ANML_PIC_ORNU, PATH PATH ");
+			query5.append("FROM( ");
+			for(int i=0;i<newPics.size()-1;i++) {
+				query5.append("SELECT '"+newPics.get(i)+"' path FROM DUAL");
+				query5.append("UNION ALL");
+			}
+			query5.append("SELECT '"+newPics.get(newPics.size()-1)+"' path FROM DUAL ");
+			query5.append(") ");
+			
 		}//사진 변경 X
 		else if(newCage!=null && newPics==null) {
 //			query1.append("UPDATE ABAN SET SEX=?, NEUT_WHET=?, ANML_SIZE=?, FEAT=? WHERE ABAN_NO=? ");
@@ -687,6 +711,23 @@ public class ProtAniList extends JPanel {
 				}
 			}
 			
+			if(query4.length() != 0) {
+				pstmt = con.prepareStatement(query4.toString());
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					con.commit();
+				}
+			}
+			
+			if(query5.length() != 0) {
+				pstmt = con.prepareStatement(query5.toString());
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					con.commit();
+				}
+			}
 			
 		}catch(SQLException e) {
 			e.printStackTrace();
