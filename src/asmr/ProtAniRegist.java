@@ -66,6 +66,7 @@ public class ProtAniRegist extends JFrame{
 	private Color white = new Color(255,255,255);
 	
 	ProtAniRegistItemListener protAniRegistItemListener;
+	ProtAniTypeItemListener protAniTypeItemListener;
 	ProtAniRegistButtonListener protAniRegistButtonListener;
 	
 	GridBagLayout gridBagLayout;
@@ -78,6 +79,7 @@ public class ProtAniRegist extends JFrame{
 		
 		protAniRegistItemListener = new ProtAniRegistItemListener();
 		protAniRegistButtonListener = new ProtAniRegistButtonListener();
+		protAniTypeItemListener = new ProtAniTypeItemListener();
 		
 //		vProtAniRegist = new JLabel("보호동물등록");
 //		vProtAniRegist.setFont(new Font("나눔고딕", Font.BOLD, 20));
@@ -111,6 +113,7 @@ public class ProtAniRegist extends JFrame{
 		
 		vAniType = new JLabel("동물종류");
 		cbAniType = new JComboBox<String>(aniTypeDiv);
+		cbAniType.addItemListener(protAniTypeItemListener);
 		
 		vKind = new JLabel("품종");
 		xKind = new JTextField(10);
@@ -274,6 +277,32 @@ public class ProtAniRegist extends JFrame{
 		
 	}
 	
+	class ProtAniTypeItemListener implements ItemListener{
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// TODO Auto-generated method stub
+			String target = (String)e.getItem();
+			if(target=="고양이") {
+				activateCat();
+			}
+			else {
+				deactivateCat();
+			}
+		}
+		
+	}
+	
+	private void activateCat() {
+		cbAniSize.setSelectedItem("소");
+		cbAniSize.setEnabled(false);
+	}
+	
+	private void deactivateCat() {
+		cbAniSize.setSelectedItem("대");
+		cbAniSize.setEnabled(true);
+	}
+	
 	private void activateRscu() {
 		xRscuNo.setEnabled(true);
 		searchRscu.setEnabled(true);
@@ -321,15 +350,14 @@ public class ProtAniRegist extends JFrame{
 			}
 			else if(e.getSource().equals(pictureManage)) {
 				try {
-					PictureManage pictureManage = new PictureManage(null);
-					pictureManage.addWindowListener(new WindowAdapter() {
+					NewPictureManage newPictureManage = new NewPictureManage(null);
+					newPictureManage.addWindowListener(new WindowAdapter() {
 
 						@Override
 						public void windowClosed(WindowEvent e) {
 							// TODO Auto-generated method stub
 							super.windowClosed(e);
-							picPaths = pictureManage.getPaths();
-
+							picPaths = newPictureManage.getPaths();
 						}
 						
 					});

@@ -522,6 +522,9 @@ public class EmpList extends JPanel {
 	
 	// 직원 목록 가져오기
 	private void GetEmpList() {
+		empNos.clear();
+		workStartDates.clear();
+		cntrNos.clear();
 		model1.setRowCount(0);
 		
 		connection();
