@@ -156,9 +156,9 @@ public class ProtAniList extends JPanel {
 		xAbanAniType = new JTextField(12);
 		xAbanAniType.setEditable(false);
 		
-		vRescueNo = new JLabel("구조번호");
-		xRescueNo = new JTextField(12);
-		xRescueNo.setEditable(false);
+//		vRescueNo = new JLabel("구조번호");
+//		xRescueNo = new JTextField(12);
+//		xRescueNo.setEditable(false);
 		
 		vAbanAniName = new JLabel("유기동물명");
 		xAbanAniName = new JTextField(12);
@@ -200,7 +200,7 @@ public class ProtAniList extends JPanel {
 		xRegisDate = new JTextField(12);
 		xRegisDate.setEditable(false);
 		
-		vDescription = new JLabel("설명");
+		vDescription = new JLabel("비고");
 		xDescription = new JTextArea();
 		xDescription.setLineWrap(true);
 		xDescription.setEditable(false);
@@ -252,7 +252,7 @@ public class ProtAniList extends JPanel {
 		next = new JButton(">>");
 		next.addActionListener(protAniListButtonListener);
 		
-		JComponent[] fontComps1 = {vAbanAniNo, vAbanAniType, vRescueNo, vAbanAniName, vAge, vParAniName, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vRegisDate, vDescription, vDscvDate, vCage, vDscvPlace};
+		JComponent[] fontComps1 = {vAbanAniNo, vAbanAniType, vAbanAniName, vAge, vParAniName, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vRegisDate, vDescription, vDscvDate, vCage, vDscvPlace};
 		ChangeFont(fontComps1, new Font("나눔고딕", Font.PLAIN, 16));
 
 		JComponent[] fontComps2 = {register,modify,cancel,returning,pictureManage};
@@ -295,8 +295,8 @@ public class ProtAniList extends JPanel {
 		gridbagAdd(vAbanAniType, 2, 3, 1, 1);
 		gridbagAdd(xAbanAniType, 3, 3, 1, 1);
 		
-		gridbagAdd(vRescueNo, 4, 3, 1, 1);
-		gridbagAdd(xRescueNo, 5, 3, 1, 1);
+//		gridbagAdd(vRescueNo, 4, 3, 1, 1);
+//		gridbagAdd(xRescueNo, 5, 3, 1, 1);
 		
 		gridbagAdd(vAbanAniName, 0, 4, 1, 1);
 		gridbagAdd(xAbanAniName, 1, 4, 1, 1);
@@ -304,8 +304,8 @@ public class ProtAniList extends JPanel {
 		gridbagAdd(vAge, 2, 4, 1, 1);
 		gridbagAdd(xAge, 3, 4, 1, 1);
 		
-		gridbagAdd(vParAniName, 4, 4, 1, 1);
-		gridbagAdd(xParAniName, 5, 4, 1, 1);
+		gridbagAdd(vParAniName, 4, 3, 1, 1);
+		gridbagAdd(xParAniName, 5, 3, 1, 1);
 		
 		gridbagAdd(vAniType, 0, 5, 1, 1);
 		gridbagAdd(xAniType, 1, 5, 1, 1);
@@ -393,14 +393,14 @@ public class ProtAniList extends JPanel {
 				try {
 					// 0001 => ABAN_NO
 					String abanNo = xAbanAniNo.getText();
-					PictureManage pictureManage = new PictureManage(abanNo);
-					pictureManage.addWindowListener(new WindowAdapter() {
+					NewPictureManage newPictureManage = new NewPictureManage(abanNo);
+					newPictureManage.addWindowListener(new WindowAdapter() {
 
 						@Override
 						public void windowClosed(WindowEvent e) {
 							// TODO Auto-generated method stub
 							super.windowClosed(e);
-							abanPics = pictureManage.getPaths();
+							abanPics = newPictureManage.getPaths();
 							picMax = abanPics.size();
 						}
 					
@@ -746,7 +746,7 @@ public class ProtAniList extends JPanel {
 		eProtAniList.getSelectionModel().clearSelection();
 		imageLabel.setIcon(noImageIcon);
 		
-		JTextComponent[] jcomps = {xAbanAniNo,xAbanAniType,xRescueNo,xAbanAniName,xAge,xParAniName,xAniType,xKind,xColor,xDescription,xRegisDate,xDscvDate,xDscvPlace};
+		JTextComponent[] jcomps = {xAbanAniNo,xAbanAniType,xAbanAniName,xAge,xParAniName,xAniType,xKind,xColor,xDescription,xRegisDate,xDscvDate,xDscvPlace};
 		
 		for(JTextComponent jcomp:jcomps) {
 			jcomp.setText("");
@@ -914,7 +914,7 @@ public class ProtAniList extends JPanel {
 				
 				xAbanAniNo.setText(rs.getString("ABAN_NO"));
 				xAbanAniType.setText(korAbanType);
-				xRescueNo.setText(rs.getString("RSCU_NO"));
+//				xRescueNo.setText(rs.getString("RSCU_NO"));
 				xAbanAniName.setText(rs.getString("ABAN_NAME"));
 				xAge.setText(rs.getString("AGE"));
 				xParAniName.setText(rs.getString("MOM_ABAN_NO"));
@@ -973,7 +973,8 @@ public class ProtAniList extends JPanel {
 	}
 	
     private void GetProtAniList() {
-    	
+    	cntrNos.clear();
+    	abanNos.clear();
     	model1.setNumRows(0);
     	
     	StringBuffer query = new StringBuffer("SELECT p.CNTR_NO, a.ABAN_NO, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE, a.FEAT ");
