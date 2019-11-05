@@ -653,7 +653,7 @@ public class NewCenterRegistration extends JFrame{
 				});
 			}
 			else if(e.getSource().equals(addressSearch)) {
-				new AddressSearch(xAddress);
+				new NewAddressSearch(xAddress);
 			}
 			else if(e.getSource().equals(register)) {
 				int result = JOptionPane.showConfirmDialog(null, "신규 센터를 등록하시겠습니까?", "센터 등록 확인", JOptionPane.YES_NO_OPTION);
