@@ -215,7 +215,7 @@ public class EmpRegister extends JFrame{
 				new CenterSearch(xBelongCenter);
 			}
 			else if(e.getSource().equals(addressSearch)) {
-				new AddressSearch(xAddress);
+				new NewAddressSearch(xAddress);
 			}
 			else if(e.getSource().equals(register)) {
 				RegistEmp();
