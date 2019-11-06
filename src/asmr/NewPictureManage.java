@@ -47,6 +47,7 @@ public class NewPictureManage extends JFrame{
 	
 	private String abanNo;
 	private ArrayList<String> paths;
+	private ArrayList<String> prevPaths;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -96,6 +97,7 @@ public class NewPictureManage extends JFrame{
 		
 		this.abanNo = abanNo;
 		paths = new ArrayList<String>();
+		prevPaths = new ArrayList<String>();
 		
 		vPictureManage = new JLabel("사진관리");
 		
@@ -176,6 +178,8 @@ public class NewPictureManage extends JFrame{
 		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 12));
 		
 		GetAbanPics(abanNo);
+		
+		prevPaths = paths;
 		
 		PictureManageView();
 	}
@@ -321,9 +325,10 @@ public class NewPictureManage extends JFrame{
 			else if (e.getSource().equals(register)){
 				if(eSelectedPictureList.getRowCount() == 0) {
 					JOptionPane.showMessageDialog(null, 
-		                    "목록에 사진이 없습니다.", "경고", 
-		                    JOptionPane.WARNING_MESSAGE);
-				}
+		                    "사진을 등록하지 않습니다", "안내", 
+		                    JOptionPane.QUESTION_MESSAGE);
+					dispose();
+					}
 				else {
 					int result = JOptionPane.showConfirmDialog(null, "사진을 등록하시겠습니까?","Confirm",JOptionPane.YES_NO_OPTION);
 					if(result == JOptionPane.YES_OPTION) {
@@ -334,6 +339,7 @@ public class NewPictureManage extends JFrame{
 				}
 			}
 			else if (e.getSource().equals(cancel)){
+				paths = prevPaths;
 				dispose();
 			}
 		}
