@@ -402,16 +402,15 @@ public class ProtAniList extends JPanel {
 							super.windowClosed(e);
 							abanPics = newPictureManage.getPaths();
 							picMax = abanPics.size();
-							File input = new File(abanPics.get(0));
-							BufferedImage image;
 							try {
-								image = ImageIO.read(input);
+								File input = new File(abanPics.get(0));
+								BufferedImage image = ImageIO.read(input);
 								BufferedImage resized = resize(image,200,200);
 								ImageIcon icon = new ImageIcon(resized);
 								imageLabel.setIcon(icon);
-							} catch (IOException e1) {
+							} catch (Exception e1) {
 								// TODO Auto-generated catch block
-								e1.printStackTrace();
+								imageLabel.setIcon(noImageIcon);
 							}
 						}
 					
@@ -479,6 +478,7 @@ public class ProtAniList extends JPanel {
 						prevCage = (String)cbCage.getSelectedItem();
 						prevPics = abanPics;
 						
+						
 						modify.setText("확인");
 						JComponent[] changeStatusComps = {cbSex,cbNeutWhet,cbAniSize,cbCage,pictureManage};
 						for(JComponent cop: changeStatusComps) {
@@ -510,25 +510,24 @@ public class ProtAniList extends JPanel {
 								if(!prevPics.equals(newPics)&&!prevCage.equals(newCage)) {
 									String abanNo = abanNos.get(clickedRow);
 									String cntrNo = cntrNos.get(clickedRow);
-									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,newCage,newPics,prevPics.size());
+									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,newCage,newPics,prevPics.size(),newPics.size());
 								}
 								//케이지는 같은 경우라서 - 케이지 변경 필요 X
 								else if(!prevPics.equals(newPics)&&prevCage.equals(newCage)) {
 									String abanNo = abanNos.get(clickedRow);
 									String cntrNo = cntrNos.get(clickedRow);
-									System.out.println("I/m here");
-									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,null,newPics,prevPics.size());
+									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,null,newPics,prevPics.size(),newPics.size());
 								}
 								//사진은 같은 경우라서 - 사진 변경 필요 X
 								else if(prevPics.equals(newPics)&&!prevCage.equals(newCage)) {
 									String abanNo = abanNos.get(clickedRow);
 									String cntrNo = cntrNos.get(clickedRow);
-									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,newCage,null,prevPics.size());
+									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,newCage,null,prevPics.size(),newPics.size());
 								}
 								else if(prevPics.equals(newPics)&&prevCage.equals(newCage)) {
 									String abanNo = abanNos.get(clickedRow);
 									String cntrNo = cntrNos.get(clickedRow);
-									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,null,null,prevPics.size());
+									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,null,null,prevPics.size(),newPics.size());
 								}
 								clearAll();
 								GetProtAniList();
@@ -561,7 +560,7 @@ public class ProtAniList extends JPanel {
 		
 	}
 
-	private void UpdateAban(String abanNo,String cntrNo,String newSex,String newNeut,String newSize,String newDesc,String newCage, ArrayList<String> newPics, int prevPicNum) {
+	private void UpdateAban(String abanNo,String cntrNo,String newSex,String newNeut,String newSize,String newDesc,String newCage, ArrayList<String> newPics, int prevPicNum,int newPicNum) {
 		
 		String engSex = null;
 		String engSize = null;
@@ -631,35 +630,37 @@ public class ProtAniList extends JPanel {
 				query4.append("DELETE FROM ABAN_PIC WHERE ABAN_NO='"+abanNo+"' ");
 			}
 			
-			query5.append("INSERT INTO ABAN_PIC(ABAN_NO,ANML_PIC_ORNU,PATH)");
-			query5.append("SELECT '"+abanNo+"', ABAN_NO, ROWNUM ANML_PIC_ORNU, PATH PATH ");
-			query5.append("FROM( ");
-			for(int i=0;i<newPics.size()-1;i++) {
-				query5.append("SELECT '"+newPics.get(i)+"' path FROM DUAL");
-				query5.append("UNION ALL");
+			if(newPicNum > 0) {
+				query5.append("INSERT INTO ABAN_PIC(ABAN_NO,ANML_PIC_ORNU,PATH) ");
+				query5.append("SELECT '"+abanNo+"', ABAN_NO, ROWNUM ANML_PIC_ORNU, PATH PATH ");
+				query5.append("FROM( ");
+				for(int i=0;i<newPics.size()-1;i++) {
+					query5.append("SELECT '"+newPics.get(i)+"' path FROM DUAL ");
+					query5.append("UNION ALL ");
+				}
+				query5.append("SELECT '"+newPics.get(newPics.size()-1)+"' path FROM DUAL ");
+				query5.append(") ");
 			}
-			query5.append("SELECT '"+newPics.get(newPics.size()-1)+"' path FROM DUAL ");
-			query5.append(") ");
 		}
 		//케이지 변경 필요 X
 		else if(newCage==null && newPics!=null) {
 //			query1.append("UPDATE ABAN SET SEX=?, NEUT_WHET=?, ANML_SIZE=?, FEAT=? WHERE ABAN_NO=? ");
 		
-//			System.out.println("hello");
+			
 			if(prevPicNum>0) {
 				query4.append("DELETE FROM ABAN_PIC WHERE ABAN_NO='"+abanNo+"' ");
 			}
-			
-			query5.append("INSERT INTO ABAN_PIC(ABAN_NO,ANML_PIC_ORNU,PATH)");
-			query5.append("SELECT '"+abanNo+"' ABAN_NO, ROWNUM ANML_PIC_ORNU, PATH PATH ");
-			query5.append("FROM( ");
-			for(int i=0;i<newPics.size()-1;i++) {
-				query5.append("SELECT '"+newPics.get(i)+"' path FROM DUAL");
-				query5.append("UNION ALL");
+			if(newPicNum > 0) {
+				query5.append("INSERT INTO ABAN_PIC(ABAN_NO,ANML_PIC_ORNU,PATH) ");
+				query5.append("SELECT '"+abanNo+"' ABAN_NO, ROWNUM ANML_PIC_ORNU, PATH PATH ");
+				query5.append("FROM( ");
+				for(int i=0;i<newPics.size()-1;i++) {
+					query5.append("SELECT '"+newPics.get(i)+"' path FROM DUAL ");
+					query5.append("UNION ALL ");
+				}
+				query5.append("SELECT '"+newPics.get(newPics.size()-1)+"' path FROM DUAL ");
+				query5.append(") ");
 			}
-			query5.append("SELECT '"+newPics.get(newPics.size()-1)+"' path FROM DUAL ");
-			query5.append(") ");
-			
 		}//사진 변경 X
 		else if(newCage!=null && newPics==null) {
 //			query1.append("UPDATE ABAN SET SEX=?, NEUT_WHET=?, ANML_SIZE=?, FEAT=? WHERE ABAN_NO=? ");
@@ -727,7 +728,6 @@ public class ProtAniList extends JPanel {
 				}
 			}
 			
-			System.out.println(prevPicNum);
 			if(query4.length() != 0) {
 				pstmt = con.prepareStatement(query4.toString());
 				rs = pstmt.executeQuery();
@@ -971,26 +971,25 @@ public class ProtAniList extends JPanel {
 			pnt = 0;
 			picMax = abanPics.size();
 			
-			String firstPic = null;
+//			String firstPic = null;
+//			File input = null;
 			try {
-			firstPic = abanPics.get(0);
-			
-			}catch(IndexOutOfBoundsException e) {
 				
-			}finally {
-				File input = new File(firstPic);
-				BufferedImage image = ImageIO.read(input);
-				BufferedImage resized = resize(image,200,200);
-				ImageIcon icon = new ImageIcon(resized);
-				imageLabel.setIcon(icon);
-					
+			String firstPic = abanPics.get(0);
+			File input = new File(firstPic);
+			BufferedImage image = ImageIO.read(input);
+			BufferedImage resized = resize(image,200,200);
+			ImageIcon icon = new ImageIcon(resized);
+			imageLabel.setIcon(icon);
+			
+			}catch(Exception e) {
+				imageLabel.setIcon(noImageIcon); 
+				
 			}
 			
 			
 		}catch(SQLException e) {
 			e.printStackTrace();
-		}catch(IOException e1) {
-			e1.printStackTrace();
 		}
 		
 		disconnection();
