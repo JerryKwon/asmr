@@ -358,6 +358,7 @@ public class ProtAniRegist extends JFrame{
 							// TODO Auto-generated method stub
 							super.windowClosed(e);
 							picPaths = newPictureManage.getPaths();
+							System.out.println(picPaths.toString());
 						}
 						
 					});
@@ -487,7 +488,7 @@ public class ProtAniRegist extends JFrame{
     		query1.append(") ");
 		}	
     	//µ¿¹°±¸ºÐÀÌ Åº»ýÀÏ¶§ Äõ¸®
-    	else {
+    	else if(abanAniType=="Åº»ý") {
     		
     	}
 		
@@ -548,13 +549,13 @@ public class ProtAniRegist extends JFrame{
 			if(rs.next()) {
 				con.commit();
 			}
-			
-			pstmt = con.prepareStatement(query2.toString());
-			rs = pstmt.executeQuery();
-			if(rs.next()) {
-				con.commit();
+			if(query2.length() != 0) {
+				pstmt = con.prepareStatement(query2.toString());
+				rs = pstmt.executeQuery();
+				if(rs.next()) {
+					con.commit();
+				}
 			}
-			
 			pstmt = con.prepareStatement(query3.toString());
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
@@ -589,10 +590,11 @@ public class ProtAniRegist extends JFrame{
 			query.append("			FROM (SELECT * FROM RSCU ");
 			query.append("				WHERE RSCU_NO = '"+rscuNo+"') rs INNER JOIN (SELECT * FROM ASSG ");
 			query.append("					WHERE ASSG_RES = 'a') a ");
-			query.append("					ON rs.RSCU_NO = a.ASSG_NO) t1 INNER JOIN (SELECT * FROM PROT) p ");
+			query.append("					ON rs.RSCU_NO = a.ASSG_NO) t1 INNER JOIN (SELECT * FROM PROT WHERE PROT_END_DATE = to_date('9999-12-31','YYYY-MM-DD')) p ");
 			query.append("						ON t1.CNTR_NO = p.CNTR_NO ");
 			query.append(") t2 INNER JOIN CAGE c ");
 			query.append("	ON t2.CNTR_NO = c.CNTR_NO AND t2.CAGE_ORNU = c.CAGE_ORNU ");
+			query.append("ORDER BY 1 ");
 			
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
