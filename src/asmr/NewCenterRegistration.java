@@ -373,10 +373,8 @@ public class NewCenterRegistration extends JFrame{
 			query2.append("		  BIZ_FILD ");
 			query2.append("FROM EMP_WORK_HIST ");
 			query2.append("WHERE EMP_NO = '"+cntrManagerNo+"' ");
-<<<<<<< HEAD
-=======
 //			query2.append(") ");
->>>>>>> choi
+
 			
 			pstmt = con.prepareStatement(query2.toString());
 			rs = pstmt.executeQuery();
