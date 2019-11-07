@@ -62,11 +62,15 @@ public class Login extends JPanel implements ActionListener{
 		}
 	}
 	public void actionPerformed(ActionEvent e) {
+		try{
 		if(e.getSource().equals(bLogin)){
 //			main.setLogin();
 			empID = xID.getText();
 			empPwd = new String(xPassword.getPassword());
 			LoginCheck(xID.getText(), new String(xPassword.getPassword()));
+		}
+		}catch(NumberFormatException e1){
+			JOptionPane.showMessageDialog(null, "정확한 값을 입력해주세요", "메시지", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	public void setMain(MainFrame main){
