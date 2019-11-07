@@ -57,8 +57,11 @@ public class ProtAniList extends JPanel {
 	
 	private ArrayList<String> cntrNos;
 	private ArrayList<String> abanNos;
+	private ArrayList<String> abanTps;
 	private ArrayList<String> abanPics;
 	private ArrayList<String> newPicPaths;
+	
+	private String parAbanAniNo = null;
 	
 	private int picMax;
 	private int pnt;
@@ -114,6 +117,7 @@ public class ProtAniList extends JPanel {
 		
 		cntrNos = new ArrayList<String>();
 		abanNos = new ArrayList<String>();
+		abanTps = new ArrayList<String>();
 		abanPics = new ArrayList<String>();
 		newPicPaths = new ArrayList<String>();
 		
@@ -387,7 +391,18 @@ public class ProtAniList extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(register)){
-				new ProtAniRegist();
+				ProtAniRegist protAniRegist = new ProtAniRegist();
+				protAniRegist.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						// TODO Auto-generated method stub
+						super.windowClosed(e);
+						GetProtAniList();
+						clearAll();
+					}
+				
+				});
 			}
 			else if(e.getSource().equals(pictureManage)) {
 				try {
@@ -822,21 +837,54 @@ public class ProtAniList extends JPanel {
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
 				GetProtAni();
+				if(!parAbanAniNo.isEmpty()) {
+					//부모 이름 찾아서 텍스트필드에 넣어주기
+					GetParAbanAniName();
+				}
 			}
 		}
 		
+	}
+	
+	private void GetParAbanAniName() {
+		
+		StringBuffer query = new StringBuffer("SELECT ABAN_NAME FROM ABAN WHERE ABAN_NO='"+parAbanAniNo+"' ");
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				xParAniName.setText(rs.getString("ABAN_NAME"));
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
 	}
 	
 	private void GetProtAni() {
 		int clickedRow = eProtAniList.getSelectedRow();
 		String cntrNo = cntrNos.get(clickedRow);
 		String abanNo = abanNos.get(clickedRow);
+		String abanTp = abanTps.get(clickedRow);
 		
-		StringBuffer query1 = new StringBuffer("SELECT a.ABAN_NO,a.ABAN_TP, rs.RSCU_NO, a.ABAN_NAME, a.AGE, a.MOM_ABAN_NO, a.ANML_KINDS, a.KIND, a.SEX, a.NEUT_WHET, a.COLOR, a.ANML_SIZE, a.REGIS_DATE, a.FEAT, rp.DSCV_DTTM, rp.DSCV_LOC ");
-		query1.append("FROM (SELECT RSCU_NO FROM RSCU) rs INNER JOIN (SELECT * FROM ABAN WHERE ABAN_NO='"+abanNo+"') a ");
-		query1.append(" ON rs.rscu_no = a.rscu_no INNER JOIN (SELECT * FROM ASSG WHERE ASSG_RES = 'a') a2 ");
-		query1.append(" ON a2.assg_no = rs.rscu_no INNER JOIN RPRT rp ON rp.rprt_no = a2.rprt_no ");
-	
+		StringBuffer query1 = new StringBuffer();
+		
+		if(abanTp.equals("r")) {
+			query1.append("SELECT a.ABAN_NO,a.ABAN_TP, rs.RSCU_NO, a.ABAN_NAME, a.AGE, a.MOM_ABAN_NO, a.ANML_KINDS, a.KIND, a.SEX, a.NEUT_WHET, a.COLOR, a.ANML_SIZE, a.REGIS_DATE, a.FEAT, rp.DSCV_DTTM, rp.DSCV_LOC ");
+			query1.append("FROM (SELECT RSCU_NO FROM RSCU) rs INNER JOIN (SELECT * FROM ABAN WHERE ABAN_NO='"+abanNo+"') a ");
+			query1.append(" ON rs.rscu_no = a.rscu_no INNER JOIN (SELECT * FROM ASSG WHERE ASSG_RES = 'a') a2 ");
+			query1.append(" ON a2.assg_no = rs.rscu_no INNER JOIN RPRT rp ON rp.rprt_no = a2.rprt_no ");
+			
+			parAbanAniNo = "";
+		}
+		else if(abanTp.equals("b")) {
+			query1.append("SELECT a.ABAN_NO,a.ABAN_TP, a.ABAN_NAME, a.AGE, a.MOM_ABAN_NO, a.ANML_KINDS, a.KIND, a.SEX, a.NEUT_WHET, a.COLOR, a.ANML_SIZE, a.REGIS_DATE, a.FEAT FROM ABAN a WHERE ABAN_NO='"+abanNo+"' ");
+		}
+		
 		StringBuffer query2 = new StringBuffer("SELECT '케이지'||c.CAGE_ORNU||'('||CASE c.CAGE_SIZE WHEN 's' THEN '소' WHEN 'm' THEN '중' WHEN 'b' THEN '대' END||')' cages ");
 		query2.append("FROM (SELECT * ");
 		query2.append("	FROM CAGE ");
@@ -864,7 +912,7 @@ public class ProtAniList extends JPanel {
 		query3.append("	ON c.cntr_no = p.cntr_no AND c.cage_ornu = p.cage_ornu ");
 		
 		StringBuffer query4 = new StringBuffer("SELECT PATH FROM ABAN_PIC ");
-		query4.append("WHERE ABAN_NO='2019102701'");
+		query4.append("WHERE ABAN_NO='"+abanNo+"'");
 		
 		connection();
 		
@@ -929,12 +977,25 @@ public class ProtAniList extends JPanel {
 					break;
 				}
 				
+				if(abanTp.equals("r")) {
+					
+					xDscvDate.setText(rs.getString("DSCV_DTTM"));
+					xDscvPlace.setText(rs.getString("DSCV_LOC"));
+					
+				}
+				
+				if(abanTp.equals("b")) {
+					parAbanAniNo = rs.getString("MOM_ABAN_NO");
+				}
+				
 				xAbanAniNo.setText(rs.getString("ABAN_NO"));
 				xAbanAniType.setText(korAbanType);
-//				xRescueNo.setText(rs.getString("RSCU_NO"));
 				xAbanAniName.setText(rs.getString("ABAN_NAME"));
+//				xRescueNo.setText(rs.getString("RSCU_NO"));
 				xAge.setText(rs.getString("AGE"));
-				xParAniName.setText(rs.getString("MOM_ABAN_NO"));
+				
+//				xParAniName.setText(rs.getString("MOM_ABAN_NO"));
+				
 				xAniType.setText(korAnmlKinds);
 				xKind.setText(rs.getString("KIND"));
 				cbSex.setSelectedItem(korSex);
@@ -943,8 +1004,7 @@ public class ProtAniList extends JPanel {
 				cbAniSize.setSelectedItem(korAnmlSize);
 				xRegisDate.setText(rs.getString("REGIS_DATE").split(" ")[0]);
 				xDescription.setText(rs.getString("FEAT"));
-				xDscvDate.setText(rs.getString("DSCV_DTTM"));
-				xDscvPlace.setText(rs.getString("DSCV_LOC"));
+				
 			}
 			
 			//query2
@@ -999,9 +1059,10 @@ public class ProtAniList extends JPanel {
     private void GetProtAniList() {
     	cntrNos.clear();
     	abanNos.clear();
+    	abanTps.clear();
     	model1.setNumRows(0);
     	
-    	StringBuffer query = new StringBuffer("SELECT p.CNTR_NO, a.ABAN_NO, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE, a.FEAT ");
+    	StringBuffer query = new StringBuffer("SELECT p.CNTR_NO, a.ABAN_NO, a.ABAN_TP, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE, a.FEAT ");
     	query.append("FROM ABAN a INNER JOIN (SELECT * FROM PROT ");
     	query.append("	WHERE PROT_END_DATE = to_date('9999-12-31','YYYY-MM-DD')) p ");
     	query.append("	ON a.ABAN_NO = p.ABAN_NO ");
@@ -1017,6 +1078,7 @@ public class ProtAniList extends JPanel {
 				
 				cntrNos.add(rs.getString("CNTR_NO"));
 				abanNos.add(rs.getString("ABAN_NO"));
+				abanTps.add(rs.getString("ABAN_TP"));
 				
 				String anmlKinds = rs.getString("ANML_KINDS");
 				String anmlSize = rs.getString("ANML_SIZE");
