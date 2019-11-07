@@ -19,9 +19,13 @@ public class NotiPost extends JPanel {
 	
 	private JLabel vNoti, vWrt, vWrtDttm, vTit, vCont;
 	
-	private JTextField xWrt, xWrtDttm, xTit;
+	protected static JTextField xWrt;
+
+	protected static JTextField xWrtDttm;
+
+	protected static JTextField xTit;
 	
-	private JTextArea xCont;
+	protected static JTextArea xCont;
 	
 	private JButton update, getBack;
 	
@@ -34,7 +38,7 @@ public class NotiPost extends JPanel {
 	private Color white = new Color(255,255,255);
 	private Color black = new Color(0,0,0);
 	
-	private NotiPost() {
+	public NotiPost() {
 		
 		notiPostButtonListener = new NotiPostButtonListener();
 		
@@ -149,15 +153,15 @@ public class NotiPost extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(update)) {	
-				
+			
 			}
 			else if(e.getSource().equals(getBack)) {
-				
+				MainFrame.notiBoardCase();
 			}
 		}
 		
 	}
-	
+  
 	
 	
 	public static void main(String[] args) {

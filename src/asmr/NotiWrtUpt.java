@@ -8,6 +8,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -16,6 +22,15 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class NotiWrtUpt extends JPanel {
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
 	NotiWrtUptButtonListener notiWrtUptButtonListener;
 	
@@ -124,7 +139,8 @@ public class NotiWrtUpt extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(save)) {	
-				
+				PostNoti();	
+				MainFrame.notiBoardCase();
 			}
 			else if(e.getSource().equals(cancel)) {
 				MainFrame.notiBoardCase();
@@ -132,6 +148,83 @@ public class NotiWrtUpt extends JPanel {
 		}
 		
 	}
+    
+    
+    private void PostNoti() {
+    	connection();
+    	
+		String postTit = xTit.getText();
+		String postCont = xCont.getText();
+		
+//		INSERT INTO 
+//		VALUES (POST_SEQ.nextval,    '시스템 리뉴얼했습니다.',    to_char(sysdate,'YYYY-MM-DD HH24:MI'),    '새로운 시스템과 함께하세요.',    'n', null,null,null, 0000);
+    	
+		try {
+			StringBuffer query1 = new StringBuffer("INSERT INTO POST(POST_NO, POST_TIT, WRT_DTTM, POST_CONT, POST_TP, INQ_POST_NO, INQ_WRT_PRSN_NO, ANS_WRT_PRSN_NO, NOTI_WRT_PRSN_NO) ");
+			query1.append("VALUES( ");
+			query1.append("POST_SEQ.nextval, ");
+			query1.append("'"+postTit+"', ");
+			query1.append("sysdate, ");
+			query1.append("'"+postCont+"', ");
+			query1.append("'n', ");
+			query1.append("null, ");
+			query1.append("null, ");
+			query1.append("null, ");
+			query1.append("0000) ");
+			
+			pstmt = con.prepareStatement(query1.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+    	
+    	
+    }
+    
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
+	
+	
 	
 	
 
