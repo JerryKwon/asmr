@@ -30,6 +30,7 @@ public class CageRegister extends JFrame {
 	private JTextField xCenterName;
 	private JComboBox<String> cbCageSize;
 	private JButton register,cancel;
+	private String cntrName = null;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -53,9 +54,8 @@ public class CageRegister extends JFrame {
 	public CageRegister(String cntrName) {
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
-		
+		this.cntrName = cntrName;
 		cageRegisterButtonListener = new CageRegisterButtonListener();
-		
 //		vCageRegister = new JLabel("케이지등록");
 		
 		vCenterName = new JLabel("센터명");
@@ -204,7 +204,7 @@ public class CageRegister extends JFrame {
 			query.append("	SELECT c1.CNTR_NO,NVL(c2.CAGE_ORNU,0) CAGE_ORNU ");
 			query.append("	FROM( ");
 			query.append("		SELECT * FROM CNTR ");
-			query.append("		WHERE CNTR_NAME='서울서초보호센터') c1 LEFT OUTER JOIN CAGE c2 ");
+			query.append("		WHERE CNTR_NAME='"+cntrName+"') c1 LEFT OUTER JOIN CAGE c2 ");
 			query.append("											ON c1.CNTR_NO = c2.CNTR_NO ");
 			query.append(") ");
 			query.append("GROUP BY CNTR_NO ");

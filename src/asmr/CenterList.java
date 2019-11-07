@@ -77,7 +77,7 @@ public class CenterList extends JPanel{
 	
 	//테이블의 컬럼 배열
 	private final String[] col1 = {"센터명","주소","운영시간"};
-	private final String[] col2 = {"케이지 순번","크기"};
+	private final String[] col2 = {"케이지 번호","크기"};
 	
 	//테이블 컬럼 정보 - 센터목록
 	private DefaultTableModel model1 = new DefaultTableModel(col1,0);
@@ -346,6 +346,7 @@ public class CenterList extends JPanel{
 	
 	// 센터 목록 가져오기
 	private void GetCenterList() {
+		cntrNos.clear();
 		model1.setRowCount(0);
 		
 		connection();
@@ -675,15 +676,16 @@ public class CenterList extends JPanel{
 			if(e.getSource().equals(cageRegist)) {
 				int clickedRow = eCenterList.getSelectedRow();
 				String cntrName = (String)eCenterList.getValueAt(clickedRow, 0);
-				CageRegister cageRegister = new CageRegister(cntrName);
-				cageRegister.addWindowListener(new WindowAdapter() {
+				String cntrNo = cntrNos.get(clickedRow);
+				NewCageRegister newCageRegister = new NewCageRegister(cntrName,cntrNo);
+				newCageRegister.addWindowListener(new WindowAdapter() {
 
 					@Override
 					public void windowClosed(WindowEvent e) {
 						// TODO Auto-generated method stub
 						super.windowClosed(e);
 						GetCageList();
-						GetCenter2(cntrName);
+						GetCenter2(cntrNo);
 					}
 					
 				});
@@ -773,11 +775,6 @@ public class CenterList extends JPanel{
 			}
 
 			if(e.getSource().equals(cancel)) {
-				modify.setText("수정");
-				JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose,searchManager};
-				for(JComponent cop: changeStatusComps) {
-					cop.setEnabled(false);
-				}
 				ClearAll();
 			}
 			
@@ -787,8 +784,16 @@ public class CenterList extends JPanel{
 	
 	private void ClearAll() {
 		
+		isClicked = false;
+		
 		eCenterList.getSelectionModel().clearSelection();
 		model2.setRowCount(0);
+		
+		modify.setText("수정");
+		JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose,searchManager};
+		for(JComponent cop: changeStatusComps) {
+			cop.setEnabled(false);
+		}
 		
 		JTextComponent[] jComps = {xCenterNum,xEstDate,xCenterName,xPhoneNum,xArea,xCenterManager,xCageBig,xCageMid,xCageSmall};
 		

@@ -35,6 +35,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.JTextComponent;
 
 public class EmpList extends JPanel {
 	private JLabel vEmpList,vEmpNameSearch,vEmpInfo,vEmpNo,vBelongCenter,vEmpType,vWorkType,vEmpName,vBirthDate,vPhoneNum;
@@ -47,6 +48,17 @@ public class EmpList extends JPanel {
 	
 	private ArrayList<String> empNos;
 	private ArrayList<String> workStartDates;
+	private ArrayList<String> cntrNos;
+	private String empNo = null;
+	
+	
+	private boolean isClicked = false;
+	
+	private String prevCntrNo = null; 
+	private String prevEmpType = null; 
+	private String prevWorkType = null;
+	
+	CenterSearch centerSearchClass;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -86,6 +98,7 @@ public class EmpList extends JPanel {
 		
 		empNos = new ArrayList<String>();
 		workStartDates = new ArrayList<String>();
+		cntrNos = new ArrayList<String>();
 		
 		vEmpList = new JLabel("직원목록");
 		vEmpList.setFont(new Font("나눔고딕", Font.BOLD, 24));
@@ -293,21 +306,61 @@ public class EmpList extends JPanel {
 				}
 			}
 			else if(e.getSource().equals(centerSearch)) {
-				new CenterSearch(xBelongCenter);
+				centerSearchClass = new CenterSearch(xBelongCenter);
 			}
 			else if(e.getSource().equals(modify)) {
-				modify.setText("확인");
-				JComponent[] changeStatusComps = {cbEmptype,cbWorkType,centerSearch};
-				for(JComponent cop: changeStatusComps) {
-					cop.setEnabled(true);
+				
+				String newCntrNo = null;
+				String newEmpType = null;
+				String newWorkType = null;
+				
+				if(eEmpList.getSelectedRow()!=-1) {
+					
+					if(!isClicked) {
+					
+						isClicked = true;
+						
+						int clickedRow = eEmpList.getSelectedRow();
+						
+						prevCntrNo = cntrNos.get(clickedRow);
+						prevEmpType = (String)cbEmptype.getSelectedItem();
+						prevWorkType = (String)cbWorkType.getSelectedItem();
+						
+						modify.setText("확인");
+						JComponent[] changeStatusComps = {cbEmptype,cbWorkType,centerSearch};
+						for(JComponent cop: changeStatusComps) {
+							cop.setEnabled(true);
+						}
+					}
+					else {
+						isClicked = false;
+						
+						int result = JOptionPane.showConfirmDialog(null, "직원정보를 수정하시겠습니까?", "직원정보수정", JOptionPane.YES_NO_OPTION);
+						if(result == JOptionPane.OK_OPTION) {
+							try {
+								newCntrNo = centerSearchClass.getCntrNo();
+							}catch(NullPointerException e1) {
+								newCntrNo=prevCntrNo;
+							}
+							newEmpType = (String)cbEmptype.getSelectedItem();
+							newWorkType = (String)cbWorkType.getSelectedItem();
+						}
+						
+						if(prevCntrNo.equals(newCntrNo)&&prevEmpType.equals(newEmpType)&&prevWorkType.equals(newWorkType)) {
+							JOptionPane.showMessageDialog(null, "변경된정보가 없습니다.", "알림", JOptionPane.WARNING_MESSAGE);
+							clearAll();
+						}
+						else {
+							UpdateEmp(empNo,newCntrNo,newEmpType,newWorkType);
+							
+							GetEmpList();
+							clearAll();
+						}
+					}
 				}
 			}
 			else if(e.getSource().equals(cancel)) {
-				modify.setText("수정");
-				JComponent[] changeStatusComps = {cbEmptype,cbWorkType,centerSearch};
-				for(JComponent cop: changeStatusComps) {
-					cop.setEnabled(false);
-				}
+				clearAll();
 			}
 			else if(e.getSource().equals(resign)) {
 				
@@ -326,6 +379,92 @@ public class EmpList extends JPanel {
 		
 	}
 	
+	private void clearAll() {
+		
+		modify.setText("수정");
+		isClicked=false;
+		
+		JComponent[] changeStatusComps = {cbEmptype,cbWorkType,centerSearch};
+		for(JComponent cop: changeStatusComps) {
+			cop.setEnabled(false);
+		}
+		
+		JTextComponent[] jcomps = {xEmpNo,xBelongCenter,xEmpName,xBirthDate,xPhoneNum};
+		for(JTextComponent jcomp:jcomps) {
+			jcomp.setText("");
+		}
+		cbEmptype.setSelectedItem("계약직");
+		cbWorkType.setSelectedItem("센터장");
+		eEmpList.getSelectionModel().clearSelection();
+
+	}
+	
+	
+	private void UpdateEmp(String empNo, String newCntrNo, String newEmpType,String newWorkType) {
+		String engEmpType = null;
+		String engWorkType = null;
+		
+		switch(newEmpType) {
+		case "정규직":
+			engEmpType = "f";
+			break;
+		case "계약직":
+			engEmpType = "c";
+			break;
+		}
+		switch(newWorkType) {
+		case "센터장":
+			engWorkType = "c";
+			break;
+		case "관리직원":
+			engWorkType = "m";
+			break;
+		case "수의사":
+			engWorkType = "d";
+			break;
+		case "보호관리직원":
+			engWorkType = "p";
+			break;
+		case "사무직종사자":
+			engWorkType = "o";
+			break;
+		case "유기동물구조원":
+			engWorkType = "r";
+			break;
+		}
+	
+		//직원의 이전 직책을 Update하여 마감하는 쿼리
+		StringBuffer query1 = new StringBuffer("UPDATE EMP_WORK_HIST SET WORK_END_DATE=trunc(sysdate) WHERE EMP_NO=? AND WORK_END_DATE=to_date('9999-12-31','YYYY-MM-DD')");
+		
+		//직원의 새로운 직책을 Insert하는 쿼리
+		StringBuffer query2 = new StringBuffer("INSERT INTO EMP_WORK_HIST(EMP_NO,WORK_START_DATE,CNTR_NO,EMP_TP,BIZ_FILD) ");
+		query2.append("SELECT '"+empNo+"' EMP_NO, trunc(SYSDATE) WORK_START_DATE, '"+newCntrNo+"' CNTR_NO, '"+engEmpType+"' EMP_TP, '"+engWorkType+"' BIZ_FILD FROM DUAL");
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query1.toString());
+			pstmt.setString(1, empNo);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				con.commit();
+			}
+			
+			pstmt = con.prepareStatement(query2.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+	
+	}
+	
 //  직원 목록테이블 클릭시 발생하는 리스너
 	class EmpListMouseListener extends MouseAdapter{
 
@@ -338,7 +477,7 @@ public class EmpList extends JPanel {
 			//1:좌클릭, 3:우클릭
 			if(e.getButton() == 1) {
 				int clickedRow = eEmpList.getSelectedRow();
-				String empNo = (String)eEmpList.getValueAt(clickedRow, 0);
+				empNo = (String)eEmpList.getValueAt(clickedRow, 0);
 				String cntrName = (String)eEmpList.getValueAt(clickedRow, 2);
 				GetEmp(empNo, cntrName);
 			}
@@ -383,12 +522,15 @@ public class EmpList extends JPanel {
 	
 	// 직원 목록 가져오기
 	private void GetEmpList() {
+		empNos.clear();
+		workStartDates.clear();
+		cntrNos.clear();
 		model1.setRowCount(0);
 		
 		connection();
 		
 		try {
-			StringBuffer query= new StringBuffer("SELECT e.EMP_NO emp_no, wh.WORK_START_DATE, e.EMP_NAME emp_name, c.CNTR_NAME cntr_name ");
+			StringBuffer query= new StringBuffer("SELECT e.EMP_NO emp_no, wh.WORK_START_DATE, e.EMP_NAME emp_name, c.CNTR_NO, c.CNTR_NAME cntr_name ");
 			query.append("FROM ( SELECT EMP_NO, EMP_NAME FROM EMP) e INNER JOIN( ");
 			query.append("	SELECT  EMP_NO, WORK_START_DATE, CNTR_NO ");
 			query.append("	FROM EMP_WORK_HIST ");
@@ -403,6 +545,7 @@ public class EmpList extends JPanel {
 			while(rs.next()) {		
 				empNos.add(rs.getString("emp_no"));
 				workStartDates.add(rs.getString("work_start_date"));
+				cntrNos.add(rs.getString("cntr_no"));
 				
 				model1.addRow(new Object[] {rs.getString("emp_no"),rs.getString("emp_name"),rs.getString("cntr_name")});
 			}

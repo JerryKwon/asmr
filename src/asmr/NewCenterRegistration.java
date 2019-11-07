@@ -84,8 +84,8 @@ public class NewCenterRegistration extends JFrame{
 		xCenterName = new JTextField(10);
 		
 		//센터구분
-		vCenterType = new JLabel("센터구분");
-		cbCenterType = new JComboBox<String>(centerTypeDiv);
+//		vCenterType = new JLabel("센터구분");
+//		cbCenterType = new JComboBox<String>(centerTypeDiv);
 		
 		//면적
 		vArea = new JLabel("면적");
@@ -100,15 +100,8 @@ public class NewCenterRegistration extends JFrame{
 
 		LocalDate now = LocalDate.now();
 		Date date = Date.valueOf(now);
-		chooser = new JDateChooser(date,"YYYY-MM-dd");
+		chooser = new JDateChooser(date,"yyyy-MM-dd");
 		
-//		xEstDate = new JTextField(10); 
-//		xEstDate.setEnabled(false);		
-//		buttonIcon = ImageIO.read(new File("images/cal1.png"));
-//		imageButton = new JButton(new ImageIcon(buttonIcon));
-//		imageButton.setBorderPainted(false);
-//		imageButton.setContentAreaFilled(false);
-//		imageButton.setFocusPainted(false);
 		
 		//운영시간
 		vOperTime = new JLabel("운영시간");
@@ -183,8 +176,8 @@ public class NewCenterRegistration extends JFrame{
 		gridbagAdd(xCenterName, 1, 1, 1, 1);
 		
 		//센터구분
-		gridbagAdd(vCenterType, 11, 1, 1, 1);
-		gridbagAdd(cbCenterType, 12, 1, 1, 1);
+//		gridbagAdd(vCenterType, 11, 1, 1, 1);
+//		gridbagAdd(cbCenterType, 12, 1, 1, 1);
 		
 		//면적
 		gridbagAdd(vArea, 0, 2, 1, 1);
@@ -240,7 +233,7 @@ public class NewCenterRegistration extends JFrame{
 		gridbagAdd(buttonPanel, 0, 10, 4, 1);
 		
 		
-		JComponent[] vContextComps = {vCenterName,vCenterType,vArea,vPhoneNum,vEstDate,vOperTime,vOperTimeDash,vCenterManager,vAddress,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount};
+		JComponent[] vContextComps = {vCenterName,vArea,vPhoneNum,vEstDate,vOperTime,vOperTimeDash,vCenterManager,vAddress,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount};
 		ChangeFont(vContextComps, new Font("나눔고딕", Font.PLAIN, 16));
 		
 		JComponent[] bComps= {centerManagerSearch,addressSearch, register, cancel};
@@ -306,7 +299,7 @@ public class NewCenterRegistration extends JFrame{
 		String openTime = (String)cbOperTimeOpen.getSelectedItem();
 		String clseTime = (String)cbOperTimeClose.getSelectedItem();
 		String estbDate = ((JTextField)chooser.getDateEditor().getUiComponent()).getText();
-		String centerType = (String)cbCenterType.getSelectedItem();
+//		String centerType = (String)cbCenterType.getSelectedItem();
 		
 		String newOpenTime = null;
 		String newClseTime = null;
@@ -323,14 +316,14 @@ public class NewCenterRegistration extends JFrame{
 		sb2.append(clseTimes[1]);
 		newClseTime = sb2.toString();
 		
-		switch(centerType) {
-		case "본부":
-			newCenterType = "h";
-			break;
-		case "일반":
-			newCenterType = "n";
-			break;
-		}
+//		switch(centerType) {
+//		case "본부":
+//			newCenterType = "h";
+//			break;
+//		case "일반":
+//			newCenterType = "n";
+//			break;
+//		}
 	
 		// 직원근무이력 관련
 		String cntrManagerName = xCenterManager.getText();
@@ -357,7 +350,7 @@ public class NewCenterRegistration extends JFrame{
 			query1.append("	'"+newOpenTime+"' OPEN_TIME, ");
 			query1.append("	'"+newClseTime+"' CLSE_TIME, ");
 			query1.append("	 TO_DATE('"+estbDate+"','YYYY-MM-DD') ESTB_DATE, ");
-			query1.append("	'"+newCenterType+"' CNTR_TP ");
+			query1.append("	'n' CNTR_TP ");
 			query1.append("FROM( ");
 			query1.append("	SELECT /*+ INDEX_DESC(CNTR CNTR_PK)*/ CNTR_NO ");
 			query1.append("	FROM CNTR ");
@@ -380,7 +373,8 @@ public class NewCenterRegistration extends JFrame{
 			query2.append("		  BIZ_FILD ");
 			query2.append("FROM EMP_WORK_HIST ");
 			query2.append("WHERE EMP_NO = '"+cntrManagerNo+"' ");
-			query2.append(") ");
+//			query2.append(") ");
+
 			
 			pstmt = con.prepareStatement(query2.toString());
 			rs = pstmt.executeQuery();
@@ -443,7 +437,7 @@ public class NewCenterRegistration extends JFrame{
 			query3.append(")t3 ");
 
 		}
-		else if(bigCageNum==1) {
+		else if(bigCageNum==1&&midCageNum>2&&smallCageNum>2) {
 			query3.append("INSERT INTO CAGE ");
 			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
 			query3.append("		  FROM CNTR c ");
@@ -469,7 +463,7 @@ public class NewCenterRegistration extends JFrame{
 			query3.append(")t3 ");
 		}
 		
-		else if(midCageNum==1) {
+		else if(midCageNum==1&&bigCageNum>2&&smallCageNum>2) {
 			query3.append("INSERT INTO CAGE ");
 			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
 			query3.append("		  FROM CNTR c ");
@@ -495,7 +489,7 @@ public class NewCenterRegistration extends JFrame{
 			query3.append(")t3 ");
 		}
 		
-		else if(smallCageNum==1) {
+		else if(smallCageNum==1&&bigCageNum>2&&midCageNum>2) {
 			query3.append("INSERT INTO CAGE ");
 			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
 			query3.append("		  FROM CNTR c ");
@@ -521,7 +515,7 @@ public class NewCenterRegistration extends JFrame{
 			query3.append(")t3 ");
 		}
 		
-		else if(bigCageNum==1 && midCageNum==1) {
+		else if(bigCageNum==1 && midCageNum==1&& smallCageNum>2) {
 			query3.append("INSERT INTO CAGE ");
 			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
 			query3.append("		  FROM CNTR c ");
@@ -547,7 +541,7 @@ public class NewCenterRegistration extends JFrame{
 			query3.append(")t3 ");
 		}
 		
-		else if(bigCageNum==1 && smallCageNum==1) {
+		else if(bigCageNum==1 && smallCageNum==1 && midCageNum>2) {
 			query3.append("INSERT INTO CAGE ");
 			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
 			query3.append("		  FROM CNTR c ");
@@ -573,7 +567,7 @@ public class NewCenterRegistration extends JFrame{
 			query3.append(")t3 ");
 		}
 		
-		else if(midCageNum==1 && smallCageNum==1) {
+		else if(midCageNum==1 && smallCageNum==1&& bigCageNum>2) {
 			query3.append("INSERT INTO CAGE ");
 			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
 			query3.append("		  FROM CNTR c ");
@@ -661,7 +655,7 @@ public class NewCenterRegistration extends JFrame{
 				});
 			}
 			else if(e.getSource().equals(addressSearch)) {
-				new AddressSearch(xAddress);
+				new NewAddressSearch(xAddress);
 			}
 			else if(e.getSource().equals(register)) {
 				int result = JOptionPane.showConfirmDialog(null, "신규 센터를 등록하시겠습니까?", "센터 등록 확인", JOptionPane.YES_NO_OPTION);

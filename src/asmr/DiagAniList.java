@@ -29,6 +29,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -57,7 +58,17 @@ public class DiagAniList extends JPanel{
 	private ResultSet rs = null;
 	private ResultSetMetaData rsmd = null;
 	
-	private ArrayList<String> protNos;
+	private boolean isClicked = false;
+	
+	private String prevDiagCont = null;
+	private String newDiagCont = null;
+	private String prevDschDate = null;
+	private String newDschDate = null;
+	
+	private ArrayList<String> protNos_1;
+	
+	private ArrayList<String> protNos_2;
+	private ArrayList<String> diagOrnus;
 	private String protNo;
 	
 	private final String[] col1 = {"유기동물명","동물종류","품종","나이(개월)","크기"};
@@ -92,7 +103,10 @@ public class DiagAniList extends JPanel{
 		protAniListMouseListener = new ProtAniListMouseListener();
 		diagListMouseListener = new DiagListMouseListener();
 		
-		protNos = new ArrayList<String>();
+		protNos_1 = new ArrayList<String>();
+	
+		protNos_2 = new ArrayList<String>();
+		diagOrnus = new ArrayList<String>();
 		protNo = null;
 		
 		vProtAniList = new JLabel("보호동물목록");
@@ -205,9 +219,11 @@ public class DiagAniList extends JPanel{
 		vDiagContent = new JLabel("진료내용");
 		xDiagContent = new JTextArea();
 		xDiagContent.setEnabled(false);
+		xDiagContent.setLineWrap(true);
 		diagContentScroll = new JScrollPane(xDiagContent);
 		diagContentScroll.setPreferredSize(new Dimension(400,150));
 		diagContentScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		
 		
 		modify = new JButton("수정");
 		modify.setBackground(blue);
@@ -348,8 +364,6 @@ public class DiagAniList extends JPanel{
 							// TODO Auto-generated method stub
 							super.windowClosed(e);
 							GetDiagAniList();
-							model2.setRowCount(0);
-							clearAll();
 						}
 			
 					});
@@ -360,18 +374,65 @@ public class DiagAniList extends JPanel{
 				}
 			}
 			else if(e.getSource().equals(modify)) {
-				modify.setText("확인");
-				JComponent[] changeStatusComps = {xDiagContent,chooser};
-				for(JComponent cop: changeStatusComps) {
-					cop.setEnabled(true);	
+				if(eDiagList.getSelectedRow() != -1) {
+					
+					int clickedRow = eDiagList.getSelectedRow();
+					String protNo = protNos_2.get(clickedRow);
+					String diagOrnu = diagOrnus.get(clickedRow);
+					
+					if(!isClicked) {
+						isClicked = true;
+						
+						if(xCureType.getText().equals("입원")) {
+							chooser.setEnabled(true);
+							prevDschDate = ((JTextField)chooser.getDateEditor().getUiComponent()).getText();
+						}
+						
+						modify.setText("확인");
+						xDiagContent.setEnabled(true);
+						prevDiagCont = xDiagContent.getText();
+						
+						
+					}
+					else {
+						isClicked = false;
+						
+						newDiagCont = xDiagContent.getText();
+						
+						if(xCureType.getText().equals("입원")) {	
+							chooser.setEnabled(true);
+							newDschDate = ((JTextField)chooser.getDateEditor().getUiComponent()).getText();
+						
+							if(prevDiagCont.equals(newDiagCont)&&prevDschDate.equals(newDschDate)) {
+								JOptionPane.showMessageDialog(null, "변경사항이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
+//								isClicked = false;
+//								clearAll();
+							}
+							else {
+								UpdateDiag(protNo, diagOrnu, true);
+							}
+						}
+						
+						else {
+							if(prevDiagCont.equals(newDiagCont)) {
+								JOptionPane.showMessageDialog(null, "변경사항이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
+//								isClicked = false;
+//								clearAll();
+							}
+							else {
+								UpdateDiag(protNo, diagOrnu, false);
+							}
+						}
+						modify.setText("수정");
+//						eProtAniList.getSelectionModel().clearSelection();
+						clearAll();
+					}
 				}
 			}
 			else if(e.getSource().equals(cancel)) {
 				modify.setText("수정");
-				JComponent[] changeStatusComps = {xDiagContent,chooser};
-				for(JComponent cop: changeStatusComps) {
-					cop.setEnabled(false);		
-				}
+				isClicked = false;
+				clearAll();
 			}
 		} 
 	}	
@@ -383,7 +444,7 @@ public class DiagAniList extends JPanel{
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
 				int clickedRow = eProtAniList.getSelectedRow();
-				protNo = protNos.get(clickedRow);
+				protNo = protNos_1.get(clickedRow);
 				GetDiagAniList();
 			}
 		}
@@ -398,7 +459,7 @@ public class DiagAniList extends JPanel{
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
 				int clickedRow = eDiagList.getSelectedRow();
-				GetDiagInfo(protNo,clickedRow+1);
+				GetDiagInfo(protNos_2.get(clickedRow),diagOrnus.get(clickedRow));
 				if(eDiagList.getValueAt(clickedRow, 1) =="내진")
 					GetVtrnName(xIndiVtrnName.getText());
 			}
@@ -407,7 +468,7 @@ public class DiagAniList extends JPanel{
 	}
 	
 	//진료목록이 element를 읽은 후에 그 element의 진료구분에 따라 달력 imageButton을 활성화/비활성화합니다.
-	private void GetDiagInfo(String protNo,int ornu) {
+	private void GetDiagInfo(String protNo,String ornu) {
 		
 		StringBuffer query = new StringBuffer("SELECT * FROM DIAG ");
 		query.append("WHERE PROT_NO='"+protNo+"' AND DIAG_ORNU="+ornu+" ");
@@ -513,6 +574,13 @@ public class DiagAniList extends JPanel{
 	
 	private void clearAll() {
 		
+		eDiagList.getSelectionModel().clearSelection();
+		
+		JComponent[] changeStatusComps = {xDiagContent,chooser};
+		for(JComponent cop: changeStatusComps) {
+			cop.setEnabled(false);		
+		}
+		
 		JTextField xDschDate= (JTextField)chooser.getDateEditor().getUiComponent();
 		
 		JTextComponent[] jcomps = {xDiagDate,xDiagType,xIndiResult,xIndiVtrnName,xOudiResult,xHospName,xDisease,xInfecWhet,xCureType,xHsptzDate,xDschDate,xDeathType,xDeathReason,xDiagContent};
@@ -551,10 +619,19 @@ public class DiagAniList extends JPanel{
     	
     	model2.setRowCount(0);
     	
-    	StringBuffer query = new StringBuffer("SELECT d.DIAG_ORNU,d.DIAG_DATE,d.DIAG_TP,d.DIAG_CONT ");
-    	query.append("FROM (SELECT * FROM PROT WHERE PROT_NO='"+protNo+"') p INNER JOIN DIAG d ");
-    	query.append("	ON p.PROT_NO = d.PROT_NO ");
-    	query.append("ORDER BY 1 ");
+//    	StringBuffer query = new StringBuffer("SELECT d.DIAG_ORNU,d.DIAG_DATE,d.DIAG_TP,d.DIAG_CONT ");
+//    	query.append("FROM (SELECT * FROM PROT WHERE PROT_NO='"+protNo+"') p INNER JOIN DIAG d ");
+//    	query.append("	ON p.PROT_NO = d.PROT_NO ");
+//    	query.append("ORDER BY 1 ");
+
+    	StringBuffer query = new StringBuffer("SELECT d.PROT_NO,d.DIAG_ORNU,d.DIAG_DATE,d.DIAG_TP,d.DIAG_CONT ");
+    	query.append("FROM( SELECT * FROM PROT ");
+    	query.append("	WHERE ABAN_NO = (SELECT a.ABAN_NO ");
+    	query.append("		FROM ABAN a INNER JOIN(SELECT * FROM PROT ");
+    	query.append("		WHERE PROT_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) p ");
+    	query.append("		ON a.ABAN_NO = p.ABAN_NO)) p INNER JOIN DIAG d ON p.PROT_NO = d.PROT_NO ");
+    	query.append("ORDER BY 1,2 ");
+    	
     	
     	try {
     		pstmt = con.prepareStatement(query.toString());
@@ -571,6 +648,9 @@ public class DiagAniList extends JPanel{
 					korDiagType = "외진";
 					break;
 				}
+				
+				protNos_2.add(rs.getString("PROT_NO"));
+				diagOrnus.add(rs.getString("DIAG_ORNU"));
 				
 				model2.addRow(new Object[] {rs.getString("DIAG_DATE").split(" ")[0],korDiagType,rs.getString("DIAG_CONT")});
 			}
@@ -626,11 +706,43 @@ public class DiagAniList extends JPanel{
 					break;
 				}
 				
-				protNos.add(rs.getString("PROT_NO"));
+				protNos_1.add(rs.getString("PROT_NO"));
 				
 				model1.addRow(new Object[] {rs.getString("ABAN_NAME"),korAnmlKinds,rs.getString("KIND"),rs.getString("AGE"),korAnmlSize});
 			}
     	}catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	
+    	disconnection();
+    }
+    
+    private void UpdateDiag(String protNo, String diagOrnu, boolean isAdmission) {
+    	
+    	String newDiagCont = this.newDiagCont;
+    	String newDschDate = this.newDschDate;
+    	
+    	StringBuffer query = new StringBuffer();
+    	
+    	if(isAdmission) {
+    		query.append("UPDATE DIAG ");
+    		query.append("SET DIAG_CONT='"+newDiagCont+"', DSCH_DATE='"+newDschDate+"' ");
+    		query.append("WHERE PROT_NO='"+protNo+"' AND DIAG_ORNU='"+diagOrnu+"' ");
+    	}
+    	else {
+    		query.append("UPDATE DIAG ");
+    		query.append("SET DIAG_CONT='"+newDiagCont+"' ");
+    		query.append("WHERE PROT_NO='"+protNo+"' AND DIAG_ORNU='"+diagOrnu+"' ");
+    	}
+    	
+    	connection();
+    	try {
+    		pstmt = con.prepareStatement(query.toString());
+    		rs = pstmt.executeQuery();
+    		if(rs.next()) {
+    			con.commit();
+    		}
+    	}catch(SQLException e){
     		e.printStackTrace();
     	}
     	

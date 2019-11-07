@@ -41,6 +41,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.JTextComponent;
 
 public class ProtAniList extends JPanel {
 	private JLabel vProtAniRegister, vProtAniInfo, vAbanAniNo, vAbanAniType, vRescueNo, vAbanAniName, vAge, vParAniName, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vRegisDate, vDescription, vDscvDate, vCage, vDscvPlace;
@@ -61,10 +62,20 @@ public class ProtAniList extends JPanel {
 	
 	private int picMax;
 	private int pnt;
+	private boolean isClicked = false;
+	
+	private ImageIcon noImageIcon;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
 	private String password = "asmr";
+	
+	private String prevSex = null;
+	private String prevNeut = null;
+	private String prevSize = null;
+	private String prevDesc = null;
+	private String prevCage = null;
+	private ArrayList<String> prevPics = null;
 	
 	private Connection con = null;
 	private PreparedStatement pstmt = null;
@@ -145,9 +156,9 @@ public class ProtAniList extends JPanel {
 		xAbanAniType = new JTextField(12);
 		xAbanAniType.setEditable(false);
 		
-		vRescueNo = new JLabel("구조번호");
-		xRescueNo = new JTextField(12);
-		xRescueNo.setEditable(false);
+//		vRescueNo = new JLabel("구조번호");
+//		xRescueNo = new JTextField(12);
+//		xRescueNo.setEditable(false);
 		
 		vAbanAniName = new JLabel("유기동물명");
 		xAbanAniName = new JTextField(12);
@@ -189,7 +200,7 @@ public class ProtAniList extends JPanel {
 		xRegisDate = new JTextField(12);
 		xRegisDate.setEditable(false);
 		
-		vDescription = new JLabel("설명");
+		vDescription = new JLabel("비고");
 		xDescription = new JTextArea();
 		xDescription.setLineWrap(true);
 		xDescription.setEditable(false);
@@ -233,15 +244,15 @@ public class ProtAniList extends JPanel {
 		BufferedImage image = ImageIO.read(input);
 		BufferedImage resized = resize(image,200,200);
 		imageLabel = new JLabel();
-		ImageIcon icon = new ImageIcon(resized);
-		imageLabel.setIcon(icon);
+		noImageIcon = new ImageIcon(resized);
+		imageLabel.setIcon(noImageIcon);
 		
 		previous = new JButton("<<");
 		previous.addActionListener(protAniListButtonListener);
 		next = new JButton(">>");
 		next.addActionListener(protAniListButtonListener);
 		
-		JComponent[] fontComps1 = {vAbanAniNo, vAbanAniType, vRescueNo, vAbanAniName, vAge, vParAniName, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vRegisDate, vDescription, vDscvDate, vCage, vDscvPlace};
+		JComponent[] fontComps1 = {vAbanAniNo, vAbanAniType, vAbanAniName, vAge, vParAniName, vAniType, vKind, vSex, vNeutWhet, vColor, vAniSize, vRegisDate, vDescription, vDscvDate, vCage, vDscvPlace};
 		ChangeFont(fontComps1, new Font("나눔고딕", Font.PLAIN, 16));
 
 		JComponent[] fontComps2 = {register,modify,cancel,returning,pictureManage};
@@ -284,8 +295,8 @@ public class ProtAniList extends JPanel {
 		gridbagAdd(vAbanAniType, 2, 3, 1, 1);
 		gridbagAdd(xAbanAniType, 3, 3, 1, 1);
 		
-		gridbagAdd(vRescueNo, 4, 3, 1, 1);
-		gridbagAdd(xRescueNo, 5, 3, 1, 1);
+//		gridbagAdd(vRescueNo, 4, 3, 1, 1);
+//		gridbagAdd(xRescueNo, 5, 3, 1, 1);
 		
 		gridbagAdd(vAbanAniName, 0, 4, 1, 1);
 		gridbagAdd(xAbanAniName, 1, 4, 1, 1);
@@ -293,8 +304,8 @@ public class ProtAniList extends JPanel {
 		gridbagAdd(vAge, 2, 4, 1, 1);
 		gridbagAdd(xAge, 3, 4, 1, 1);
 		
-		gridbagAdd(vParAniName, 4, 4, 1, 1);
-		gridbagAdd(xParAniName, 5, 4, 1, 1);
+		gridbagAdd(vParAniName, 4, 3, 1, 1);
+		gridbagAdd(xParAniName, 5, 3, 1, 1);
 		
 		gridbagAdd(vAniType, 0, 5, 1, 1);
 		gridbagAdd(xAniType, 1, 5, 1, 1);
@@ -382,15 +393,25 @@ public class ProtAniList extends JPanel {
 				try {
 					// 0001 => ABAN_NO
 					String abanNo = xAbanAniNo.getText();
-					PictureManage pictureManage = new PictureManage(abanNo);
-					pictureManage.addWindowListener(new WindowAdapter() {
+					NewPictureManage newPictureManage = new NewPictureManage(abanNo);
+					newPictureManage.addWindowListener(new WindowAdapter() {
 
 						@Override
 						public void windowClosed(WindowEvent e) {
 							// TODO Auto-generated method stub
 							super.windowClosed(e);
-							abanPics = pictureManage.getPaths();
+							abanPics = newPictureManage.getPaths();
 							picMax = abanPics.size();
+							try {
+								File input = new File(abanPics.get(0));
+								BufferedImage image = ImageIO.read(input);
+								BufferedImage resized = resize(image,200,200);
+								ImageIcon icon = new ImageIcon(resized);
+								imageLabel.setIcon(icon);
+							} catch (Exception e1) {
+								// TODO Auto-generated catch block
+								imageLabel.setIcon(noImageIcon);
+							}
 						}
 					
 					});
@@ -434,20 +455,90 @@ public class ProtAniList extends JPanel {
 				}
 			}
 			else if(e.getSource().equals(modify)) {
-				modify.setText("확인");
-				JComponent[] changeStatusComps = {cbSex,cbNeutWhet,cbAniSize,cbCage,pictureManage};
-				for(JComponent cop: changeStatusComps) {
-					cop.setEnabled(true);
+				
+				String newSex = null;
+				String newNeut = null;
+				String newSize = null;
+				String newDesc = null;
+				String newCage = null;
+				ArrayList<String> newPics = new ArrayList<String>();
+				
+//				int clickedRow = -1;
+				
+				if(eProtAniList.getSelectedRow()!=-1) {
+					if(!isClicked) {
+						
+						isClicked = true;
+						
+						
+						prevSex = (String)cbSex.getSelectedItem();
+						prevNeut = (String)cbNeutWhet.getSelectedItem();
+						prevSize = (String)cbAniSize.getSelectedItem();
+						prevDesc = xDescription.getText();
+						prevCage = (String)cbCage.getSelectedItem();
+						prevPics = abanPics;
+						
+						
+						modify.setText("확인");
+						JComponent[] changeStatusComps = {cbSex,cbNeutWhet,cbAniSize,cbCage,pictureManage};
+						for(JComponent cop: changeStatusComps) {
+							cop.setEnabled(true);
+						}
+						
+						xDescription.setEditable(true);
+					}
+					else {
+						isClicked = false;
+						
+						int result = JOptionPane.showConfirmDialog(null, "보호동물정보를 수정하시겠습니까?", "보호동물정보수정", JOptionPane.YES_NO_OPTION);
+						if(result == JOptionPane.OK_OPTION) {
+							newSex = (String)cbSex.getSelectedItem();
+							newNeut = (String)cbNeutWhet.getSelectedItem();
+							newSize = (String)cbAniSize.getSelectedItem();
+							newDesc = xDescription.getText();
+							newCage = (String)cbCage.getSelectedItem();
+							newPics = abanPics; 
+							
+							if(prevSex.equals(newSex)&&prevNeut.equals(newNeut)&&prevSize.equals(newSize)&&prevDesc.equals(newDesc)&&prevCage.equals(newCage)&&prevPics.equals(newPics)) {
+								JOptionPane.showMessageDialog(null, "변경된정보가 없습니다.", "알림", JOptionPane.WARNING_MESSAGE);
+								clearAll();
+							}
+							//나머지 보호동물 정보는 모두 업데이트 된다고 가정을 하고
+							else {
+								int clickedRow = eProtAniList.getSelectedRow();
+								
+								if(!prevPics.equals(newPics)&&!prevCage.equals(newCage)) {
+									String abanNo = abanNos.get(clickedRow);
+									String cntrNo = cntrNos.get(clickedRow);
+									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,newCage,newPics,prevPics.size(),newPics.size());
+								}
+								//케이지는 같은 경우라서 - 케이지 변경 필요 X
+								else if(!prevPics.equals(newPics)&&prevCage.equals(newCage)) {
+									String abanNo = abanNos.get(clickedRow);
+									String cntrNo = cntrNos.get(clickedRow);
+									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,null,newPics,prevPics.size(),newPics.size());
+								}
+								//사진은 같은 경우라서 - 사진 변경 필요 X
+								else if(prevPics.equals(newPics)&&!prevCage.equals(newCage)) {
+									String abanNo = abanNos.get(clickedRow);
+									String cntrNo = cntrNos.get(clickedRow);
+									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,newCage,null,prevPics.size(),newPics.size());
+								}
+								else if(prevPics.equals(newPics)&&prevCage.equals(newCage)) {
+									String abanNo = abanNos.get(clickedRow);
+									String cntrNo = cntrNos.get(clickedRow);
+									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,null,null,prevPics.size(),newPics.size());
+								}
+								clearAll();
+								GetProtAniList();
+							}
+						}
+					}
 				}
-				xDescription.setEditable(true);
+				
 			}
 			else if(e.getSource().equals(cancel)) {
-				modify.setText("수정");
-				JComponent[] changeStatusComps = {cbSex,cbNeutWhet,cbAniSize,cbCage,pictureManage};
-				for(JComponent cop: changeStatusComps) {
-					cop.setEnabled(false);
-				}
-				xDescription.setEditable(false);
+				clearAll();
 			}
 			else if(e.getSource().equals(returning)) {
 				int clickedRow = eProtAniList.getSelectedRow();
@@ -460,6 +551,7 @@ public class ProtAniList extends JPanel {
 						// TODO Auto-generated method stub
 						super.windowClosed(e);
 						GetProtAniList();
+						clearAll();
 					}
 				
 				});
@@ -468,6 +560,229 @@ public class ProtAniList extends JPanel {
 		
 	}
 
+	private void UpdateAban(String abanNo,String cntrNo,String newSex,String newNeut,String newSize,String newDesc,String newCage, ArrayList<String> newPics, int prevPicNum,int newPicNum) {
+		
+		String engSex = null;
+		String engSize = null;
+		
+		switch(newSex) {
+		case "수컷":
+			engSex="m";
+			break;
+		case "암컷":
+			engSex="f";
+			break;
+		case "미상":
+			engSex="u";
+			break;
+		}
+		
+		switch(newSize) {
+		case "대":
+			engSize="b";
+			break;
+		case "중":
+			engSize="m";
+			break;
+		case "소":
+			engSize="s";
+			break;
+		}
+		
+		//Aban변경쿼리
+		StringBuffer query1 = new StringBuffer();
+		//케이지변경쿼리 => 현재 PROT END_DATE 변경하고, 새로운 PROT 추가해줘야함
+		StringBuffer query2 = new StringBuffer();
+		StringBuffer query3 = new StringBuffer();
+		
+		//사진변경쿼리
+		StringBuffer query4 = new StringBuffer();
+		StringBuffer query5 = new StringBuffer();
+		
+		//사진, 케이지, 정보 모두 변경
+		if(newCage!=null && newPics!=null) {
+//			query1.append("UPDATE ABAN SET SEX=?, NEUT_WHET=?, ANML_SIZE=?, FEAT=? WHERE ABAN_NO=? ");
+		
+			
+			query2.append("UPDATE PROT SET PROT_END_DATE=trunc(sysdate) WHERE ABAN_NO='"+abanNo+"' ");
+		
+			String cageOrnu = newCage.replaceAll("[^0-9]", "");
+			
+			query3.append("INSERT INTO PROT(PROT_NO,PROT_START_DATE,ABAN_NO,CNTR_NO,CAGE_ORNU,CAMA_EMP_NO) ");
+			query3.append("SELECT ");
+			query3.append("	CASE WHEN SUBSTR(PROT_NO,1,8) = to_char(TRUNC(SYSDATE),'yyyymmdd') ");
+			query3.append(" THEN to_char(TRUNC(SYSDATE),'yyyymmdd') || CASE WHEN SUBSTR(PROT_NO,10,1) = '9' THEN to_char(SUBSTR(PROT_NO,9,1)+1) ELSE SUBSTR(PROT_NO,9,1) END || CASE WHEN SUBSTR(PROT_NO,10,1)='9' THEN '0' ELSE to_char(SUBSTR(PROT_NO,10,1)+1) END ");
+			query3.append(" ELSE to_char(TRUNC(SYSDATE),'yyyymmdd') || '01' END PROT_NO, ");
+			query3.append("	TRUNC(SYSDATE) PROT_START_DATE, ");
+			query3.append("	'"+abanNo+"' ABAN_NO, ");
+			query3.append("	'"+cntrNo+"' CNTR_NO, ");
+			query3.append("	'"+cageOrnu+"' CAGE_ORNU, ");
+			query3.append("	(SELECT /*+INDEX_ASC(EMP_WORK_HIST EMP_WORK_HIST_PK) */ EMP_NO FROM EMP_WORK_HIST ");
+			query3.append("	WHERE CNTR_NO = '"+cntrNo+"' ");
+			query3.append("	AND BIZ_FILD='p' ");
+			query3.append("	AND ROWNUM=1) CAMA_EMP_NO ");
+			query3.append("FROM(SELECT NVL(PROT_NO,0) PROT_NO ");
+			query3.append("	FROM(SELECT /*+INDEX_DESC(PROT PROT_PK) */ MAX(PROT_NO) PROT_NO ");
+			query3.append("		FROM PROT) ");
+			query3.append(") ");
+			
+			if(prevPicNum>0) {
+				query4.append("DELETE FROM ABAN_PIC WHERE ABAN_NO='"+abanNo+"' ");
+			}
+			
+			if(newPicNum > 0) {
+				query5.append("INSERT INTO ABAN_PIC(ABAN_NO,ANML_PIC_ORNU,PATH) ");
+				query5.append("SELECT '"+abanNo+"', ABAN_NO, ROWNUM ANML_PIC_ORNU, PATH PATH ");
+				query5.append("FROM( ");
+				for(int i=0;i<newPics.size()-1;i++) {
+					query5.append("SELECT '"+newPics.get(i)+"' path FROM DUAL ");
+					query5.append("UNION ALL ");
+				}
+				query5.append("SELECT '"+newPics.get(newPics.size()-1)+"' path FROM DUAL ");
+				query5.append(") ");
+			}
+		}
+		//케이지 변경 필요 X
+		else if(newCage==null && newPics!=null) {
+//			query1.append("UPDATE ABAN SET SEX=?, NEUT_WHET=?, ANML_SIZE=?, FEAT=? WHERE ABAN_NO=? ");
+		
+			
+			if(prevPicNum>0) {
+				query4.append("DELETE FROM ABAN_PIC WHERE ABAN_NO='"+abanNo+"' ");
+			}
+			if(newPicNum > 0) {
+				query5.append("INSERT INTO ABAN_PIC(ABAN_NO,ANML_PIC_ORNU,PATH) ");
+				query5.append("SELECT '"+abanNo+"' ABAN_NO, ROWNUM ANML_PIC_ORNU, PATH PATH ");
+				query5.append("FROM( ");
+				for(int i=0;i<newPics.size()-1;i++) {
+					query5.append("SELECT '"+newPics.get(i)+"' path FROM DUAL ");
+					query5.append("UNION ALL ");
+				}
+				query5.append("SELECT '"+newPics.get(newPics.size()-1)+"' path FROM DUAL ");
+				query5.append(") ");
+			}
+		}//사진 변경 X
+		else if(newCage!=null && newPics==null) {
+//			query1.append("UPDATE ABAN SET SEX=?, NEUT_WHET=?, ANML_SIZE=?, FEAT=? WHERE ABAN_NO=? ");
+		
+			String cageOrnu = newCage.replaceAll("[^0-9]", "");
+			query2.append("UPDATE PROT SET PROT_END_DATE=trunc(sysdate) WHERE ABAN_NO='"+abanNo+"' ");
+		
+			query3.append("INSERT INTO PROT(PROT_NO,PROT_START_DATE,ABAN_NO,CNTR_NO,CAGE_ORNU,CAMA_EMP_NO) ");
+			query3.append("SELECT ");
+			query3.append("	CASE WHEN SUBSTR(PROT_NO,1,8) = to_char(TRUNC(SYSDATE),'yyyymmdd') ");
+			query3.append(" THEN to_char(TRUNC(SYSDATE),'yyyymmdd') || CASE WHEN SUBSTR(PROT_NO,10,1) = '9' THEN to_char(SUBSTR(PROT_NO,9,1)+1) ELSE SUBSTR(PROT_NO,9,1) END || CASE WHEN SUBSTR(PROT_NO,10,1)='9' THEN '0' ELSE to_char(SUBSTR(PROT_NO,10,1)+1) END ");
+			query3.append(" ELSE to_char(TRUNC(SYSDATE),'yyyymmdd') || '01' END PROT_NO, ");
+			query3.append("	TRUNC(SYSDATE) PROT_START_DATE, ");
+			query3.append("	'"+abanNo+"' ABAN_NO, ");
+			query3.append("	'"+cntrNo+"' CNTR_NO, ");
+			query3.append("	'"+cageOrnu+"' CAGE_ORNU, ");
+			query3.append("	(SELECT /*+INDEX_ASC(EMP_WORK_HIST EMP_WORK_HIST_PK) */ EMP_NO FROM EMP_WORK_HIST ");
+			query3.append("	WHERE CNTR_NO = '"+cntrNo+"' ");
+			query3.append("	AND BIZ_FILD='p' ");
+			query3.append("	AND ROWNUM=1) CAMA_EMP_NO ");
+			query3.append("FROM(SELECT NVL(PROT_NO,0) PROT_NO ");
+			query3.append("	FROM(SELECT /*+INDEX_DESC(PROT PROT_PK) */ MAX(PROT_NO) PROT_NO ");
+			query3.append("		FROM PROT) ");
+			query3.append(") ");
+			
+			
+		}
+		//케이지,사진 변경 필요 X [동물정보만]
+		else if(newCage==null && newPics==null) {
+//			query1.append("UPDATE ABAN SET SEX=?, NEUT_WHET=?, ANML_SIZE=?, FEAT=? WHERE ABAN_NO=? ");
+		}
+	
+		connection();
+		
+		try {
+			query1.append("UPDATE ABAN SET SEX=?, NEUT_WHET=?, ANML_SIZE=?, FEAT=? WHERE ABAN_NO=? ");
+			pstmt = con.prepareStatement(query1.toString());
+			pstmt.setString(1, engSex);
+			pstmt.setString(2, newNeut);
+			pstmt.setString(3, engSize);
+			pstmt.setString(4, newDesc);
+			pstmt.setString(5, abanNo);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				con.commit();
+			}
+			
+			if(query2.length() != 0) {
+			
+				pstmt = con.prepareStatement(query2.toString());
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					con.commit();
+				}
+			}
+			
+			if(query3.length() != 0) {
+				pstmt = con.prepareStatement(query3.toString());
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					con.commit();
+				}
+			}
+			
+			if(query4.length() != 0) {
+				pstmt = con.prepareStatement(query4.toString());
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					con.commit();
+				}
+			}
+			
+			if(query5.length() != 0) {
+				pstmt = con.prepareStatement(query5.toString());
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					con.commit();
+				}
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+	}
+	
+	private void clearAll() {
+		
+		isClicked = false;
+		pnt = 0;
+		picMax = 0;
+		
+		eProtAniList.getSelectionModel().clearSelection();
+		imageLabel.setIcon(noImageIcon);
+		
+		JTextComponent[] jcomps = {xAbanAniNo,xAbanAniType,xAbanAniName,xAge,xParAniName,xAniType,xKind,xColor,xDescription,xRegisDate,xDscvDate,xDscvPlace};
+		
+		for(JTextComponent jcomp:jcomps) {
+			jcomp.setText("");
+		}
+		
+		cbSex.setSelectedItem("수컷");
+		cbNeutWhet.setSelectedItem("Y");
+		cbAniSize.setSelectedItem("대");
+		
+		cbCage.removeAllItems();
+		
+		modify.setText("수정");
+		JComponent[] changeStatusComps = {cbSex,cbNeutWhet,cbAniSize,cbCage,pictureManage};
+		for(JComponent cop: changeStatusComps) {
+			cop.setEnabled(false);
+		}
+		xDescription.setEditable(false);
+	}
+	
 	//두개의 컴포넌트를 하나의 패널로 묶는 JPanel
 	class CombinePanel extends JPanel {
 		//컴포넌트 1, 컴포넌트 2, 패널 구성시 좌,우 margin 공간을 없애기 위한 Flag
@@ -616,7 +931,7 @@ public class ProtAniList extends JPanel {
 				
 				xAbanAniNo.setText(rs.getString("ABAN_NO"));
 				xAbanAniType.setText(korAbanType);
-				xRescueNo.setText(rs.getString("RSCU_NO"));
+//				xRescueNo.setText(rs.getString("RSCU_NO"));
 				xAbanAniName.setText(rs.getString("ABAN_NAME"));
 				xAge.setText(rs.getString("AGE"));
 				xParAniName.setText(rs.getString("MOM_ABAN_NO"));
@@ -655,19 +970,26 @@ public class ProtAniList extends JPanel {
 			
 			pnt = 0;
 			picMax = abanPics.size();
-			File input = new File(abanPics.get(0));
+			
+//			String firstPic = null;
+//			File input = null;
+			try {
+				
+			String firstPic = abanPics.get(0);
+			File input = new File(firstPic);
 			BufferedImage image = ImageIO.read(input);
 			BufferedImage resized = resize(image,200,200);
 			ImageIcon icon = new ImageIcon(resized);
 			imageLabel.setIcon(icon);
 			
-			
+			}catch(Exception e) {
+				imageLabel.setIcon(noImageIcon); 
+				
+			}
 			
 			
 		}catch(SQLException e) {
 			e.printStackTrace();
-		}catch(IOException e1) {
-			e1.printStackTrace();
 		}
 		
 		disconnection();
@@ -675,7 +997,8 @@ public class ProtAniList extends JPanel {
 	}
 	
     private void GetProtAniList() {
-    	
+    	cntrNos.clear();
+    	abanNos.clear();
     	model1.setNumRows(0);
     	
     	StringBuffer query = new StringBuffer("SELECT p.CNTR_NO, a.ABAN_NO, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE, a.FEAT ");

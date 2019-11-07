@@ -66,6 +66,7 @@ public class ProtAniRegist extends JFrame{
 	private Color white = new Color(255,255,255);
 	
 	ProtAniRegistItemListener protAniRegistItemListener;
+	ProtAniTypeItemListener protAniTypeItemListener;
 	ProtAniRegistButtonListener protAniRegistButtonListener;
 	
 	GridBagLayout gridBagLayout;
@@ -78,6 +79,7 @@ public class ProtAniRegist extends JFrame{
 		
 		protAniRegistItemListener = new ProtAniRegistItemListener();
 		protAniRegistButtonListener = new ProtAniRegistButtonListener();
+		protAniTypeItemListener = new ProtAniTypeItemListener();
 		
 //		vProtAniRegist = new JLabel("보호동물등록");
 //		vProtAniRegist.setFont(new Font("나눔고딕", Font.BOLD, 20));
@@ -111,6 +113,7 @@ public class ProtAniRegist extends JFrame{
 		
 		vAniType = new JLabel("동물종류");
 		cbAniType = new JComboBox<String>(aniTypeDiv);
+		cbAniType.addItemListener(protAniTypeItemListener);
 		
 		vKind = new JLabel("품종");
 		xKind = new JTextField(10);
@@ -274,6 +277,32 @@ public class ProtAniRegist extends JFrame{
 		
 	}
 	
+	class ProtAniTypeItemListener implements ItemListener{
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// TODO Auto-generated method stub
+			String target = (String)e.getItem();
+			if(target=="고양이") {
+				activateCat();
+			}
+			else {
+				deactivateCat();
+			}
+		}
+		
+	}
+	
+	private void activateCat() {
+		cbAniSize.setSelectedItem("소");
+		cbAniSize.setEnabled(false);
+	}
+	
+	private void deactivateCat() {
+		cbAniSize.setSelectedItem("대");
+		cbAniSize.setEnabled(true);
+	}
+	
 	private void activateRscu() {
 		xRscuNo.setEnabled(true);
 		searchRscu.setEnabled(true);
@@ -321,15 +350,15 @@ public class ProtAniRegist extends JFrame{
 			}
 			else if(e.getSource().equals(pictureManage)) {
 				try {
-					PictureManage pictureManage = new PictureManage(null);
-					pictureManage.addWindowListener(new WindowAdapter() {
+					NewPictureManage newPictureManage = new NewPictureManage(null);
+					newPictureManage.addWindowListener(new WindowAdapter() {
 
 						@Override
 						public void windowClosed(WindowEvent e) {
 							// TODO Auto-generated method stub
 							super.windowClosed(e);
-							picPaths = pictureManage.getPaths();
-
+							picPaths = newPictureManage.getPaths();
+							System.out.println(picPaths.toString());
 						}
 						
 					});
@@ -459,7 +488,7 @@ public class ProtAniRegist extends JFrame{
     		query1.append(") ");
 		}	
     	//동물구분이 탄생일때 쿼리
-    	else {
+    	else if(abanAniType=="탄생") {
     		
     	}
 		
@@ -520,13 +549,13 @@ public class ProtAniRegist extends JFrame{
 			if(rs.next()) {
 				con.commit();
 			}
-			
-			pstmt = con.prepareStatement(query2.toString());
-			rs = pstmt.executeQuery();
-			if(rs.next()) {
-				con.commit();
+			if(query2.length() != 0) {
+				pstmt = con.prepareStatement(query2.toString());
+				rs = pstmt.executeQuery();
+				if(rs.next()) {
+					con.commit();
+				}
 			}
-			
 			pstmt = con.prepareStatement(query3.toString());
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
@@ -561,10 +590,11 @@ public class ProtAniRegist extends JFrame{
 			query.append("			FROM (SELECT * FROM RSCU ");
 			query.append("				WHERE RSCU_NO = '"+rscuNo+"') rs INNER JOIN (SELECT * FROM ASSG ");
 			query.append("					WHERE ASSG_RES = 'a') a ");
-			query.append("					ON rs.RSCU_NO = a.ASSG_NO) t1 INNER JOIN (SELECT * FROM PROT) p ");
+			query.append("					ON rs.RSCU_NO = a.ASSG_NO) t1 INNER JOIN (SELECT * FROM PROT WHERE PROT_END_DATE = to_date('9999-12-31','YYYY-MM-DD')) p ");
 			query.append("						ON t1.CNTR_NO = p.CNTR_NO ");
 			query.append(") t2 INNER JOIN CAGE c ");
 			query.append("	ON t2.CNTR_NO = c.CNTR_NO AND t2.CAGE_ORNU = c.CAGE_ORNU ");
+			query.append("ORDER BY 1 ");
 			
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
