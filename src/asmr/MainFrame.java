@@ -18,6 +18,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+<<<<<<< HEAD
+=======
+import javax.swing.border.LineBorder;
+>>>>>>> choi
 
 
 public class MainFrame extends JFrame {
@@ -26,10 +30,9 @@ public class MainFrame extends JFrame {
 	private JLabel vCenterName, vWelcome;
 	
 	private JMenuBar mBar;
-	private JMenu mCenter, mEmp, mAban, mReport, mAdop, mPost, mReportManage, mAdopManage;
-	private JMenuItem mReportAni, mAdopAnnc;
+	private JMenu mAban, mReport, mAdop, mPost, mReportManage, mAdopManage;
+	private JMenuItem mReportAni, mAdopAnnc, mCenter, mEmp;
 	
-	private String[] mlCenter = {"센터목록"};
 	private String[] mlEmp = {"직원조회"};
 	private String[] mlAban = {"기본정보관리", "진료"};
 	private String[] mlReport = {"신고배정(본부센터)", "신고배정(일반센터)"};
@@ -58,7 +61,7 @@ public class MainFrame extends JFrame {
 		Image iMainLogo = iMainIcon.getImage();
 		Image iMainButton = iMainLogo.getScaledInstance(180, 180, Image.SCALE_SMOOTH);
 		
-		bMainButton = new JButton(" ", new ImageIcon(iMainButton));
+		bMainButton = new JButton(new ImageIcon(iMainButton));
 		bMainButton.setContentAreaFilled(false);
 		bMainButton.setFocusPainted(false);
 		bMainButton.setBorderPainted(false);
@@ -84,33 +87,23 @@ public class MainFrame extends JFrame {
 		mBar = new JMenuBar();
 		UIManager.put("Menu.font", new Font("나눔고딕", Font.BOLD, 20));
 
-		mCenter = new JMenu("센터");
-		JMenuItem[] mlCenterItem = new JMenuItem[mlCenter.length];
-		for (int i=0; i < mlCenter.length; i++){
-			mlCenterItem[i] = new JMenuItem(mlCenter[i]);
-			mlCenterItem[i].addActionListener(listener);
-			mlCenterItem[i].setPreferredSize(new Dimension(218, 40));
-			mlCenterItem[i].setFont(new Font("나눔고딕", Font.BOLD, 17));
-			mCenter.add(mlCenterItem[i]);
-		}
+		mCenter = new JMenuItem("센터");
 		mCenter.setPreferredSize(new Dimension(220, 50));
 		mCenter.setBorder(new EmptyBorder(0,90,0,0));
+		mCenter.setFont(new Font("나눔고딕", Font.BOLD, 20));
+		mCenter.setBackground(Color.WHITE);
+		mCenter.addActionListener(listener);
 		mBar.add(mCenter);
 		
 		//mBar.add(new JSeparator(JSeparator.VERTICAL));
 		mBar.add(Box.createHorizontalStrut(10));
 		
-		mEmp = new JMenu("직원");
-		JMenuItem[] mlEmpItem = new JMenuItem[mlEmp.length];
-		for (int i=0; i < mlEmp.length; i++){
-			mlEmpItem[i] = new JMenuItem(mlEmp[i]);
-			mlEmpItem[i].addActionListener(listener);
-			mlEmpItem[i].setPreferredSize(new Dimension(218, 40));
-			mlEmpItem[i].setFont(new Font("나눔고딕", Font.BOLD, 17));
-			mEmp.add(mlEmpItem[i]);
-		}
+		mEmp = new JMenuItem("직원");
 		mEmp.setPreferredSize(new Dimension(220, 50));
 		mEmp.setBorder(new EmptyBorder(0,90,0,0));
+		mEmp.setFont(new Font("나눔고딕", Font.BOLD, 20));
+		mEmp.setBackground(Color.WHITE);
+		mEmp.addActionListener(listener);
 		mBar.add(mEmp);
 		mBar.add(Box.createHorizontalStrut(10));
 		
@@ -191,6 +184,8 @@ public class MainFrame extends JFrame {
 		mPost.setPreferredSize(new Dimension(220, 50));
 		mPost.setBorder(new EmptyBorder(0,80,0,0));
 		mBar.add(mPost);
+		mBar.setBackground(Color.WHITE);
+		mBar.setBorder(new LineBorder(Color.black));
 		
 		ContentPanel = new ContentPanel();
 		pContents = new MainPage();
@@ -306,7 +301,7 @@ public class MainFrame extends JFrame {
 	class MenuActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			String cont = e.getActionCommand();
-			if(cont == " "){
+			if(e.getSource().equals(bMainButton)){
 				ContentPanel.removeAll();
 				pContents = new MainPage();
 				ContentPanel.add(pContents);
@@ -326,11 +321,11 @@ public class MainFrame extends JFrame {
 				repaint();
 			}else if(cont == "회원가입"){
 				ContentPanel.removeAll();
-				pContents = new UserRegister();
+				pContents = new CustRegister();
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-			}else if(cont == "센터목록"){
+			}else if(e.getSource().equals(mCenter)){
 				ContentPanel.removeAll();
 				pContents = new CenterList();
 				ContentPanel.add(pContents);
@@ -338,7 +333,7 @@ public class MainFrame extends JFrame {
 				repaint();
 			}else if(cont == "로그아웃"){
 				setLogout();
-			}else if(cont == "직원조회"){
+			}else if(e.getSource().equals(mEmp)){
 				ContentPanel.removeAll();
 				pContents = new EmpList();
 				ContentPanel.add(pContents);
