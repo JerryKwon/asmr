@@ -1,10 +1,23 @@
 package asmr;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
+
+import javax.swing.Box;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 
 
 public class MainFrame extends JFrame {
@@ -431,6 +444,14 @@ public class MainFrame extends JFrame {
 	public static void notiCase() {
 		ContentPanel.removeAll();
 		pContents = new NotiWrtUpt();
+		ContentPanel.add(pContents);
+		ContentPanel.revalidate();
+		ContentPanel.repaint();
+	}
+	
+	public static void notiPostCase() {
+		ContentPanel.removeAll();
+		pContents = new NotiPost();
 		ContentPanel.add(pContents);
 		ContentPanel.revalidate();
 		ContentPanel.repaint();
