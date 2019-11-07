@@ -1,13 +1,33 @@
 package asmr;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Date;
+import java.time.LocalDate;
 
-public class UserRegister extends JPanel implements ActionListener {
-	private JLabel vUserRegister, vUserName, vID, vPassword, vPasswordConfirm, vBirthDay, vAddress, vPhone;
-	private JTextField xUserName, xID, xBirthDay, xAddress, xPhone;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
+import com.toedter.calendar.JDateChooser;
+
+public class CustRegister extends JPanel implements ActionListener {
+	private JLabel vCustRegister, vCustName, vID, vPassword, vPasswordConfirm, vBirthDay, vAddress, vPhone;
+	private JTextField xCustName, xID, xAddress, xPhone;
 	private JPasswordField xPassword, xPasswordConfirm;
-	private JButton bCal, bDupConfirm, bAddrSearch, bUserRegister, bCancel;
+	private JButton bDupConfirm, bAddrSearch, bRegister, bCancel;
+	private JDateChooser chooser;
 	
 	//버튼색
 	private Color blue = new Color(22,155,213);
@@ -16,49 +36,57 @@ public class UserRegister extends JPanel implements ActionListener {
 	GridBagLayout gridbaglayout;				// 화면을 구성하는 레이아웃
 	GridBagConstraints gridbagconstraints;
 
-	public UserRegister() {
+	public CustRegister() {
 		
 		gridbaglayout = new GridBagLayout();		
 		gridbagconstraints = new GridBagConstraints();
 		
-		vUserRegister = new JLabel("회원가입");
+		vCustRegister = new JLabel("회원가입");
+		vCustRegister.setFont(new Font("나눔고딕", Font.BOLD, 24));
+		vCustRegister.setBorder(new EmptyBorder(0, 10, 20, 0));
 		
-		vUserName = new JLabel("이름");
-		xUserName = new JTextField(20);
+		vCustName = new JLabel("이름");
+		xCustName = new JTextField(15);
 		
 		vID = new JLabel("아이디");
-		xID = new JTextField(20);
+		xID = new JTextField(15);
 		bDupConfirm = new JButton("중복확인");
 		bDupConfirm.setBackground(blue);
 		bDupConfirm.setForeground(white);
 		
 		vPassword = new JLabel("비밀번호");
-		xPassword = new JPasswordField(20);
+		xPassword = new JPasswordField(15);
 		
 		vPasswordConfirm = new JLabel("비밀번호확인");
-		xPasswordConfirm = new JPasswordField(20);
+		xPasswordConfirm = new JPasswordField(15);
 		
 		vBirthDay = new JLabel("생년월일");
-		xBirthDay = new JTextField(20);
-		bCal = new JButton(new ImageIcon("images/cal1.png"));
-		bCal.setContentAreaFilled(false);
-		bCal.setFocusPainted(false);
-		bCal.setBorderPainted(false);
+		LocalDate now = LocalDate.now();
+		Date date = Date.valueOf(now);
+		chooser = new JDateChooser(date,"yyyy-MM-dd");
 		
 		vAddress = new JLabel("주소");
-		xAddress = new JTextField(20);
+		xAddress = new JTextField(30);
+		xAddress.setEditable(false);
+		
 		bAddrSearch = new JButton("검색");
 		bAddrSearch.setBackground(blue);
 		bAddrSearch.setForeground(white);
 		bAddrSearch.addActionListener(this);
 		
 		vPhone = new JLabel("전화번호");
-		xPhone = new JTextField(20);
+		xPhone = new JTextField(15);
 		
-		bUserRegister = new JButton("등록");
-		bUserRegister.setBackground(blue);
-		bUserRegister.setForeground(white);
+		bRegister = new JButton("등록");
+		bRegister.setBackground(blue);
+		bRegister.setForeground(white);
 		bCancel = new JButton("취소");
+		
+		JComponent[] slabel = {vCustName, vID, vPassword, vPasswordConfirm, vBirthDay, vAddress, vPhone,
+				xCustName, xID, xPhone, xPassword, xPasswordConfirm};
+		ChangeFont(slabel, new Font("나눔고딕", Font.PLAIN, 16));
+		JComponent[] sbutton = {bDupConfirm, bAddrSearch, bRegister, bCancel};
+		ChangeFont(sbutton, new Font("나눔고딕", Font.BOLD, 16));
 		
 		UserRegisterView();
 	}
@@ -66,14 +94,15 @@ public class UserRegister extends JPanel implements ActionListener {
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;		
 		gridbagconstraints.ipadx = 7;
+		gridbagconstraints.insets = new Insets(5,5,5,5);
 		
 		gridbagconstraints.weightx=1.0;		
 		gridbagconstraints.weighty=1.0;		
 				
 		setLayout(gridbaglayout);
-		gridbagAdd(vUserRegister, 0, 0, 1, 1);
-		gridbagAdd(vUserName, 0, 1, 1, 1);
-		gridbagAdd(xUserName, 1, 1, 1, 1);
+		gridbagAdd(vCustRegister, 0, 0, 1, 1);
+		gridbagAdd(vCustName, 0, 1, 1, 1);
+		gridbagAdd(xCustName, 1, 1, 1, 1);
 		gridbagAdd(vID, 0, 2, 1, 1);
 		gridbagAdd(xID, 1, 2, 1, 1);
 		gridbagAdd(bDupConfirm, 2, 2, 1, 1);
@@ -82,16 +111,16 @@ public class UserRegister extends JPanel implements ActionListener {
 		gridbagAdd(vPasswordConfirm, 0, 4, 1, 1);
 		gridbagAdd(xPasswordConfirm, 1, 4, 1, 1);
 		gridbagAdd(vBirthDay, 0, 5, 1, 1);
-		gridbagAdd(xBirthDay, 1, 5, 1, 1);
-		gridbagAdd(bCal, 2, 5, 1, 1);
+		gridbagAdd(chooser, 1, 5, 1, 1);
 		gridbagAdd(vAddress, 0, 6, 1, 1);
-		gridbagAdd(xAddress, 1, 6, 1, 1);
-		gridbagAdd(bAddrSearch, 2, 6, 1, 1);
+		gridbagAdd(xAddress, 1, 6, 2, 1);
+		gridbagAdd(bAddrSearch, 3, 6, 1, 1);
 		gridbagAdd(vPhone, 0, 7, 1, 1);
 		gridbagAdd(xPhone, 1, 7, 1, 1);
 		
-		Component[] comps = {bUserRegister, bCancel};
+		Component[] comps = {bRegister, bCancel};
 		CombinePanel btn = new CombinePanel(comps, true);
+		btn.setBorder(new EmptyBorder(20, 20, 0, 0));
 		
 		gridbagAdd(btn, 1, 8, 1, 1);
 		
@@ -129,7 +158,12 @@ public class UserRegister extends JPanel implements ActionListener {
 	}
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(bAddrSearch)) {
-		//	new AddressSearch();
+			new NewAddressSearch(xAddress);
+		}
+	}
+	private void ChangeFont(JComponent[] comps, Font font) {
+		for(JComponent comp: comps) {
+			comp.setFont(font);
 		}
 	}
 	public static void main(String[] args) {
