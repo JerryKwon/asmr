@@ -45,6 +45,8 @@ public class ProtAniRegist extends JFrame{
 	private JScrollPane featureScroll;
 	
 	private ArrayList<String> picPaths;
+	private String parAbanNo = null;
+	private boolean isPicture = false;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -346,7 +348,19 @@ public class ProtAniRegist extends JFrame{
 				});
 			}
 			else if(e.getSource().equals(searchPar)) {
-				new ProtAnmlSearchPopup();
+				ProtAnmlSearchPopup protAnmlSearchPopup = new ProtAnmlSearchPopup(xParAbanAniName);
+				protAnmlSearchPopup.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						// TODO Auto-generated method stub
+						super.windowClosed(e);
+						parAbanNo = protAnmlSearchPopup.getProtNo();
+						GetAvalCages2(parAbanNo);
+					}
+				
+				
+				});
 			}
 			else if(e.getSource().equals(pictureManage)) {
 				try {
@@ -358,7 +372,6 @@ public class ProtAniRegist extends JFrame{
 							// TODO Auto-generated method stub
 							super.windowClosed(e);
 							picPaths = newPictureManage.getPaths();
-							System.out.println(picPaths.toString());
 						}
 						
 					});
@@ -388,7 +401,7 @@ public class ProtAniRegist extends JFrame{
     	String engAbanAniType = null;
     	
     	String rscuNo = xRscuNo.getText();
-    	String momAbanName = xParAbanAniName.getText();
+    	String parAbanNo = this.parAbanNo;
     	String abanName = xAbanAniName.getText();
     	String age = xAge.getText();
     	
@@ -473,6 +486,7 @@ public class ProtAniRegist extends JFrame{
     		query1.append(" '"+engAbanAniType+"' ABAN_TP, ");
     		query1.append(" '"+abanName+"' ABAN_NAME, ");
     		query1.append(" '"+age+"' AGE, ");
+    		query1.append(" '"+engAniKind+"' ANML_KINDS, ");
     		query1.append(" '"+kind+"' KIND, ");
     		query1.append(" '"+engSex+"' SEX, ");
     		query1.append(" '"+color+"' COLOR, ");
@@ -489,13 +503,33 @@ public class ProtAniRegist extends JFrame{
 		}	
     	//동물구분이 탄생일때 쿼리
     	else if(abanAniType=="탄생") {
-    		
+    		query1.append("INSERT INTO ABAN(ABAN_NO,ABAN_TP,ABAN_NAME,AGE,ANML_KINDS,KIND,SEX,COLOR,NEUT_WHET,REGIS_DATE,ANML_SIZE,FEAT,MOM_ABAN_NO) ");
+    		query1.append("SELECT ");
+    		query1.append("	CASE WHEN SUBSTR(ABAN_NO,1,8) = to_char(TRUNC(SYSDATE),'yyyymmdd') ");
+    		query1.append("	THEN to_char(TRUNC(SYSDATE),'yyyymmdd') || CASE WHEN SUBSTR(ABAN_NO,10,1) = '9' THEN to_char(SUBSTR(ABAN_NO,9,1)+1) ELSE SUBSTR(ABAN_NO,9,1) END || CASE WHEN SUBSTR(ABAN_NO,10,1)='9' THEN '0' ELSE to_char(SUBSTR(ABAN_NO,10,1)+1) END ");
+    		query1.append("	ELSE to_char(TRUNC(SYSDATE),'yyyymmdd') || '01' END ABAN_NO, ");
+    		query1.append(" '"+engAbanAniType+"' ABAN_TP, ");
+    		query1.append(" '"+abanName+"' ABAN_NAME, ");
+    		query1.append(" '"+age+"' AGE, ");
+    		query1.append(" '"+engAniKind+"' ANML_KINDS, ");
+    		query1.append(" '"+kind+"' KIND, ");
+    		query1.append(" '"+engSex+"' SEX, ");
+    		query1.append(" '"+color+"' COLOR, ");
+    		query1.append(" '"+neutWhet+"' NEUT_WHET, ");
+    		query1.append(" TRUNC(SYSDATE) REGIS_DATE, ");
+    		query1.append(" '"+engAniSize+"' ANML_SIZE, ");
+    		query1.append(" '"+feature+"' FEAT, ");
+    		query1.append(" '"+parAbanNo+"' MOM_ABAN_NO ");
+    		query1.append("FROM( ");
+    		query1.append("	SELECT NVL(ABAN_NO,0) ABAN_NO ");
+    		query1.append("	FROM(SELECT /*+INDEX_DESC(ABAN ABAN_PK) */ MAX(ABAN_NO) ABAN_NO ");
+    		query1.append("		 FROM ABAN) ");
+    		query1.append(") ");
     	}
 		
 		StringBuffer query2 = new StringBuffer();    
 			
-		if(picPaths.size() > 0) {
-	    	
+		try {
 			query2.append("INSERT INTO ABAN_PIC ");
 	    	query2.append("SELECT ");
 	    	query2.append("	(SELECT NVL(ABAN_NO,0) ABAN_NO ");
@@ -513,6 +547,11 @@ public class ProtAniRegist extends JFrame{
 	    		numLoop+=1;
 	    	}
 	    	query2.append(") t ");
+	    	
+	    	isPicture = true;
+	    	
+		}catch(NullPointerException e) {
+			isPicture = false;
 		}
 		
 		StringBuffer query3 = new StringBuffer("INSERT INTO PROT(PROT_NO,PROT_START_DATE,ABAN_NO,CNTR_NO,CAGE_ORNU,CAMA_EMP_NO) ");
@@ -549,7 +588,7 @@ public class ProtAniRegist extends JFrame{
 			if(rs.next()) {
 				con.commit();
 			}
-			if(query2.length() != 0) {
+			if(isPicture) {
 				pstmt = con.prepareStatement(query2.toString());
 				rs = pstmt.executeQuery();
 				if(rs.next()) {
@@ -569,39 +608,71 @@ public class ProtAniRegist extends JFrame{
     	disconnection();
     }
     
-    private void GetAvalCages(String rscuNo) {
+    private void GetAvalCages2(String parAbanNo) {
+    	
+    	cbCage.removeAllItems();
+    	
+    	StringBuffer query = new StringBuffer("SELECT '케이지'||CAGE_ORNU||'('||CASE CAGE_SIZE WHEN 'b' THEN '대' WHEN 'm' THEN '중' WHEN 's' THEN '소' END||')' CAGES ");
+    	query.append("FROM( ");
+    	query.append("	SELECT c.CAGE_ORNU,c.CAGE_SIZE ");
+    	query.append("	FROM CAGE c INNER  JOIN (SELECT DISTINCT(CNTR_NO) CNTR_NO FROM PROT WHERE ABAN_NO='2019102701') p ");
+    	query.append("	ON c.CNTR_NO = p.CNTR_NO) t ");
+    	query.append("	WHERE t.CAGE_ORNU NOT IN( ");
+    	query.append("		SELECT c.CAGE_ORNU ");
+    	query.append("		FROM CAGE c INNER JOIN (SELECT * FROM PROT WHERE CNTR_NO = (SELECT DISTINCT(CNTR_NO) CNTR_NO FROM PROT WHERE ABAN_NO='2019102701') AND PROT_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) p ");
+    	query.append("		ON c.CNTR_NO=p.CNTR_NO AND c.CAGE_ORNU=p.CAGE_ORNU ");
+    	query.append(") ORDER BY 1 ");
+    	
     	connection();
     	
     	try {
-			StringBuffer query= new StringBuffer("SELECT '케이지'||c.CAGE_ORNU||'('|| ");
-			query.append("	CASE c.CAGE_SIZE WHEN 's' THEN '소' WHEN 'm' THEN '중' WHEN 'b' THEN '대' END ");
-			query.append("	||')' CAGES ");
-			query.append("FROM(SELECT t1.CNTR_NO,c.CAGE_ORNU ");
-			query.append("	FROM( ");
-			query.append("		SELECT a.CNTR_NO ");
-			query.append("		FROM (SELECT * FROM RSCU ");
-			query.append("			  WHERE RSCU_NO = '"+rscuNo+"') rs INNER JOIN (SELECT * FROM ASSG ");
-			query.append("			  WHERE ASSG_RES = 'a') a ");
-			query.append("			  ON rs.RSCU_NO = a.ASSG_NO) t1 LEFT OUTER JOIN CAGE c ");
-			query.append("			  	ON t1.CNTR_NO = c.CNTR_NO ");
-			query.append("	MINUS ");
-			query.append("		SELECT p.CNTR_NO,p.CAGE_ORNU ");
-			query.append("		FROM(SELECT a.CNTR_NO ");
-			query.append("			FROM (SELECT * FROM RSCU ");
-			query.append("				WHERE RSCU_NO = '"+rscuNo+"') rs INNER JOIN (SELECT * FROM ASSG ");
-			query.append("					WHERE ASSG_RES = 'a') a ");
-			query.append("					ON rs.RSCU_NO = a.ASSG_NO) t1 INNER JOIN (SELECT * FROM PROT WHERE PROT_END_DATE = to_date('9999-12-31','YYYY-MM-DD')) p ");
-			query.append("						ON t1.CNTR_NO = p.CNTR_NO ");
-			query.append(") t2 INNER JOIN CAGE c ");
-			query.append("	ON t2.CNTR_NO = c.CNTR_NO AND t2.CAGE_ORNU = c.CAGE_ORNU ");
-			query.append("ORDER BY 1 ");
+    		pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				cbCage.addItem(rs.getString("CAGES"));
+			}
+    	}catch(SQLException e) {
+    		e.printStackTrace();
+    	}
+    	
+    	disconnection();
+    }
+    
+    private void GetAvalCages(String rscuNo) {
+    	
+    	cbCage.removeAllItems();
+    	
+    	StringBuffer query= new StringBuffer("SELECT '케이지'||c.CAGE_ORNU||'('|| ");
+		query.append("	CASE c.CAGE_SIZE WHEN 's' THEN '소' WHEN 'm' THEN '중' WHEN 'b' THEN '대' END ");
+		query.append("	||')' CAGES ");
+		query.append("FROM(SELECT t1.CNTR_NO,c.CAGE_ORNU ");
+		query.append("	FROM( ");
+		query.append("		SELECT a.CNTR_NO ");
+		query.append("		FROM (SELECT * FROM RSCU ");
+		query.append("			  WHERE RSCU_NO = '"+rscuNo+"') rs INNER JOIN (SELECT * FROM ASSG ");
+		query.append("			  WHERE ASSG_RES = 'a') a ");
+		query.append("			  ON rs.RSCU_NO = a.ASSG_NO) t1 LEFT OUTER JOIN CAGE c ");
+		query.append("			  	ON t1.CNTR_NO = c.CNTR_NO ");
+		query.append("	MINUS ");
+		query.append("		SELECT p.CNTR_NO,p.CAGE_ORNU ");
+		query.append("		FROM(SELECT a.CNTR_NO ");
+		query.append("			FROM (SELECT * FROM RSCU ");
+		query.append("				WHERE RSCU_NO = '"+rscuNo+"') rs INNER JOIN (SELECT * FROM ASSG ");
+		query.append("					WHERE ASSG_RES = 'a') a ");
+		query.append("					ON rs.RSCU_NO = a.ASSG_NO) t1 INNER JOIN (SELECT * FROM PROT WHERE PROT_END_DATE = to_date('9999-12-31','YYYY-MM-DD')) p ");
+		query.append("						ON t1.CNTR_NO = p.CNTR_NO ");
+		query.append(") t2 INNER JOIN CAGE c ");
+		query.append("	ON t2.CNTR_NO = c.CNTR_NO AND t2.CAGE_ORNU = c.CAGE_ORNU ");
+		query.append("ORDER BY 1 ");
+	
+    	connection();
+    		
+    	try {
 			
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
-				
 				cbCage.addItem(rs.getString("CAGES"));
-				
 			}
 		
 			
