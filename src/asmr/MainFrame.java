@@ -18,10 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-<<<<<<< HEAD
-=======
 import javax.swing.border.LineBorder;
->>>>>>> choi
 
 
 public class MainFrame extends JFrame {
@@ -33,7 +30,6 @@ public class MainFrame extends JFrame {
 	private JMenu mAban, mReport, mAdop, mPost, mReportManage, mAdopManage;
 	private JMenuItem mReportAni, mAdopAnnc, mCenter, mEmp;
 	
-	private String[] mlEmp = {"직원조회"};
 	private String[] mlAban = {"기본정보관리", "진료"};
 	private String[] mlReport = {"신고배정(본부센터)", "신고배정(일반센터)"};
 	private String[] mlAdop = {"입양신청관리", "입양완료목록"};
