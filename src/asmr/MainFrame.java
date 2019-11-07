@@ -251,6 +251,13 @@ public class MainFrame extends JFrame {
 		mAban.setEnabled(false);
 		mReportManage.setEnabled(false);
 		mAdopManage.setEnabled(false);
+		
+		//메인 페이지로
+		ContentPanel.removeAll();
+		pContents = new MainPage();
+		ContentPanel.add(pContents);
+		ContentPanel.revalidate();
+		ContentPanel.repaint();
 	}
 	public void setLogin() {
 		
