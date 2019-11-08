@@ -1,16 +1,34 @@
 package asmr;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 
-public class EmpMyPage extends JPanel{
+public class EmpMyPage extends JPanel implements ActionListener{
 	private JLabel vTitle, vEmpName, vEmpType, vPassword, vPassConfirm, vAddress, vPhone,
 			vCenterName, vBizField, vSex, vBirthDay;
 	
 	private JTextField xEmpName, xEmpType, xAddress, xPhone, xCenterName, xBizField, xSex, xBirthDay;
 	private JPasswordField xPassword, xPassConfirm;
 	
-	private JButton bSearch, bAdjust, bCancel;
+	private JButton bSearch, bAdjust, bCancel, bSave;
+	
+	private Color blue = new Color(22,155,213);
+	private Color white = new Color(255,255,255);
 	
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
@@ -20,6 +38,9 @@ public class EmpMyPage extends JPanel{
 		gridbagconstraints = new GridBagConstraints();
 		
 		vTitle = new JLabel("마이페이지");
+		vTitle.setFont(new Font("나눔고딕", Font.BOLD, 24));
+		vTitle.setBorder(new EmptyBorder(0, 10, 20, 0));
+		
 		vEmpName = new JLabel("직원명");
 		xEmpName = new JTextField(20);
 		xEmpName.setEditable(false);
@@ -30,9 +51,11 @@ public class EmpMyPage extends JPanel{
 		
 		vPassword = new JLabel("비밀번호");
 		xPassword = new JPasswordField(20);
+		xPassword.setEditable(false);
 		
 		vPassConfirm = new JLabel("비밀번호확인");
 		xPassConfirm = new JPasswordField(20);
+		xPassConfirm.setEditable(false);
 		
 		vAddress = new JLabel("주소");
 		xAddress = new JTextField(30);
@@ -40,6 +63,7 @@ public class EmpMyPage extends JPanel{
 		
 		vPhone = new JLabel("전화번호");
 		xPhone = new JTextField(20);
+		xPhone.setEditable(false);
 		
 		vCenterName = new JLabel("소속센터");
 		xCenterName = new JTextField(20);
@@ -49,7 +73,6 @@ public class EmpMyPage extends JPanel{
 		xBizField = new JTextField(20);
 		xBizField.setEditable(false);
 		
-		//성별 ?
 		vSex = new JLabel("성별");
 		xSex = new JTextField(20);
 		xSex.setEditable(false);
@@ -59,16 +82,59 @@ public class EmpMyPage extends JPanel{
 		xBirthDay.setEditable(false);
 		
 		bSearch = new JButton("검색");
+		bSearch.addActionListener(this);
+		bSearch.setBackground(blue);
+		bSearch.setForeground(white);
+		bSearch.setEnabled(false);
 		bAdjust = new JButton("수정");
+		bAdjust.addActionListener(this);
+		bAdjust.setBackground(blue);
+		bAdjust.setForeground(white);
+		bSave = new JButton("확인");
+		bSave.addActionListener(this);
+		bSave.setBackground(blue);
+		bSave.setForeground(white);
+		bSave.setVisible(false);
 		bCancel = new JButton("취소");
+		bCancel.addActionListener(this);
 		
+		JComponent[] slabel = {vEmpName, vEmpType, vPassword, vPassConfirm, vAddress, vPhone,
+				vCenterName, vBizField, vSex, vBirthDay};
+		ChangeFont(slabel, new Font("나눔고딕", Font.PLAIN, 16));
+		JComponent[] sbutton = {bSearch, bAdjust, bCancel, bSave};
+		ChangeFont(sbutton, new Font("나눔고딕", Font.BOLD, 16));
 		EmpMyPageView();
 		
+	}
+	public void actionPerformed(ActionEvent e){
+		if(e.getSource().equals(bSearch)){
+			new NewAddressSearch(xAddress);
+		}
+		else if(e.getSource().equals(bAdjust)){
+			bAdjust.setVisible(false);
+			bSave.setVisible(true);
+			bSearch.setEnabled(true);
+			xPassword.setEditable(true);
+			xPassConfirm.setEditable(true);
+			xPhone.setEditable(true);
+		}
+		else if(e.getSource().equals(bCancel)){
+			bAdjust.setVisible(true);
+			bSave.setVisible(false);
+			bSearch.setEnabled(false);
+			xPassword.setEditable(false);
+			xPassConfirm.setEditable(false);
+			xPhone.setEditable(false);
+		}
+		else if(e.getSource().equals(bSave)){
+			JOptionPane.showMessageDialog(null, "해당 내용으로 수정하시겠습니까?", "메시지", JOptionPane.QUESTION_MESSAGE);
+		}
 	}
 	private void EmpMyPageView() {
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;		
-		gridbagconstraints.ipadx = 7;		
+		gridbagconstraints.ipadx = 7;
+		gridbagconstraints.insets = new Insets(5,5,5,5);
 				
 		gridbagconstraints.weightx=1.0;		
 		gridbagconstraints.weighty=1.0;		
@@ -97,8 +163,8 @@ public class EmpMyPage extends JPanel{
 		gridbagAdd(xBirthDay, 3,4,1,1);
 		
 		gridbagAdd(vAddress, 0,5,1,1);
-		gridbagAdd(xAddress, 1,5,1,1);
-		gridbagAdd(bSearch, 2,5,1,1);
+		gridbagAdd(xAddress, 1,5,2,1);
+		gridbagAdd(bSearch, 3,5,1,1);
 		
 		gridbagAdd(vPhone, 0,6,1,1);
 		gridbagAdd(xPhone, 1,6,1,1);
@@ -106,11 +172,12 @@ public class EmpMyPage extends JPanel{
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 		
 		gridbagAdd(bAdjust, 1,7,1,1);
+		gridbagAdd(bSave, 1,7,1,1);
 		gridbagAdd(bCancel, 2,7,1,1);
 		
 	}
 	
-private void gridbagAdd(Component c, int x, int y, int w, int h) {			
+	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
 		
 		gridbagconstraints.gridx = x;		
 		gridbagconstraints.gridy = y; 		
@@ -125,6 +192,11 @@ private void gridbagAdd(Component c, int x, int y, int w, int h) {
 	   add(c);			
 				
 	   }
+	private void ChangeFont(JComponent[] comps, Font font) {
+		for(JComponent comp: comps) {
+			comp.setFont(font);
+		}
+	}
 
 	public static void main(String[] args) {
 
