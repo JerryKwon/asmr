@@ -190,7 +190,7 @@ public class AnncRegis extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(search)) {
-				new ProtAnmlSearchPopup();	
+//				new ProtAnmlSearchPopup();	
 			}
 			else if (e.getSource().equals(confirm)) {
 				

@@ -14,10 +14,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -29,6 +31,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class RprtAssignment extends JPanel {
@@ -36,6 +39,8 @@ public class RprtAssignment extends JPanel {
    /**
     * 
     */
+
+	
    private static final long serialVersionUID = 1L;
 
    List<Map<String, Serializable>> erprtListData;
@@ -68,14 +73,27 @@ public class RprtAssignment extends JPanel {
    GridBagConstraints gridbagconstraints;
    
    RprtAssignmentMouseListener rprtAssignmentMouseListener;
-   
+
    private final String[] col1 = {"신고일시","동물종류","동물크기","설명","배정센터명"};
    private final String[] col2 = {"센터명","주소","여유케이지(대)","여유케이지(중)","여유케이지(소)"};
    
    private DefaultTableModel model1 = new DefaultTableModel(col1,0);
    private DefaultTableModel model2 = new DefaultTableModel(col2,0);
    
+   
+   List<Map<String, Serializable>> rprtListData;
+   
+   List<Map<String, Serializable>> cntrListData;
+   
+   private JComboBox<String> combobox;
+   
+   ArrayList<String> array = new ArrayList<String>();
+
+
+   
    public RprtAssignment() throws IOException {
+	   
+	  combobox = new JComboBox<String>();
       
       rprtAssignmentButtonListener = new RprtAssignmentButtonListener();
       
@@ -182,8 +200,16 @@ public class RprtAssignment extends JPanel {
       
       new Button();
       
+      changeCellEditor(eRprtList, eRprtList.getColumnModel().getColumn(4));
+      
+      rprtListData = RprtData.getRprtList();
+      
+      cntrListData = RprtData.getRprtList();
+
+      
       getData();
       RprtAssignmentView();
+
    }
    
    private void RprtAssignmentView() {
@@ -303,15 +329,42 @@ public class RprtAssignment extends JPanel {
       }
    
     void getData() {
-            for(int i=0; i < erprtListData.size(); i++) {
+    	
+            for(int i=0; i < rprtListData.size(); i++) {
+            	
                model1.addRow(new Object[] {
-                     erprtListData.get(i).get("신고일시"),
-                     erprtListData.get(i).get("동물종류"),
-                     erprtListData.get(i).get("동물크기"),
-                     erprtListData.get(i).get("설명")
+                     rprtListData.get(i).get("신고일시"),
+                     rprtListData.get(i).get("동물종류"),
+                     rprtListData.get(i).get("동물크기"),
+                     rprtListData.get(i).get("설명"),
+                     
+//                     erprtListData.get(i).get("배정센터명")
                });
             }
       }
+    
+
+
+    
+    void changeCellEditor(JTable table, javax.swing.table.TableColumn tableColumn) {
+    	
+        
+    	
+    	
+
+        combobox.addItem("부산센터");
+        combobox.addItem("부산센터1");
+
+
+        tableColumn.setCellEditor(new DefaultCellEditor(combobox));
+
+        DefaultTableCellRenderer renderer =
+                new DefaultTableCellRenderer();
+        renderer.setToolTipText("클릭하면 콤보박스로 변경됩니다.");
+        tableColumn.setCellRenderer(renderer);
+}
+
+    
 
    public static void main(String[] args) throws IOException {
       new RprtAssignment();
