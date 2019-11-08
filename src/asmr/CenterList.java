@@ -236,7 +236,7 @@ public class CenterList extends JPanel{
 		ChangeFont(vContextComps, new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		
 		JComponent[] bComps = {centerRegist, cageRegist, searchManager, modify, cancel};
-		ChangeFont(vContextComps, new Font("³ª´®°íµñ", Font.BOLD, 16));
+		ChangeFont(bComps, new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
 		CenterListView();
 		
