@@ -15,6 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -78,9 +79,11 @@ public class CustRegister extends JPanel implements ActionListener {
 		xPhone = new JTextField(15);
 		
 		bRegister = new JButton("등록");
+		bRegister.addActionListener(this);
 		bRegister.setBackground(blue);
 		bRegister.setForeground(white);
 		bCancel = new JButton("취소");
+		bCancel.addActionListener(this);
 		
 		JComponent[] slabel = {vCustName, vID, vPassword, vPasswordConfirm, vBirthDay, vAddress, vPhone,
 				xCustName, xID, xPhone, xPassword, xPasswordConfirm};
@@ -110,8 +113,9 @@ public class CustRegister extends JPanel implements ActionListener {
 		gridbagAdd(xPassword, 1, 3, 1, 1);
 		gridbagAdd(vPasswordConfirm, 0, 4, 1, 1);
 		gridbagAdd(xPasswordConfirm, 1, 4, 1, 1);
-		gridbagAdd(vBirthDay, 0, 5, 1, 1);
-		gridbagAdd(chooser, 1, 5, 1, 1);
+		// 생년월일 미관리
+//		gridbagAdd(vBirthDay, 0, 5, 1, 1);
+//		gridbagAdd(chooser, 1, 5, 1, 1);
 		gridbagAdd(vAddress, 0, 6, 1, 1);
 		gridbagAdd(xAddress, 1, 6, 2, 1);
 		gridbagAdd(bAddrSearch, 3, 6, 1, 1);
@@ -157,8 +161,37 @@ public class CustRegister extends JPanel implements ActionListener {
 		}
 	}
 	public void actionPerformed(ActionEvent e) {
+		String[] checks = {"확인", "취소"};
+		int a;
 		if(e.getSource().equals(bAddrSearch)) {
 			new NewAddressSearch(xAddress);
+		}
+		else if(e.getSource().equals(bDupConfirm)){
+			
+		}
+		else if(e.getSource().equals(bCancel)){
+			a = JOptionPane.showOptionDialog(this, "회원가입을 취소하시겠습니까?", "메시지", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE, null, checks, checks[0]);
+			if(a == 0){
+				
+			}
+			else if(a == 1){
+				
+			}
+		}
+		else if(e.getSource().equals(bRegister)){
+			a = JOptionPane.showOptionDialog(this, "회원으로 등록하시겠습니까?", "메시지", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE, null, checks, checks[0]);
+			if(a == 0){
+				
+				CustData.initCustData(xCustName.getText(), xAddress.getText(), xPhone.getText(),
+						xID.getText(), new String(xPassword.getPassword()));
+				CustData.createIsUserCust();
+				JOptionPane.showMessageDialog(null, "등록되었습니다.");
+			}
+			else if(a == 1){
+				
+			}
 		}
 	}
 	private void ChangeFont(JComponent[] comps, Font font) {
