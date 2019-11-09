@@ -23,7 +23,7 @@ import javax.swing.border.LineBorder;
 
 public class MainFrame extends JFrame {
 
-	private JButton bMainButton, bLogin, bRegister, bLogout, bUserName;
+	private JButton bMainButton, bLogin, bRegister, bLogout, bUserName, bCustName;
 	private JLabel vCenterName, vWelcome;
 	
 	private JMenuBar mBar;
@@ -39,7 +39,8 @@ public class MainFrame extends JFrame {
 	private static ContentPanel ContentPanel;	
 	
 	Login login;
-	public static String empName, empID, empCntr;
+	public static String empName, empID, empCntr, custID, custName;
+	public static int custNo;
 	
 	public MainFrame() {
 		login = new Login();
@@ -79,6 +80,13 @@ public class MainFrame extends JFrame {
 		bUserName.setFocusPainted(false);
 		bUserName.setBorderPainted(false);
 		bUserName.setForeground(new Color(0, 180, 255));
+		
+		bCustName = new JButton(" ");
+		bCustName.addActionListener(listener);
+		bCustName.setContentAreaFilled(false);
+		bCustName.setFocusPainted(false);
+		bCustName.setBorderPainted(false);
+		bCustName.setForeground(new Color(0, 180, 255));
 		
 		mBar = new JMenuBar();
 		UIManager.put("Menu.font", new Font("나눔고딕", Font.BOLD, 20));
@@ -202,6 +210,7 @@ public class MainFrame extends JFrame {
 		
 		vCenterName.setBounds(1700,110,150,20);
 		bUserName.setBounds(1700,125,75,30);
+		bCustName.setBounds(1700,125,75,30);
 		vWelcome.setBounds(1770,130,150,20);
 		bLogout.setBounds(1810, 10, 100, 30);
 		
@@ -219,12 +228,14 @@ public class MainFrame extends JFrame {
 		this.add(bLogout);
 		this.add(vCenterName);
 		this.add(bUserName);
+		this.add(bCustName);
 		this.add(vWelcome);
 		
 		// 버튼 보이기 여부
 		bLogout.setVisible(false);
 		vCenterName.setVisible(false);
 		bUserName.setVisible(false);
+		bCustName.setVisible(false);
 		vWelcome.setVisible(false);
 		
 		// 메뉴 접근 가능여부
@@ -247,6 +258,7 @@ public class MainFrame extends JFrame {
 		bLogout.setVisible(false);
 		vCenterName.setVisible(false);
 		bUserName.setVisible(false);
+		bCustName.setVisible(false);
 		vWelcome.setVisible(false);
 		
 		// 메뉴 접근 가능여부
@@ -293,6 +305,25 @@ public class MainFrame extends JFrame {
 		ContentPanel.revalidate();
 		ContentPanel.repaint();
 	}
+	public void setCustLogin(){
+		// 버튼 보이기 여부
+		bLogin.setVisible(false);
+		bRegister.setVisible(false);
+				
+		bLogout.setVisible(true);
+		vWelcome.setVisible(true);
+		custNo = CustData.getCustNo(login.custID);
+		custName = CustData.getCustName(custNo);
+		bCustName.setText(custName);
+		bCustName.setVisible(true);
+		
+		//메인 페이지 로드
+		ContentPanel.removeAll();
+		pContents = new MainPage();
+		ContentPanel.add(pContents);
+		ContentPanel.revalidate();
+		ContentPanel.repaint();
+	}
 	
 	class MenuActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
@@ -312,6 +343,12 @@ public class MainFrame extends JFrame {
 			}else if(cont == empName){
 				ContentPanel.removeAll();
 				pContents = new EmpMyPage();
+				ContentPanel.add(pContents);
+				revalidate();
+				repaint();
+			}else if(cont == custName){
+				ContentPanel.removeAll();
+				pContents = new CustMyPage();
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();

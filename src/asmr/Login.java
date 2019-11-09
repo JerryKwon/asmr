@@ -6,6 +6,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,7 +26,7 @@ public class Login extends JPanel implements ActionListener{
 	private JPasswordField xPassword;
 	
 	private MainFrame main;
-	static String empID, empPwd;
+	static String empID, custID;
 	GridBagLayout gridbaglayout;				// 화면을 구성하는 레이아웃
 	GridBagConstraints gridbagconstraints;
 	
@@ -51,7 +54,7 @@ public class Login extends JPanel implements ActionListener{
 		empID = "0";
 		LoginView();
 	}
-	private void LoginCheck(String id, String pw){
+	private void EmpLoginCheck(String id, String pw){
 		int iid = Integer.parseInt(id);
 		if(pw.equals(EmpData.getEmpPwd(iid))){
 			main.setLogin();
@@ -61,17 +64,43 @@ public class Login extends JPanel implements ActionListener{
 			JOptionPane.showMessageDialog(null, "ID 혹은 비밀번호를 확인해주세요.");
 		}
 	}
+	private void CustLoginCheck(String id, String pw){
+		int custNo;
+		custNo = CustData.getCustNo(id);
+		if(custNo == 0){
+			JOptionPane.showMessageDialog(null, "존재하지 않는 아이디 입니다.");
+		}
+		else{
+			if(pw.equals(CustData.getCustPwd(custNo))){
+				main.setCustLogin();
+			}
+			else{
+				JOptionPane.showMessageDialog(null, "비밀번호를 확인해주세요.");
+			}
+		}
+				
+	}
 	public void actionPerformed(ActionEvent e) {
 		try{
 		if(e.getSource().equals(bLogin)){
-//			main.setLogin();
-			empID = xID.getText();
-			empPwd = new String(xPassword.getPassword());
-			LoginCheck(xID.getText(), new String(xPassword.getPassword()));
+			if(checkID(xID.getText())){
+				empID = xID.getText();
+				EmpLoginCheck(empID, new String(xPassword.getPassword()));
+			}
+			else{
+				custID = xID.getText();
+				CustLoginCheck(custID, new String(xPassword.getPassword()));
+			}
 		}
 		}catch(NumberFormatException e1){
-			JOptionPane.showMessageDialog(null, "정확한 값을 입력해주세요", "메시지", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "ID나 비밀번호를 정확하게 입력해주세요", "메시지", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+	private boolean checkID(String ID){
+		Pattern pint = Pattern.compile("(^[0-9]*$)");
+		Matcher mint = pint.matcher(ID);
+		
+		return mint.find();
 	}
 	public void setMain(MainFrame main){
 		this.main = main;
