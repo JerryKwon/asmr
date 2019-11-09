@@ -7,15 +7,32 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class NotiPost extends JPanel {
+	private boolean isClicked = false;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
 	private JLabel vNoti, vWrt, vWrtDttm, vTit, vCont;
 	
@@ -152,8 +169,52 @@ public class NotiPost extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			if(e.getSource().equals(update)) {	
-			
+			if(e.getSource().equals(update)) {
+				if(!isClicked) {
+					isClicked = true;
+					
+					xTit.setEditable(true);
+					xTit.requestFocus();
+					xCont.setEditable(true);
+					
+					update.setText("저장");
+					
+					
+//					String prePostTit = xTit.getText();
+//					String prePostCont = xCont.getText();
+					
+//					JComponent[] changeStatusComps = {xTit,xCont};
+//					for(JComponent cop: changeStatusComps) {
+//						cop.setEnabled(true);
+//					}
+					
+					
+				}
+				else {
+					isClicked = false;
+					int result = JOptionPane.showConfirmDialog(null, "공지정보를 수정하시겠습니까?", "센터정보수정", JOptionPane.YES_NO_OPTION);
+					if(result == JOptionPane.OK_OPTION) {
+//						xTit.setEditable(true);
+//						xTit.requestFocus();
+//						xCont.setEditable(true);
+						
+						String newPostTit = xTit.getText();
+						String newPostCont = xCont.getText();
+						
+						
+						xTit.setEditable(false);
+						xCont.setEditable(false);
+						update.setText("수정");
+						
+						
+						
+						UpdateNotiPost(newPostTit,newPostCont);
+						
+					}
+				}
+				
+				
+					
 			}
 			else if(e.getSource().equals(getBack)) {
 				MainFrame.notiBoardCase();
@@ -161,6 +222,66 @@ public class NotiPost extends JPanel {
 		}
 		
 	}
+    
+    
+    private void UpdateNotiPost(String newPostTit, String newPostCont) {
+//    		
+    		StringBuffer query1 = new StringBuffer("UPDATE POST SET POST_TIT=?, POST_CONT=? WHERE POST_NO=? ");
+    		
+    		connection();
+    		
+    		try {
+    			pstmt = con.prepareStatement(query1.toString());
+    			pstmt.setString(1, newPostTit);
+    			pstmt.setString(2, newPostCont);
+    			pstmt.setString(3, NotiBoard.pno);
+    			rs = pstmt.executeQuery();
+    			
+    			if(rs.next()) {
+    				con.commit();
+    			}
+    		}catch(SQLException e) {	
+    			e.printStackTrace();
+    		}
+    		
+    		disconnection();
+    	}
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
+    	
   
 	
 	

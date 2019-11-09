@@ -145,6 +145,7 @@ public class NotiWrtUpt extends JPanel {
 			else if(e.getSource().equals(cancel)) {
 				MainFrame.notiBoardCase();
 			}
+			
 		}
 		
 	}
@@ -156,8 +157,6 @@ public class NotiWrtUpt extends JPanel {
 		String postTit = xTit.getText();
 		String postCont = xCont.getText();
 		
-//		INSERT INTO 
-//		VALUES (POST_SEQ.nextval,    '시스템 리뉴얼했습니다.',    to_char(sysdate,'YYYY-MM-DD HH24:MI'),    '새로운 시스템과 함께하세요.',    'n', null,null,null, 0000);
     	
 		try {
 			StringBuffer query1 = new StringBuffer("INSERT INTO POST(POST_NO, POST_TIT, WRT_DTTM, POST_CONT, POST_TP, INQ_POST_NO, INQ_WRT_PRSN_NO, ANS_WRT_PRSN_NO, NOTI_WRT_PRSN_NO) ");
@@ -223,11 +222,7 @@ public class NotiWrtUpt extends JPanel {
         }
 
     }
-	
-	
-	
-	
-
+   
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new NotiWrtUpt();

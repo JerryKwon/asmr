@@ -14,6 +14,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,13 +39,23 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 public class RprtAssignment extends JPanel {
    
    /**
     * 
     */
-
+	
+//	static ArrayList<String> rprtNos;
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
    private static final long serialVersionUID = 1L;
 
@@ -83,15 +99,17 @@ public class RprtAssignment extends JPanel {
    
    List<Map<String, Serializable>> rprtListData;
    
-   List<Map<String, Serializable>> cntrListData;
+   ArrayList<String> cntrListData;
+   
+//   private ArrayList<String> cntrNm;
    
    private JComboBox<String> combobox;
    
    ArrayList<String> array = new ArrayList<String>();
-
-
    
    public RprtAssignment() throws IOException {
+	   
+//	  rprtNos = new ArrayList<String>();
 	   
 	  combobox = new JComboBox<String>();
       
@@ -111,7 +129,7 @@ public class RprtAssignment extends JPanel {
            private static final long serialVersionUID = 1L;
 
            public boolean isCellEditable(int row, int column) {                
-                   return false;               
+                   return true;               
            };
        };
       eRprtList.addMouseListener(rprtAssignmentMouseListener);
@@ -200,12 +218,15 @@ public class RprtAssignment extends JPanel {
       
       new Button();
       
+
+      
       changeCellEditor(eRprtList, eRprtList.getColumnModel().getColumn(4));
       
       rprtListData = RprtData.getRprtList();
       
-      cntrListData = RprtData.getRprtList();
+      cntrListData = RprtData.getCntrList();
 
+//      cntrNm = new ArrayList<String>();
       
       getData();
       RprtAssignmentView();
@@ -268,8 +289,7 @@ public class RprtAssignment extends JPanel {
       gridbagAdd(previous, 12,11,1,3);
       gridbagAdd(next, 13,11,1,3);
       
-      
-      
+
       gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
       //pack();
@@ -292,6 +312,49 @@ public class RprtAssignment extends JPanel {
       }
    
    }
+   
+//	private void GetRprt() {
+//		int clickedRow = eRprtList.getSelectedRow();
+////		String rprtNo = rprtNos.get(clickedRow);
+//		
+////		String cntrName = (String)eCenterList.getValueAt(clickedRow, 0);
+//		
+//		GetDetailRprt(rprtNo);
+//	}
+	
+//	private void GetDetailRprt(String rprtNo) {
+//		connection();
+//		
+//		try {
+//			StringBuffer query= new StringBuffer("SELECT RPRT_NO, TEL_NO, RPRT_DTTM, RPRT_TP, ANML_KINDS, ANML_SIZE, EXPLN, CUST_NAME, DSCV_DTTM, DSCV_LOC ");
+//			query.append("FROM RPRT");
+//			query.append("JOIN CUST ");
+//			query.append("ON RPRT.RPRT_PRSN_NO = CUST.CUST_NO ");
+//		
+//			pstmt = con.prepareStatement(query.toString());
+//			rs = pstmt.executeQuery();
+//			while(rs.next()) {
+//	
+//				xRprtNo.setText(rs.getString("RPRT_NO"));
+//				xRprtDttm.setText(rs.getString("RPRT_DTTM"));
+//				xRprtName.setText(rs.getString("CUST_NAME"));
+//				xTelNo.setText(rs.getString("TEL_NO"));
+//				cbRprtTp.setSelectedItem(rs.getString("RPRT_TP"));
+//				cbAnmlKinds.setSelectedItem(rs.getString("ANML_KINDS"));
+//				cbAnmlSize.setSelectedItem(rs.getString("ANML_SIZE"));
+//				xExpln.setText(rs.getString("EXPLN"));
+//				xDscvDttm.setText(rs.getString("DSCV_DTTM"));
+//				xDscvLoc.setText(rs.getString("DSCV_LOC"));
+//			}
+//				
+//		}catch(Exception e2) {
+//			e2.printStackTrace();
+//		}
+//		
+//		disconnection();
+//	}
+	
+	
    
    class RprtAssignmentMouseListener extends MouseAdapter{
 
@@ -336,9 +399,10 @@ public class RprtAssignment extends JPanel {
                      rprtListData.get(i).get("신고일시"),
                      rprtListData.get(i).get("동물종류"),
                      rprtListData.get(i).get("동물크기"),
-                     rprtListData.get(i).get("설명"),
+                     rprtListData.get(i).get("설명")
                      
-//                     erprtListData.get(i).get("배정센터명")
+                     
+//                     rprtListData.get(i).get("배정센터명")
                });
             }
       }
@@ -346,28 +410,63 @@ public class RprtAssignment extends JPanel {
 
 
     
-    void changeCellEditor(JTable table, javax.swing.table.TableColumn tableColumn) {
-    	
-        
-    	
-    	
+    void changeCellEditor(JTable table, TableColumn column) {
 
-        combobox.addItem("부산센터");
-        combobox.addItem("부산센터1");
+        for(int i=0;i<RprtData.getCntrList().size();i++) {
+        	combobox.addItem(RprtData.getCntrList().get(i));
+        }
 
 
-        tableColumn.setCellEditor(new DefaultCellEditor(combobox));
+        column.setCellEditor(new DefaultCellEditor(combobox));
 
         DefaultTableCellRenderer renderer =
                 new DefaultTableCellRenderer();
         renderer.setToolTipText("클릭하면 콤보박스로 변경됩니다.");
-        tableColumn.setCellRenderer(renderer);
+        column.setCellRenderer(renderer);
 }
+
+    
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+    }
 
     
 
    public static void main(String[] args) throws IOException {
       new RprtAssignment();
+//      System.out.println(RprtData.getCntrList().get(0).values());
+      
    }
 
 }

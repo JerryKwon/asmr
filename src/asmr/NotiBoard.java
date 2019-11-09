@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -34,15 +35,16 @@ public class NotiBoard extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	private String user = "asmr";
-	private String password = "asmr";
+	static String pno = null;
 	
-	private Connection con = null;
-	private PreparedStatement pstmt = null;
-	private ResultSet rs = null;
-	private ResultSetMetaData rsmd = null;
-
+	private static String url = "jdbc:oracle:thin:@localhost:1521:XE";
+	private static String user = "asmr";
+	private static String password = "asmr";
+	
+	private static Connection con = null;
+	private static PreparedStatement pstmt = null;
+	private static ResultSet rs = null;
+	private static ResultSetMetaData rsmd = null;
 	
 	NotiBoardButtonListener notiBoardButtonListener;
 	NotiBoardMouseListener notiBoardMouseListener;
@@ -60,7 +62,7 @@ public class NotiBoard extends JPanel {
 	
 	private String[] searchDiv = {"제목", "작성자"};
 	
-	private JButton regis0, search;
+	private JButton regis0, search, pre, next;
 	
 	private final String[] col = {"번호","제목","작성자","작성일시"};
 		
@@ -71,6 +73,15 @@ public class NotiBoard extends JPanel {
 	
 	private Color blue = new Color(22,155,213);
 	private Color white = new Color(255,255,255);
+	
+	private int nowPage; //현재 페이지 번호
+	private int nowPanel; //현재 패널 번호
+	private int postPerPage = 2; //페이지 당 포스트 수
+	private int pagePerPanel = 3; //패널 당 페이지 수
+	private int panelNum; //총 패널 수
+	private int pageNum; //총 페이지 수
+	private JButton[] bPage;
+	private JPanel[] pPage;	
 		
 	
 	public NotiBoard() {
@@ -109,11 +120,67 @@ public class NotiBoard extends JPanel {
 		search.setForeground(white);
 		search.addActionListener(notiBoardButtonListener);
 		
-		GetNotiPostList();
+		pre = new JButton("<");
+	    pre.setContentAreaFilled(false);
+	    pre.setBorderPainted(false);
+	    pre.addMouseListener(notiBoardMouseListener);
+	    
+	    next = new JButton(">");
+	    next.setContentAreaFilled(false);
+	    next.setBorderPainted(false);
+	    next.addMouseListener(notiBoardMouseListener);
+
+
 		
+		GetNotiPostList();
+		createPanel();
 		NotiBoardView();
 	
 	}
+	
+	private void createPanel() {
+	      if(model.getRowCount()!=0 && (model.getRowCount()%postPerPage)==0) { //페이지 수 구하기
+	         pageNum = model.getRowCount()/postPerPage;
+	      }
+	      else {
+	         pageNum = model.getRowCount()/postPerPage+1;
+	      }
+	      
+	      bPage = new JButton[pageNum];//페이지수만큼의 원소를 지닌 버튼배열 선언
+
+	      
+	      if((pageNum%pagePerPanel)==0) {  //패널 수 구하기
+	         panelNum = pageNum/pagePerPanel;
+	      }
+	      else {
+	         panelNum = pageNum/pagePerPanel+1;
+	      }
+	      
+	      System.out.println(panelNum);
+	      pPage = new JPanel[panelNum]; //구한 panelNum만큼의 원소를 지닌 패널배열 선언(버튼을 올려놓을 곳)
+	      
+	      int indexButton=0;
+	      
+	      for(int i=0;i<panelNum;i++) {
+	         pPage[i] = new JPanel(new FlowLayout(FlowLayout.LEFT)); //패널생성
+	         for(int j=0;j<pagePerPanel;j++) {
+	            if(indexButton >= pageNum) {
+	               break;
+	            }
+	            bPage[indexButton] = new JButton(""+(indexButton+1)); //버튼생성
+	            bPage[indexButton].setContentAreaFilled(false);
+	            bPage[indexButton].setBorderPainted(false);
+	            bPage[indexButton].addMouseListener(notiBoardMouseListener);
+	            
+	            pPage[i].add(bPage[indexButton]); //패널위에 버튼올리기
+	            indexButton++;
+	         }   
+	      }
+	      nowPage = 0; //현재페이지와 패널 초기화
+	      nowPanel = 0;
+	   }
+
+	
 	
 	private void NotiBoardView() {
 
@@ -136,7 +203,18 @@ public class NotiBoard extends JPanel {
 		gridbagAdd(xSearch, 2, 3, 1, 1);
 		gridbagAdd(search, 3, 3, 1, 1);
 		
+		gridbagconstraints.anchor = GridBagConstraints.EAST;
+	    gridbagAdd(pre,0,10,1,1);
+	    gridbagconstraints.anchor = GridBagConstraints.CENTER;
+	    gridbagAdd(pPage[0],1,10,1,1);
+	    gridbagconstraints.anchor = GridBagConstraints.WEST;
+	    gridbagAdd(next,2,10,1,1);
+
+		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
+		
+		setVisible(true);
+
 
 	}
 	
@@ -173,26 +251,76 @@ public class NotiBoard extends JPanel {
 //	  } // jTableRefresh : 테이블 내용을 갱신하는 메서드
 	
 	
+//	void getData() {
+//        for(int i = nowPage*postPerPage; i < nowPage*postPerPage + postPerPage ; i++) {
+//           if(i>model.getRowCount()-1) {
+//              break;
+//           }
+
+	
 //  직원 목록테이블 클릭시 발생하는 리스너
 	class NotiBoardMouseListener extends MouseAdapter{
-
+		
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
 			super.mouseClicked(e);
+			
+			for(int i=0; i<pageNum;i++) {
+		         if(e.getSource() == bPage[i]) {
+		            nowPage = i;
+		            model.setRowCount(0);
+//		            getData();
+		         }
+		      }
+
 			
 //			https://blaseed.tistory.com/18			
 			//1:좌클릭, 3:우클릭
 			if(e.getButton() == 1) {
 				int clickedRow = eNoticeList.getSelectedRow();
 				String postNo = (String)eNoticeList.getValueAt(clickedRow, 0);
+				pno = postNo;
 				GetPost(postNo);
 			}
-		}
+			else if(e.getSource()==pre) {
+		        if(nowPanel > 0) {
+		           remove(pPage[nowPanel]);
+		           nowPanel--;
+		           System.out.println("nowPanel = "+nowPanel);
+		           gridbagAdd(pPage[nowPanel],1,10,1,1);
+		             revalidate();
+//		             if(mainPage == null) {
+//		              mainMPage.repaint();
+//		             }
+//		             else {
+//		              mainPage.repaint();
+//		             }
+		         
+
+		       	}
+	      }
+		    else if(e.getSource() ==next) {
+		        if(nowPanel < panelNum-1) {
+		           remove(pPage[nowPanel]);
+		           nowPanel++;   
+		           gridbagAdd(pPage[nowPanel],1,10,1,1);
+	            revalidate();
+//	              if(mainPage == null) {
+//		               mainMPage.repaint();
+//	            }
+//	            else {
+//	               mainPage.repaint();
+//	            }
+		        }
+		    }
+		       
 	}
+}
 	
-	private void GetPost(String postNo) {
 	
+	static private void GetPost(String postNo) {
+			
 		MainFrame.notiPostCase();
 		connection();
 		
@@ -235,7 +363,7 @@ public class NotiBoard extends JPanel {
 			query.append("from post p ");
 			query.append("join emp e ");
 			query.append("on p.noti_wrt_prsn_no = e.emp_no ");
-			query.append("order by 1 desc ");
+			query.append("order by 4 desc ");
 			
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
@@ -256,7 +384,7 @@ public class NotiBoard extends JPanel {
 	
     // 데이터베이스 연결
 
-    public void connection() {
+    public static void connection() {
 
              try {
 
@@ -274,7 +402,7 @@ public class NotiBoard extends JPanel {
     }
 
     // 데이터베이스 연결 해제
-    public void disconnection() {
+    public static void disconnection() {
 
         try {
 
