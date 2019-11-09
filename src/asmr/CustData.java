@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
+
 public class CustData {
 	public static Connection conn = ConnDB.getConnection();
 	static String query;
@@ -53,6 +55,54 @@ public class CustData {
 			e.printStackTrace();
 		}
 		ConnDB.disConnection();
+	}
+	static int getCustNo(String custID){
+		int custNo = 0;
+		query = "SELECT CUST_NO FROM CUST WHERE ID = '"+custID+"'";
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+				custNo = rs.getInt(1);
+			}
+		}catch(SQLException e){
+			System.out.println("sql 오류");
+			e.printStackTrace();
+		}
+		return custNo;
+	}
+	static String getCustPwd(int custNo){
+		String custPwd = "";
+		query = "SELECT PWD FROM CUST WHERE CUST_NO = "+custNo;
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+				custPwd = rs.getString(1);
+			}
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+		return custPwd;
+	}
+	static String getCustName(int custNo){
+		String custName = "";
+		query = "SELECT CUST_NAME FROM CUST WHERE CUST_NO = "+custNo;
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+				custName = rs.getString(1);
+			}
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+		return custName;
 	}
 
 	public static void main(String[] args) {
