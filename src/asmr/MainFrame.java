@@ -455,6 +455,14 @@ public class MainFrame extends JFrame {
 		ContentPanel.repaint();
 	}
 	
+	public static void InqPostCase() {
+		ContentPanel.removeAll();
+		pContents = new InqPost();
+		ContentPanel.add(pContents);
+		ContentPanel.revalidate();
+		ContentPanel.repaint();
+	}
+	
 	public static void notiBoardCase() {
 		ContentPanel.removeAll();
 		pContents = new NotiBoard();

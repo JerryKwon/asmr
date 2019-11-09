@@ -11,6 +11,14 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -41,7 +49,7 @@ public class RprtRegis extends JPanel implements ActionListener{
 	
 	private String[] rprtDiv = {"발견", "인계"};
 	
-	private String[] anmlDiv = {"개", "고양이"};
+	private String[] anmlDiv = {"개", "고양이", "기타"};
 	
 	private String[] anmlSizeDiv = {"대", "중", "소"};
 
@@ -68,6 +76,15 @@ public class RprtRegis extends JPanel implements ActionListener{
 	
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 
 	public RprtRegis() throws IOException{
 		
@@ -154,7 +171,8 @@ public class RprtRegis extends JPanel implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(regist)) {
-				
+				RegistRprt();
+				MainFrame.mainCase();	
 			}
 			if(e.getSource().equals(cancel)) {
 				MainFrame.mainCase();
@@ -188,15 +206,11 @@ public class RprtRegis extends JPanel implements ActionListener{
 		
 	}
 	
-	   private void ChangeFont(JComponent[] comps, Font font) {
-	    	for(JComponent comp: comps) {
-	    		comp.setFont(font);
-	    	}
-	    }
-	
-	
-	
-	
+	private void ChangeFont(JComponent[] comps, Font font) {
+		for(JComponent comp: comps) {
+	   		comp.setFont(font);
+	  	}
+	 }
 	
 	private void RprtRegisView() {
 
@@ -263,6 +277,8 @@ public class RprtRegis extends JPanel implements ActionListener{
 	
 	private void RegistRprt() {
 		
+		connection();
+		
 		String rprtName =  xRprtName.getText();
 		
 		String telNo = xTelNo.getText();
@@ -278,7 +294,8 @@ public class RprtRegis extends JPanel implements ActionListener{
 		
 		String expln = xExpln.getText();
 		
-		String dscvDttm = xDscvDttm.getText();
+		SimpleDateFormat formater = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+		String dscvDttm = formater.format(timeSpinner.getValue());
 		
 		String dscvLoc = xDscvLoc.getText();
 		
@@ -318,9 +335,82 @@ public class RprtRegis extends JPanel implements ActionListener{
     		break;
 		}
 		
-		
-		
+		try {
+			StringBuffer query1 = new StringBuffer("INSERT INTO RPRT(RPRT_NO, RPRT_DTTM, RPRT_TP, RPRT_MTHD, ANML_KINDS, ANML_SIZE, EXPLN, RPRT_PRSN_NO, DSCV_DTTM, DSCV_LOC) ");
+			query1.append("VALUES( ");
+			query1.append("NO_SEQ.nextval, ");
+			query1.append("sysdate, ");
+			query1.append("'"+engRprtTp+"', ");
+			query1.append("'i', ");
+			query1.append("'"+engAnmlKinds+"', ");
+			query1.append("'"+engAnmlSize+"', ");
+			query1.append("'"+expln+"', ");
+			query1.append("'0000001', ");
+			query1.append("to_date('"+dscvDttm+"','yyyy.MM.dd HH24:mi:ss'), ");
+			query1.append("'"+dscvLoc+"') ");
+
+			
+			pstmt = con.prepareStatement(query1.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+			
+			StringBuffer query2 = new StringBuffer("INSERT INTO RPRT_PIC(RPRT_NO, RPRT_PIC_ORNU, PATH) ");
+			query2.append("VALUES( ");
+			query2.append("NO_SEQ.currval, ");
+			query2.append("RPRT_PIC_SEQ.nextval, ");
+			query2.append("'"+pic+"') ");
+			
+	//		pstmt = con.prepareStatement(query2.toString());
+	//		rs = pstmt.executeQuery();
+	//		if(rs.next()) {
+	//			con.commit();
+	//		}
+			System.out.println(query2.toString());
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
+	
+	
+    // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
 	
 	
 	
@@ -328,6 +418,8 @@ public class RprtRegis extends JPanel implements ActionListener{
 				
 	public static void main(String[] args) throws IOException {			
 		//new RprtRegis();		
+		
+		
 	}			
 	
 	

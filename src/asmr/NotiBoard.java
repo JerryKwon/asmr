@@ -258,7 +258,7 @@ public class NotiBoard extends JPanel {
 //           }
 
 	
-//  직원 목록테이블 클릭시 발생하는 리스너
+
 	class NotiBoardMouseListener extends MouseAdapter{
 		
 		@Override
@@ -363,6 +363,7 @@ public class NotiBoard extends JPanel {
 			query.append("from post p ");
 			query.append("join emp e ");
 			query.append("on p.noti_wrt_prsn_no = e.emp_no ");
+			query.append("where p.post_tp = 'n' ");
 			query.append("order by 4 desc ");
 			
 			pstmt = con.prepareStatement(query.toString());

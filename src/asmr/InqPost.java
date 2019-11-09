@@ -9,20 +9,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class InqPost extends JFrame {
+public class InqPost extends JPanel {
 	
 	InqPostButtonListener inqPostButtonListener;
 	
 	private JLabel vInq, vWrt, vWrtDttm, vTit, vCont;
 	
-	private JTextField xWrt, xWrtDttm, xTit;
+	static JTextField xWrt, xWrtDttm;
+
+	static JTextField xTit;
 	
-	private JTextArea xCont;
+	static JTextArea xCont;
 	
 	private JButton update, ans, getBack;
 	
@@ -34,7 +36,7 @@ public class InqPost extends JFrame {
 	private Color black = new Color(0,0,0);
 	private Color red = new Color(217,0,27);
 	
-	private InqPost() {
+	public InqPost() {
 		
 		inqPostButtonListener = new InqPostButtonListener();
 		
@@ -90,7 +92,7 @@ public class InqPost extends JFrame {
 	
 	private void InqPostView() {
 		
-		setTitle("문의사항게시글");	
+//		setTitle("문의사항게시글");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;
@@ -119,9 +121,9 @@ public class InqPost extends JFrame {
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
-		pack();
-		setResizable(false);
-		setVisible(true);
+//		pack();
+//		setResizable(false);
+//		setVisible(true);
 		
 	}
 	
