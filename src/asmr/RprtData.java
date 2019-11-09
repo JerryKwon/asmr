@@ -27,9 +27,11 @@ public class RprtData {
 	public static List<Map<String, Serializable>> rprtListData = new ArrayList<Map<String, Serializable>>();
 	public static List<Map<String, Serializable>> cntrListData = new ArrayList<Map<String, Serializable>>();
 	
+	private static ArrayList<String> cntrNm;
 	
 	static List<Map<String, Serializable>> getRprtList(){
-		query = "SELECT rprt_dttm, anml_kinds, anml_size, expln FROM rprt";
+//		RprtAssignment.rprtNos.clear();
+		query = "SELECT rprt_no, rprt_dttm, anml_kinds, anml_size, expln FROM rprt";
 		
 		rprtListData.clear();
 		
@@ -44,7 +46,9 @@ public class RprtData {
 	               rprtdataSet.put("동물종류", rs.getString(2));
 	               rprtdataSet.put("동물크기", rs.getString(3)); 
 	               rprtdataSet.put("설명", rs.getString(4));
-	               rprtdataSet.put("배정센터명","");
+//	               rprtdataSet.put("배정센터명",retrieve());
+	               
+//	               RprtAssignment.rprtNos.add(rs.getString("RPRT_NO"));
 	            
 	               rprtListData.add(rprtdataSet);
 			}
@@ -55,8 +59,12 @@ public class RprtData {
 		return rprtListData;
 	}
 	
-	static List<Map<String, Serializable>> getCntrList(){
-//		query = "SELECT DISTINCT(cntr_name) FROM cntr";
+	static ArrayList<String> getCntrList(){
+		
+		cntrNm = new ArrayList<String>();
+		
+		
+		query = "SELECT DISTINCT(cntr_name) FROM cntr";
 		
 		cntrListData.clear();
 		
@@ -71,17 +79,54 @@ public class RprtData {
 
 	            
 	               cntrListData.add(cntrdataSet);
+	               
+	               cntrNm.add(rs.getString(1));
 			}
 		}catch(SQLException e){
 			System.out.println("SELECT문 예외 발생");
 			e.printStackTrace();
 		}
-		return cntrListData;
+		return cntrNm;
 	}
 	
+
+    //RETRIEVE DATA
+//    static public DefaultComboBoxModel<String> retrieve()
+//    {
+//        DefaultComboBoxModel<String> dm=new DefaultComboBoxModel<>();
+//
+//        //SQL
+//        query="SELECT cntr_name FROM cntr";
+//
+//        try
+//        {
+//        	pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+//			rs = pstm.executeQuery();
+//
+//
+//            //LOOP THRU GETTING ALL VALUES
+//            while(rs.next())
+//            {
+//                //GET VALUES
+//                String name=rs.getString(1);
+//
+//                dm.addElement(name);
+//            }
+//
+//            return dm;
+//
+//        }catch (SQLException ex) {
+//            ex.printStackTrace();
+//             return null;
+//        }
+//
+//    }
+//	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.println(getCntrList());
+		System.out.println(getCntrList().get(0));
+//		System.out.println(retrieve());
+	
 	}
 
 
