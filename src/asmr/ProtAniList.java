@@ -556,20 +556,22 @@ public class ProtAniList extends JPanel {
 				clearAll();
 			}
 			else if(e.getSource().equals(returning)) {
-				int clickedRow = eProtAniList.getSelectedRow();
-				String abanNo = abanNos.get(clickedRow);
-				ReqPrsnRegist reqPrsnRegist = new ReqPrsnRegist(abanNo);
-				reqPrsnRegist.addWindowListener(new WindowAdapter() {
-
-					@Override
-					public void windowClosed(WindowEvent e) {
-						// TODO Auto-generated method stub
-						super.windowClosed(e);
-						GetProtAniList();
-						clearAll();
-					}
-				
-				});
+				if(eProtAniList.getSelectedRow()!=-1) {
+					int clickedRow = eProtAniList.getSelectedRow();
+					String abanNo = abanNos.get(clickedRow);
+					ReqPrsnRegist reqPrsnRegist = new ReqPrsnRegist(abanNo);
+					reqPrsnRegist.addWindowListener(new WindowAdapter() {
+	
+						@Override
+						public void windowClosed(WindowEvent e) {
+							// TODO Auto-generated method stub
+							super.windowClosed(e);
+							GetProtAniList();
+							clearAll();
+						}
+					
+					});
+				}
 			}
 		}
 		
@@ -836,6 +838,7 @@ public class ProtAniList extends JPanel {
 			// TODO Auto-generated method stub
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
+				cbCage.removeAllItems();
 				GetProtAni();
 				if(!parAbanAniNo.isEmpty()) {
 					//부모 이름 찾아서 텍스트필드에 넣어주기
