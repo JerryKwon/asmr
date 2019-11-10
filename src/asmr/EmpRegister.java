@@ -8,6 +8,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -57,8 +59,8 @@ public class EmpRegister extends JFrame{
 	private ResultSetMetaData rsmd = null;
 	
 	private final String[] empTypeDiv = {"정규직","계약직"};
-//	private final String[] workTypeDiv = {"센터장","관리직원","수의사","보호관리직원","사무직종사자","유기동물구조원"};
-	private final String[] workTypeDiv = {"센터장","수의사","보호관리직원","사무직종사자","유기동물구조원"};
+	private final String[] workTypeDiv1 = {"센터장","관리직원"};
+	private final String[] workTypeDiv2 = {"센터장","수의사","보호관리직원","사무직종사자","유기동물구조원"};
 	private final String[] genterDiv = {"남","여"};
 	
 	private Color blue = new Color(22,155,213);
@@ -94,7 +96,7 @@ public class EmpRegister extends JFrame{
 		cbEmpType = new JComboBox<String>(empTypeDiv);
 		
 		vWorkType = new JLabel("업무분야");
-		cbWorkType = new JComboBox<String>(workTypeDiv);
+		cbWorkType = new JComboBox<String>();
 		
 		vBirthDate = new JLabel("생년월일");
 		xBirthDate = new JTextField(10);
@@ -165,13 +167,13 @@ public class EmpRegister extends JFrame{
 		gridbagAdd(cbEmpType, 1, 2, 1, 1);
 		
 		gridbagAdd(vWorkType, 2, 2, 1, 1);
-		gridbagAdd(cbWorkType, 3, 2, 1, 1);
+		gridbagAdd(cbWorkType, 3, 2, 2, 1);
 		
 		gridbagAdd(vBirthDate, 0, 3, 1, 1);
 //		JComponent[] bdSet = {xBirthDate,chooser};
-		JComponent[] bdSet = {chooser};
-		CombinePanel birthDatePanel = new CombinePanel(bdSet, 0 , 0);
-		gridbagAdd(birthDatePanel, 1, 3, 1, 1);
+//		JComponent[] bdSet = {chooser};
+//		CombinePanel birthDatePanel = new CombinePanel(bdSet, 0 , 0);
+		gridbagAdd(chooser, 1, 3, 2, 1);
 		
 		gridbagAdd(vGender, 2, 3, 1, 1);
 		gridbagAdd(cbGender, 3, 3, 1, 1);
@@ -208,13 +210,57 @@ public class EmpRegister extends JFrame{
 		add(c);
 	}
 	
+	private String GetCenterType(String cntrNo) {
+		String result = "";
+		
+		StringBuffer query = new StringBuffer("SELECT CNTR_TP FROM CNTR WHERE CNTR_NO='"+cntrNo+"' ");
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				result = rs.getString("CNTR_TP");
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+		return result;
+	}
+	
 	class EmpRegisterButtonListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(centerSearch)) {
-				new CenterSearch(xBelongCenter);
+				CenterSearch centerSearch = new CenterSearch(xBelongCenter);
+				centerSearch.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						// TODO Auto-generated method stub
+						super.windowClosed(e);
+						cbWorkType.removeAllItems();
+						String cntrNo = centerSearch.getCntrNo();
+						String cntrType = GetCenterType(cntrNo);
+						if(cntrType.equals("h")) {
+							for(String workType:workTypeDiv1) {
+								cbWorkType.addItem(workType);
+							}
+						}
+						else if(cntrType.equals("n")) {
+							for(String workType:workTypeDiv2) {
+								cbWorkType.addItem(workType);
+							}
+						}
+					}
+				});
 			}
 			else if(e.getSource().equals(addressSearch)) {
 				new NewAddressSearch(xAddress);
