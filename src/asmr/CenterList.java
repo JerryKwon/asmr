@@ -165,7 +165,7 @@ public class CenterList extends JPanel{
 		xPhoneNum.setEnabled(false);
 		
 		//면적
-		vArea = new JLabel("면적");
+		vArea = new JLabel("면적(m²)");
 		xArea = new JTextField(10);
 		xArea.setEnabled(false);
 		
@@ -674,21 +674,23 @@ public class CenterList extends JPanel{
 			}
 			
 			if(e.getSource().equals(cageRegist)) {
-				int clickedRow = eCenterList.getSelectedRow();
-				String cntrName = (String)eCenterList.getValueAt(clickedRow, 0);
-				String cntrNo = cntrNos.get(clickedRow);
-				NewCageRegister newCageRegister = new NewCageRegister(cntrName,cntrNo);
-				newCageRegister.addWindowListener(new WindowAdapter() {
-
-					@Override
-					public void windowClosed(WindowEvent e) {
-						// TODO Auto-generated method stub
-						super.windowClosed(e);
-						GetCageList();
-						GetCenter2(cntrNo);
-					}
-					
-				});
+				if(eCenterList.getSelectedRow()!=-1) {
+					int clickedRow = eCenterList.getSelectedRow();
+					String cntrName = (String)eCenterList.getValueAt(clickedRow, 0);
+					String cntrNo = cntrNos.get(clickedRow);
+					NewCageRegister newCageRegister = new NewCageRegister(cntrName,cntrNo);
+					newCageRegister.addWindowListener(new WindowAdapter() {
+	
+						@Override
+						public void windowClosed(WindowEvent e) {
+							// TODO Auto-generated method stub
+							super.windowClosed(e);
+							GetCageList();
+							GetCenter2(cntrNo);
+						}
+						
+					});
+				}
 			}
 			if(e.getSource().equals(searchManager)) {
 				CenterManagerSearch centerManagerSearch = new CenterManagerSearch(xCenterManager);
@@ -748,6 +750,8 @@ public class CenterList extends JPanel{
 							}
 							else {
 								
+								if(NumberFormatCheck(newPhoneNum)) {
+								
 								UpdateCenter(newCntrName,newPhoneNum,newArea,newTimeOpen,newTimeClose);
 								
 								if(!prevCntrManagerNo.equals(newCntrManagerNo)) {
@@ -760,7 +764,10 @@ public class CenterList extends JPanel{
 								GetCenter();
 								GetCenterList();
 								model2.setNumRows(0);
-								
+								}
+								else {
+									JOptionPane.showMessageDialog(null, "전화번호 포맷을 확인하세요.(구분자 \"-\" 포함 숫자 13자리)", "메시지", JOptionPane.ERROR_MESSAGE);
+								}
 							}
 						}
 						modify.setText("수정");
@@ -780,6 +787,14 @@ public class CenterList extends JPanel{
 			
 		}
 		
+	}
+	
+	private boolean NumberFormatCheck(String phoneNum) {
+		phoneNum.replaceAll("[0-9]", "");
+		String[] splitStr = phoneNum.split("");
+		if(splitStr.length==2)
+			return true;
+		else return false;
 	}
 	
 	private void ClearAll() {
