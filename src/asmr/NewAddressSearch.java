@@ -199,7 +199,7 @@ public class NewAddressSearch extends JFrame{
 		
 		JComponent[] buttons = {confirm,cancel};
 		CombinePanel buttonPanel = new CombinePanel(buttons, 10, 0);
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 70, 0, 0));
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 160, 0, 0));
 		gridbagAdd(buttonPanel, 0, 6, 3, 1);
 		
 		pack();
@@ -364,20 +364,15 @@ public class NewAddressSearch extends JFrame{
 		try {
 			StringBuffer query = new StringBuffer("SELECT ROAD_ADDR||' '||BLDG_PR_NUM||CASE WHEN t2.SGG_BLDG_NM is null THEN ' ' ELSE ' ('||t2.SGG_BLDG_NM||') ' END ROAD_ADDR, POST_NUM "); 
 					query.append("FROM( ");  
-					query.append("   SELECT t.ROAD_ADDR,t.BLDG_PR_NUM,MAX(SGG_BLDG_NM) SGG_BLDG_NM ,MAX(POST_NUM) POST_NUM "); 
-					query.append("   FROM(SELECT rd.CITY_PROV_NM||' '||rd.SGG_NM||' '||rd.ROAD_NM ROAD_ADDR,nvl(ad.bldg_pr_num,'') BLDG_PR_NUM, "); 
-					query.append("   	  ai.SGG_BLDG_NM, "); 
-					query.append("   	  ai.post_num POST_NUM "); 
+					query.append("   SELECT UMD_TYPE,to_number(regexp_replace(rd.ROAD_NM, '[^0-9]','')) subnum, rd.CITY_PROV_NM||' '||rd.SGG_NM||' '||rd.ROAD_NM ROAD_ADDR, to_number(nvl(ad.bldg_pr_num,'')) BLDG_PR_NUM, ai.SGG_BLDG_NM, ai.post_num POST_NUM "); 
 					query.append("   	  FROM( ");
 					query.append("   		SELECT * ");
 					query.append("			FROM road_nm_code ");
 					query.append("			WHERE CITY_PROV_NM='"+cityProvNm+"' ");
-					query.append("			AND SGG_NM='"+sggNm+"' AND ROAD_NM='"+roadNm+"') rd LEFT OUTER JOIN address ad ");
+					query.append("			AND SGG_NM='"+sggNm+"' AND ROAD_NM LIKE '"+roadNm+"%') rd LEFT OUTER JOIN address ad ");
 					query.append("				ON rd.road_nm_code = ad.road_nm_code and rd.umd_sri_num = ad.umd_sri_num ");
 					query.append("				LEFT OUTER JOIN ADD_INFO ai on ad.MAN_NUM = ai.MAN_NUM ");
-					query.append("			ORDER BY UMD_TYPE DESC, BLDG_PR_NUM ASC) t ");
-					query.append("GROUP BY t.ROAD_ADDR,t.BLDG_PR_NUM ");
-					query.append("ORDER BY 1,2 ");
+					query.append("ORDER BY UMD_TYPE DESC, subnum ASC, bldg_pr_num ASC ");
 					query.append(")t2 ");
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
@@ -400,21 +395,16 @@ public class NewAddressSearch extends JFrame{
 		try {
 			StringBuffer query = new StringBuffer("SELECT ROAD_ADDR||' '||BLDG_PR_NUM||CASE WHEN t2.SGG_BLDG_NM is null THEN ' ' ELSE ' ('||t2.SGG_BLDG_NM||') ' END ROAD_ADDR, POST_NUM "); 
 			query.append("FROM( ");  
-			query.append("   SELECT t.ROAD_ADDR,t.BLDG_PR_NUM,MAX(SGG_BLDG_NM) SGG_BLDG_NM ,MAX(POST_NUM) POST_NUM "); 
-			query.append("   FROM(SELECT rd.CITY_PROV_NM||' '||rd.SGG_NM||' '||rd.ROAD_NM ROAD_ADDR,nvl(ad.bldg_pr_num,'') BLDG_PR_NUM, "); 
-			query.append("   	  ai.SGG_BLDG_NM, "); 
-			query.append("   	  ai.post_num POST_NUM "); 
+			query.append("   SELECT UMD_TYPE,to_number(regexp_replace(rd.ROAD_NM, '[^0-9]','')) subnum, rd.CITY_PROV_NM||' '||rd.SGG_NM||' '||rd.ROAD_NM ROAD_ADDR, to_number(nvl(ad.bldg_pr_num,'')) BLDG_PR_NUM, ai.SGG_BLDG_NM, ai.post_num POST_NUM "); 
 			query.append("   	  FROM( ");
 			query.append("   		SELECT * ");
 			query.append("			FROM road_nm_code ");
 			query.append("			WHERE CITY_PROV_NM='"+cityProvNm+"' ");
-			query.append("			AND SGG_NM='"+sggNm+"' AND ROAD_NM='"+roadNm+"') rd LEFT OUTER JOIN address ad ");
+			query.append("			AND SGG_NM='"+sggNm+"' AND ROAD_NM LIKE '"+roadNm+"%') rd LEFT OUTER JOIN address ad ");
 			query.append("				ON rd.road_nm_code = ad.road_nm_code and rd.umd_sri_num = ad.umd_sri_num ");
 			query.append("				LEFT OUTER JOIN ADD_INFO ai on ad.MAN_NUM = ai.MAN_NUM ");
 			query.append("			WHERE ad.bldg_pr_num='"+bldgNum+"' ");
-			query.append("			ORDER BY UMD_TYPE DESC, BLDG_PR_NUM ASC) t ");
-			query.append("GROUP BY t.ROAD_ADDR,t.BLDG_PR_NUM ");
-			query.append("ORDER BY 1,2 ");
+			query.append("ORDER BY UMD_TYPE DESC, subnum ASC, bldg_pr_num ASC ");
 			query.append(")t2 ");
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
