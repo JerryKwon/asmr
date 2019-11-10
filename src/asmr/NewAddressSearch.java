@@ -462,7 +462,7 @@ public class NewAddressSearch extends JFrame{
 			}
 			else if(e.getSource().equals(confirm)) {
 				try {
-					StringBuffer totalAddress = new StringBuffer(normalAddr);
+					StringBuffer totalAddress = new StringBuffer(normalAddr.trim());
 					totalAddress.append(" ");
 					totalAddress.append(xDtilAddr.getText().toString());
 					xAddress.setText(totalAddress.toString().trim());

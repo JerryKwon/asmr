@@ -390,7 +390,7 @@ public class AddressSearch extends JFrame {
 					}
 			}
 			else if(e.getSource().equals(confirm)) {
-				StringBuffer totalAddress = new StringBuffer(xRoadNmAddr.getText().toString());
+				StringBuffer totalAddress = new StringBuffer(xRoadNmAddr.getText().toString().trim());
 				totalAddress.append(" ");
 				totalAddress.append(xDtilAddr.getText().toString());
 				xAddress.setText(totalAddress.toString());
