@@ -73,16 +73,19 @@ public class NewCageRegister extends JFrame{
 		//대형
 		vCageBig = new JLabel("대형");
 		xCageBig = new JTextField(2);
+		xCageBig.setText("0");
 		vCageBigCount = new JLabel("개");
 		
 		//중형
 		vCageMid = new JLabel("중형");
 		xCageMid = new JTextField(2);
+		xCageMid.setText("0");
 		vCageMidCount = new JLabel("개");
 		
 		//소형
 		vCageSmall = new JLabel("소형");
 		xCageSmall = new JTextField(2);
+		xCageSmall.setText("0");
 		vCageSmallCount = new JLabel("개");
 		
 		register = new JButton("등록");
@@ -362,11 +365,18 @@ private String RegistCage(int bigCageNum, int midCageNum, int smallCageNum) {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(register)) {
+				String bigNum = xCageBig.getText().trim();
+				String midNum = xCageMid.getText().trim();
+				String smallNum = xCageSmall.getText().trim();
+				
 				int result = JOptionPane.showConfirmDialog(null, "신규 케이지를 등록하시겠습니까?", "케이지 등록 확인", JOptionPane.YES_NO_OPTION);
 				switch(result) {
 				case JOptionPane.YES_OPTION:
-					RegistCage();
-					dispose();
+					if(bigNum.isEmpty()||midNum.isEmpty()||smallNum.isEmpty()) {
+						JOptionPane.showMessageDialog(null, "케이지의 수량을 입력하세요", "메시지", JOptionPane.ERROR_MESSAGE);
+					}
+						RegistCage();
+						dispose();
 				}
 			}
 			else if (e.getSource().equals(cancel)) {
