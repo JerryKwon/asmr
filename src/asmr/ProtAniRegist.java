@@ -627,14 +627,14 @@ public class ProtAniRegist extends JFrame{
     	
     	cbCage.removeAllItems();
     	
-    	StringBuffer query = new StringBuffer("SELECT '케이지'||CAGE_ORNU||'('||CASE CAGE_SIZE WHEN 'b' THEN '대' WHEN 'm' THEN '중' WHEN 's' THEN '소' END||')' CAGES ");
+    	StringBuffer query = new StringBuffer("SELECT CAGE_ORNU, '케이지'||CAGE_ORNU||'('||CASE CAGE_SIZE WHEN 'b' THEN '대' WHEN 'm' THEN '중' WHEN 's' THEN '소' END||')' CAGES ");
     	query.append("FROM( ");
     	query.append("	SELECT c.CAGE_ORNU,c.CAGE_SIZE ");
-    	query.append("	FROM CAGE c INNER  JOIN (SELECT DISTINCT(CNTR_NO) CNTR_NO FROM PROT WHERE ABAN_NO='2019102701') p ");
+    	query.append("	FROM CAGE c INNER  JOIN (SELECT DISTINCT(CNTR_NO) CNTR_NO FROM PROT WHERE ABAN_NO='"+parAbanNo+"') p ");
     	query.append("	ON c.CNTR_NO = p.CNTR_NO) t ");
     	query.append("	WHERE t.CAGE_ORNU NOT IN( ");
     	query.append("		SELECT c.CAGE_ORNU ");
-    	query.append("		FROM CAGE c INNER JOIN (SELECT * FROM PROT WHERE CNTR_NO = (SELECT DISTINCT(CNTR_NO) CNTR_NO FROM PROT WHERE ABAN_NO='2019102701') AND PROT_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) p ");
+    	query.append("		FROM CAGE c INNER JOIN (SELECT * FROM PROT WHERE CNTR_NO = (SELECT DISTINCT(CNTR_NO) CNTR_NO FROM PROT WHERE ABAN_NO='"+parAbanNo+"') AND PROT_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) p ");
     	query.append("		ON c.CNTR_NO=p.CNTR_NO AND c.CAGE_ORNU=p.CAGE_ORNU ");
     	query.append(") ORDER BY 1 ");
     	
@@ -657,7 +657,7 @@ public class ProtAniRegist extends JFrame{
     	
     	cbCage.removeAllItems();
     	
-    	StringBuffer query= new StringBuffer("SELECT '케이지'||c.CAGE_ORNU||'('|| ");
+    	StringBuffer query= new StringBuffer("SELECT c.CAGE_ORNU, '케이지'||c.CAGE_ORNU||'('|| ");
 		query.append("	CASE c.CAGE_SIZE WHEN 's' THEN '소' WHEN 'm' THEN '중' WHEN 'b' THEN '대' END ");
 		query.append("	||')' CAGES ");
 		query.append("FROM(SELECT t1.CNTR_NO,c.CAGE_ORNU ");
