@@ -32,6 +32,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -56,7 +57,8 @@ public class EmpRegister extends JFrame{
 	private ResultSetMetaData rsmd = null;
 	
 	private final String[] empTypeDiv = {"정규직","계약직"};
-	private final String[] workTypeDiv = {"센터장","관리직원","수의사","보호관리직원","사무직종사자","유기동물구조원"};
+//	private final String[] workTypeDiv = {"센터장","관리직원","수의사","보호관리직원","사무직종사자","유기동물구조원"};
+	private final String[] workTypeDiv = {"센터장","수의사","보호관리직원","사무직종사자","유기동물구조원"};
 	private final String[] genterDiv = {"남","여"};
 	
 	private Color blue = new Color(22,155,213);
@@ -218,15 +220,46 @@ public class EmpRegister extends JFrame{
 				new NewAddressSearch(xAddress);
 			}
 			else if(e.getSource().equals(register)) {
-				RegistEmp();
-				dispose();
+				String empName = xEmpName.getText().trim();
+				String belongCntr = xBelongCenter.getText().trim();
+				String addr = xAddress.getText().trim();
+				String phoneNum = xPhoneNum.getText().trim();
+			
+				int result = JOptionPane.showConfirmDialog(null, "신규직원을 등록하시겠습니까?", "메시지", JOptionPane.YES_NO_OPTION);
+				if(result == JOptionPane.OK_OPTION) {
+				
+					if(empName.isEmpty()||belongCntr.isEmpty()||addr.isEmpty()||phoneNum.isEmpty()) {
+						JOptionPane.showMessageDialog(null, "직원 기본정보를 입력하세요", "메시지", JOptionPane.ERROR_MESSAGE);
+					}
+					
+					else {
+					
+						if(NumberFormatCheck(phoneNum)) {
+							RegistEmp();
+							dispose();
+						}
+						else {
+							JOptionPane.showMessageDialog(null, "전화번호 포맷을 확인하세요.(구분자 \"-\" 포함 숫자 13자리)", "메시지", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				}
 			}
+			
 			else if(e.getSource().equals(cancel)) {
 				dispose();
 			}
 		}
 		
 	}
+	
+	private boolean NumberFormatCheck(String phoneNum) {
+		phoneNum.replaceAll("[0-9]", "");
+		String[] splitStr = phoneNum.split("");
+		if(splitStr.length==2)
+			return true;
+		else return false;
+	}
+	
 	
 	class CombinePanel extends JPanel {
 		//컴포넌트 1, 컴포넌트 2, 패널 구성시 좌,우 margin 공간을 없애기 위한 Flag
