@@ -71,6 +71,8 @@ public class DiagAniList extends JPanel{
 	private ArrayList<String> diagOrnus;
 	private String protNo;
 	
+	private ArrayList<String> abanNos;
+	
 	private final String[] col1 = {"유기동물명","동물종류","품종","나이(개월)","크기"};
 	private final String[] col2 = {"진료일자","진료구분","내용"};
 	
@@ -108,6 +110,8 @@ public class DiagAniList extends JPanel{
 		protNos_2 = new ArrayList<String>();
 		diagOrnus = new ArrayList<String>();
 		protNo = null;
+		
+		abanNos = new ArrayList<String>();
 		
 		vProtAniList = new JLabel("보호동물목록");
 		vProtAniList.setFont(new Font("나눔고딕", Font.BOLD, 24));
@@ -459,6 +463,7 @@ public class DiagAniList extends JPanel{
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
 				int clickedRow = eDiagList.getSelectedRow();
+
 				GetDiagInfo(protNos_2.get(clickedRow),diagOrnus.get(clickedRow));
 				if(eDiagList.getValueAt(clickedRow, 1) =="내진")
 					GetVtrnName(xIndiVtrnName.getText());
@@ -618,6 +623,12 @@ public class DiagAniList extends JPanel{
     	connection();
     	
     	model2.setRowCount(0);
+    	protNos_2.clear();
+    	diagOrnus.clear();
+    	
+    	
+    	int clickedRow = eProtAniList.getSelectedRow();
+    	String abanNo = abanNos.get(clickedRow);
     	
 //    	StringBuffer query = new StringBuffer("SELECT d.DIAG_ORNU,d.DIAG_DATE,d.DIAG_TP,d.DIAG_CONT ");
 //    	query.append("FROM (SELECT * FROM PROT WHERE PROT_NO='"+protNo+"') p INNER JOIN DIAG d ");
@@ -626,10 +637,7 @@ public class DiagAniList extends JPanel{
 
     	StringBuffer query = new StringBuffer("SELECT d.PROT_NO,d.DIAG_ORNU,d.DIAG_DATE,d.DIAG_TP,d.DIAG_CONT ");
     	query.append("FROM( SELECT * FROM PROT ");
-    	query.append("	WHERE ABAN_NO = (SELECT a.ABAN_NO ");
-    	query.append("		FROM ABAN a INNER JOIN(SELECT * FROM PROT ");
-    	query.append("		WHERE PROT_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) p ");
-    	query.append("		ON a.ABAN_NO = p.ABAN_NO)) p INNER JOIN DIAG d ON p.PROT_NO = d.PROT_NO ");
+    	query.append("	WHERE ABAN_NO = '"+abanNo+"') p INNER JOIN DIAG d ON p.PROT_NO = d.PROT_NO ");
     	query.append("ORDER BY 1,2 ");
     	
     	
@@ -707,6 +715,7 @@ public class DiagAniList extends JPanel{
 				}
 				
 				protNos_1.add(rs.getString("PROT_NO"));
+				abanNos.add(rs.getString("ABAN_NO"));
 				
 				model1.addRow(new Object[] {rs.getString("ABAN_NAME"),korAnmlKinds,rs.getString("KIND"),rs.getString("AGE"),korAnmlSize});
 			}
