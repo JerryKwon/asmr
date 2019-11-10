@@ -8,6 +8,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -48,6 +50,8 @@ public class EmpRegister extends JFrame{
 	private JComboBox<String> cbEmpType,cbWorkType,cbGender;
 	private BufferedImage buttonIcon;
 	private JDateChooser chooser;
+	
+	private static String hint = "- 를 포함한 13자리 숫자";
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -124,7 +128,24 @@ public class EmpRegister extends JFrame{
 		addressSearch.addActionListener(empRegisterButtonListener);
 		
 		vPhoneNum = new JLabel("전화번호");
-		xPhoneNum = new JTextField(10);
+		xPhoneNum = new JTextField(12);
+		xPhoneNum.setText(hint);
+		xPhoneNum.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				// TODO Auto-generated method stub
+				if(xPhoneNum.getText().trim().length()==0) {
+					xPhoneNum.setText(hint);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+				xPhoneNum.setText("");
+			}
+		});
 		
 		register = new JButton("등록");
 		register.setBackground(blue);

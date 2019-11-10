@@ -9,6 +9,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -43,6 +45,8 @@ public class CenterList extends JPanel{
 	private JLabel vCenterList,vCageList,vCenterInfo,vCenterNum,vEstDate,vCenterName,vPhoneNum,vArea,vOperTime,vOperTimeDash,vCenterManager,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount;
 	private JTextField xCenterNum,xEstDate,xCenterName,xPhoneNum,xArea,xCenterManager,xCageBig,xCageMid,xCageSmall;
 	private JComboBox<String> cbOperTimeOpen,cbOperTimeClose;
+	
+	private static String hint = "- 를 포함한 13자리 숫자";
 	
 	private boolean isClicked = false;
 //	private String cntrManagerBdate = null;
@@ -161,9 +165,26 @@ public class CenterList extends JPanel{
 		
 		//전화번호 하나의 문자열로 변경
 		vPhoneNum = new JLabel("전화번호");
-		xPhoneNum = new JTextField(10);
+		xPhoneNum = new JTextField(12);
 		xPhoneNum.setEnabled(false);
+		xPhoneNum.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				// TODO Auto-generated method stub
+				if(xPhoneNum.getText().trim().length()==0) {
+					xPhoneNum.setText(hint);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		
+
 		//면적
 		vArea = new JLabel("면적(m²)");
 		xArea = new JTextField(10);

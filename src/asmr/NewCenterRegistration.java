@@ -8,6 +8,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -41,9 +43,10 @@ public class NewCenterRegistration extends JFrame{
 	private BufferedImage buttonIcon;
 	private JDateChooser chooser;
 	
+	private static String hint = "- 를 포함한 13자리 숫자";
+	
 //	private String cntrManagerBdate = null;
 	private String cntrManagerNo = null;
-	
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -88,7 +91,24 @@ public class NewCenterRegistration extends JFrame{
 		
 		//전화번호
 		vPhoneNum = new JLabel("전화번호");
-		xPhoneNum = new JTextField(10);
+		xPhoneNum = new JTextField(12);
+		xPhoneNum.setText(hint);
+		xPhoneNum.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				// TODO Auto-generated method stub
+				if(xPhoneNum.getText().trim().length()==0) {
+					xPhoneNum.setText(hint);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+				xPhoneNum.setText("");
+			}
+		});
 		
 		//설립일자
 		vEstDate = new JLabel("설립일자");
