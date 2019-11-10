@@ -309,6 +309,7 @@ public class ReqPrsnRegist extends JFrame {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(custSearch)) {
 				if(xCustSearch.getText().trim().isEmpty()) {
+					model1.setRowCount(0);
 					GetCustList();
 				}
 				else {
@@ -352,9 +353,13 @@ public class ReqPrsnRegist extends JFrame {
 							JOptionPane.showMessageDialog(null, "[비회원] 인수자 기본정보를 입력하게요.", "메시지", JOptionPane.ERROR_MESSAGE);
 						}
 						else {
-
-							ReturnProtAni();
-							dispose();
+							if(NumberFormatCheck(phoneNum)) {
+								ReturnProtAni();
+								dispose();
+							}
+							else {
+								JOptionPane.showMessageDialog(null, "전화번호 포맷을 확인하세요.(구분자 \"-\" 포함 숫자 13자리)", "메시지", JOptionPane.ERROR_MESSAGE);
+							}
 						}
 					}
 					
@@ -366,6 +371,21 @@ public class ReqPrsnRegist extends JFrame {
 			}
 		}
 		
+	}
+	
+	private boolean NumberFormatCheck(String phoneNum) {
+		
+		if(phoneNum.length()>13)
+			return false;
+		else {
+			String repStr = phoneNum.replaceAll("[0-9]", "");
+			String[] splitStr = repStr.split("");
+			System.out.println(splitStr.toString());
+			System.out.println(splitStr.length);
+			if(splitStr.length==2)
+				return true;
+			else return false;
+		}
 	}
 	
 	class ReqPrsnRegistMouseListener extends MouseAdapter{
@@ -532,12 +552,12 @@ public class ReqPrsnRegist extends JFrame {
 		
 		if(isName) {
 			query.append("SELECT /*+INDEX_ASC(CUST CUST_PK) */ CUST_NO,CUST_NAME,ID,ADDR FROM CUST ");
-			query.append("WHERE CUST_NAME='"+text+"' ");
+			query.append("WHERE CUST_NAME LIKE '"+text+"%' ");
 		
 		}
 		else {
 			query.append("SELECT /*+INDEX_ASC(CUST CUST_PK) */ CUST_NO,CUST_NAME,ID,ADDR FROM CUST ");
-			query.append("WHERE ID='"+text+"' ");
+			query.append("WHERE ID LIKE '"+text+"%' ");
 			
 		}
 		
