@@ -71,7 +71,8 @@ public class EmpList extends JPanel {
 	
 	private final String[] searchTypeDiv = {"이름","소속"};
 	private final String[] empTypeDiv = {"정규직","계약직"};
-//	private final String[] workTypeDiv = {"센터장","관리직원","수의사","보호관리직원","사무직종사자","유기동물구조원"};
+	private final String[] workTypeDiv1 = {"센터장","관리직원"};
+	private final String[] workTypeDiv2 = {"센터장","수의사","보호관리직원","사무직종사자","유기동물구조원"};
 	
 	private final String[] col1 = {"직원번호","이름","소속"};
 	
@@ -311,7 +312,32 @@ public class EmpList extends JPanel {
 				}
 			}
 			else if(e.getSource().equals(centerSearch)) {
+				cbWorkType.removeAllItems();
+				
 				centerSearchClass = new CenterSearch(xBelongCenter);
+				centerSearchClass.addWindowListener(new WindowAdapter() {
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						// TODO Auto-generated method stub
+						super.windowClosed(e);
+						
+						String cntrNo = centerSearchClass.getCntrNo();
+						String cntrType = GetCntrType(cntrNo);
+						if(cntrType.equals("h")) {
+							for(String type:workTypeDiv1) {
+								cbWorkType.addItem(type);
+							} 
+						}
+						else if(cntrType.equals("n")) {
+							for(String type:workTypeDiv2) {
+								cbWorkType.addItem(type);
+							} 
+						}
+					}
+				
+				});
+				
 			}
 			else if(e.getSource().equals(modify)) {
 				
@@ -399,7 +425,7 @@ public class EmpList extends JPanel {
 			jcomp.setText("");
 		}
 		cbEmptype.setSelectedItem("정규직");
-		cbWorkType.setSelectedItem("센터장");
+		cbWorkType.removeAllItems();
 		eEmpList.getSelectionModel().clearSelection();
 
 	}
@@ -571,12 +597,12 @@ public class EmpList extends JPanel {
 		
 		switch(cntrType) {
 		case"h":
-			for(String type:new String[] {"센터장","관리직원"}) {
+			for(String type:workTypeDiv1) {
 				cbWorkType.addItem(type);
 			} 
 			break;
 		case"n":
-			for(String type:new String[] {"센터장","사무직종사자","수의사","보호관리직원","유기동물구조원"}) {
+			for(String type:workTypeDiv2) {
 				cbWorkType.addItem(type);
 			} 
 			break;
