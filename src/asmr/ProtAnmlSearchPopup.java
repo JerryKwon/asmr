@@ -189,6 +189,7 @@ public class ProtAnmlSearchPopup extends JFrame {
 				}
 			}
 			else if(e.getSource().equals(cancel)) {
+				protNo = "";
 				dispose();
 			}
 		}
