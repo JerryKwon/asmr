@@ -176,6 +176,7 @@ public class CenterSearch extends JFrame{
 				dispose();
 			}
 			else if(e.getSource().equals(cancel)) {
+				cntrNo = "";
 				dispose();
 			}
 		}
@@ -192,6 +193,7 @@ public class CenterSearch extends JFrame{
 			if(e.getButton()==1) {
 				int clickedRow = eCenterList.getSelectedRow();
 				cntrNo = cntrNos.get(clickedRow);
+				System.out.println(cntrNo);
 			}
 		}
 		
@@ -240,7 +242,7 @@ public class CenterSearch extends JFrame{
     		
 			StringBuffer query= new StringBuffer("SELECT CNTR_NO, CNTR_NAME, ADDR ");
 			query.append("FROM CNTR ");
-			query.append("WHERE CNTR_TP <> 'h' ");
+//			query.append("WHERE CNTR_TP <> 'h' ");
 			query.append("ORDER BY 1 ");
 			
     		pstmt = con.prepareStatement(query.toString());
