@@ -386,7 +386,7 @@ public class NewCenterRegistration extends JFrame{
 			
 			if(bigCageNum >= 1 || midCageNum >= 1 || smallCageNum >= 1) {
 				query3 = RegistCage(bigCageNum,midCageNum,smallCageNum);
-			
+				System.out.println(query3);
 			
 				pstmt = con.prepareStatement(query3.toString());
 				rs = pstmt.executeQuery();
@@ -410,7 +410,7 @@ public class NewCenterRegistration extends JFrame{
 		
 		StringBuffer query3 = new StringBuffer();
 		
-		if (bigCageNum != 1 && midCageNum != 1 && smallCageNum != 1) {
+		if (bigCageNum > 1 && midCageNum > 1 && smallCageNum > 1) {
 				
 			query3.append("INSERT INTO CAGE ");
 			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
@@ -437,7 +437,7 @@ public class NewCenterRegistration extends JFrame{
 			query3.append(")t3 ");
 
 		}
-		else if(bigCageNum==1&&midCageNum>2&&smallCageNum>2) {
+		else if(bigCageNum==1&&midCageNum>1&&smallCageNum>1) {
 			query3.append("INSERT INTO CAGE ");
 			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
 			query3.append("		  FROM CNTR c ");
@@ -463,7 +463,7 @@ public class NewCenterRegistration extends JFrame{
 			query3.append(")t3 ");
 		}
 		
-		else if(midCageNum==1&&bigCageNum>2&&smallCageNum>2) {
+		else if(midCageNum==1&&bigCageNum>1&&smallCageNum>1) {
 			query3.append("INSERT INTO CAGE ");
 			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
 			query3.append("		  FROM CNTR c ");
@@ -489,7 +489,7 @@ public class NewCenterRegistration extends JFrame{
 			query3.append(")t3 ");
 		}
 		
-		else if(smallCageNum==1&&bigCageNum>2&&midCageNum>2) {
+		else if(smallCageNum==1&&bigCageNum>1&&midCageNum>1) {
 			query3.append("INSERT INTO CAGE ");
 			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
 			query3.append("		  FROM CNTR c ");
@@ -515,7 +515,7 @@ public class NewCenterRegistration extends JFrame{
 			query3.append(")t3 ");
 		}
 		
-		else if(bigCageNum==1 && midCageNum==1&& smallCageNum>2) {
+		else if(bigCageNum==1 && midCageNum==1&& smallCageNum>1) {
 			query3.append("INSERT INTO CAGE ");
 			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
 			query3.append("		  FROM CNTR c ");
@@ -541,7 +541,7 @@ public class NewCenterRegistration extends JFrame{
 			query3.append(")t3 ");
 		}
 		
-		else if(bigCageNum==1 && smallCageNum==1 && midCageNum>2) {
+		else if(bigCageNum==1 && smallCageNum==1 && midCageNum>1) {
 			query3.append("INSERT INTO CAGE ");
 			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
 			query3.append("		  FROM CNTR c ");
@@ -567,7 +567,7 @@ public class NewCenterRegistration extends JFrame{
 			query3.append(")t3 ");
 		}
 		
-		else if(midCageNum==1 && smallCageNum==1&& bigCageNum>2) {
+		else if(midCageNum==1 && smallCageNum==1 && bigCageNum>1) {
 			query3.append("INSERT INTO CAGE ");
 			query3.append("SELECT (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
 			query3.append("		  FROM CNTR c ");
