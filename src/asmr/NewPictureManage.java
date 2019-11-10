@@ -228,8 +228,8 @@ public class NewPictureManage extends JFrame{
 		gridbagAdd(plainPanel3, 4, 3, 3, 3);
 		
 		Component[] cops = {register,remove,cancel};
-		CombinePanel buttonPanel = new CombinePanel(cops,5,0);
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 230, 0, 0));
+		CombinePanel buttonPanel = new CombinePanel(cops,10,0);
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 220, 0, 0));
 		gridbagAdd(buttonPanel, 0, 6, 7, 1);
 		
 		pack();
