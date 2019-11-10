@@ -193,7 +193,6 @@ public class CenterSearch extends JFrame{
 			if(e.getButton()==1) {
 				int clickedRow = eCenterList.getSelectedRow();
 				cntrNo = cntrNos.get(clickedRow);
-				System.out.println(cntrNo);
 			}
 		}
 		
