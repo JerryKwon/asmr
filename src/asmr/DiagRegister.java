@@ -295,8 +295,64 @@ public class DiagRegister extends JFrame{
 			if(e.getSource().equals(register)) {
 				int result = JOptionPane.showConfirmDialog(null, "진료를 등록하시겠습니까?", "진료등록", JOptionPane.YES_NO_OPTION);
 				if(result == JOptionPane.YES_OPTION) {
-					SelectCase();
-					dispose();
+					
+					String diagType = (String)cbDiagType.getSelectedItem();
+					String oudiResult = (String)cbOudiResult.getSelectedItem();
+					String cureType = (String)cbCureType.getSelectedItem();
+					
+					String indiVtrnName = xIndiVtrnName.getText().trim();
+					String hospName = xHospName.getText().trim();
+					String diseName = xDisease.getText().trim();
+					String dschDate = ((JTextField)dschDateChooser.getDateEditor().getUiComponent()).getText().trim();
+					String deathResn = xDeathReason.getText().trim();
+					String diagCont = xDiagContent.getText().trim();
+					
+					if(diagType.equals("내진")) {
+						if(indiVtrnName.isEmpty()||diagCont.isEmpty()) {
+							JOptionPane.showMessageDialog(null, "[내진] 기본정보를 입력하세요", "메시지", JOptionPane.ERROR_MESSAGE);
+						}
+						else {
+							SelectCase();
+							dispose();
+						}
+					}
+					//외진
+					else {
+						if(oudiResult.equals("치료")) {
+							if(cureType.equals("통원")) {
+								if(hospName.isEmpty()||diseName.isEmpty()) {
+									JOptionPane.showMessageDialog(null, "[외진-치료-통원] 기본정보를 입력하세요", "메시지", JOptionPane.ERROR_MESSAGE);		
+								}
+								else {
+									SelectCase();
+									dispose();
+								}
+							}
+							//입원
+							else {
+								if(hospName.isEmpty()||diseName.isEmpty()||dschDate.isEmpty()) {
+									JOptionPane.showMessageDialog(null, "[외진-치료-입원] 기본정보를 입력하세요", "메시지", JOptionPane.ERROR_MESSAGE);		
+								}
+								else {
+									SelectCase();
+									dispose();
+								}
+							}
+						}
+						//사망
+						else {
+							if(deathResn.isEmpty()||diagCont.isEmpty()) {
+								JOptionPane.showMessageDialog(null, "[사망] 기본정보를 입력하세요", "메시지", JOptionPane.ERROR_MESSAGE);	
+							}
+							else {
+								SelectCase();
+								dispose();
+							}
+						}
+					}
+					
+//					SelectCase();
+//					dispose();
 				}
 			}
 			if(e.getSource().equals(cancel)) {
