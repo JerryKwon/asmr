@@ -139,8 +139,8 @@ public class ProtAniList extends JPanel {
 	    };
 		eProtAniList.addMouseListener(protAniListMouseListener);
 		aniListScroll = new JScrollPane(eProtAniList);
-		aniListScroll.setPreferredSize(new Dimension(1400,200));
-		eProtAniList.getColumnModel().getColumn(0).setPreferredWidth(150);
+		aniListScroll.setPreferredSize(new Dimension(1300,200));
+		eProtAniList.getColumnModel().getColumn(0).setPreferredWidth(100);
 		eProtAniList.getColumnModel().getColumn(1).setPreferredWidth(75);
 		eProtAniList.getColumnModel().getColumn(2).setPreferredWidth(150);
 		eProtAniList.getColumnModel().getColumn(3).setPreferredWidth(75);
