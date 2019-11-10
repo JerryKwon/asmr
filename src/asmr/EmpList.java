@@ -71,7 +71,7 @@ public class EmpList extends JPanel {
 	
 	private final String[] searchTypeDiv = {"이름","소속"};
 	private final String[] empTypeDiv = {"정규직","계약직"};
-	private final String[] workTypeDiv = {"센터장","관리직원","수의사","보호관리직원","사무직종사자","유기동물구조원"};
+//	private final String[] workTypeDiv = {"센터장","관리직원","수의사","보호관리직원","사무직종사자","유기동물구조원"};
 	
 	private final String[] col1 = {"직원번호","이름","소속"};
 	
@@ -150,7 +150,7 @@ public class EmpList extends JPanel {
 		cbEmptype.setEnabled(false);
 		
 		vWorkType = new JLabel("업무분야");
-		cbWorkType = new JComboBox<String>(workTypeDiv);
+		cbWorkType = new JComboBox<String>();
 		cbWorkType.setEnabled(false);
 		
 		vEmpName = new JLabel("이름");
@@ -276,15 +276,20 @@ public class EmpList extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(empSearch)) {
-				String searchType = (String)cbSearchType.getSelectedItem();
-				String typedName = xEmpNameSearch.getText();
-				switch(searchType) {
-				case "이름":
-					SearchEmp(typedName,true);
-					break;
-				case "소속":
-					SearchEmp(typedName,false);
-					break;
+				if(xEmpNameSearch.getText().trim().isEmpty()) {
+					GetEmpList();
+				}
+				else {
+					String searchType = (String)cbSearchType.getSelectedItem();
+					String typedName = xEmpNameSearch.getText();
+					switch(searchType) {
+					case "이름":
+						SearchEmp(typedName,true);
+						break;
+					case "소속":
+						SearchEmp(typedName,false);
+						break;
+					}
 				}
 			}
 			else if(e.getSource().equals(register)) {
@@ -393,7 +398,7 @@ public class EmpList extends JPanel {
 		for(JTextComponent jcomp:jcomps) {
 			jcomp.setText("");
 		}
-		cbEmptype.setSelectedItem("계약직");
+		cbEmptype.setSelectedItem("정규직");
 		cbWorkType.setSelectedItem("센터장");
 		eEmpList.getSelectionModel().clearSelection();
 
@@ -478,8 +483,9 @@ public class EmpList extends JPanel {
 			if(e.getButton() == 1) {
 				int clickedRow = eEmpList.getSelectedRow();
 				empNo = (String)eEmpList.getValueAt(clickedRow, 0);
-				String cntrName = (String)eEmpList.getValueAt(clickedRow, 2);
-				GetEmp(empNo, cntrName);
+//				String cntrName = (String)eEmpList.getValueAt(clickedRow, 2);
+				String cntrNo = cntrNos.get(clickedRow);
+				GetEmp(empNo, cntrNo);
 			}
 		}
 	}
@@ -557,7 +563,25 @@ public class EmpList extends JPanel {
 		disconnection();
 	}
 	
-	private void GetEmp(String empNo, String cntrName) {
+	private void GetEmp(String empNo, String cntrNo) {
+		
+		cbWorkType.removeAllItems();
+		
+		String cntrType = GetCntrType(cntrNo);
+		
+		switch(cntrType) {
+		case"h":
+			for(String type:new String[] {"센터장","관리직원"}) {
+				cbWorkType.addItem(type);
+			} 
+			break;
+		case"n":
+			for(String type:new String[] {"센터장","사무직종사자","수의사","보호관리직원","유기동물구조원"}) {
+				cbWorkType.addItem(type);
+			} 
+			break;
+		}
+		
 		connection();
 		
 		try {
@@ -568,7 +592,7 @@ public class EmpList extends JPanel {
 			query.append("		SELECT EMP_NO, WORK_END_DATE, CNTR_NO, EMP_TP, BIZ_FILD FROM EMP_WORK_HIST) wh ");
 			query.append("		ON e.EMP_NO = wh.EMP_NO ");
 			query.append("		AND wh.WORK_END_DATE=to_date('9999-12-31','YYYY-MM-DD') INNER JOIN ( ");
-			query.append("			SELECT * FROM CNTR WHERE CNTR_NAME='"+cntrName+"') c ");
+			query.append("			SELECT * FROM CNTR WHERE CNTR_NO='"+cntrNo+"') c ");
 			query.append("			ON wh.CNTR_NO = c.CNTR_NO ");
 				
 			pstmt = con.prepareStatement(query.toString());
@@ -628,6 +652,29 @@ public class EmpList extends JPanel {
 		}
 		
 		disconnection();
+	}
+	
+	private String GetCntrType(String cntrNo) {
+		String cntrType = null;
+		
+		StringBuffer query = new StringBuffer("SELECT CNTR_TP FROM CNTR WHERE CNTR_NO='"+cntrNo+"' ");
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				cntrType = rs.getString("CNTR_TP");
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+		return cntrType;
 	}
 	
 	private void SearchEmp(String name, boolean isEmp) {
