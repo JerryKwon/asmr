@@ -344,7 +344,7 @@ public class NewCenterRegistration extends JFrame{
 //		}
 	
 		// 직원근무이력 관련
-		String cntrManagerName = xCenterManager.getText();
+		String cntrManagerNo = this.cntrManagerNo;
 		
 		
 		// 신규케이지 등록 관련
@@ -375,6 +375,16 @@ public class NewCenterRegistration extends JFrame{
 			query1.append("	WHERE ROWNUM=1 ) ");
 			
 			pstmt = con.prepareStatement(query1.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+			
+			StringBuffer query2_1 = new StringBuffer("UPDATE EMP_WORK_HIST ");
+			query2_1.append("SET WORK_END_DATE=trunc(sysdate) ");
+			query2_1.append("WHERE EMP_NO = '"+cntrManagerNo+"' ");
+			
+			pstmt = con.prepareStatement(query2_1.toString());
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				con.commit();
