@@ -43,6 +43,7 @@ public class ReqPrsnRegist extends JFrame {
 	private JComboBox<String> cbCustSearch;
 	
 	private String abanNo;
+	private boolean isCust = true;
 	
 	private JTable eCustList;
 	private JScrollPane custListScroll;
@@ -267,6 +268,8 @@ public class ReqPrsnRegist extends JFrame {
 	}
 	
 	private void activateCust() {
+		isCust = true;
+		
 		nonCust.setSelected(false);
 		cust.setSelected(true);
 		
@@ -282,6 +285,8 @@ public class ReqPrsnRegist extends JFrame {
 	}
 	
 	private void activateNonCust() {
+		isCust= false;
+		
 		cust.setSelected(false);
 		nonCust.setSelected(true);
 		
@@ -303,27 +308,58 @@ public class ReqPrsnRegist extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(custSearch)) {
-				String text = xCustSearch.getText();
-				
-				String custType = (String)cbCustSearch.getSelectedItem();
-				switch(custType) {
-				case "이름":
-					SearchCust(text, true);
-					break;
-				case "아이디":
-					SearchCust(text, false);
-					break;
+				if(xCustSearch.getText().trim().isEmpty()) {
+					GetCustList();
+				}
+				else {
+					String text = xCustSearch.getText();
+					
+					String custType = (String)cbCustSearch.getSelectedItem();
+					switch(custType) {
+					case "이름":
+						SearchCust(text, true);
+						break;
+					case "아이디":
+						SearchCust(text, false);
+						break;
+					}
 				}
 			}
 			else if(e.getSource().equals(addressSearch)) {
-				new AddressSearch(xAddress);
+				new NewAddressSearch(xAddress);
 			}
 			else if(e.getSource().equals(returning)) {
+				
 				int result = JOptionPane.showConfirmDialog(null, "해당 동물을 반환처리 하시겠습니까?", "반환처리", JOptionPane.YES_NO_OPTION);
+				
 				if(result == JOptionPane.OK_OPTION) {
-					ReturnProtAni();
-					dispose();
+					
+					if(isCust) {
+						if(eCustList.getSelectedRow()==-1) {
+							JOptionPane.showMessageDialog(null, "[회원] 목록에서 인수자를 선택하세요.", "메시지", JOptionPane.ERROR_MESSAGE);
+						}
+						else {
+							ReturnProtAni();
+							dispose();
+						}
+					}
+					else {
+						String name = xName.getText().trim();
+						String address = xAddress.getText().trim();
+						String phoneNum = xPhoneNum.getText().trim();
+						
+						if(name.isEmpty()||address.isEmpty()||phoneNum.isEmpty()) {
+							JOptionPane.showMessageDialog(null, "[비회원] 인수자 기본정보를 입력하게요.", "메시지", JOptionPane.ERROR_MESSAGE);
+						}
+						else {
+
+							ReturnProtAni();
+							dispose();
+						}
+					}
+					
 				}
+			
 			}
 			else if(e.getSource().equals(cancel)) {
 				dispose();
