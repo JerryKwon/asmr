@@ -382,10 +382,25 @@ public class ProtAniRegist extends JFrame{
 			}
 			else if(e.getSource().equals(register)) {
 				int result = JOptionPane.showConfirmDialog(null, "보호동물을 등록하시겠습니까?","확인",JOptionPane.YES_NO_OPTION);
-				if(result == JOptionPane.YES_OPTION) { 
-					JOptionPane.showMessageDialog(null, "등록되었습니다.","등록 확인",JOptionPane.PLAIN_MESSAGE);
-					RegistProtAni();
-					dispose();
+				if(result == JOptionPane.YES_OPTION) {
+					
+					String rscuNo = xRscuNo.getText().trim();
+					String parAbanAniName = xParAbanAniName.getText().trim();
+					String abanName = xAbanAniName.getText().trim();
+					String age = xAge.getText().trim();
+					String kinds = xKind.getText().trim();
+					String color = xColor.getText().trim();
+					String feature = xFeature.getText().trim();
+					String cage = ((String)cbCage.getSelectedItem()).trim();
+					
+					if((rscuNo.isEmpty()&&parAbanAniName.isEmpty())||abanName.isEmpty()||age.isEmpty()||kinds.isEmpty()||color.isEmpty()||feature.isEmpty()||cage.isEmpty()) {
+						JOptionPane.showMessageDialog(null, "동물 기본정보를 입력하세요", "메시지", JOptionPane.ERROR_MESSAGE);
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "등록되었습니다.","등록 확인",JOptionPane.PLAIN_MESSAGE);
+						RegistProtAni();
+						dispose();
+					}
 				}
 			}
 			else if(e.getSource().equals(cancel)) {
