@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -22,9 +21,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -35,8 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.toedter.calendar.JDateChooser;
-
-import asmr.CenterList.BottomPanel;
 
 public class NewCenterRegistration extends JFrame{
 	private JLabel vNewCenterRegist,vCenterName,vCenterType,vArea,vPhoneNum,vEstDate,vOperTime,vOperTimeDash,vCenterManager,vAddress,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount;
@@ -88,7 +83,7 @@ public class NewCenterRegistration extends JFrame{
 //		cbCenterType = new JComboBox<String>(centerTypeDiv);
 		
 		//면적
-		vArea = new JLabel("면적");
+		vArea = new JLabel("면적(m²)");
 		xArea = new JTextField(10);
 		
 		//전화번호
@@ -133,16 +128,19 @@ public class NewCenterRegistration extends JFrame{
 		//대형
 		vCageBig = new JLabel("대형");
 		xCageBig = new JTextField(2);
+		xCageBig.setText("0");
 		vCageBigCount = new JLabel("개");
 		
 		//중형
 		vCageMid = new JLabel("중형");
 		xCageMid = new JTextField(2);
+		xCageMid.setText("0");
 		vCageMidCount = new JLabel("개");
 		
 		//소형
 		vCageSmall = new JLabel("소형");
 		xCageSmall = new JTextField(2);
+		xCageSmall.setText("0");
 		vCageSmallCount = new JLabel("개");
 		
 		//저장버튼
@@ -386,7 +384,6 @@ public class NewCenterRegistration extends JFrame{
 			
 			if(bigCageNum >= 1 || midCageNum >= 1 || smallCageNum >= 1) {
 				query3 = RegistCage(bigCageNum,midCageNum,smallCageNum);
-				System.out.println(query3);
 			
 				pstmt = con.prepareStatement(query3.toString());
 				rs = pstmt.executeQuery();
@@ -661,11 +658,39 @@ public class NewCenterRegistration extends JFrame{
 				int result = JOptionPane.showConfirmDialog(null, "신규 센터를 등록하시겠습니까?", "센터 등록 확인", JOptionPane.YES_NO_OPTION);
 				switch(result) {
 				case JOptionPane.YES_OPTION:
-					RegistNewCenter();
-//					RegistCenter();
-//					RegistEmpWorkHist();
-//					InitRegistCage();
-					dispose();
+					String cntrName= xCenterName.getText().trim();
+					String area = xArea.getText().trim();
+					String phoneNum = xPhoneNum.getText().trim();
+					String estbDate = ((JTextField)chooser.getDateEditor().getUiComponent()).getText().trim();
+					String cntrManagerName = xCenterManager.getText().trim();
+					String address = xAddress.getText().trim();
+					
+					String bigNum = xCageBig.getText().trim();
+					String midNum = xCageMid.getText().trim();
+					String smallNum = xCageSmall.getText().trim();
+					
+					if(cntrName.isEmpty()||area.isEmpty()||phoneNum.isEmpty()||estbDate.isEmpty()||cntrManagerName.isEmpty()||address.isEmpty()) {
+						if(bigNum.isEmpty()||midNum.isEmpty()||smallNum.isEmpty()) {
+							JOptionPane.showMessageDialog(null, "센터 기본정보 및 케이지 개수를 입력하세요", "메시지", JOptionPane.ERROR_MESSAGE);
+						}
+						else {
+							JOptionPane.showMessageDialog(null, "센터 기본정보를 입력하세요", "메시지", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+					
+					else if(bigNum.isEmpty()||midNum.isEmpty()||smallNum.isEmpty()) {
+						JOptionPane.showMessageDialog(null, "케이지 개수를 입력하세요", "메시지", JOptionPane.ERROR_MESSAGE);
+					}
+					
+					else {
+						if(NumberFormatCheck(phoneNum)) {
+							RegistNewCenter();
+							dispose();
+						}
+						else {
+							JOptionPane.showMessageDialog(null, "전화번호 포맷을 확인하세요.(구분자 \"-\" 포함 숫자 13자리)", "메시지", JOptionPane.ERROR_MESSAGE);
+						}
+					}
 				}
 			}
 			else if(e.getSource().equals(cancel)) {
@@ -673,6 +698,14 @@ public class NewCenterRegistration extends JFrame{
 			}
 		}
 		
+	}
+	
+	private boolean NumberFormatCheck(String phoneNum) {
+		phoneNum.replaceAll("[0-9]", "");
+		String[] splitStr = phoneNum.split("");
+		if(splitStr.length==2)
+			return true;
+		else return false;
 	}
 	
 	
