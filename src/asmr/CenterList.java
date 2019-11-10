@@ -790,11 +790,18 @@ public class CenterList extends JPanel{
 	}
 	
 	private boolean NumberFormatCheck(String phoneNum) {
-		phoneNum.replaceAll("[0-9]", "");
-		String[] splitStr = phoneNum.split("");
-		if(splitStr.length==2)
-			return true;
-		else return false;
+		
+		if(phoneNum.length()>13)
+			return false;
+		else {
+			String repStr = phoneNum.replaceAll("[0-9]", "");
+			String[] splitStr = repStr.split("");
+			System.out.println(splitStr.toString());
+			System.out.println(splitStr.length);
+			if(splitStr.length==2)
+				return true;
+			else return false;
+		}
 	}
 	
 	private void ClearAll() {
