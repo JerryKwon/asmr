@@ -536,7 +536,7 @@ public class EmpList extends JPanel {
 		connection();
 		
 		try {
-			StringBuffer query= new StringBuffer("SELECT e.EMP_NO emp_no, wh.WORK_START_DATE, e.EMP_NAME emp_name, c.CNTR_NO, c.CNTR_NAME cntr_name ");
+			StringBuffer query= new StringBuffer("SELECT c.CNTR_NO, e.EMP_NO emp_no, wh.WORK_START_DATE, e.EMP_NAME emp_name, c.CNTR_NAME cntr_name ");
 			query.append("FROM ( SELECT EMP_NO, EMP_NAME FROM EMP) e INNER JOIN( ");
 			query.append("	SELECT  EMP_NO, WORK_START_DATE, CNTR_NO ");
 			query.append("	FROM EMP_WORK_HIST ");
@@ -544,7 +544,7 @@ public class EmpList extends JPanel {
 			query.append("	ON e.EMP_NO = wh.EMP_NO INNER JOIN( ");
 			query.append("		SELECT CNTR_NO, CNTR_NAME FROM CNTR) c ");
 			query.append("		ON wh.CNTR_NO = c.CNTR_NO ");
-			query.append("ORDER BY 1,2 ASC ");
+			query.append("ORDER BY 1,2,3 ASC ");
 			
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
