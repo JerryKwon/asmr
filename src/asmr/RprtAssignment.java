@@ -98,6 +98,7 @@ public class RprtAssignment extends JPanel {
    
    
    List<Map<String, Serializable>> rprtListData;
+   List<Map<String, Serializable>> cageListData;
    
    ArrayList<String> cntrListData;
    
@@ -225,10 +226,13 @@ public class RprtAssignment extends JPanel {
       rprtListData = RprtData.getRprtList();
       
       cntrListData = RprtData.getCntrList();
+      
+      cageListData = RprtData.getCageList();
 
 //      cntrNm = new ArrayList<String>();
       
       getData();
+      getCage();
       RprtAssignmentView();
 
    }
@@ -507,6 +511,23 @@ public class RprtAssignment extends JPanel {
                });
             }
       }
+    
+    void getCage() {
+    	
+        for(int i=0; i < cageListData.size(); i++) {
+        	
+           model2.addRow(new Object[] {
+                 cageListData.get(i).get("센터명"),
+                 cageListData.get(i).get("주소"),
+                 cageListData.get(i).get("여유케이지(대)"),
+                 cageListData.get(i).get("여유케이지(중)"),
+                 cageListData.get(i).get("여유케이지(소)")
+                 
+                 
+//                 rprtListData.get(i).get("배정센터명")
+           });
+        }
+  }
     
 
 
