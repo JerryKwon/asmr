@@ -56,8 +56,8 @@ public class CenterList extends JPanel{
 	private String prevTimeOpen = null;
 	private String prevTimeClose = null;
 
-	private String newCntrManagerNo = null;
-	private String prevCntrManagerNo = null;
+//	private String newCntrManagerNo = null;
+//	private String prevCntrManagerNo = null;
 	
 	private ArrayList<String> cntrNos;
 	private String cntrNo;
@@ -151,12 +151,12 @@ public class CenterList extends JPanel{
 		//센터정보 아래 입력창 JLabel과 JTextField
 		vCenterNum = new JLabel("센터번호");
 		xCenterNum = new JTextField(10);
-		xCenterNum.setEnabled(false);
+		xCenterNum.setEditable(false);
 		
 		//날짜 형태 2001.01.20[10글자]
 		vEstDate = new JLabel("설립일자");
 		xEstDate = new JTextField(10);
-		xEstDate.setEnabled(false);
+		xEstDate.setEditable(false);
 		
 		//센터명
 		vCenterName = new JLabel("센터명");
@@ -180,7 +180,8 @@ public class CenterList extends JPanel{
 			@Override
 			public void focusGained(FocusEvent e) {
 				// TODO Auto-generated method stub
-				
+				if(xPhoneNum.getText().equals(hint))
+					xPhoneNum.setText("");
 			}
 		});
 		
@@ -201,7 +202,7 @@ public class CenterList extends JPanel{
 		//센터장 이름(직원명 - VARCHAR(20)) - 한글 1글자당 3byte 6.667글자
 		vCenterManager = new JLabel("센터장");
 		xCenterManager = new JTextField(10);
-		xCenterManager.setEnabled(false);
+		xCenterManager.setEditable(false);
 		
 		//총 케이지수 라벨
 		vCageNum = new JLabel("총 케이지 수");
@@ -209,15 +210,15 @@ public class CenterList extends JPanel{
 		//케이지
 		vCageBig = new JLabel("대형");
 		xCageBig = new JTextField(2);
-		xCageBig.setEnabled(false);
+		xCageBig.setEditable(false);
 		
 		vCageMid = new JLabel("중형");
 		xCageMid = new JTextField(2);
-		xCageMid.setEnabled(false);
+		xCageMid.setEditable(false);
 		
 		vCageSmall = new JLabel("소형");
 		xCageSmall = new JTextField(2);
-		xCageSmall.setEnabled(false);
+		xCageSmall.setEditable(false);
 		
 		vCageBigCount = new JLabel("개");
 		vCageMidCount = new JLabel("개");
@@ -234,11 +235,11 @@ public class CenterList extends JPanel{
 		cageRegist.setForeground(white);
 		cageRegist.addActionListener(centerListButtonListener);
 		
-		searchManager = new JButton("검색");
-		searchManager.setBackground(blue);
-		searchManager.setForeground(white);
-		searchManager.setEnabled(false);
-		searchManager.addActionListener(centerListButtonListener);
+//		searchManager = new JButton("검색");
+//		searchManager.setBackground(blue);
+//		searchManager.setForeground(white);
+//		searchManager.setEnabled(false);
+//		searchManager.addActionListener(centerListButtonListener);
 		
 		modify = new JButton("수정");
 		modify.setBackground(blue);
@@ -256,7 +257,7 @@ public class CenterList extends JPanel{
 		JComponent[] vContextComps	= {vCenterNum,vEstDate,vCenterName,vPhoneNum,vArea,vOperTime,vOperTimeDash,vCenterManager,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount};
 		ChangeFont(vContextComps, new Font("나눔고딕", Font.PLAIN, 16));
 		
-		JComponent[] bComps = {centerRegist, cageRegist, searchManager, modify, cancel};
+		JComponent[] bComps = {centerRegist, cageRegist, modify, cancel};
 		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 16));
 		
 		CenterListView();
@@ -330,9 +331,9 @@ public class CenterList extends JPanel{
 		
 		//센터장
 		gridbagAdd(vCenterManager, 0, 10, 1, 1);
-		JComponent[] centerManagerComps = {xCenterManager, searchManager};
-		CombinePanel centerManagerPanel = new CombinePanel(centerManagerComps, 0, 0);
-		gridbagAdd(centerManagerPanel, 1, 10, 1, 1);
+//		JComponent[] centerManagerComps = {xCenterManager};
+//		CombinePanel centerManagerPanel = new CombinePanel(centerManagerComps, 0, 0);
+		gridbagAdd(xCenterManager, 1, 10, 1, 1);
 		
 //		gridbagAdd(xCenterManager, 1, 10, 1, 1);
 //		gridbagAdd(searchManager, 2, 10, 1, 1);
@@ -407,7 +408,7 @@ public class CenterList extends JPanel{
 		connection();
 		
 		try {
-			StringBuffer query= new StringBuffer("SELECT c.CNTR_NO, c.CNTR_NAME, c.ADDR, c.TEL_NO, c.\"AREA\" ,SUBSTR(OPEN_TIME,1,2)||':'||SUBSTR(OPEN_TIME,3,2) OPEN_TIME, SUBSTR(CLSE_TIME,1,2)||':'||SUBSTR(CLSE_TIME,3,2) CLSE_TIME, ESTB_DATE,CNTR_TP,e.EMP_NO,e.EMP_NAME ");
+			StringBuffer query= new StringBuffer("SELECT c.CNTR_NO, c.CNTR_NAME, c.ADDR, c.TEL_NO, c.AREA ,SUBSTR(OPEN_TIME,1,2)||':'||SUBSTR(OPEN_TIME,3,2) OPEN_TIME, SUBSTR(CLSE_TIME,1,2)||':'||SUBSTR(CLSE_TIME,3,2) CLSE_TIME, ESTB_DATE,CNTR_TP,LISTAGG(e.EMP_NAME,',') WITHIN GROUP (ORDER BY wh.EMP_NO) EMP_NAME ");
 			query.append("FROM (");
 			query.append("		SELECT * ");
 			query.append("		FROM CNTR");
@@ -415,12 +416,13 @@ public class CenterList extends JPanel{
 			query.append("			ON c.CNTR_NO = wh.CNTR_NO ");
 			query.append("			AND wh.WORK_END_DATE = to_date('9999-12-31','YYYY-MM-DD') ");
 			query.append("			AND wh.BIZ_FILD = 'c' LEFT OUTER JOIN EMP e ON wh.EMP_NO = e.EMP_NO ");
-				
+			query.append("GROUP BY c.CNTR_NO, c.CNTR_NAME, c.ADDR, c.TEL_NO, c.AREA ,SUBSTR(OPEN_TIME,1,2)||':'||SUBSTR(OPEN_TIME,3,2), SUBSTR(CLSE_TIME,1,2)||':'||SUBSTR(CLSE_TIME,3,2), ESTB_DATE,CNTR_TP ");
+			
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 
-				prevCntrManagerNo = rs.getString("EMP_NO");
+//				prevCntrManagerNo = rs.getString("EMP_NO");
 				
 				String[] estbDate = rs.getString("ESTB_DATE").split(" ");
 				
@@ -555,50 +557,50 @@ public class CenterList extends JPanel{
 		disconnection();
 	}
 	
-	private void UpdateWorkHist(String newCntrManagerNo,boolean isPrevEmpty) {
-		
-		StringBuffer query1 = new StringBuffer();
-		StringBuffer query2 = new StringBuffer();
-		
-		//비어있지 않으면, 기존의 해당센터의 prev 매니저를 오늘날짜로 END_DATE하고 위의 새로운 매니저를 오늘날짜로 START_DATE입력한다.
-		if(!isPrevEmpty) {
-			query1.append("UPDATE EMP_WORK_HIST ");
-			query1.append("SET WORK_END_DATE = trunc(sysdate) ");
-			query1.append("WHERE CNTR_NO='"+cntrNo+"' AND EMP_NO='"+prevCntrManagerNo+"' AND WORK_END_DATE = to_date('9999-12-31','YYYY-MM-DD') ");
-		}
-		//비어있으면 새롭게 찾은 직원을 WORK_HIST에 새로운 ROW 추가
-		
-		query2.append("INSERT INTO EMP_WORK_HIST(EMP_NO,WORK_START_DATE,CNTR_NO,EMP_TP,BIZ_FILD) ");
-		query2.append("SELECT EMP_NO, trunc(sysdate) WORK_START_DATE, '"+cntrNo+"' CNTR_NO, EMP_TP, BIZ_FILD  FROM EMP_WORK_HIST ");
-		query2.append("WHERE EMP_NO='"+newCntrManagerNo+"' AND WORK_END_DATE = to_date('9999-12-31','YYYY-MM-DD') ");
-	
-		connection();
-		
-		try {
-			if(!isPrevEmpty) {
-				pstmt = con.prepareStatement(query1.toString());
-				rs = pstmt.executeQuery();
-				if(rs.next()) {
-					con.commit();
-				}
-				pstmt = con.prepareStatement(query2.toString());
-				rs = pstmt.executeQuery();
-				if(rs.next()) {
-					con.commit();
-				}
-			}
-			else {
-				pstmt = con.prepareStatement(query2.toString());
-				rs = pstmt.executeQuery();
-				if(rs.next()) {
-					con.commit();
-				}
-			}
-		}catch(SQLException e) {
-			e.printStackTrace();
-		}
-		disconnection();
-	}
+//	private void UpdateWorkHist(String newCntrManagerNo,boolean isPrevEmpty) {
+//		
+//		StringBuffer query1 = new StringBuffer();
+//		StringBuffer query2 = new StringBuffer();
+//		
+//		//비어있지 않으면, 기존의 해당센터의 prev 매니저를 오늘날짜로 END_DATE하고 위의 새로운 매니저를 오늘날짜로 START_DATE입력한다.
+//		if(!isPrevEmpty) {
+//			query1.append("UPDATE EMP_WORK_HIST ");
+//			query1.append("SET WORK_END_DATE = trunc(sysdate) ");
+//			query1.append("WHERE CNTR_NO='"+cntrNo+"' AND EMP_NO='"+prevCntrManagerNo+"' AND WORK_END_DATE = to_date('9999-12-31','YYYY-MM-DD') ");
+//		}
+//		//비어있으면 새롭게 찾은 직원을 WORK_HIST에 새로운 ROW 추가
+//		
+//		query2.append("INSERT INTO EMP_WORK_HIST(EMP_NO,WORK_START_DATE,CNTR_NO,EMP_TP,BIZ_FILD) ");
+//		query2.append("SELECT EMP_NO, trunc(sysdate) WORK_START_DATE, '"+cntrNo+"' CNTR_NO, EMP_TP, BIZ_FILD  FROM EMP_WORK_HIST ");
+//		query2.append("WHERE EMP_NO='"+newCntrManagerNo+"' AND WORK_END_DATE = to_date('9999-12-31','YYYY-MM-DD') ");
+//	
+//		connection();
+//		
+//		try {
+//			if(!isPrevEmpty) {
+//				pstmt = con.prepareStatement(query1.toString());
+//				rs = pstmt.executeQuery();
+//				if(rs.next()) {
+//					con.commit();
+//				}
+//				pstmt = con.prepareStatement(query2.toString());
+//				rs = pstmt.executeQuery();
+//				if(rs.next()) {
+//					con.commit();
+//				}
+//			}
+//			else {
+//				pstmt = con.prepareStatement(query2.toString());
+//				rs = pstmt.executeQuery();
+//				if(rs.next()) {
+//					con.commit();
+//				}
+//			}
+//		}catch(SQLException e) {
+//			e.printStackTrace();
+//		}
+//		disconnection();
+//	}
 	
     // 데이터베이스 연결
 
@@ -713,20 +715,20 @@ public class CenterList extends JPanel{
 					});
 				}
 			}
-			if(e.getSource().equals(searchManager)) {
-				CenterManagerSearch centerManagerSearch = new CenterManagerSearch(xCenterManager);
-				centerManagerSearch.addWindowListener(new WindowAdapter() {
-
-					@Override
-					public void windowClosed(WindowEvent e) {
-						// TODO Auto-generated method stub
-						super.windowClosed(e);
-						newCntrManagerNo = centerManagerSearch.getCntrManagerNo();
-					}
-					
-				});
-				
-			}
+//			if(e.getSource().equals(searchManager)) {
+//				CenterManagerSearch centerManagerSearch = new CenterManagerSearch(xCenterManager);
+//				centerManagerSearch.addWindowListener(new WindowAdapter() {
+//
+//					@Override
+//					public void windowClosed(WindowEvent e) {
+//						// TODO Auto-generated method stub
+//						super.windowClosed(e);
+//						newCntrManagerNo = centerManagerSearch.getCntrManagerNo();
+//					}
+//					
+//				});
+//				
+//			}
 			if(e.getSource().equals(modify)) {
 				
 				if(eCenterList.getSelectedRow()!=-1) {
@@ -743,7 +745,7 @@ public class CenterList extends JPanel{
 						prevTimeClose = String.join("",((String) cbOperTimeClose.getSelectedItem()).split(":"));
 						
 						
-						JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose,searchManager};
+						JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose};
 						for(JComponent cop: changeStatusComps) {
 							cop.setEnabled(true);
 						}
@@ -759,14 +761,14 @@ public class CenterList extends JPanel{
 							String newTimeOpen = String.join("",((String) cbOperTimeOpen.getSelectedItem()).split(":"));
 							String newTimeClose = String.join("",((String) cbOperTimeClose.getSelectedItem()).split(":"));
 									
-							if(prevCntrManagerNo == null) {
-								prevCntrManagerNo="X";
-							}
+//							if(prevCntrManagerNo == null) {
+//								prevCntrManagerNo="X";
+//							}
+//							
+//							if(newCntrManagerNo == null)
+//								newCntrManagerNo = prevCntrManagerNo;
 							
-							if(newCntrManagerNo == null)
-								newCntrManagerNo = prevCntrManagerNo;
-							
-							if(prevCntrName.equals(newCntrName)&&newPhoneNum.equals(prevPhoneNum)&&prevArea.equals(newArea)&&prevTimeOpen.equals(newTimeOpen)&&prevTimeClose.equals(prevTimeClose)&&prevCntrManagerNo.equals(newCntrManagerNo)) {
+							if(prevCntrName.equals(newCntrName)&&newPhoneNum.equals(prevPhoneNum)&&prevArea.equals(newArea)&&prevTimeOpen.equals(newTimeOpen)&&prevTimeClose.equals(prevTimeClose)) {
 								JOptionPane.showMessageDialog(null, "변경된정보가 없습니다.", "알림", JOptionPane.WARNING_MESSAGE);
 							}
 							else {
@@ -775,12 +777,12 @@ public class CenterList extends JPanel{
 								
 								UpdateCenter(newCntrName,newPhoneNum,newArea,newTimeOpen,newTimeClose);
 								
-								if(!prevCntrManagerNo.equals(newCntrManagerNo)) {
-									if(prevCntrManagerNo.equals("X"))
-										UpdateWorkHist(newCntrManagerNo, true);
-									else
-										UpdateWorkHist(newCntrManagerNo, false);
-								}
+//								if(!prevCntrManagerNo.equals(newCntrManagerNo)) {
+//									if(prevCntrManagerNo.equals("X"))
+//										UpdateWorkHist(newCntrManagerNo, true);
+//									else
+//										UpdateWorkHist(newCntrManagerNo, false);
+//								}
 								
 								GetCenter();
 								GetCenterList();
@@ -792,7 +794,7 @@ public class CenterList extends JPanel{
 							}
 						}
 						modify.setText("수정");
-						JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose,searchManager};
+						JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose};
 						for(JComponent cop: changeStatusComps) {
 							cop.setEnabled(false);
 						}
@@ -833,7 +835,7 @@ public class CenterList extends JPanel{
 		model2.setRowCount(0);
 		
 		modify.setText("수정");
-		JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose,searchManager};
+		JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose};
 		for(JComponent cop: changeStatusComps) {
 			cop.setEnabled(false);
 		}
