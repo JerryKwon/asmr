@@ -90,7 +90,7 @@ public class EmpRegister extends JFrame{
 		//센터검색팝업(CenterSearch)와 Listener로 화면연결 하셔야합니다.
 		vBelongCenter = new JLabel("소속센터");
 		xBelongCenter = new JTextField(10);
-		xBelongCenter.setEnabled(false);
+		xBelongCenter.setEditable(false);
 		centerSearch = new JButton("검색");
 		centerSearch.setBackground(blue);
 		centerSearch.setForeground(white);
@@ -143,7 +143,8 @@ public class EmpRegister extends JFrame{
 			@Override
 			public void focusGained(FocusEvent e) {
 				// TODO Auto-generated method stub
-				xPhoneNum.setText("");
+				if(xPhoneNum.getText().equals(hint))
+					xPhoneNum.setText("");
 			}
 		});
 		
@@ -326,8 +327,6 @@ public class EmpRegister extends JFrame{
 		else {
 			String repStr = phoneNum.replaceAll("[0-9]", "");
 			String[] splitStr = repStr.split("");
-			System.out.println(splitStr.toString());
-			System.out.println(splitStr.length);
 			if(splitStr.length==2)
 				return true;
 			else return false;
