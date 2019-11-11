@@ -51,17 +51,17 @@ public class Login extends JPanel implements ActionListener{
 		bLogin.setFont(new Font("나눔고딕", Font.PLAIN, 16));
 		bLogin.addActionListener(this);
 		
-		empID = "0";
+		empID = "-1";
 		LoginView();
 	}
 	private void EmpLoginCheck(String id, String pw){
-		int iid = Integer.parseInt(id);
-		if(pw.equals(EmpData.getEmpPwd(iid))){
+		if(pw.equals(EmpData.getEmpPwd(id))){
 			main.setLogin();
 		}
 		else{
 			//비밀번호 틀림
 			JOptionPane.showMessageDialog(null, "ID 혹은 비밀번호를 확인해주세요.");
+			clearField();
 		}
 	}
 	private void CustLoginCheck(String id, String pw){
@@ -93,7 +93,7 @@ public class Login extends JPanel implements ActionListener{
 			}
 		}
 		}catch(NumberFormatException e1){
-			JOptionPane.showMessageDialog(null, "ID나 비밀번호를 정확하게 입력해주세요", "메시지", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "ID 나 비밀번호를 정확하게 입력해주세요", "메시지", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	private boolean checkID(String ID){
@@ -104,6 +104,13 @@ public class Login extends JPanel implements ActionListener{
 	}
 	public void setMain(MainFrame main){
 		this.main = main;
+	}
+	public void clearField(){
+		xID.setText(null);
+		xPassword.setText(null);
+	}
+	static String getEmpNo(){
+		return empID;
 	}
 	private void LoginView() {
 		
@@ -122,8 +129,6 @@ public class Login extends JPanel implements ActionListener{
 		gridbagAdd(xPassword, 1, 2, 1, 1);
 		gridbagconstraints.fill = GridBagConstraints.VERTICAL;
 		gridbagAdd(bLogin, 2, 1, 1, 2);
-
-		
 	}
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
 		
@@ -133,10 +138,7 @@ public class Login extends JPanel implements ActionListener{
 				
 		gridbagconstraints.gridwidth  = w;	//넓이	
 		gridbagconstraints.gridheight = h;	//높이
-		
-
-	     			
-	      			
+			
 	    gridbaglayout.setConstraints(c, gridbagconstraints); //컴포넌트를 컴포넌트 위치+크기 정보에 따라 GridBagLayout에 배치			
 				
 	   add(c);			

@@ -39,16 +39,12 @@ public class MainFrame extends JFrame {
 	private static ContentPanel ContentPanel;	
 	
 	Login login;
-	public static String empName, empID, empCntr, custID, custName;
+	public static String empName, empCntr, custID, custName, CntrNo;
 	public static int custNo;
 	
 	public MainFrame() {
 		login = new Login();
 		login.setMain(this);
-		
-		empID = login.empID;
-		empName = EmpData.getEmpName(Integer.parseInt(login.empID));
-		empCntr = EmpData.getEmpCntr(Integer.parseInt(login.empID));
 		
 		setLayout(null);
 		
@@ -274,6 +270,8 @@ public class MainFrame extends JFrame {
 		ContentPanel.add(pContents);
 		ContentPanel.revalidate();
 		ContentPanel.repaint();
+		//아이디, 비밀번호 제거
+		login.clearField();
 	}
 	public void setLogin() {
 		
@@ -283,11 +281,11 @@ public class MainFrame extends JFrame {
 		
 		bLogout.setVisible(true);
 		vWelcome.setVisible(true);
-		empName = EmpData.getEmpName(Integer.parseInt(login.empID));
+		empName = EmpData.getEmpName(login.empID);
 		bUserName.setText(empName);
 		bUserName.setVisible(true);
 		
-		empCntr = EmpData.getEmpCntr(Integer.parseInt(login.empID));
+		empCntr = EmpData.getEmpCntr(login.empID);
 		vCenterName.setText(empCntr);
 		vCenterName.setVisible(true);
 		
