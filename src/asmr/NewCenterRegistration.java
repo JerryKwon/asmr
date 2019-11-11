@@ -67,6 +67,8 @@ public class NewCenterRegistration extends JFrame{
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
+	CageNumFocusListener cageNumFocusListener = new CageNumFocusListener();
+	
 	NewCenterRegistButtonListener newCenterRegistButtonListener = new NewCenterRegistButtonListener();
 	
 	public NewCenterRegistration() throws IOException {
@@ -106,7 +108,8 @@ public class NewCenterRegistration extends JFrame{
 			@Override
 			public void focusGained(FocusEvent e) {
 				// TODO Auto-generated method stub
-				xPhoneNum.setText("");
+				if(xPhoneNum.getText().equals(hint))
+					xPhoneNum.setText("");
 			}
 		});
 		
@@ -125,13 +128,13 @@ public class NewCenterRegistration extends JFrame{
 		cbOperTimeClose = new JComboBox<String>(operTimeCloseDiv);
 		
 		//센터장
-		vCenterManager = new JLabel("센터장");
-		xCenterManager = new JTextField(10);
-		xCenterManager.setEnabled(false);
-		centerManagerSearch = new JButton("검색");
-		centerManagerSearch.setBackground(blue);
-		centerManagerSearch.setForeground(white);
-		centerManagerSearch.addActionListener(newCenterRegistButtonListener);
+//		vCenterManager = new JLabel("센터장");
+//		xCenterManager = new JTextField(10);
+//		xCenterManager.setEnabled(false);
+//		centerManagerSearch = new JButton("검색");
+//		centerManagerSearch.setBackground(blue);
+//		centerManagerSearch.setForeground(white);
+//		centerManagerSearch.addActionListener(newCenterRegistButtonListener);
 		
 		//주소
 		vAddress = new JLabel("주소");
@@ -149,18 +152,21 @@ public class NewCenterRegistration extends JFrame{
 		vCageBig = new JLabel("대형");
 		xCageBig = new JTextField(2);
 		xCageBig.setText("0");
+		xCageBig.addFocusListener(cageNumFocusListener);
 		vCageBigCount = new JLabel("개");
 		
 		//중형
 		vCageMid = new JLabel("중형");
 		xCageMid = new JTextField(2);
 		xCageMid.setText("0");
+		xCageMid.addFocusListener(cageNumFocusListener);
 		vCageMidCount = new JLabel("개");
 		
 		//소형
 		vCageSmall = new JLabel("소형");
 		xCageSmall = new JTextField(2);
 		xCageSmall.setText("0");
+		xCageSmall.addFocusListener(cageNumFocusListener);
 		vCageSmallCount = new JLabel("개");
 		
 		//저장버튼
@@ -222,13 +228,13 @@ public class NewCenterRegistration extends JFrame{
 		gridbagAdd(operTimePanel, 12 ,3, 1, 1);
 		
 		//센터장	
-		gridbagAdd(vCenterManager, 0, 4, 1, 1);
-		JPanel plainPanel2 = new JPanel();
-		plainPanel2.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
-		plainPanel2.add(centerManagerSearch);
-		Component[] cops3 = {xCenterManager, plainPanel2};
-		CombinePanel centerManagerPanel = new CombinePanel(cops3,0,0);
-		gridbagAdd(centerManagerPanel, 1, 4, 1, 1);
+//		gridbagAdd(vCenterManager, 0, 4, 1, 1);
+//		JPanel plainPanel2 = new JPanel();
+//		plainPanel2.setLayout(new FlowLayout(FlowLayout.LEFT,5,0));
+//		plainPanel2.add(centerManagerSearch);
+//		Component[] cops3 = {xCenterManager, plainPanel2};
+//		CombinePanel centerManagerPanel = new CombinePanel(cops3,0,0);
+//		gridbagAdd(centerManagerPanel, 1, 4, 1, 1);
 		
 		
 		//주소
@@ -251,10 +257,10 @@ public class NewCenterRegistration extends JFrame{
 		gridbagAdd(buttonPanel, 0, 10, 4, 1);
 		
 		
-		JComponent[] vContextComps = {vCenterName,vArea,vPhoneNum,vEstDate,vOperTime,vOperTimeDash,vCenterManager,vAddress,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount};
+		JComponent[] vContextComps = {vCenterName,vArea,vPhoneNum,vEstDate,vOperTime,vOperTimeDash,vAddress,vCageNum,vCageBig,vCageMid,vCageSmall,vCageBigCount,vCageMidCount,vCageSmallCount};
 		ChangeFont(vContextComps, new Font("나눔고딕", Font.PLAIN, 16));
 		
-		JComponent[] bComps= {centerManagerSearch,addressSearch, register, cancel};
+		JComponent[] bComps= {addressSearch, register, cancel};
 		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 12));
 		
 		pack();
@@ -344,7 +350,7 @@ public class NewCenterRegistration extends JFrame{
 //		}
 	
 		// 직원근무이력 관련
-		String cntrManagerNo = this.cntrManagerNo;
+//		String cntrManagerNo = this.cntrManagerNo;
 		
 		
 		// 신규케이지 등록 관련
@@ -380,35 +386,35 @@ public class NewCenterRegistration extends JFrame{
 				con.commit();
 			}
 			
-			StringBuffer query2_1 = new StringBuffer("UPDATE EMP_WORK_HIST ");
-			query2_1.append("SET WORK_END_DATE=trunc(sysdate) ");
-			query2_1.append("WHERE EMP_NO = '"+cntrManagerNo+"' ");
-			
-			pstmt = con.prepareStatement(query2_1.toString());
-			rs = pstmt.executeQuery();
-			if(rs.next()) {
-				con.commit();
-			}
-			
-			// 할당시에 오늘 일자로 무조건 WORK_START_DATE가 시작하기 때문에 한명의 직원은 변경처리를 하지 않고는 당일 내에 새로운 센터로 배정불가
-			StringBuffer query2 = new StringBuffer("INSERT INTO EMP_WORK_HIST(EMP_NO,WORK_START_DATE,CNTR_NO,EMP_TP,BIZ_FILD) ");
-			query2.append("SELECT DISTINCT EMP_NO, ");
-			query2.append("		 TRUNC(SYSDATE) WORK_START_DATE, ");
-			query2.append("		 (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
-			query2.append("		  FROM CNTR c ");
-			query2.append("		  WHERE ROWNUM = 1) CNTR_NO, ");
-			query2.append("		  EMP_TP, ");
-			query2.append("		  BIZ_FILD ");
-			query2.append("FROM EMP_WORK_HIST ");
-			query2.append("WHERE EMP_NO = '"+cntrManagerNo+"' ");
-//			query2.append(") ");
-
-			
-			pstmt = con.prepareStatement(query2.toString());
-			rs = pstmt.executeQuery();
-			if(rs.next()) {
-				con.commit();
-			}
+//			StringBuffer query2_1 = new StringBuffer("UPDATE EMP_WORK_HIST ");
+//			query2_1.append("SET WORK_END_DATE=trunc(sysdate) ");
+//			query2_1.append("WHERE EMP_NO = '"+cntrManagerNo+"' ");
+//			
+//			pstmt = con.prepareStatement(query2_1.toString());
+//			rs = pstmt.executeQuery();
+//			if(rs.next()) {
+//				con.commit();
+//			}
+//			
+//			// 할당시에 오늘 일자로 무조건 WORK_START_DATE가 시작하기 때문에 한명의 직원은 변경처리를 하지 않고는 당일 내에 새로운 센터로 배정불가
+//			StringBuffer query2 = new StringBuffer("INSERT INTO EMP_WORK_HIST(EMP_NO,WORK_START_DATE,CNTR_NO,EMP_TP,BIZ_FILD) ");
+//			query2.append("SELECT DISTINCT EMP_NO, ");
+//			query2.append("		 TRUNC(SYSDATE) WORK_START_DATE, ");
+//			query2.append("		 (SELECT /*+ INDEX_DESC(c CNTR_PK) */ CNTR_NO ");
+//			query2.append("		  FROM CNTR c ");
+//			query2.append("		  WHERE ROWNUM = 1) CNTR_NO, ");
+//			query2.append("		  EMP_TP, ");
+//			query2.append("		  BIZ_FILD ");
+//			query2.append("FROM EMP_WORK_HIST ");
+//			query2.append("WHERE EMP_NO = '"+cntrManagerNo+"' ");
+////			query2.append(") ");
+//
+//			
+//			pstmt = con.prepareStatement(query2.toString());
+//			rs = pstmt.executeQuery();
+//			if(rs.next()) {
+//				con.commit();
+//			}
 			
 			String query3 = null;
 			
@@ -692,14 +698,14 @@ public class NewCenterRegistration extends JFrame{
 					String area = xArea.getText().trim();
 					String phoneNum = xPhoneNum.getText().trim();
 					String estbDate = ((JTextField)chooser.getDateEditor().getUiComponent()).getText().trim();
-					String cntrManagerName = xCenterManager.getText().trim();
+//					String cntrManagerName = xCenterManager.getText().trim();
 					String address = xAddress.getText().trim();
 					
 					String bigNum = xCageBig.getText().trim();
 					String midNum = xCageMid.getText().trim();
 					String smallNum = xCageSmall.getText().trim();
 					
-					if(cntrName.isEmpty()||area.isEmpty()||phoneNum.isEmpty()||estbDate.isEmpty()||cntrManagerName.isEmpty()||address.isEmpty()) {
+					if(cntrName.isEmpty()||area.isEmpty()||phoneNum.isEmpty()||estbDate.isEmpty()||address.isEmpty()) {
 						if(bigNum.isEmpty()||midNum.isEmpty()||smallNum.isEmpty()) {
 							JOptionPane.showMessageDialog(null, "센터 기본정보 및 케이지 개수를 입력하세요", "메시지", JOptionPane.ERROR_MESSAGE);
 						}
@@ -726,6 +732,26 @@ public class NewCenterRegistration extends JFrame{
 			else if(e.getSource().equals(cancel)) {
 				dispose();
 			}
+		}
+		
+	}
+	
+	class CageNumFocusListener implements FocusListener{
+
+		@Override
+		public void focusGained(FocusEvent e) {
+			// TODO Auto-generated method stub
+			JTextField target = (JTextField)e.getSource();
+			if(target.getText().equals("0"))
+				target.setText("");
+		}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			// TODO Auto-generated method stub
+			JTextField target = (JTextField)e.getSource();
+			if(target.getText().isEmpty())
+				target.setText("0");
 		}
 		
 	}

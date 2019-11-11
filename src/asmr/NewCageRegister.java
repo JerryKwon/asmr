@@ -8,6 +8,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -51,12 +53,14 @@ public class NewCageRegister extends JFrame{
 	GridBagConstraints gridBagConstraints;
 	
 	CageRegisterButtonListener cageRegisterButtonListener;
+	CageNumFocusListener cageNumFocusListener;
 	
 	public NewCageRegister(String cntrName,String cntrNo) {
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
 		
 		cageRegisterButtonListener = new CageRegisterButtonListener();
+		cageNumFocusListener = new CageNumFocusListener();
 		
 		this.cntrNo = cntrNo;
 		
@@ -64,7 +68,7 @@ public class NewCageRegister extends JFrame{
 		
 		vCenterName = new JLabel("센터명");
 		xCenterName = new JTextField(10);
-		xCenterName.setEnabled(false);
+		xCenterName.setEditable(false);
 		xCenterName.setText(cntrName);
 		
 		vCageSize = new JLabel("케이지크기");
@@ -74,18 +78,21 @@ public class NewCageRegister extends JFrame{
 		vCageBig = new JLabel("대형");
 		xCageBig = new JTextField(2);
 		xCageBig.setText("0");
+		xCageBig.addFocusListener(cageNumFocusListener);
 		vCageBigCount = new JLabel("개");
 		
 		//중형
 		vCageMid = new JLabel("중형");
 		xCageMid = new JTextField(2);
 		xCageMid.setText("0");
+		xCageMid.addFocusListener(cageNumFocusListener);
 		vCageMidCount = new JLabel("개");
 		
 		//소형
 		vCageSmall = new JLabel("소형");
 		xCageSmall = new JTextField(2);
 		xCageSmall.setText("0");
+		xCageSmall.addFocusListener(cageNumFocusListener);
 		vCageSmallCount = new JLabel("개");
 		
 		register = new JButton("등록");
@@ -382,6 +389,26 @@ private String RegistCage(int bigCageNum, int midCageNum, int smallCageNum) {
 			else if (e.getSource().equals(cancel)) {
 				dispose();
 			}
+		}
+		
+	}
+	
+	class CageNumFocusListener implements FocusListener{
+
+		@Override
+		public void focusGained(FocusEvent e) {
+			// TODO Auto-generated method stub
+			JTextField target = (JTextField)e.getSource();
+			if(target.getText().equals("0"))
+				target.setText("");
+		}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			// TODO Auto-generated method stub
+			JTextField target = (JTextField)e.getSource();
+			if(target.getText().isEmpty())
+				target.setText("0");
 		}
 		
 	}
