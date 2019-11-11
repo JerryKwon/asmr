@@ -158,43 +158,43 @@ public class DiagAniList extends JPanel{
 		
 		vDiagDate = new JLabel("진료일자");
 		xDiagDate = new JTextField(12);
-		xDiagDate.setEnabled(false);
+		xDiagDate.setEditable(false);
 		
 		vDiagType = new JLabel("진료구분");
 		xDiagType = new JTextField(12);
-		xDiagType.setEnabled(false);
+		xDiagType.setEditable(false);
 		
 		vIndiResult = new JLabel("진료결과");
 		xIndiResult = new JTextField(12);
-		xIndiResult.setEnabled(false);
+		xIndiResult.setEditable(false);
 		
 		vIndiVtrnName = new JLabel("내진수의사명");
 		xIndiVtrnName =  new JTextField(12);
-		xIndiVtrnName.setEnabled(false);
+		xIndiVtrnName.setEditable(false);
 		
 		vOudiResult = new JLabel("외진결과");
 		xOudiResult = new JTextField(12);
-		xOudiResult.setEnabled(false);
+		xOudiResult.setEditable(false);
 		
 		vHospName = new JLabel("병원명");
 		xHospName = new JTextField(12);
-		xHospName.setEnabled(false);
+		xHospName.setEditable(false);
 		
 		vDisease = new JLabel("병명");
 		xDisease = new JTextField(12);
-		xDisease.setEnabled(false);
+		xDisease.setEditable(false);
 		
 		vInfecWhet = new JLabel("전염여부");
 		xInfecWhet = new JTextField(12);
-		xInfecWhet.setEnabled(false);
+		xInfecWhet.setEditable(false);
 		
 		vCureType = new JLabel("치료구분");
 		xCureType = new JTextField(12);
-		xCureType.setEnabled(false);
+		xCureType.setEditable(false);
 		
 		vHsptzDate = new JLabel("입원일자");
 		xHsptzDate = new JTextField(12);
-		xHsptzDate.setEnabled(false);
+		xHsptzDate.setEditable(false);
 		
 		vDschDate = new JLabel("퇴원일자");
 		
@@ -214,11 +214,11 @@ public class DiagAniList extends JPanel{
 		
 		vDeathType = new JLabel("사망구분");
 		xDeathType = new JTextField(12);
-		xDeathType.setEnabled(false);
+		xDeathType.setEditable(false);
 		
 		vDeathReason = new JLabel("사망사유");
 		xDeathReason = new JTextField(12);
-		xDeathReason.setEnabled(false);
+		xDeathReason.setEditable(false);
 		
 		vDiagContent = new JLabel("진료내용");
 		xDiagContent = new JTextArea();
