@@ -135,11 +135,11 @@ public class EmpList extends JPanel {
 		
 		vEmpNo = new JLabel("직원번호");
 		xEmpNo = new JTextField(10);
-		xEmpNo.setEnabled(false);
+		xEmpNo.setEditable(false);
 		
 		vBelongCenter = new JLabel("소속");
 		xBelongCenter = new JTextField(10);
-		xBelongCenter.setEnabled(false);
+		xBelongCenter.setEditable(false);
 		centerSearch = new JButton("검색");
 		centerSearch.setBackground(blue);
 		centerSearch.setForeground(white);
@@ -156,15 +156,15 @@ public class EmpList extends JPanel {
 		
 		vEmpName = new JLabel("이름");
 		xEmpName = new JTextField(10);
-		xEmpName.setEnabled(false);
+		xEmpName.setEditable(false);
 		
 		vBirthDate = new JLabel("생년월일");
 		xBirthDate = new JTextField(10);
-		xBirthDate.setEnabled(false);
+		xBirthDate.setEditable(false);
 		
 		vPhoneNum = new JLabel("전화번호");
 		xPhoneNum = new JTextField(10);
-		xPhoneNum.setEnabled(false);
+		xPhoneNum.setEditable(false);
 		
 		modify = new JButton("수정");
 		modify.setBackground(blue);
@@ -489,7 +489,9 @@ public class EmpList extends JPanel {
 			}
 			
 		}catch(SQLException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "금일 해당직원에 대한 처리 한도를 넘어섰습니다.", "에러", JOptionPane.ERROR_MESSAGE);
+			clearAll();
 		}
 		
 		disconnection();
@@ -546,7 +548,9 @@ public class EmpList extends JPanel {
 				con.commit();
 			}
 		}catch(SQLException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "금일 해당직원에 대한 처리 한도를 넘어섰습니다.", "에러", JOptionPane.ERROR_MESSAGE);
+			clearAll();
 		}
 		
 		disconnection();
