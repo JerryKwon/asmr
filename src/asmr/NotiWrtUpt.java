@@ -169,7 +169,7 @@ public class NotiWrtUpt extends JPanel {
 			query1.append("null, ");
 			query1.append("null, ");
 			query1.append("null, ");
-			query1.append("0000) ");
+			query1.append("'0000') ");
 			
 			pstmt = con.prepareStatement(query1.toString());
 			rs = pstmt.executeQuery();

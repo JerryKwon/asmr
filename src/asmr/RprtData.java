@@ -31,7 +31,7 @@ public class RprtData {
 	
 	static List<Map<String, Serializable>> getRprtList(){
 //		RprtAssignment.rprtNos.clear();
-		query = "SELECT rprt_no, rprt_dttm, anml_kinds, anml_size, expln FROM rprt";
+		query = "SELECT rprt_dttm, anml_kinds, anml_size, expln, rprt_no FROM rprt";
 		
 		rprtListData.clear();
 		

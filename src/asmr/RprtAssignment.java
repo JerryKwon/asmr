@@ -363,11 +363,112 @@ public class RprtAssignment extends JPanel {
          // TODO Auto-generated method stub
          super.mouseClicked(e);
          if(e.getButton()==1) {
+        	 int clickedRow = eRprtList.getSelectedRow();
+				String rprtDttm = (String)eRprtList.getValueAt(clickedRow, 0);
+//				String cntrName = (String)eEmpList.getValueAt(clickedRow, 2);
+//				String cntrNo = cntrNos.get(clickedRow);
+				GetRprt(rprtDttm);
             
          }
       }
       
    }
+   
+   private void GetRprt(String rprtDttm) {
+	   
+	   connection();
+	   try {
+			StringBuffer query= new StringBuffer("SELECT R.RPRT_NO, R.RPRT_DTTM, C.CUST_NAME, C.TEL_NO, R.RPRT_TP, C.CUST_TP, R.ANML_KINDS, R.ANML_SIZE, R.EXPLN, R.DSCV_DTTM, R.DSCV_LOC ");
+			query.append("FROM RPRT R ");
+			query.append("JOIN CUST C ");
+			query.append("ON R.RPRT_PRSN_NO = C.CUST_NO ");
+			query.append("WHERE RPRT_DTTM = to_date('"+rprtDttm+"','YYYY-MM-DD hh24:mi:ss') ");
+
+				
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+
+			
+			while(rs.next()) {
+
+				String rprtType = rs.getString("RPRT_TP");
+				String korRprtType = null;
+				
+				String custType = rs.getString("CUST_TP");
+				String korcustType = null;
+				
+				String anmlKindsType = rs.getString("ANML_KINDS");
+				String korAnmlKindsType = null;
+				
+				String anmlSizeType = rs.getString("ANML_SIZE");
+				String korAnmlSizeType = null;
+				
+				switch(rprtType) {
+				case "d":
+					korRprtType = "발견";
+					break;
+				case "h":
+					korRprtType = "인계";
+					break;
+				}
+				
+				switch(custType) {
+				case "m":
+					korcustType = "회원";
+					break;
+				case "n":
+					korcustType = "비회원";
+					break;
+				}
+				
+				switch(anmlKindsType) {
+				case "d":
+					korAnmlKindsType = "개";
+					break;
+				case "c":
+					korAnmlKindsType = "고양이";
+					break;
+				case "e":
+					korAnmlKindsType = "기타";
+					break;
+				}
+				
+				switch(anmlSizeType) {
+				case "b":
+					korAnmlSizeType = "대";
+					break;
+				case "m":
+					korAnmlSizeType = "중";
+					break;
+				case "s":
+					korAnmlSizeType = "소";
+					break;
+				}
+//	 R.EXPLN, R.DSCV_DTTM, R.DSCV_LOC
+				xRprtNo.setText(rs.getString("RPRT_NO"));
+				xRprtDttm.setText(rs.getString("RPRT_DTTM"));
+				xRprtName.setText(rs.getString("CUST_NAME"));
+				xTelNo.setText(rs.getString("TEL_NO"));
+				cbRprtTp.setSelectedItem(korRprtType);
+				cbWrtPrsnTp.setSelectedItem(korcustType);
+				cbAnmlKinds.setSelectedItem(korAnmlKindsType);
+				cbAnmlSize.setSelectedItem(korAnmlSizeType);
+				xExpln.setText(rs.getString("EXPLN"));
+				xDscvDttm.setText(rs.getString("DSCV_DTTM"));
+				xDscvLoc.setText(rs.getString("DSCV_LOC"));
+				
+			}
+				
+		}catch(Exception e2) {
+			e2.printStackTrace();
+		}
+		
+		disconnection();
+	   
+	   
+	   
+   }
+   
    
     private void ChangeFont(JComponent[] comps, Font font) {
        for(JComponent comp: comps) {
