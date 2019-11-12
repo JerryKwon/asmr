@@ -103,6 +103,18 @@ public class EmpMyPage extends JPanel implements ActionListener{
 		ChangeFont(slabel, new Font("나눔고딕", Font.PLAIN, 16));
 		JComponent[] sbutton = {bSearch, bAdjust, bCancel, bSave};
 		ChangeFont(sbutton, new Font("나눔고딕", Font.BOLD, 16));
+		
+		EmpData.setEmpData(Login.getEmpNo());
+		xEmpName.setText((String) EmpData.empdata.get("직원명"));
+		xEmpType.setText((String) EmpData.empdata.get("직원구분"));
+		xPassword.setText((String) EmpData.empdata.get("비밀번호"));
+		xAddress.setText((String) EmpData.empdata.get("주소"));
+		xPhone.setText((String) EmpData.empdata.get("전화번호"));
+		xCenterName.setText((String) EmpData.empdata.get("소속센터"));
+		xBizField.setText((String) EmpData.empdata.get("업무분야"));
+		xSex.setText((String) EmpData.empdata.get("성별"));
+		xBirthDay.setText((String) EmpData.empdata.get("생년월일"));
+		
 		EmpMyPageView();
 		
 	}

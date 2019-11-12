@@ -17,8 +17,7 @@ public class CustData {
 	static ResultSet rs = null;
 	
 	public static Map<String, Serializable> custdata = new HashMap<String, Serializable>();
-	
-	
+	public static Map<String, Serializable> custMydata = new HashMap<String, Serializable>();	
 	
 	public static void initCustData(String custName, String address, String phone, String id, String pwd){
 		custdata.put("이름", custName);
@@ -27,7 +26,32 @@ public class CustData {
 		custdata.put("아이디", id);
 		custdata.put("비밀번호", pwd);		
 	}
-	
+	public static void setCustData(){
+		query = "SELECT CUST_NAME, ADDR, TEL_NO, ID, PWD FROM CUST";
+		String custName, addr, telNo, id, pwd;
+		custName = addr = telNo = id = pwd = "";
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+				custName = rs.getString(1);
+				addr = rs.getString(2);
+				telNo = rs.getString(3);
+				id = rs.getString(4);
+				pwd = rs.getString(5);
+				
+			}
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+		custMydata.put("아이디", id);
+		custMydata.put("이름", custName);
+		custMydata.put("비밀번호", pwd);
+		custMydata.put("주소", addr);
+		custMydata.put("전화번호", telNo);		
+	}
 	static void createIsUserCust(){
 		char custType = 'm';
 		query = "INSERT INTO CUST VALUES ((SELECT NVL(MAX(CUST_NO)+1, 0) FROM CUST), "
