@@ -17,10 +17,84 @@ public class EmpData {
 	static ResultSet rs = null;
 	
 	public static Map<String, Serializable > empdata = new HashMap<String, Serializable>();
-	public static Map<String, Serializable > empdataSet;
 	
-	public static List<Map<String, Serializable>> empListData = new ArrayList<Map<String, Serializable>>();
-	
+	public static void setEmpData(String empNo){
+		query = "select emp_name, cntr_no, emp_tp, biz_fild, pwd, sex, brth_year_mnth_day, addr, tel_no "
+				+ "from emp e, emp_work_hist h where e.emp_no = h.emp_no "
+				+ "and h.work_end_date = to_date('9999-12-31', 'yyyy-mm-dd') "
+				+ "and e.emp_no = '"+empNo+"'";
+		String empName, empTp, bizFild, pwd, sex, birthDay, addr, telNo;
+		empName = empTp = bizFild = pwd = sex = birthDay = addr = telNo = "";
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+				empName = rs.getString(1);
+				//cntrNo = rs.getString(2);
+				empTp = rs.getString(3);
+				bizFild = rs.getString(4);
+				pwd = rs.getString(5);
+				sex = rs.getString(6);
+				String birthdt[] = rs.getString(7).split(" ");
+				birthDay = birthdt[0];
+				addr = rs.getString(8);
+				telNo = rs.getString(9);
+			}
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+		String korEmpTp = "";
+		switch(empTp){
+		case "f":
+			korEmpTp = "정규직";
+			break;
+		case "c":
+			korEmpTp = "계약직";
+			break;
+		}
+		String korBizFild = "";
+		switch(bizFild){
+		case "c":
+			korBizFild = "센터장";
+			break;
+		case "m":
+			korBizFild = "관리직원";
+			break;
+		case "d":
+			korBizFild = "수의사";
+			break;
+		case "o":
+			korBizFild = "사무직종사자";
+			break;
+		case "p":
+			korBizFild = "보호관리직원";
+			break;
+		case "r":
+			korBizFild = "유기동물구조원";
+			break;
+		}
+		String korSex = "";
+		switch(sex){
+		case "m":
+			korSex = "남";
+			break;
+		case "f":
+			korSex = "여";
+			break;
+		}
+		
+		empdata.put("직원명", empName);
+		empdata.put("소속센터", getEmpCntr(empNo));
+		empdata.put("직원구분", korEmpTp);
+		empdata.put("업무분야", korBizFild);
+		empdata.put("비밀번호", pwd);
+		empdata.put("성별", korSex);
+		empdata.put("생년월일", birthDay);
+		empdata.put("주소", addr);
+		empdata.put("전화번호", telNo);
+	}
 	
 	static String getEmpName(String empNo){
 		query = "SELECT emp_name FROM emp WHERE emp_no='"+empNo+"'";
@@ -40,7 +114,7 @@ public class EmpData {
 	}
 	static String getEmpPwd(String empNo){
 		query = "SELECT pwd FROM emp WHERE emp_no='"+empNo+"'";
-		String empPwd = "";
+		String empPwd = null;
 		try{
 			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
 			rs = pstm.executeQuery();
@@ -92,7 +166,7 @@ public class EmpData {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.println(getCntrNo("0000"));
+		setEmpData("0000");
 	}
 
 }

@@ -16,6 +16,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.RootPaneContainer;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -32,7 +33,7 @@ public class MainFrame extends JFrame {
 	
 	private String[] mlAban = {"기본정보관리", "진료"};
 	private String[] mlReport = {"신고배정(본부센터)", "신고배정(일반센터)"};
-	private String[] mlAdop = {"입양신청관리", "입양완료목록"};
+	private String[] mlAdop = {"입양신청관리", "입양목록"};
 	private String[] mlPost = {"공지사항", "문의/답변"};
 	
 	private static JPanel pContents;
@@ -91,7 +92,8 @@ public class MainFrame extends JFrame {
 		mCenter.setPreferredSize(new Dimension(220, 50));
 		mCenter.setBorder(new EmptyBorder(0,90,0,0));
 		mCenter.setFont(new Font("나눔고딕", Font.BOLD, 20));
-		mCenter.setBackground(Color.WHITE);
+		//mCenter.setBackground(Color.WHITE);
+		mCenter.setOpaque(false);
 		mCenter.addActionListener(listener);
 		mBar.add(mCenter);
 		
@@ -102,7 +104,8 @@ public class MainFrame extends JFrame {
 		mEmp.setPreferredSize(new Dimension(220, 50));
 		mEmp.setBorder(new EmptyBorder(0,90,0,0));
 		mEmp.setFont(new Font("나눔고딕", Font.BOLD, 20));
-		mEmp.setBackground(Color.WHITE);
+		//mEmp.setBackground(Color.WHITE);
+		mEmp.setOpaque(false);
 		mEmp.addActionListener(listener);
 		mBar.add(mEmp);
 		mBar.add(Box.createHorizontalStrut(10));
@@ -184,12 +187,11 @@ public class MainFrame extends JFrame {
 		mPost.setPreferredSize(new Dimension(220, 50));
 		mPost.setBorder(new EmptyBorder(0,80,0,0));
 		mBar.add(mPost);
-		mBar.setBackground(Color.WHITE);
+		//mBar.setBackground(Color.WHITE);
 		mBar.setBorder(new LineBorder(Color.black));
 		
 		ContentPanel = new ContentPanel();
 		pContents = new MainPage();
-		//pContents.setBackground(Color.WHITE);
 		ContentPanel.add(pContents);
 		MainPageView();
 	}
@@ -211,6 +213,7 @@ public class MainFrame extends JFrame {
 		bLogout.setBounds(1810, 10, 100, 30);
 		
 		ContentPanel.setBounds(50, 250, 1800, 1100);
+		//ContentPanel.setBackground(Color.WHITE);
 		
 		this.add(bMainButton);
 		this.add(mBar);

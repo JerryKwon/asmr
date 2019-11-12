@@ -81,17 +81,22 @@ public class Login extends JPanel implements ActionListener{
 				
 	}
 	public void actionPerformed(ActionEvent e) {
-		try{
-		if(e.getSource().equals(bLogin)){
-			if(checkID(xID.getText())){
-				empID = xID.getText();
-				EmpLoginCheck(empID, new String(xPassword.getPassword()));
+		try{			
+			if(e.getSource().equals(bLogin)){
+				if(xID.getText() != ""){
+					if(checkID(xID.getText())){
+						empID = xID.getText();
+						EmpLoginCheck(empID, new String(xPassword.getPassword()));
+					}
+					else{
+						custID = xID.getText();
+						CustLoginCheck(custID, new String(xPassword.getPassword()));
+					}
+				}
+				else if(xID.getText() == ""){
+					JOptionPane.showMessageDialog(null, "ID 나 비밀번호를 정확하게 입력해주세요", "메시지", JOptionPane.ERROR_MESSAGE);
+				}
 			}
-			else{
-				custID = xID.getText();
-				CustLoginCheck(custID, new String(xPassword.getPassword()));
-			}
-		}
 		}catch(NumberFormatException e1){
 			JOptionPane.showMessageDialog(null, "ID 나 비밀번호를 정확하게 입력해주세요", "메시지", JOptionPane.ERROR_MESSAGE);
 		}

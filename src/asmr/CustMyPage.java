@@ -104,6 +104,13 @@ public class CustMyPage extends JPanel implements ActionListener{
 		btn1.setVisible(true);
 		btn2.setVisible(false);
 		
+		CustData.setCustData();
+		xID.setText((String) CustData.custMydata.get("아이디"));
+		xCustName.setText((String) CustData.custMydata.get("이름"));
+		xPassword.setText((String) CustData.custMydata.get("비밀번호"));
+		xAddress.setText((String) CustData.custMydata.get("주소"));
+		xPhone.setText((String) CustData.custMydata.get("전화번호"));
+		
 		CustMyPageView();
 	}
 	public void actionPerformed(ActionEvent e){
