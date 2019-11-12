@@ -35,6 +35,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -62,6 +63,11 @@ public class ProtAniList extends JPanel {
 	private ArrayList<String> newPicPaths;
 	
 	private String parAbanAniNo = null;
+	
+	private String userCntrNo;
+	private String userEmpNo;
+	private String userCntrType;
+	private String userWorkType;
 	
 	private int picMax;
 	private int pnt;
@@ -107,7 +113,7 @@ public class ProtAniList extends JPanel {
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
-	public ProtAniList() throws IOException {
+	public ProtAniList(String cntrNo, String empNo) throws IOException {
 		
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
@@ -120,6 +126,12 @@ public class ProtAniList extends JPanel {
 		abanTps = new ArrayList<String>();
 		abanPics = new ArrayList<String>();
 		newPicPaths = new ArrayList<String>();
+		
+		userCntrNo = cntrNo;
+		userEmpNo = empNo;
+		
+		userCntrType = GetCntrType(userCntrNo);
+		userWorkType = GetWorkType(userCntrNo,userEmpNo); 
 		
 		vProtAniRegister = new JLabel("보호동물목록");
 		vProtAniRegister.setFont(new Font("나눔고딕", Font.BOLD, 24));
@@ -354,7 +366,7 @@ public class ProtAniList extends JPanel {
 		Component[] cops1 = {modify, cancel, returning};
 		CombinePanel buttonPanel = new CombinePanel(cops1,15,0);
 		
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(20,600,0,0));
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(20,500,0,0));
 		gridbagAdd(buttonPanel, 0, 12, 7, 1);
 		
 		JPanel bottomPanel = new JPanel();
@@ -391,18 +403,23 @@ public class ProtAniList extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(register)){
-				ProtAniRegist protAniRegist = new ProtAniRegist();
-				protAniRegist.addWindowListener(new WindowAdapter() {
-
-					@Override
-					public void windowClosed(WindowEvent e) {
-						// TODO Auto-generated method stub
-						super.windowClosed(e);
-						GetProtAniList();
-						clearAll();
-					}
-				
-				});
+				if(userWorkType.equals("p")) {
+					ProtAniRegist protAniRegist = new ProtAniRegist(userCntrNo);
+					protAniRegist.addWindowListener(new WindowAdapter() {
+	
+						@Override
+						public void windowClosed(WindowEvent e) {
+							// TODO Auto-generated method stub
+							super.windowClosed(e);
+							GetProtAniList();
+							clearAll();
+						}
+					
+					});
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "보호관리직원만 유기동물을 등록할 수 있습니다.", "안내", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 			else if(e.getSource().equals(pictureManage)) {
 				try {
@@ -471,106 +488,119 @@ public class ProtAniList extends JPanel {
 			}
 			else if(e.getSource().equals(modify)) {
 				
-				String newSex = null;
-				String newNeut = null;
-				String newSize = null;
-				String newDesc = null;
-				String newCage = null;
-				ArrayList<String> newPics = new ArrayList<String>();
-				
-//				int clickedRow = -1;
-				
+	//				int clickedRow = -1;
+					
 				if(eProtAniList.getSelectedRow()!=-1) {
-					if(!isClicked) {
+			
+					//권한 일반 보호센터의 센터장, 사무직종사자, 보호관리직원
+					if(userCntrType.equals("n")&&(userWorkType.equals("c")||userWorkType.equals("o")||userWorkType.equals("p"))) {
+					
+						String newSex = null;
+						String newNeut = null;
+						String newSize = null;
+						String newDesc = null;
+						String newCage = null;
+						ArrayList<String> newPics = new ArrayList<String>();
 						
-						isClicked = true;
-						
-						
-						prevSex = (String)cbSex.getSelectedItem();
-						prevNeut = (String)cbNeutWhet.getSelectedItem();
-						prevSize = (String)cbAniSize.getSelectedItem();
-						prevDesc = xDescription.getText();
-						prevCage = (String)cbCage.getSelectedItem();
-						prevPics = abanPics;
-						
-						
-						modify.setText("확인");
-						JComponent[] changeStatusComps = {cbSex,cbNeutWhet,cbAniSize,cbCage,pictureManage};
-						for(JComponent cop: changeStatusComps) {
-							cop.setEnabled(true);
+						if(!isClicked) {
+							
+							isClicked = true;
+							
+							
+							prevSex = (String)cbSex.getSelectedItem();
+							prevNeut = (String)cbNeutWhet.getSelectedItem();
+							prevSize = (String)cbAniSize.getSelectedItem();
+							prevDesc = xDescription.getText();
+							prevCage = (String)cbCage.getSelectedItem();
+							prevPics = abanPics;
+							
+							
+							modify.setText("확인");
+							JComponent[] changeStatusComps = {cbSex,cbNeutWhet,cbAniSize,cbCage,pictureManage};
+							for(JComponent cop: changeStatusComps) {
+								cop.setEnabled(true);
+							}
+							
+							xDescription.setEditable(true);
 						}
-						
-						xDescription.setEditable(true);
+						else {
+							isClicked = false;
+							
+							int result = JOptionPane.showConfirmDialog(null, "보호동물정보를 수정하시겠습니까?", "보호동물정보수정", JOptionPane.YES_NO_OPTION);
+							if(result == JOptionPane.OK_OPTION) {
+								newSex = (String)cbSex.getSelectedItem();
+								newNeut = (String)cbNeutWhet.getSelectedItem();
+								newSize = (String)cbAniSize.getSelectedItem();
+								newDesc = xDescription.getText();
+								newCage = (String)cbCage.getSelectedItem();
+								newPics = abanPics; 
+								
+								if(prevSex.equals(newSex)&&prevNeut.equals(newNeut)&&prevSize.equals(newSize)&&prevDesc.equals(newDesc)&&prevCage.equals(newCage)&&prevPics.equals(newPics)) {
+									JOptionPane.showMessageDialog(null, "변경된정보가 없습니다.", "알림", JOptionPane.WARNING_MESSAGE);
+									clearAll();
+								}
+								//나머지 보호동물 정보는 모두 업데이트 된다고 가정을 하고
+								else {
+									int clickedRow = eProtAniList.getSelectedRow();
+									
+									if(!prevPics.equals(newPics)&&!prevCage.equals(newCage)) {
+										String abanNo = abanNos.get(clickedRow);
+										String cntrNo = cntrNos.get(clickedRow);
+										UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,newCage,newPics,prevPics.size(),newPics.size());
+									}
+									//케이지는 같은 경우라서 - 케이지 변경 필요 X
+									else if(!prevPics.equals(newPics)&&prevCage.equals(newCage)) {
+										String abanNo = abanNos.get(clickedRow);
+										String cntrNo = cntrNos.get(clickedRow);
+										UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,null,newPics,prevPics.size(),newPics.size());
+									}
+									//사진은 같은 경우라서 - 사진 변경 필요 X
+									else if(prevPics.equals(newPics)&&!prevCage.equals(newCage)) {
+										String abanNo = abanNos.get(clickedRow);
+										String cntrNo = cntrNos.get(clickedRow);
+										UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,newCage,null,prevPics.size(),newPics.size());
+									}
+									else if(prevPics.equals(newPics)&&prevCage.equals(newCage)) {
+										String abanNo = abanNos.get(clickedRow);
+										String cntrNo = cntrNos.get(clickedRow);
+										UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,null,null,prevPics.size(),newPics.size());
+									}
+									clearAll();
+									GetProtAniList();
+								}
+							}
+						}
 					}
 					else {
-						isClicked = false;
-						
-						int result = JOptionPane.showConfirmDialog(null, "보호동물정보를 수정하시겠습니까?", "보호동물정보수정", JOptionPane.YES_NO_OPTION);
-						if(result == JOptionPane.OK_OPTION) {
-							newSex = (String)cbSex.getSelectedItem();
-							newNeut = (String)cbNeutWhet.getSelectedItem();
-							newSize = (String)cbAniSize.getSelectedItem();
-							newDesc = xDescription.getText();
-							newCage = (String)cbCage.getSelectedItem();
-							newPics = abanPics; 
-							
-							if(prevSex.equals(newSex)&&prevNeut.equals(newNeut)&&prevSize.equals(newSize)&&prevDesc.equals(newDesc)&&prevCage.equals(newCage)&&prevPics.equals(newPics)) {
-								JOptionPane.showMessageDialog(null, "변경된정보가 없습니다.", "알림", JOptionPane.WARNING_MESSAGE);
-								clearAll();
-							}
-							//나머지 보호동물 정보는 모두 업데이트 된다고 가정을 하고
-							else {
-								int clickedRow = eProtAniList.getSelectedRow();
-								
-								if(!prevPics.equals(newPics)&&!prevCage.equals(newCage)) {
-									String abanNo = abanNos.get(clickedRow);
-									String cntrNo = cntrNos.get(clickedRow);
-									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,newCage,newPics,prevPics.size(),newPics.size());
-								}
-								//케이지는 같은 경우라서 - 케이지 변경 필요 X
-								else if(!prevPics.equals(newPics)&&prevCage.equals(newCage)) {
-									String abanNo = abanNos.get(clickedRow);
-									String cntrNo = cntrNos.get(clickedRow);
-									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,null,newPics,prevPics.size(),newPics.size());
-								}
-								//사진은 같은 경우라서 - 사진 변경 필요 X
-								else if(prevPics.equals(newPics)&&!prevCage.equals(newCage)) {
-									String abanNo = abanNos.get(clickedRow);
-									String cntrNo = cntrNos.get(clickedRow);
-									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,newCage,null,prevPics.size(),newPics.size());
-								}
-								else if(prevPics.equals(newPics)&&prevCage.equals(newCage)) {
-									String abanNo = abanNos.get(clickedRow);
-									String cntrNo = cntrNos.get(clickedRow);
-									UpdateAban(abanNo,cntrNo,newSex,newNeut,newSize,newDesc,null,null,prevPics.size(),newPics.size());
-								}
-								clearAll();
-								GetProtAniList();
-							}
-						}
+						JOptionPane.showMessageDialog(null, "동물정보수정 권한이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
 					}
 				}
-				
 			}
 			else if(e.getSource().equals(cancel)) {
 				clearAll();
 			}
 			else if(e.getSource().equals(returning)) {
+				
 				if(eProtAniList.getSelectedRow()!=-1) {
-					int clickedRow = eProtAniList.getSelectedRow();
-					String abanNo = abanNos.get(clickedRow);
-					ReqPrsnRegist reqPrsnRegist = new ReqPrsnRegist(abanNo);
-					reqPrsnRegist.addWindowListener(new WindowAdapter() {
-	
-						@Override
-						public void windowClosed(WindowEvent e) {
-							// TODO Auto-generated method stub
-							super.windowClosed(e);
-							GetProtAniList();
-							clearAll();
-						}
+					if(userCntrType.equals("n")&&(userWorkType.equals("o")||userWorkType.equals("p"))) {
 					
-					});
+						int clickedRow = eProtAniList.getSelectedRow();
+						String abanNo = abanNos.get(clickedRow);
+						ReqPrsnRegist reqPrsnRegist = new ReqPrsnRegist(abanNo);
+						reqPrsnRegist.addWindowListener(new WindowAdapter() {
+		
+							@Override
+							public void windowClosed(WindowEvent e) {
+								// TODO Auto-generated method stub
+								super.windowClosed(e);
+								GetProtAniList();
+								clearAll();
+							}
+						});			
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "동물정보반환 권한이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
+					}
 				}
 			}
 		}
@@ -798,6 +828,53 @@ public class ProtAniList extends JPanel {
 			cop.setEnabled(false);
 		}
 		xDescription.setEditable(false);
+	}
+	
+	private String GetCntrType(String cntrNo) {
+		String result = null;
+		
+		String query = "select cntr_tp from cntr where cntr_no='"+cntrNo+"' ";
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				result = rs.getString("CNTR_TP");
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+		return result;
+	}
+	
+	private String GetWorkType(String cntrNo, String empNo) {
+		String result = null;
+		
+		StringBuffer query = new StringBuffer("SELECT /*+INDEX_DESC(EMP_WORK_HIST EMP_WORK_HIST_PK)*/ BIZ_FILD ");
+		query.append("FROM emp_work_hist ");
+		query.append("WHERE emp_no='"+empNo+"' AND cntr_no='"+cntrNo+"' AND work_end_date=to_date('9999-12-31','YYYY-MM-DD') AND ROWNUM =1 ");
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				result = rs.getString("BIZ_FILD");
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+		return result;
 	}
 	
 	//두개의 컴포넌트를 하나의 패널로 묶는 JPanel
@@ -1065,11 +1142,27 @@ public class ProtAniList extends JPanel {
     	abanTps.clear();
     	model1.setNumRows(0);
     	
-    	StringBuffer query = new StringBuffer("SELECT p.CNTR_NO, a.ABAN_NO, a.ABAN_TP, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE, a.FEAT ");
-    	query.append("FROM ABAN a INNER JOIN (SELECT * FROM PROT ");
-    	query.append("	WHERE PROT_END_DATE = to_date('9999-12-31','YYYY-MM-DD')) p ");
-    	query.append("	ON a.ABAN_NO = p.ABAN_NO ");
-    	query.append("ORDER BY 1,2 ");
+    	StringBuffer query = new StringBuffer();
+    	
+    	if(userCntrType.equals("h")) {
+    	
+	    	query.append("SELECT p.CNTR_NO, a.ABAN_NO, a.ABAN_TP, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE, a.FEAT ");
+	    	query.append("FROM ABAN a INNER JOIN (SELECT * FROM PROT ");
+	    	query.append("	WHERE PROT_END_DATE = to_date('9999-12-31','YYYY-MM-DD')) p ");
+	    	query.append("	ON a.ABAN_NO = p.ABAN_NO ");
+	    	query.append("ORDER BY 1,2 ");
+	    	
+    	}
+    	
+    	else if(userCntrType.equals("n")) {
+    		
+    		query.append("SELECT p.CNTR_NO, a.ABAN_NO, a.ABAN_TP, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE, a.FEAT ");
+	    	query.append("FROM ABAN a INNER JOIN (SELECT * FROM PROT ");
+	    	query.append("	WHERE PROT_END_DATE = to_date('9999-12-31','YYYY-MM-DD')) p ");
+	    	query.append("	ON a.ABAN_NO = p.ABAN_NO AND p.CNTR_NO='"+userCntrNo+"' ");
+	    	query.append("ORDER BY 1,2 ");
+	    	
+    	}
     	
     	connection();
     	
@@ -1161,6 +1254,6 @@ public class ProtAniList extends JPanel {
     }
 	
 	public static void main(String[] args) throws IOException {
-		new ProtAniList();
+		new ProtAniList(null,null);
 	}
 }
