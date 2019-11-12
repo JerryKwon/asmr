@@ -38,6 +38,7 @@ public class VtrnSearch extends JFrame {
 	private JTextField xVtrn;
 	
 	private String vtrnBdate = null;
+	private String userCntrNo;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -61,7 +62,7 @@ public class VtrnSearch extends JFrame {
 	CenterManagerSearchButtonListener centerManagerSearchButtonListener;
 	CenterManagerSearchMouseListener centerManagerSearchMouseListener;
 	
-	public VtrnSearch(JTextField xVtrn) {
+	public VtrnSearch(JTextField xVtrn,String cntrNo) {
 		this.xVtrn = xVtrn;
 //		this.cntrManagerBdate = cntrManagerBdate;
 		
@@ -70,6 +71,8 @@ public class VtrnSearch extends JFrame {
 		
 		centerManagerSearchButtonListener = new CenterManagerSearchButtonListener();
 		centerManagerSearchMouseListener = new CenterManagerSearchMouseListener();
+		
+		userCntrNo = cntrNo;
 		
 		vVtrnSearch = new JLabel("¼öÀÇ»ç¸ñ·Ï");
 		vVtrnSearch.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
@@ -152,7 +155,7 @@ public class VtrnSearch extends JFrame {
 			query.append("FROM EMP e INNER JOIN (");
 			query.append("	SELECT DISTINCT EMP_NO FROM EMP_WORK_HIST");
 			query.append("	WHERE WORK_END_DATE = to_date('9999-12-31','YYYY-MM-DD')");
-			query.append("	AND BIZ_FILD = 'd') cm ");
+			query.append("	AND BIZ_FILD = 'd' AND CNTR_NO='"+userCntrNo+"' ) cm ");
 			query.append("	ON e.EMP_NO = cm.EMP_NO");
 			
 			pstmt = con.prepareStatement(query.toString());
@@ -265,6 +268,6 @@ public class VtrnSearch extends JFrame {
     
 	
 	public static void main(String[] args) {
-		new VtrnSearch(null);
+		new VtrnSearch(null,null);
 	}
 }
