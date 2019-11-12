@@ -21,25 +21,35 @@ public class RprtData {
 	public static Map<String, Serializable > rprtdata = new HashMap<String, Serializable>();
 	public static Map<String, Serializable > cagedata = new HashMap<String, Serializable>();
 	public static Map<String, Serializable > cntrdata = new HashMap<String, Serializable>();
+	public static Map<String, Serializable > cntrnodata = new HashMap<String, Serializable>();
+	public static Map<String, Serializable > rprtnodata = new HashMap<String, Serializable>();
 	
 	public static Map<String, Serializable > rprtdataSet;
 	public static Map<String, Serializable > cagedataSet;
 	public static Map<String, Serializable > cntrdataSet;
+	public static Map<String, Serializable > cntrnodataSet;
+	public static Map<String, Serializable > rprtnodataSet;
 	
 	public static List<Map<String, Serializable>> rprtListData = new ArrayList<Map<String, Serializable>>();
 	public static List<Map<String, Serializable>> cageListData = new ArrayList<Map<String, Serializable>>();
 	public static List<Map<String, Serializable>> cntrListData = new ArrayList<Map<String, Serializable>>();
+	public static List<Map<String, Serializable>> cntrNoListData = new ArrayList<Map<String, Serializable>>();
+	public static List<Map<String, Serializable>> rprtNoListData = new ArrayList<Map<String, Serializable>>();
 	
 	private static ArrayList<String> cntrNm;
-	
 	static List<Map<String, Serializable>> getRprtList(){
 //		RprtAssignment.rprtNos.clear();
-		query = "SELECT rprt_dttm, anml_kinds, anml_size, expln, rprt_no FROM rprt";
+	
+		StringBuffer query = new StringBuffer("SELECT rprt_dttm, anml_kinds, anml_size, expln, R.rprt_no ");
+		query.append("FROM rprt R ");
+		query.append("LEFT OUTER JOIN ASSG A ");
+		query.append("ON R.RPRT_NO = A.rprt_no ");
+		query.append("WHERE ASSG_NO IS NULL ");
 		
 		rprtListData.clear();
 		
 		try{
-			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			pstm = conn.prepareStatement(query.toString(), rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
 			rs = pstm.executeQuery();
 			
 			while(rs.next()){
@@ -60,6 +70,38 @@ public class RprtData {
 			e.printStackTrace();
 		}
 		return rprtListData;
+	}
+	
+	static String getCntrNoList(String nm){
+		
+//		cntrNm = new ArrayList<String>();
+		String cntrNo = "";
+		
+		
+		StringBuffer query = new StringBuffer("SELECT CNTR_NO FROM cntr ");
+		query.append("WHERE CNTR_NAME= '"+nm+"' ");;
+		
+		cntrNoListData.clear();
+		
+		try{
+			pstm = conn.prepareStatement(query.toString(), rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+//	               cntrdataSet = new HashMap<String, Serializable>();
+	               
+	               cntrNo = rs.getString(1);
+
+	            
+//	               cntrNoListData.add(cntrdataSet);
+	               
+//	               cntrNo.add(rs.getString(1));
+			}
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+		return cntrNo;
 	}
 	
 	static ArrayList<String> getCntrList(){
@@ -132,42 +174,41 @@ public class RprtData {
 		return cageListData;
 	}
 	
+static String getRprtNoList(String dttm){
+		
+//		cntrNm = new ArrayList<String>();
+		String rprtNo = "";
+		
+		
+		StringBuffer query = new StringBuffer("SELECT RPRT_NO FROM RPRT ");
+		query.append("WHERE RPRT_DTTM= to_date('"+dttm+"','YYYY-MM-DD hh24:mi:ss') ");;
+		
+		cntrNoListData.clear();
+		
+		try{
+			pstm = conn.prepareStatement(query.toString(), rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+//	               cntrdataSet = new HashMap<String, Serializable>();
+	               
+	               rprtNo = rs.getString(1);
 
-    //RETRIEVE DATA
-//    static public DefaultComboBoxModel<String> retrieve()
-//    {
-//        DefaultComboBoxModel<String> dm=new DefaultComboBoxModel<>();
-//
-//        //SQL
-//        query="SELECT cntr_name FROM cntr";
-//
-//        try
-//        {
-//        	pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
-//			rs = pstm.executeQuery();
-//
-//
-//            //LOOP THRU GETTING ALL VALUES
-//            while(rs.next())
-//            {
-//                //GET VALUES
-//                String name=rs.getString(1);
-//
-//                dm.addElement(name);
-//            }
-//
-//            return dm;
-//
-//        }catch (SQLException ex) {
-//            ex.printStackTrace();
-//             return null;
-//        }
-//
-//    }
-//	
+	            
+//	               cntrNoListData.add(cntrdataSet);
+	               
+//	               cntrNo.add(rs.getString(1));
+			}
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+		return rprtNo;
+	}
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.println(getCageList().get(0));
+		System.out.println(getCntrNoList("서울서초보호센터"));
 //		System.out.println(retrieve());
 	
 	}

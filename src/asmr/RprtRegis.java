@@ -362,12 +362,12 @@ public class RprtRegis extends JPanel implements ActionListener{
 			query2.append("RPRT_PIC_SEQ.nextval, ");
 			query2.append("'"+pic+"') ");
 			
-	//		pstmt = con.prepareStatement(query2.toString());
-	//		rs = pstmt.executeQuery();
-	//		if(rs.next()) {
-	//			con.commit();
-	//		}
-			System.out.println(query2.toString());
+			pstmt = con.prepareStatement(query2.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+//			System.out.println(query2.toString());
 			
 		}catch(SQLException e) {
 			e.printStackTrace();

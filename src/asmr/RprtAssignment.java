@@ -67,7 +67,7 @@ public class RprtAssignment extends JPanel {
    vAnmlSize, vExpln, vDscvDttm, vDscvLoc, vRprtList, vCageList, vRprtInfo;
    
    private JTextField xRprtNo, xRprtDttm, xRprtName, xTelNo, xDscvDttm, xDscvLoc;
-   
+
    private JTextArea xExpln;
    
    private JComboBox<String> cbRprtTp, cbWrtPrsnTp, cbAnmlKinds, cbAnmlSize;
@@ -81,7 +81,9 @@ public class RprtAssignment extends JPanel {
    private String[] anmlDiv = {"개", "고양이"};
    private String[] anmlSizeDiv = {"대", "중", "소"};
    
-   private BufferedImage buttonIcon;
+   static BufferedImage buttonIcon;
+   
+   static String xPath;
    
    private JButton previous, next, Imagebutton;
    
@@ -102,17 +104,24 @@ public class RprtAssignment extends JPanel {
    
    ArrayList<String> cntrListData;
    
+   ArrayList<String> cntrMoListData;
+   
+
+   
 //   private ArrayList<String> cntrNm;
    
    private JComboBox<String> combobox;
    
    ArrayList<String> array = new ArrayList<String>();
+
+
    
    public RprtAssignment() throws IOException {
 	   
 //	  rprtNos = new ArrayList<String>();
 	   
 	  combobox = new JComboBox<String>();
+	  combobox.addMouseListener(rprtAssignmentMouseListener);
       
       rprtAssignmentButtonListener = new RprtAssignmentButtonListener();
       
@@ -205,7 +214,7 @@ public class RprtAssignment extends JPanel {
       Imagebutton.setBorderPainted(false);
       Imagebutton.setContentAreaFilled(false);
       Imagebutton.setFocusPainted(false);
-      
+
       previous = new JButton("<<");
       previous.addActionListener(rprtAssignmentButtonListener);
       previous.setFont(new Font("나눔고딕", Font.BOLD, 16));
@@ -227,10 +236,12 @@ public class RprtAssignment extends JPanel {
       
       cntrListData = RprtData.getCntrList();
       
+//      RprtData.getCntrNoList(nm);
+      
       cageListData = RprtData.getCageList();
 
 //      cntrNm = new ArrayList<String>();
-      
+//      System.out.println(xPath);
       getData();
       getCage();
       RprtAssignmentView();
@@ -303,7 +314,9 @@ public class RprtAssignment extends JPanel {
    }
    
    class RprtAssignmentButtonListener implements ActionListener{
-      @Override
+     
+
+	@Override
       public void actionPerformed(ActionEvent e) {
          // TODO Auto-generated method stub
          if(e.getSource().equals(previous)) {
@@ -312,8 +325,50 @@ public class RprtAssignment extends JPanel {
          else if(e.getSource().equals(next)) {
             
          }
+//         else if(e.getSource().equals(combobox)) {
+//        	 int clickedRow = eRprtList.getSelectedRow();
+//        	 selectCntr = (String)combobox.getSelectedItem();
+//        	 nm = selectCntr;
+//        	 cntrno = RprtData.getCntrNoList(nm);
+//
+//        	 String rprtDttm = (String)eRprtList.getValueAt(clickedRow, 0);
+//        	 rprtno = RprtData.getRprtNoList(rprtDttm);
+//        	 
+//        	 AssignCntr(cntrno, rprtno);
+//
+//        	 
+//         }
          
       }
+
+//	private void AssignCntr(String cntrno, String rprtno) {
+//		// TODO Auto-generated method stub
+//
+//		 connection();
+//		   try {
+// 		   
+//				StringBuffer query= new StringBuffer("INSERT INTO ASSG ");
+//				query.append("VALUES(ASSG_SEQ.NEXTVAL, ");
+//				query.append("'"+rprtno+"', ");
+//				query.append("'"+cntrno+"', ");
+//				query.append("SYSDATE, NULL, NULL,NULL ) ");
+//					
+//				pstmt = con.prepareStatement(query.toString());
+//				rs = pstmt.executeQuery();
+//				
+//				if(rs.next()) {
+//					con.commit();
+//				}
+//				
+//				
+//					
+//			}catch(Exception e) {
+//				e.printStackTrace();
+//			}
+//			
+//			disconnection();
+//		
+//	}
    
    }
    
@@ -372,9 +427,63 @@ public class RprtAssignment extends JPanel {
 //				String cntrName = (String)eEmpList.getValueAt(clickedRow, 2);
 //				String cntrNo = cntrNos.get(clickedRow);
 				GetRprt(rprtDttm);
+				
+//				String selectCntr = (String)combobox.getSelectedItem();
+//	        	 
+				
+				
+//				String selectCntr = (String)eRprtList.getValueAt(clickedRow, 4);
+				
+				
+//				System.out.println(selectCntr);
+			
+//	        	String cntrno = RprtData.getCntrNoList(combobox.getSelectedItem().toString());
+//	        	System.out.println(cntrno);
+//	        	String rprtno = RprtData.getRprtNoList(rprtDttm);
+//	        	System.out.println(rprtno);
+//	        	AssignCntr(cntrno, rprtno);
+				
+				int column = 4;
+				int row = eRprtList.getSelectedRow();
+				String value = (String) eRprtList.getModel().getValueAt(row, column);
+				String cntrno = RprtData.getCntrNoList(value);
+	        	System.out.println(cntrno);
+	        	String rprtno = RprtData.getRprtNoList(rprtDttm);
+	        	System.out.println(rprtno);
+	        	AssignCntr(cntrno, rprtno);
             
          }
+         
       }
+      
+      private void AssignCntr(String cntrno, String rprtno) {
+  		// TODO Auto-generated method stub
+
+  		 connection();
+  		   try {
+   		   
+  				StringBuffer query= new StringBuffer("INSERT INTO ASSG ");
+  				query.append("VALUES(ASSG_SEQ.NEXTVAL, ");
+  				query.append("'"+rprtno+"', ");
+  				query.append("'"+cntrno+"', ");
+  				query.append("SYSDATE, NULL, NULL,NULL ) ");
+  					
+  				pstmt = con.prepareStatement(query.toString());
+  				rs = pstmt.executeQuery();
+  				
+  				if(rs.next()) {
+  					con.commit();
+  				}
+  				
+  				
+  					
+  			}catch(Exception e) {
+  				e.printStackTrace();
+  			}
+  			
+  			disconnection();
+  		
+  	}
       
    }
    
@@ -382,15 +491,37 @@ public class RprtAssignment extends JPanel {
 	   
 	   connection();
 	   try {
-			StringBuffer query= new StringBuffer("SELECT R.RPRT_NO, R.RPRT_DTTM, C.CUST_NAME, C.TEL_NO, R.RPRT_TP, C.CUST_TP, R.ANML_KINDS, R.ANML_SIZE, R.EXPLN, R.DSCV_DTTM, R.DSCV_LOC ");
-			query.append("FROM RPRT R ");
-			query.append("JOIN CUST C ");
-			query.append("ON R.RPRT_PRSN_NO = C.CUST_NO ");
-			query.append("WHERE RPRT_DTTM = to_date('"+rprtDttm+"','YYYY-MM-DD hh24:mi:ss') ");
+		   
+		   		   
+//			StringBuffer query= new StringBuffer("SELECT R.RPRT_NO, R.RPRT_DTTM, C.CUST_NAME, C.TEL_NO, R.RPRT_TP, C.CUST_TP, R.ANML_KINDS, R.ANML_SIZE, R.EXPLN, R.DSCV_DTTM, R.DSCV_LOC ");
+//			query.append("FROM (SELECT R.RPRT_NO, R.RPRT_DTTM, R.RPRT_TP, R.ANML_KINDS, R.ANML_SIZE, R.EXPLN, R.DSCV_DTTM, R.DSCV_LOC,  PATH, R.RPRT_PRSN_NO ");
+//			query.append("FROM RPRT_PIC P ");
+//			query.append("JOIN RPRT R ");
+//			query.append("ON R.RPRT_NO = P.RPRT_NO) R ");
+//			query.append("JOIN CUST C ");
+//			query.append("ON R.RPRT_PRSN_NO = C.CUST_NO ");
+//			query.append("WHERE RPRT_DTTM = to_date('"+rprtDttm+"','YYYY-MM-DD hh24:mi:ss') ");
+
+		   StringBuffer query= new StringBuffer("SELECT R.RPRT_NO, R.RPRT_DTTM, C.CUST_NAME, C.TEL_NO, R.RPRT_TP, C.CUST_TP, R.ANML_KINDS, R.ANML_SIZE, R.EXPLN, R.DSCV_DTTM, R.DSCV_LOC ");
+		   query.append("FROM RPRT R ");
+		   query.append("JOIN CUST C ");
+		   query.append("ON R.RPRT_PRSN_NO = C.CUST_NO ");
+		   query.append("WHERE RPRT_DTTM = to_date('"+rprtDttm+"','YYYY-MM-DD hh24:mi:ss') ");
 
 				
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
+			
+//			StringBuffer query2 = new StringBuffer("select rprt.rprt_no, path ");
+//			query2.append("from rprt_pic ");
+//			query2.append("join rprt ");
+//			query2.append("on rprt.rprt_no = rprt_pic.rprt_no ");
+//			
+//			pstmt = con.prepareStatement(query2.toString());
+//			rs = pstmt.executeQuery();
+//			if(rs.next()) {
+//				con.commit();
+//			}
 
 			
 			while(rs.next()) {
@@ -406,6 +537,8 @@ public class RprtAssignment extends JPanel {
 				
 				String anmlSizeType = rs.getString("ANML_SIZE");
 				String korAnmlSizeType = null;
+				
+//				String xPath = rs.getString("PATH");
 				
 				switch(rprtType) {
 				case "d":
@@ -460,6 +593,13 @@ public class RprtAssignment extends JPanel {
 				xExpln.setText(rs.getString("EXPLN"));
 				xDscvDttm.setText(rs.getString("DSCV_DTTM"));
 				xDscvLoc.setText(rs.getString("DSCV_LOC"));
+//				xPath.setText(rs.getString("path"));
+				
+//			    buttonIcon = ImageIO.read(new File(xPath));
+				
+//				xPath = rs.getString("PATH");
+				
+				
 				
 			}
 				
@@ -538,6 +678,7 @@ public class RprtAssignment extends JPanel {
         	combobox.addItem(RprtData.getCntrList().get(i));
         }
 
+        
 
         column.setCellEditor(new DefaultCellEditor(combobox));
 
