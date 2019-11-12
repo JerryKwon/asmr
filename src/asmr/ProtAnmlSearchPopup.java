@@ -3,6 +3,7 @@ package asmr;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -42,6 +43,8 @@ public class ProtAnmlSearchPopup extends JFrame {
 	
 	private JScrollPane scrollPane1;
 	
+	private String userCntrNo;
+	
 	private ArrayList<String> protNos;
 	private String protNo = null;
 	private String protAniName = null;
@@ -67,7 +70,7 @@ public class ProtAnmlSearchPopup extends JFrame {
 	private final String[] col1 = {"유기동물명","동물종류","품종","특징","케이지"};
 	private DefaultTableModel model1 = new DefaultTableModel(col1,0);
 	
-	public ProtAnmlSearchPopup(JTextField xParAbanAniName) {
+	public ProtAnmlSearchPopup(JTextField xParAbanAniName,String cntrNo) {
 		// TODO Auto-generated constructor stub
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
@@ -77,6 +80,7 @@ public class ProtAnmlSearchPopup extends JFrame {
 		
 		protNos = new ArrayList<String>();
 		
+		userCntrNo = cntrNo;
 		this.xParAbanAniName = xParAbanAniName;
 		
 		eProtAnmlList = new JTable(model1);
@@ -137,8 +141,16 @@ public class ProtAnmlSearchPopup extends JFrame {
 		
 		gridbagAdd(plainPanel, 0, 2, 6, 1);
 		
-		gridbagAdd(confirm, 2, 3, 1, 1);
-		gridbagAdd(cancel, 3, 3, 1, 1);
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT,40,0));
+		buttonPanel.add(confirm);
+		buttonPanel.add(cancel);
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 150, 0, 0));
+		
+		gridbagAdd(buttonPanel, 0, 3, 6, 1);
+		
+//		gridbagAdd(confirm, 2, 3, 1, 1);
+//		gridbagAdd(cancel, 2, 3, 1, 1);
 		
 		gridbagConstraints.anchor = GridBagConstraints.CENTER;
 
@@ -224,7 +236,7 @@ public class ProtAnmlSearchPopup extends JFrame {
 		query.append("	'케이지' || c.CAGE_ORNU || '(' ||CASE c.CAGE_SIZE WHEN 'b' THEN '대' WHEN 'm' THEN '중' WHEN 's' THEN '소' END || ')' CAGE ");
 		query.append("FROM ABAN a INNER JOIN (SELECT * FROM PROT ");
 		query.append("	WHERE PROT_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) p ");
-		query.append("	ON a.ABAN_NO = p.ABAN_NO AND a.ABAN_NAME='"+abanName+"' INNER JOIN CAGE c ON p.CNTR_NO = c.CNTR_NO AND p.CAGE_ORNU = c.CAGE_ORNU ");
+		query.append("	ON a.ABAN_NO = p.ABAN_NO AND a.ABAN_NAME LIKE '"+abanName+"%' AND p.CNTR_NO='"+userCntrNo+"' INNER JOIN CAGE c ON p.CNTR_NO = c.CNTR_NO AND p.CAGE_ORNU = c.CAGE_ORNU ");
 		query.append("ORDER BY 1 ");
 
 		connection();
@@ -254,7 +266,7 @@ public class ProtAnmlSearchPopup extends JFrame {
 		query.append("	'케이지' || c.CAGE_ORNU || '(' ||CASE c.CAGE_SIZE WHEN 'b' THEN '대' WHEN 'm' THEN '중' WHEN 's' THEN '소' END || ')' CAGE ");
 		query.append("FROM ABAN a INNER JOIN (SELECT * FROM PROT ");
 		query.append("	WHERE PROT_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) p ");
-		query.append("	ON a.ABAN_NO = p.ABAN_NO INNER JOIN CAGE c ON p.CNTR_NO = c.CNTR_NO AND p.CAGE_ORNU = c.CAGE_ORNU ");
+		query.append("	ON a.ABAN_NO = p.ABAN_NO  AND p.CNTR_NO = '"+userCntrNo+"' INNER JOIN CAGE c ON p.CNTR_NO = c.CNTR_NO AND p.CAGE_ORNU = c.CAGE_ORNU ");
 		query.append("ORDER BY 1 ");
 		
 		connection();
@@ -313,7 +325,7 @@ public class ProtAnmlSearchPopup extends JFrame {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		new ProtAnmlSearchPopup(null);
+		new ProtAnmlSearchPopup(null,null);
 
 	}
 

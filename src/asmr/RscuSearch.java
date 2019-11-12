@@ -38,6 +38,8 @@ public class RscuSearch extends JFrame{
 	JButton confirm,cancel;
 	JTextField xRscuNo;
 	
+	private String userCntrNo;
+	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
 	private String password = "asmr";
@@ -65,13 +67,14 @@ public class RscuSearch extends JFrame{
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
-	public RscuSearch(JTextField xRscuNo) {
+	public RscuSearch(JTextField xRscuNo, String cntrNo) {
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
 		
 		rscuSearchButtonListener = new RscuSearchButtonListener();
 		rscuSearchMouseListener = new RscuSearchMouseListener();
 		
+		userCntrNo = cntrNo;
 		this.xRscuNo = xRscuNo;
 		
 		vRscuList = new JLabel("구조목록");
@@ -207,7 +210,7 @@ public class RscuSearch extends JFrame{
 			query.append("	SELECT RSCU_NO,RSCU_DTTM,RSCU_LOC ");
 			query.append("	FROM RSCU) rs INNER JOIN (SELECT ASSG_NO,RPRT_NO ");
 			query.append("		FROM ASSG ");
-			query.append("		WHERE ASSG_RES='a') a ");
+			query.append("		WHERE ASSG_RES='a' AND CNTR_NO='"+userCntrNo+"' ) a ");
 			query.append("		ON rs.RSCU_NO=a.ASSG_NO INNER JOIN (SELECT RPRT_NO,ANML_KINDS,ANML_SIZE ");
 			query.append("			FROM RPRT) rp ");
 			query.append("			ON a.RPRT_NO = rp.RPRT_NO ");
@@ -266,6 +269,6 @@ public class RscuSearch extends JFrame{
     }
 	
 	public static void main(String[] args) {
-		new RscuSearch(new JTextField());
+		new RscuSearch(new JTextField(),null);
 	}
 }
