@@ -60,6 +60,11 @@ public class DiagAniList extends JPanel{
 	
 	private boolean isClicked = false;
 	
+	private String userCntrNo;
+	private String userEmpNo;
+	private String userCntrType;
+	private String userWorkType;
+	
 	private String prevDiagCont = null;
 	private String newDiagCont = null;
 	private String prevDschDate = null;
@@ -97,7 +102,7 @@ public class DiagAniList extends JPanel{
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
-	public DiagAniList() throws IOException {
+	public DiagAniList(String cntrNo,String empNo) throws IOException {
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
 	
@@ -112,6 +117,12 @@ public class DiagAniList extends JPanel{
 		protNo = null;
 		
 		abanNos = new ArrayList<String>();
+		
+		userCntrNo = cntrNo;
+		userEmpNo = empNo;
+		
+		userCntrType = GetCntrType(userCntrNo);
+		userWorkType = GetWorkType(userCntrNo,userEmpNo); 
 		
 		vProtAniList = new JLabel("보호동물목록");
 		vProtAniList.setFont(new Font("나눔고딕", Font.BOLD, 24));
@@ -358,78 +369,90 @@ public class DiagAniList extends JPanel{
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(diagRegister)) {
-				try {
-					if(protNo!=null) {
-					DiagRegister diagRegister = new DiagRegister(protNo);
-					diagRegister.addWindowListener(new WindowAdapter() {
-
-						@Override
-						public void windowClosed(WindowEvent e) {
-							// TODO Auto-generated method stub
-							super.windowClosed(e);
-							GetDiagAniList();
+				if(eProtAniList.getSelectedRow() != -1) {
+					if(userCntrType.equals("n")&&(userWorkType.equals("d")||userWorkType.equals("o")||userWorkType.equals("p"))) {
+						try {
+							if(protNo!=null) {
+							DiagRegister diagRegister = new DiagRegister(protNo,userCntrNo);
+							diagRegister.addWindowListener(new WindowAdapter() {
+		
+								@Override
+								public void windowClosed(WindowEvent e) {
+									// TODO Auto-generated method stub
+									super.windowClosed(e);
+									GetDiagAniList();
+								}
+					
+							});
+							}
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
 						}
-			
-					});
 					}
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					else {
+						JOptionPane.showMessageDialog(null, "진료등록권한이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
+					}
 				}
 			}
 			else if(e.getSource().equals(modify)) {
 				if(eDiagList.getSelectedRow() != -1) {
+					if(userCntrType.equals("n")&&(userWorkType.equals("d")||userWorkType.equals("o")||userWorkType.equals("p"))) {
 					
-					int clickedRow = eDiagList.getSelectedRow();
-					String protNo = protNos_2.get(clickedRow);
-					String diagOrnu = diagOrnus.get(clickedRow);
-					
-					if(!isClicked) {
-						isClicked = true;
+						int clickedRow = eDiagList.getSelectedRow();
+						String protNo = protNos_2.get(clickedRow);
+						String diagOrnu = diagOrnus.get(clickedRow);
 						
-						if(xCureType.getText().equals("입원")) {
-							chooser.setEnabled(true);
-							prevDschDate = ((JTextField)chooser.getDateEditor().getUiComponent()).getText();
+						if(!isClicked) {
+							isClicked = true;
+							
+							if(xCureType.getText().equals("입원")) {
+								chooser.setEnabled(true);
+								prevDschDate = ((JTextField)chooser.getDateEditor().getUiComponent()).getText();
+							}
+							
+							modify.setText("확인");
+							xDiagContent.setEnabled(true);
+							prevDiagCont = xDiagContent.getText();
+							
+							
 						}
-						
-						modify.setText("확인");
-						xDiagContent.setEnabled(true);
-						prevDiagCont = xDiagContent.getText();
-						
-						
+						else {
+							isClicked = false;
+							
+							newDiagCont = xDiagContent.getText();
+							
+							if(xCureType.getText().equals("입원")) {	
+								chooser.setEnabled(true);
+								newDschDate = ((JTextField)chooser.getDateEditor().getUiComponent()).getText();
+							
+								if(prevDiagCont.equals(newDiagCont)&&prevDschDate.equals(newDschDate)) {
+									JOptionPane.showMessageDialog(null, "변경사항이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
+	//								isClicked = false;
+	//								clearAll();
+								}
+								else {
+									UpdateDiag(protNo, diagOrnu, true);
+								}
+							}
+							
+							else {
+								if(prevDiagCont.equals(newDiagCont)) {
+									JOptionPane.showMessageDialog(null, "변경사항이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
+	//								isClicked = false;
+	//								clearAll();
+								}
+								else {
+									UpdateDiag(protNo, diagOrnu, false);
+								}
+							}
+							modify.setText("수정");
+	//						eProtAniList.getSelectionModel().clearSelection();
+							clearAll();
+						}
 					}
 					else {
-						isClicked = false;
-						
-						newDiagCont = xDiagContent.getText();
-						
-						if(xCureType.getText().equals("입원")) {	
-							chooser.setEnabled(true);
-							newDschDate = ((JTextField)chooser.getDateEditor().getUiComponent()).getText();
-						
-							if(prevDiagCont.equals(newDiagCont)&&prevDschDate.equals(newDschDate)) {
-								JOptionPane.showMessageDialog(null, "변경사항이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
-//								isClicked = false;
-//								clearAll();
-							}
-							else {
-								UpdateDiag(protNo, diagOrnu, true);
-							}
-						}
-						
-						else {
-							if(prevDiagCont.equals(newDiagCont)) {
-								JOptionPane.showMessageDialog(null, "변경사항이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
-//								isClicked = false;
-//								clearAll();
-							}
-							else {
-								UpdateDiag(protNo, diagOrnu, false);
-							}
-						}
-						modify.setText("수정");
-//						eProtAniList.getSelectionModel().clearSelection();
-						clearAll();
+						JOptionPane.showMessageDialog(null, "진료수정권한이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
 					}
 				}
 			}
@@ -470,6 +493,53 @@ public class DiagAniList extends JPanel{
 			}
 		}
 		
+	}
+	
+	private String GetCntrType(String cntrNo) {
+		String result = null;
+		
+		String query = "select cntr_tp from cntr where cntr_no='"+cntrNo+"' ";
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				result = rs.getString("CNTR_TP");
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+		return result;
+	}
+	
+	private String GetWorkType(String cntrNo, String empNo) {
+		String result = null;
+		
+		StringBuffer query = new StringBuffer("SELECT /*+INDEX_DESC(EMP_WORK_HIST EMP_WORK_HIST_PK)*/ BIZ_FILD ");
+		query.append("FROM emp_work_hist ");
+		query.append("WHERE emp_no='"+empNo+"' AND cntr_no='"+cntrNo+"' AND work_end_date=to_date('9999-12-31','YYYY-MM-DD') AND ROWNUM =1 ");
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				result = rs.getString("BIZ_FILD");
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+		return result;
 	}
 	
 	//진료목록이 element를 읽은 후에 그 element의 진료구분에 따라 달력 imageButton을 활성화/비활성화합니다.
@@ -672,11 +742,27 @@ public class DiagAniList extends JPanel{
     private void GetProtAniList() {
     	model1.setNumRows(0);
     	
-    	StringBuffer query = new StringBuffer("SELECT p.CNTR_NO, a.ABAN_NO, p.PROT_NO, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE ");
-    	query.append("FROM ABAN a INNER JOIN(SELECT * FROM PROT ");
-    	query.append("	WHERE PROT_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) p ");
-    	query.append("	ON a.ABAN_NO = p.ABAN_NO ");
-    	query.append("ORDER BY 1,2 ");
+    	StringBuffer query = new StringBuffer();
+    	
+    	if(userCntrType.equals("h")) {
+    	
+	    	query.append("SELECT p.CNTR_NO, a.ABAN_NO, p.PROT_NO, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE ");
+	    	query.append("FROM ABAN a INNER JOIN(SELECT * FROM PROT ");
+	    	query.append("	WHERE PROT_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) p ");
+	    	query.append("	ON a.ABAN_NO = p.ABAN_NO ");
+	    	query.append("ORDER BY 1,2 ");
+    	
+    	}
+    	
+    	else if(userCntrType.equals("n")) {
+    		
+    		query.append("SELECT p.CNTR_NO, a.ABAN_NO, p.PROT_NO, a.ABAN_NAME, a.ANML_KINDS, a.KIND, a.AGE, a.ANML_SIZE ");
+	    	query.append("FROM ABAN a INNER JOIN(SELECT * FROM PROT ");
+	    	query.append("	WHERE PROT_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) p ");
+	    	query.append("	ON a.ABAN_NO = p.ABAN_NO AND p.CNTR_NO='"+userCntrNo+"' ");
+	    	query.append("ORDER BY 1,2 ");
+    		
+    	}
     	
     	connection();
     	
