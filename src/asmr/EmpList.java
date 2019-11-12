@@ -49,8 +49,12 @@ public class EmpList extends JPanel {
 	private ArrayList<String> empNos;
 	private ArrayList<String> workStartDates;
 	private ArrayList<String> cntrNos;
-	private String empNo = null;
+	private String selectedEmpNo = null;
 	
+	private String userCntrNo;
+	private String userEmpNo;
+	private String userCntrType;
+	private String userWorkType;
 	
 	private boolean isClicked = false;
 	
@@ -89,13 +93,19 @@ public class EmpList extends JPanel {
 	GridBagConstraints gridBagConstraints;
 	
 	
-	public EmpList() {
+	public EmpList(String cntrNo, String empNo) {
 		
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
 
 		empListButtonListener = new EmpListButtonListener();
 		empListMouseListener = new EmpListMouseListener();
+		
+		userCntrNo = cntrNo;
+		userEmpNo = empNo;
+		
+		userCntrType = GetCntrType(userCntrNo);
+		userWorkType = GetWorkType(userCntrNo,userEmpNo); 
 		
 		empNos = new ArrayList<String>();
 		workStartDates = new ArrayList<String>();
@@ -294,21 +304,26 @@ public class EmpList extends JPanel {
 				}
 			}
 			else if(e.getSource().equals(register)) {
-				try {
-					EmpRegister empRegister = new EmpRegister();
-					empRegister.addWindowListener(new WindowAdapter() {
-
-						@Override
-						public void windowClosed(WindowEvent e) {
-							// TODO Auto-generated method stub
-							super.windowClosed(e);
-							GetEmpList();
-						}
-						
-					});
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				if(userCntrType.equals("h")||(userCntrType.equals("n")&&(userWorkType.equals("c")||userWorkType.equals("o")))) {
+					try {
+						EmpRegister empRegister = new EmpRegister();
+						empRegister.addWindowListener(new WindowAdapter() {
+	
+							@Override
+							public void windowClosed(WindowEvent e) {
+								// TODO Auto-generated method stub
+								super.windowClosed(e);
+								GetEmpList();
+							}
+							
+						});
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "직원등록권한이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 			else if(e.getSource().equals(centerSearch)) {
@@ -341,69 +356,80 @@ public class EmpList extends JPanel {
 			}
 			else if(e.getSource().equals(modify)) {
 				
-				String newCntrNo = null;
-				String newEmpType = null;
-				String newWorkType = null;
-				
 				if(eEmpList.getSelectedRow()!=-1) {
-					
-					if(!isClicked) {
-					
-						isClicked = true;
+					if(userCntrType.equals("h")||(userCntrType.equals("n")&&(userWorkType.equals("c")||userWorkType.equals("o")))) {
+										
+						String newCntrNo = null;
+						String newEmpType = null;
+						String newWorkType = null;
 						
-						int clickedRow = eEmpList.getSelectedRow();
+						if(!isClicked) {
 						
-						prevCntrNo = cntrNos.get(clickedRow);
-						prevEmpType = (String)cbEmptype.getSelectedItem();
-						prevWorkType = (String)cbWorkType.getSelectedItem();
-						
-						modify.setText("확인");
-						JComponent[] changeStatusComps = {cbEmptype,cbWorkType,centerSearch};
-						for(JComponent cop: changeStatusComps) {
-							cop.setEnabled(true);
+							isClicked = true;
+							
+							int clickedRow = eEmpList.getSelectedRow();
+							
+							prevCntrNo = cntrNos.get(clickedRow);
+							prevEmpType = (String)cbEmptype.getSelectedItem();
+							prevWorkType = (String)cbWorkType.getSelectedItem();
+							
+							modify.setText("확인");
+							JComponent[] changeStatusComps = {cbEmptype,cbWorkType,centerSearch};
+							for(JComponent cop: changeStatusComps) {
+								cop.setEnabled(true);
+							}
+						}
+						else {
+							isClicked = false;
+							
+							int result = JOptionPane.showConfirmDialog(null, "직원정보를 수정하시겠습니까?", "직원정보수정", JOptionPane.YES_NO_OPTION);
+							if(result == JOptionPane.OK_OPTION) {
+								try {
+									newCntrNo = centerSearchClass.getCntrNo();
+								}catch(NullPointerException e1) {
+									newCntrNo=prevCntrNo;
+								}
+								newEmpType = (String)cbEmptype.getSelectedItem();
+								newWorkType = (String)cbWorkType.getSelectedItem();
+							}
+							
+							if(prevCntrNo.equals(newCntrNo)&&prevEmpType.equals(newEmpType)&&prevWorkType.equals(newWorkType)) {
+								JOptionPane.showMessageDialog(null, "변경된정보가 없습니다.", "알림", JOptionPane.WARNING_MESSAGE);
+								clearAll();
+							}
+							else {
+								UpdateEmp(selectedEmpNo,newCntrNo,newEmpType,newWorkType);
+								
+								GetEmpList();
+								clearAll();
+							}
 						}
 					}
 					else {
-						isClicked = false;
-						
-						int result = JOptionPane.showConfirmDialog(null, "직원정보를 수정하시겠습니까?", "직원정보수정", JOptionPane.YES_NO_OPTION);
-						if(result == JOptionPane.OK_OPTION) {
-							try {
-								newCntrNo = centerSearchClass.getCntrNo();
-							}catch(NullPointerException e1) {
-								newCntrNo=prevCntrNo;
-							}
-							newEmpType = (String)cbEmptype.getSelectedItem();
-							newWorkType = (String)cbWorkType.getSelectedItem();
-						}
-						
-						if(prevCntrNo.equals(newCntrNo)&&prevEmpType.equals(newEmpType)&&prevWorkType.equals(newWorkType)) {
-							JOptionPane.showMessageDialog(null, "변경된정보가 없습니다.", "알림", JOptionPane.WARNING_MESSAGE);
-							clearAll();
-						}
-						else {
-							UpdateEmp(empNo,newCntrNo,newEmpType,newWorkType);
-							
-							GetEmpList();
-							clearAll();
-						}
+						JOptionPane.showMessageDialog(null, "직원수정권한이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
 					}
 				}
+				
 			}
 			else if(e.getSource().equals(cancel)) {
 				clearAll();
 			}
 			else if(e.getSource().equals(resign)) {
-				
-				int clickedRow = eEmpList.getSelectedRow();
-				if(clickedRow != -1) {
-					String empNo = empNos.get(clickedRow);
-					String workStartDate = workStartDates.get(clickedRow).split(" ")[0];
-					int result = JOptionPane.showConfirmDialog(null, "해당 직원을 퇴사처리하시겠습니까?", "퇴사 처리", JOptionPane.YES_NO_OPTION);
-					if(result == JOptionPane.OK_OPTION) {
-						ResignEmp(empNo,workStartDate);
-						GetEmpList();
+			
+				if(userCntrType.equals("h")||(userCntrType.equals("n")&&(userWorkType.equals("c")||userWorkType.equals("o")))) {
+					int clickedRow = eEmpList.getSelectedRow();
+					if(clickedRow != -1) {
+						String empNo = empNos.get(clickedRow);
+						String workStartDate = workStartDates.get(clickedRow).split(" ")[0];
+						int result = JOptionPane.showConfirmDialog(null, "해당 직원을 퇴사처리하시겠습니까?", "퇴사 처리", JOptionPane.YES_NO_OPTION);
+						if(result == JOptionPane.OK_OPTION) {
+							ResignEmp(empNo,workStartDate);
+							GetEmpList();
+						}
 					}
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "직원퇴사권한이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		}
@@ -510,10 +536,10 @@ public class EmpList extends JPanel {
 			//1:좌클릭, 3:우클릭
 			if(e.getButton() == 1) {
 				int clickedRow = eEmpList.getSelectedRow();
-				empNo = (String)eEmpList.getValueAt(clickedRow, 0);
+				selectedEmpNo = (String)eEmpList.getValueAt(clickedRow, 0);
 //				String cntrName = (String)eEmpList.getValueAt(clickedRow, 2);
 				String cntrNo = cntrNos.get(clickedRow);
-				GetEmp(empNo, cntrNo);
+				GetEmp(selectedEmpNo, cntrNo);
 			}
 		}
 	}
@@ -530,6 +556,53 @@ public class EmpList extends JPanel {
 				add(c);
 			}
 		}
+	}
+	
+	private String GetCntrType(String cntrNo) {
+		String result = null;
+		
+		String query = "select cntr_tp from cntr where cntr_no='"+cntrNo+"' ";
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				result = rs.getString("CNTR_TP");
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+		return result;
+	}
+	
+	private String GetWorkType(String cntrNo, String empNo) {
+		String result = null;
+		
+		StringBuffer query = new StringBuffer("SELECT /*+INDEX_DESC(EMP_WORK_HIST EMP_WORK_HIST_PK)*/ BIZ_FILD ");
+		query.append("FROM emp_work_hist ");
+		query.append("WHERE emp_no='"+empNo+"' AND cntr_no='"+cntrNo+"' AND work_end_date=to_date('9999-12-31','YYYY-MM-DD') AND ROWNUM =1 ");
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				result = rs.getString("BIZ_FILD");
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+		return result;
 	}
 	
 	//직원 퇴사처리
@@ -684,29 +757,6 @@ public class EmpList extends JPanel {
 		disconnection();
 	}
 	
-	private String GetCntrType(String cntrNo) {
-		String cntrType = null;
-		
-		StringBuffer query = new StringBuffer("SELECT CNTR_TP FROM CNTR WHERE CNTR_NO='"+cntrNo+"' ");
-		
-		connection();
-		
-		try {
-			pstmt = con.prepareStatement(query.toString());
-			rs = pstmt.executeQuery();
-			while(rs.next()) {
-				cntrType = rs.getString("CNTR_TP");
-			}
-			
-		}catch(SQLException e) {
-			e.printStackTrace();
-		}
-		
-		disconnection();
-		
-		return cntrType;
-	}
-	
 	private void SearchEmp(String name, boolean isEmp) {
 		model1.setRowCount(0);
 		
@@ -805,7 +855,7 @@ public class EmpList extends JPanel {
     }
 	
 	public static void main(String[] args) {
-		new EmpList();
+		new EmpList(null,null);
 	}
 	
 }
