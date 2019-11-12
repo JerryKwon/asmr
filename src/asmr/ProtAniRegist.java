@@ -44,6 +44,8 @@ public class ProtAniRegist extends JFrame{
 	
 	private JScrollPane featureScroll;
 	
+	private String userCntrNo;
+	
 	private ArrayList<String> picPaths;
 	private String parAbanNo = null;
 	private boolean isPicture = false;
@@ -74,7 +76,7 @@ public class ProtAniRegist extends JFrame{
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
-	public ProtAniRegist() {
+	public ProtAniRegist(String cntrNo) {
 		
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
@@ -82,6 +84,8 @@ public class ProtAniRegist extends JFrame{
 		protAniRegistItemListener = new ProtAniRegistItemListener();
 		protAniRegistButtonListener = new ProtAniRegistButtonListener();
 		protAniTypeItemListener = new ProtAniTypeItemListener();
+		
+		userCntrNo = cntrNo;
 		
 //		vProtAniRegist = new JLabel("º¸È£µ¿¹°µî·Ï");
 //		vProtAniRegist.setFont(new Font("³ª´®°íµñ", Font.BOLD, 20));
@@ -334,7 +338,7 @@ public class ProtAniRegist extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(searchRscu)) {
-				RscuSearch rscuSearch = new RscuSearch(xRscuNo);
+				RscuSearch rscuSearch = new RscuSearch(xRscuNo,userCntrNo);
 				rscuSearch.addWindowListener(new WindowAdapter() {
 
 					@Override
@@ -348,7 +352,7 @@ public class ProtAniRegist extends JFrame{
 				});
 			}
 			else if(e.getSource().equals(searchPar)) {
-				ProtAnmlSearchPopup protAnmlSearchPopup = new ProtAnmlSearchPopup(xParAbanAniName);
+				ProtAnmlSearchPopup protAnmlSearchPopup = new ProtAnmlSearchPopup(xParAbanAniName,userCntrNo);
 				protAnmlSearchPopup.addWindowListener(new WindowAdapter() {
 
 					@Override
@@ -735,6 +739,6 @@ public class ProtAniRegist extends JFrame{
     }
     
 	public static void main(String[] args) {
-		new ProtAniRegist();
+		new ProtAniRegist(null);
 	}
 }
