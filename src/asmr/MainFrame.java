@@ -358,7 +358,9 @@ public class MainFrame extends JFrame {
 				repaint();
 			}else if(e.getSource().equals(mCenter)){
 				ContentPanel.removeAll();
-				pContents = new CenterList();
+				String empNo = login.getEmpNo();
+				String cntrNo = EmpData.getCntrNo(empNo);
+				pContents = new CenterList(cntrNo,empNo);
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
@@ -366,14 +368,18 @@ public class MainFrame extends JFrame {
 				setLogout();
 			}else if(e.getSource().equals(mEmp)){
 				ContentPanel.removeAll();
-				pContents = new EmpList();
+				String empNo = login.getEmpNo();
+				String cntrNo = EmpData.getCntrNo(empNo);
+				pContents = new EmpList(cntrNo,empNo);
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
 			}else if(cont == "기본정보관리"){
 				ContentPanel.removeAll();
 				try {
-					pContents = new ProtAniList();
+					String empNo = login.getEmpNo();
+					String cntrNo = EmpData.getCntrNo(empNo);
+					pContents = new ProtAniList(cntrNo,empNo);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -384,7 +390,9 @@ public class MainFrame extends JFrame {
 			}else if(cont == "진료"){
 				ContentPanel.removeAll();
 				try {
-					pContents = new DiagAniList();
+					String empNo = login.getEmpNo();
+					String cntrNo = EmpData.getCntrNo(empNo);
+					pContents = new DiagAniList(cntrNo,empNo);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
