@@ -60,7 +60,13 @@ public class CenterList extends JPanel{
 //	private String prevCntrManagerNo = null;
 	
 	private ArrayList<String> cntrNos;
-	private String cntrNo;
+	private String selectedCntrNo;
+	private String selectedCntrType;
+	
+	private String userCntrNo;
+	private String userEmpNo;
+	private String userCntrType;
+	private String userWorkType;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private String user = "asmr";
@@ -101,7 +107,7 @@ public class CenterList extends JPanel{
 
 	
 	//CenterList 생성자
-	public CenterList(){
+	public CenterList(String cntrNo, String empNo){
 		gridBagLayout = new GridBagLayout();
 		gridBagConstraints = new GridBagConstraints();
 		
@@ -110,6 +116,11 @@ public class CenterList extends JPanel{
 
 		cntrNos = new ArrayList<String>();
 		
+		userCntrNo = cntrNo;
+		userEmpNo = empNo;
+		
+		userCntrType = GetCntrType(userCntrNo);
+		userWorkType = GetWorkType(userCntrNo,userEmpNo); 
 		
 		//센터목록, 케이지목록, 센터정보 텍스트
 		vCenterList = new JLabel("센터목록");
@@ -396,12 +407,12 @@ public class CenterList extends JPanel{
 	
 	private void GetCenter() {
 		int clickedRow = eCenterList.getSelectedRow();
-		cntrNo = cntrNos.get(clickedRow);
+		selectedCntrNo = cntrNos.get(clickedRow);
 		
 //		String cntrName = (String)eCenterList.getValueAt(clickedRow, 0);
 		
-		GetCenter1(cntrNo);
-		GetCenter2(cntrNo);
+		GetCenter1(selectedCntrNo);
+		GetCenter2(selectedCntrNo);
 	}
 	
 	private void GetCenter1(String cntrNo) {
@@ -544,7 +555,7 @@ public class CenterList extends JPanel{
 			pstmt.setString(3, newArea);
 			pstmt.setString(4, newTimeOpen);
 			pstmt.setString(5, newTimeClose);
-			pstmt.setString(6, cntrNo);
+			pstmt.setString(6, selectedCntrNo);
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
@@ -555,6 +566,53 @@ public class CenterList extends JPanel{
 		}
 		
 		disconnection();
+	}
+	
+	private String GetCntrType(String cntrNo) {
+		String result = null;
+		
+		String query = "select cntr_tp from cntr where cntr_no='"+cntrNo+"' ";
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				result = rs.getString("CNTR_TP");
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+		return result;
+	}
+	
+	private String GetWorkType(String cntrNo, String empNo) {
+		String result = null;
+		
+		StringBuffer query = new StringBuffer("SELECT /*+INDEX_DESC(EMP_WORK_HIST EMP_WORK_HIST_PK)*/ BIZ_FILD ");
+		query.append("FROM emp_work_hist ");
+		query.append("WHERE emp_no='"+empNo+"' AND cntr_no='"+cntrNo+"' AND work_end_date=to_date('9999-12-31','YYYY-MM-DD') AND ROWNUM =1 ");
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				result = rs.getString("BIZ_FILD");
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+		return result;
 	}
 	
 //	private void UpdateWorkHist(String newCntrManagerNo,boolean isPrevEmpty) {
@@ -677,42 +735,58 @@ public class CenterList extends JPanel{
 			
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(centerRegist)) {
-				try {
-					NewCenterRegistration newCenterRegistration= new NewCenterRegistration();
-					newCenterRegistration.addWindowListener(new WindowAdapter() {
-
-						@Override
-						public void windowClosed(WindowEvent e) {
-							// TODO Auto-generated method stub
-							super.windowClosed(e);
-							GetCenterList();
-						}
-					
-					
-					});
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				if(userCntrType.equals("h")) {
+					try {
+						NewCenterRegistration newCenterRegistration= new NewCenterRegistration();
+						newCenterRegistration.addWindowListener(new WindowAdapter() {
+	
+							@Override
+							public void windowClosed(WindowEvent e) {
+								// TODO Auto-generated method stub
+								super.windowClosed(e);
+								GetCenterList();
+							}
+						
+						
+						});
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "본부센터직원만 센터를 등록할 수 있습니다.", "안내", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 			
 			if(e.getSource().equals(cageRegist)) {
 				if(eCenterList.getSelectedRow()!=-1) {
-					int clickedRow = eCenterList.getSelectedRow();
-					String cntrName = (String)eCenterList.getValueAt(clickedRow, 0);
-					String cntrNo = cntrNos.get(clickedRow);
-					NewCageRegister newCageRegister = new NewCageRegister(cntrName,cntrNo);
-					newCageRegister.addWindowListener(new WindowAdapter() {
-	
-						@Override
-						public void windowClosed(WindowEvent e) {
-							// TODO Auto-generated method stub
-							super.windowClosed(e);
-							GetCageList();
-							GetCenter2(cntrNo);
+					if(selectedCntrType.equals("h")) {
+						JOptionPane.showMessageDialog(null, "본부센터에는 케이지를 등록할 수 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
+					}
+					else {
+						//본부센터직원이나 일반센터의 센터장 & 사무직 종사자인 경우에만 케이지 등록가능
+						if(userCntrType.equals("h")||(userCntrType.equals("n")&&(userWorkType.equals("c")||userWorkType.equals("o")))) {
+							int clickedRow = eCenterList.getSelectedRow();
+							String cntrName = (String)eCenterList.getValueAt(clickedRow, 0);
+							String cntrNo = cntrNos.get(clickedRow);
+							NewCageRegister newCageRegister = new NewCageRegister(cntrName,cntrNo);
+							newCageRegister.addWindowListener(new WindowAdapter() {
+			
+								@Override
+								public void windowClosed(WindowEvent e) {
+									// TODO Auto-generated method stub
+									super.windowClosed(e);
+									GetCageList();
+									GetCenter2(cntrNo);
+								}
+								
+							});
 						}
-						
-					});
+						else {
+							JOptionPane.showMessageDialog(null, "케이지등록권한이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);	
+						}
+					}
 				}
 			}
 //			if(e.getSource().equals(searchManager)) {
@@ -733,73 +807,80 @@ public class CenterList extends JPanel{
 				
 				if(eCenterList.getSelectedRow()!=-1) {
 					
-					if(!isClicked) {
-						isClicked = true;
-						
-						modify.setText("확인");
-						
-						prevCntrName = xCenterName.getText();
-						prevPhoneNum = xPhoneNum.getText();
-						prevArea = xArea.getText();
-						prevTimeOpen = String.join("",((String) cbOperTimeOpen.getSelectedItem()).split(":"));
-						prevTimeClose = String.join("",((String) cbOperTimeClose.getSelectedItem()).split(":"));
-						
-						
-						JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose};
-						for(JComponent cop: changeStatusComps) {
-							cop.setEnabled(true);
-						}
-					}
-					else {
-						isClicked = false;
-						
-						int result = JOptionPane.showConfirmDialog(null, "센터정보를 수정하시겠습니까?", "센터정보수정", JOptionPane.YES_NO_OPTION);
-						if(result == JOptionPane.OK_OPTION) {
-							String newCntrName = xCenterName.getText();
-							String newPhoneNum = xPhoneNum.getText();
-							String newArea = xArea.getText();
-							String newTimeOpen = String.join("",((String) cbOperTimeOpen.getSelectedItem()).split(":"));
-							String newTimeClose = String.join("",((String) cbOperTimeClose.getSelectedItem()).split(":"));
-									
-//							if(prevCntrManagerNo == null) {
-//								prevCntrManagerNo="X";
-//							}
-//							
-//							if(newCntrManagerNo == null)
-//								newCntrManagerNo = prevCntrManagerNo;
+					if(userCntrType.equals("h")||(userCntrType.equals("n")&&(userWorkType.equals("c")||userWorkType.equals("o")))) {
+					
+						if(!isClicked) {
+							isClicked = true;
 							
-							if(prevCntrName.equals(newCntrName)&&newPhoneNum.equals(prevPhoneNum)&&prevArea.equals(newArea)&&prevTimeOpen.equals(newTimeOpen)&&prevTimeClose.equals(prevTimeClose)) {
-								JOptionPane.showMessageDialog(null, "변경된정보가 없습니다.", "알림", JOptionPane.WARNING_MESSAGE);
+							modify.setText("확인");
+							
+							prevCntrName = xCenterName.getText();
+							prevPhoneNum = xPhoneNum.getText();
+							prevArea = xArea.getText();
+							prevTimeOpen = String.join("",((String) cbOperTimeOpen.getSelectedItem()).split(":"));
+							prevTimeClose = String.join("",((String) cbOperTimeClose.getSelectedItem()).split(":"));
+							
+							
+							JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose};
+							for(JComponent cop: changeStatusComps) {
+								cop.setEnabled(true);
 							}
-							else {
+						}
+						else {
+							isClicked = false;
+							
+							int result = JOptionPane.showConfirmDialog(null, "센터정보를 수정하시겠습니까?", "센터정보수정", JOptionPane.YES_NO_OPTION);
+							if(result == JOptionPane.OK_OPTION) {
+								String newCntrName = xCenterName.getText();
+								String newPhoneNum = xPhoneNum.getText();
+								String newArea = xArea.getText();
+								String newTimeOpen = String.join("",((String) cbOperTimeOpen.getSelectedItem()).split(":"));
+								String newTimeClose = String.join("",((String) cbOperTimeClose.getSelectedItem()).split(":"));
+										
+	//							if(prevCntrManagerNo == null) {
+	//								prevCntrManagerNo="X";
+	//							}
+	//							
+	//							if(newCntrManagerNo == null)
+	//								newCntrManagerNo = prevCntrManagerNo;
 								
-								if(NumberFormatCheck(newPhoneNum)) {
-								
-								UpdateCenter(newCntrName,newPhoneNum,newArea,newTimeOpen,newTimeClose);
-								
-//								if(!prevCntrManagerNo.equals(newCntrManagerNo)) {
-//									if(prevCntrManagerNo.equals("X"))
-//										UpdateWorkHist(newCntrManagerNo, true);
-//									else
-//										UpdateWorkHist(newCntrManagerNo, false);
-//								}
-								
-								GetCenter();
-								GetCenterList();
-								model2.setNumRows(0);
+								if(prevCntrName.equals(newCntrName)&&newPhoneNum.equals(prevPhoneNum)&&prevArea.equals(newArea)&&prevTimeOpen.equals(newTimeOpen)&&prevTimeClose.equals(prevTimeClose)) {
+									JOptionPane.showMessageDialog(null, "변경된정보가 없습니다.", "알림", JOptionPane.WARNING_MESSAGE);
 								}
 								else {
-									JOptionPane.showMessageDialog(null, "전화번호 포맷을 확인하세요.(구분자 \"-\" 포함 숫자 13자리)", "메시지", JOptionPane.ERROR_MESSAGE);
+									
+									if(NumberFormatCheck(newPhoneNum)) {
+									
+									UpdateCenter(newCntrName,newPhoneNum,newArea,newTimeOpen,newTimeClose);
+									
+	//								if(!prevCntrManagerNo.equals(newCntrManagerNo)) {
+	//									if(prevCntrManagerNo.equals("X"))
+	//										UpdateWorkHist(newCntrManagerNo, true);
+	//									else
+	//										UpdateWorkHist(newCntrManagerNo, false);
+	//								}
+									
+									GetCenter();
+									GetCenterList();
+									model2.setNumRows(0);
+									}
+									else {
+										JOptionPane.showMessageDialog(null, "전화번호 포맷을 확인하세요.(구분자 \"-\" 포함 숫자 13자리)", "메시지", JOptionPane.ERROR_MESSAGE);
+									}
 								}
 							}
+							modify.setText("수정");
+							JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose};
+							for(JComponent cop: changeStatusComps) {
+								cop.setEnabled(false);
+							}
+							ClearAll();
+							
 						}
-						modify.setText("수정");
-						JComponent[] changeStatusComps = {xCenterName,xPhoneNum,xArea,cbOperTimeOpen,cbOperTimeClose};
-						for(JComponent cop: changeStatusComps) {
-							cop.setEnabled(false);
-						}
-						ClearAll();
-						
+					}
+					//권한이 없는 경우
+					else {
+						JOptionPane.showMessageDialog(null, "센터정보수정 권한이 없습니다.", "안내", JOptionPane.WARNING_MESSAGE);
 					}
 				}
 			}
@@ -863,6 +944,7 @@ public class CenterList extends JPanel{
 			if(e.getButton() == 1) {
 				GetCageList();
 				GetCenter();
+				selectedCntrType = GetCntrType(selectedCntrNo);
 			}
 		}
 	}
@@ -876,7 +958,7 @@ public class CenterList extends JPanel{
     
 	
 	public static void main(String[] args) {
-		new CenterList();
+		new CenterList(null,null);
 	}
 }
 
