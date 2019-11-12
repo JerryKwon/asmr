@@ -54,6 +54,8 @@ public class DiagRegister extends JFrame{
 	
 	private String protNo;
 	private String vtrnDate = null;
+	private String userCntrNo;
+	
 	
 	private JScrollPane diagContentScroll;
 	
@@ -84,7 +86,7 @@ public class DiagRegister extends JFrame{
 	GridBagLayout gridBagLayout;
 	GridBagConstraints gridBagConstraints;
 	
-	public DiagRegister(String protNo) throws IOException {
+	public DiagRegister(String protNo,String cntrNo) throws IOException {
 		gridBagLayout = new GridBagLayout();		
 		gridBagConstraints = new GridBagConstraints();
 	
@@ -94,6 +96,7 @@ public class DiagRegister extends JFrame{
 		cureTypeItemListener = new CureTypeItemListener();
 		
 		this.protNo = protNo;
+		userCntrNo = cntrNo;
 		
 //		vDiagRegister = new JLabel("진료등록");
 		
@@ -280,7 +283,7 @@ public class DiagRegister extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(search)) {
-				VtrnSearch vtrnSearch = new VtrnSearch(xIndiVtrnName);
+				VtrnSearch vtrnSearch = new VtrnSearch(xIndiVtrnName,userCntrNo);
 				vtrnSearch.addWindowListener(new WindowAdapter() {
 
 					@Override
@@ -772,6 +775,6 @@ public class DiagRegister extends JFrame{
     }
 		
 	public static void main(String[] args) throws IOException {
-		new DiagRegister(null);
+		new DiagRegister(null,null);
 	}
 }
