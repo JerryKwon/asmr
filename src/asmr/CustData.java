@@ -27,7 +27,9 @@ public class CustData {
 		custdata.put("비밀번호", pwd);		
 	}
 	public static void setCustData(){
-		query = "SELECT CUST_NAME, ADDR, TEL_NO, ID, PWD FROM CUST";
+		custMydata.clear();
+		query = "SELECT CUST_NAME, ADDR, TEL_NO, ID, PWD FROM CUST "
+				+ "WHERE CUST_NO = "+getCustNo();
 		String custName, addr, telNo, id, pwd;
 		custName = addr = telNo = id = pwd = "";
 		try{
@@ -64,7 +66,6 @@ public class CustData {
 			System.out.println("sql에러");
 			e.printStackTrace();
 		}
-		ConnDB.disConnection();
 	}
 	static void createIsNotUserCust(){
 		char custType = 'n';
@@ -78,7 +79,6 @@ public class CustData {
 			System.out.println("sql에러");
 			e.printStackTrace();
 		}
-		ConnDB.disConnection();
 	}
 	static int getCustNo(String custID){
 		int custNo = 0;
@@ -128,7 +128,61 @@ public class CustData {
 		}
 		return custName;
 	}
-
+	static int getCustNo(){
+		int custNo = 0;
+		query = "SELECT CUST_NO FROM CUST WHERE ID = '"+Login.custID+"'";
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+				custNo = rs.getInt(1);
+			}
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+		return custNo;
+	}
+	static boolean checkDupID(String id){
+		query = "SELECT ID FROM CUST";
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+				if(rs.getString("ID").equals(id)){
+					return true;
+				}
+			}
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+		return false;
+	}
+	static void updateCust(String newAddr, String newTelNo){
+		query = "UPDATE CUST SET ADDR = '"+newAddr+"', TEL_NO = '"+newTelNo+"' "
+				+"WHERE CUST_NO = "+getCustNo();
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+	}
+	static void updateCustPass(String newPass){
+		query = "UPDATE CUST SET PWD = '"+newPass+"' "
+				+"WHERE CUST_NO = "+getCustNo();
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 

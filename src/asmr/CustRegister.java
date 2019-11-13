@@ -8,10 +8,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Date;
-import java.time.LocalDate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -21,18 +20,19 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import com.toedter.calendar.JDateChooser;
-
 public class CustRegister extends JPanel implements ActionListener {
-	private JLabel vCustRegister, vCustName, vID, vPassword, vPasswordConfirm, vBirthDay, vAddress, vPhone;
+	private JLabel vCustRegister, vCustName, vID, vPassword, vPasswordConfirm, vAddress, vPhone;
 	private JTextField xCustName, xID, xAddress, xPhone;
 	private JPasswordField xPassword, xPasswordConfirm;
 	private JButton bDupConfirm, bAddrSearch, bRegister, bCancel;
-	private JDateChooser chooser;
+	//private JDateChooser chooser;
 	
 	//버튼색
 	private Color blue = new Color(22,155,213);
 	private Color white = new Color(255,255,255);
+	
+	private String wantID, confirmID, pass, passConfirm;
+	private boolean isCheck = false;
 	
 	GridBagLayout gridbaglayout;				// 화면을 구성하는 레이아웃
 	GridBagConstraints gridbagconstraints;
@@ -54,6 +54,7 @@ public class CustRegister extends JPanel implements ActionListener {
 		bDupConfirm = new JButton("중복확인");
 		bDupConfirm.setBackground(blue);
 		bDupConfirm.setForeground(white);
+		bDupConfirm.addActionListener(this);
 		
 		vPassword = new JLabel("비밀번호");
 		xPassword = new JPasswordField(15);
@@ -61,10 +62,10 @@ public class CustRegister extends JPanel implements ActionListener {
 		vPasswordConfirm = new JLabel("비밀번호확인");
 		xPasswordConfirm = new JPasswordField(15);
 		
-		vBirthDay = new JLabel("생년월일");
-		LocalDate now = LocalDate.now();
-		Date date = Date.valueOf(now);
-		chooser = new JDateChooser(date,"yyyy-MM-dd");
+		//vBirthDay = new JLabel("생년월일");
+		//LocalDate now = LocalDate.now();
+		//Date date = Date.valueOf(now);
+		//chooser = new JDateChooser(date,"yyyy-MM-dd");
 		
 		vAddress = new JLabel("주소");
 		xAddress = new JTextField(30);
@@ -85,7 +86,7 @@ public class CustRegister extends JPanel implements ActionListener {
 		bCancel = new JButton("취소");
 		bCancel.addActionListener(this);
 		
-		JComponent[] slabel = {vCustName, vID, vPassword, vPasswordConfirm, vBirthDay, vAddress, vPhone,
+		JComponent[] slabel = {vCustName, vID, vPassword, vPasswordConfirm, vAddress, vPhone,
 				xCustName, xID, xPhone, xPassword, xPasswordConfirm};
 		ChangeFont(slabel, new Font("나눔고딕", Font.PLAIN, 16));
 		JComponent[] sbutton = {bDupConfirm, bAddrSearch, bRegister, bCancel};
@@ -167,32 +168,99 @@ public class CustRegister extends JPanel implements ActionListener {
 			new NewAddressSearch(xAddress);
 		}
 		else if(e.getSource().equals(bDupConfirm)){
-			
+			wantID = xID.getText();
+			if(wantID.length() == 0){
+				JOptionPane.showMessageDialog(null, "아이디를 입력해주세요.", "메시지", JOptionPane.WARNING_MESSAGE);
+			}
+			else if(wantID.length() > 3 && wantID.length() < 11){
+				Pattern onlyInt = Pattern.compile("(^[0-9]*$)");
+				Matcher matchInt = onlyInt.matcher(wantID);
+				if(matchInt.find()){
+					JOptionPane.showMessageDialog(null, "아이디는 영어+숫자로 구성해주세요.", "메시지", JOptionPane.WARNING_MESSAGE);
+				}
+				else{
+					if(CustData.checkDupID(wantID)){
+						JOptionPane.showMessageDialog(null, "이미 존재하는 아이디입니다.", "메시지", JOptionPane.WARNING_MESSAGE);
+					}
+					else{
+						confirmID = wantID;
+						isCheck = true;
+						JOptionPane.showMessageDialog(null, "사용 가능한 아이디입니다.", "메시지", JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+			}
+			else{
+				JOptionPane.showMessageDialog(null, "아이디는 4~10자 입니다.", "메시지", JOptionPane.WARNING_MESSAGE);
+			}
 		}
 		else if(e.getSource().equals(bCancel)){
-			a = JOptionPane.showOptionDialog(this, "회원가입을 취소하시겠습니까?", "메시지", JOptionPane.YES_NO_OPTION,
+			a = JOptionPane.showOptionDialog(null, "회원가입을 취소하시겠습니까?", "메시지", JOptionPane.YES_NO_OPTION,
 					JOptionPane.QUESTION_MESSAGE, null, checks, checks[0]);
 			if(a == 0){
-				
-			}
-			else if(a == 1){
-				
+				JOptionPane.showMessageDialog(null, "취소되었습니다.", "메시지", JOptionPane.OK_OPTION);
 			}
 		}
 		else if(e.getSource().equals(bRegister)){
-			a = JOptionPane.showOptionDialog(this, "회원으로 등록하시겠습니까?", "메시지", JOptionPane.YES_NO_OPTION,
+			a = JOptionPane.showOptionDialog(null, "회원으로 등록하시겠습니까?", "메시지", JOptionPane.YES_NO_OPTION,
 					JOptionPane.QUESTION_MESSAGE, null, checks, checks[0]);
 			if(a == 0){
-				
-				CustData.initCustData(xCustName.getText(), xAddress.getText(), xPhone.getText(),
-						xID.getText(), new String(xPassword.getPassword()));
-				CustData.createIsUserCust();
-				JOptionPane.showMessageDialog(null, "등록되었습니다.");
-			}
-			else if(a == 1){
-				
+				if(isCheck){
+					wantID = xID.getText();
+					if(checkID()){
+						pass = new String(xPassword.getPassword());
+						passConfirm = new String(xPasswordConfirm.getPassword());
+						if(confirmPW() == 0){
+							CustData.initCustData(xCustName.getText(), xAddress.getText(), xPhone.getText(),
+									confirmID, pass);
+							CustData.createIsUserCust();
+							JOptionPane.showMessageDialog(null, "등록되었습니다.");
+							clearAll();
+						}
+						else if(confirmPW() == 1){
+							JOptionPane.showMessageDialog(null, "비밀번호 확인과 일치하지 않습니다.", "메시지", JOptionPane.WARNING_MESSAGE);
+						}
+						else if(confirmPW() == 2){
+							JOptionPane.showMessageDialog(null, "비밀번호는 4 ~ 10 자리입니다.", "메시지", JOptionPane.WARNING_MESSAGE);
+						}
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "중복체크된 아이디가 아닙니다.", "메시지", JOptionPane.WARNING_MESSAGE);
+					}
+				}
+				else{
+					JOptionPane.showMessageDialog(null, "아이디 중복체크를 해주세요.", "메시지", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 		}
+	}
+	private boolean checkID(){
+		if(wantID.equals(confirmID)){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	private int confirmPW(){
+		if(pass.length() < 4 || pass.length() > 10){
+			return 2;
+		}
+		else{
+			if(pass.equals(passConfirm)){
+				return 0;
+			}
+			else{
+				return 1;
+			}
+		}
+	}
+	private void clearAll(){
+		xID.setText(null);
+		xCustName.setText(null);
+		xAddress.setText(null);
+		xPhone.setText(null);
+		xPassword.setText(null);
+		xPasswordConfirm.setText(null);
 	}
 	private void ChangeFont(JComponent[] comps, Font font) {
 		for(JComponent comp: comps) {

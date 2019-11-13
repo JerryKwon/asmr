@@ -163,7 +163,45 @@ public class EmpData {
 		}
 		return CntrNo;
 	}
-
+	static String getEmpCntrTp(){
+		query = "SELECT CNTR_TP FROM EMP_WORK_HIST H, CNTR C WHERE WORK_END_DATE = TO_DATE('9999-12-31', 'YYYY-MM-DD')"
+				+ "AND H.CNTR_NO = C.CNTR_NO AND EMP_NO = '"+Login.empID+"'";
+		String CntrTp = "";
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+				CntrTp = rs.getString(1);
+			}
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+		return CntrTp;
+	}
+	static void updateEmp(String newAddr, String newTelNo){
+		query = "UPDATE EMP SET ADDR = '"+newAddr+"', TEL_NO = '"+newTelNo+"' "
+				+"WHERE EMP_NO = '"+Login.getEmpNo()+"'";
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+	}
+	static void updateEmpPass(String newPass){
+		query = "UPDATE EMP SET PWD = '"+newPass+"' "
+				+"WHERE EMP_NO = '"+Login.getEmpNo()+"'";
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		setEmpData("0000");

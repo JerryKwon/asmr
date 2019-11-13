@@ -1,5 +1,6 @@
 package asmr;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -10,13 +11,13 @@ import java.io.IOException;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.RootPaneContainer;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -24,15 +25,14 @@ import javax.swing.border.LineBorder;
 
 public class MainFrame extends JFrame {
 
-	private JButton bMainButton, bLogin, bRegister, bLogout, bUserName, bCustName;
+	private JButton bMainButton, bLogo, bLogin, bRegister, bLogout, bUserName, bCustName;
 	private JLabel vCenterName, vWelcome;
 	
 	private JMenuBar mBar;
-	private JMenu mAban, mReport, mAdop, mPost, mReportManage, mAdopManage;
-	private JMenuItem mReportAni, mAdopAnnc, mCenter, mEmp;
+	private JMenu mAban, mReport, mAdop, mPost, mAdopManage;
+	private JMenuItem mReportAni, mAdopAnnc, mCenter, mEmp, mReportManage;
 	
 	private String[] mlAban = {"기본정보관리", "진료"};
-	private String[] mlReport = {"신고배정(본부센터)", "신고배정(일반센터)"};
 	private String[] mlAdop = {"입양신청관리", "입양목록"};
 	private String[] mlPost = {"공지사항", "문의/답변"};
 	
@@ -61,17 +61,43 @@ public class MainFrame extends JFrame {
 		bMainButton.setBorderPainted(false);
 		bMainButton.addActionListener(listener);
 		
+		ImageIcon iLogoIcon = new ImageIcon("images/logo.png");
+		Image iLogo = iLogoIcon.getImage();
+		Image iLogoBtn = iLogo.getScaledInstance(600, 150, Image.SCALE_SMOOTH);
+		
+		bLogo = new JButton(new ImageIcon(iLogoBtn));
+		bLogo.setContentAreaFilled(false);
+		bLogo.setFocusPainted(false);
+		bLogo.setBorderPainted(false);
+		bLogo.addActionListener(listener);
+		
 		bLogin = new JButton("로그인");
+		bLogin.setContentAreaFilled(false);
+		bLogin.setFocusPainted(false);
+		bLogin.setBorderPainted(false);
+		bLogin.setFont(new Font("나눔고딕", Font.BOLD, 14));
 		bLogin.addActionListener(listener);
+		
 		bRegister = new JButton("회원가입");
+		bRegister.setContentAreaFilled(false);
+		bRegister.setFocusPainted(false);
+		bRegister.setBorderPainted(false);
+		bRegister.setFont(new Font("나눔고딕", Font.BOLD, 14));
 		bRegister.addActionListener(listener);
 		
 		bLogout = new JButton("로그아웃");
+		bLogout.setContentAreaFilled(false);
+		bLogout.setFocusPainted(false);
+		//bLogout.setBorderPainted(false);
+		bLogout.setFont(new Font("나눔고딕", Font.BOLD, 14));
 		bLogout.addActionListener(listener);
 		
 		vWelcome = new JLabel("님 환영합니다.");
+		vWelcome.setFont(new Font("나눔고딕", Font.BOLD, 14));
 		vCenterName = new JLabel(" ");
+		vCenterName.setFont(new Font("나눔고딕", Font.BOLD, 14));
 		bUserName = new JButton(" ");
+		bUserName.setFont(new Font("나눔고딕", Font.BOLD, 14));
 		bUserName.addActionListener(listener);
 		bUserName.setContentAreaFilled(false);
 		bUserName.setFocusPainted(false);
@@ -79,6 +105,7 @@ public class MainFrame extends JFrame {
 		bUserName.setForeground(new Color(0, 180, 255));
 		
 		bCustName = new JButton(" ");
+		bCustName.setFont(new Font("나눔고딕", Font.BOLD, 14));
 		bCustName.addActionListener(listener);
 		bCustName.setContentAreaFilled(false);
 		bCustName.setFocusPainted(false);
@@ -131,25 +158,16 @@ public class MainFrame extends JFrame {
 		mReportAni.setFont(new Font("나눔고딕", Font.BOLD, 17));
 		mReport.add(mReportAni);
 		
-		mReportManage = new JMenu("신고정보관리");
+		mReportManage = new JMenuItem("신고정보관리");
 		mReportManage.setPreferredSize(new Dimension(218, 40));
 		mReportManage.setFont(new Font("나눔고딕", Font.BOLD, 17));
-		JMenuItem[] mlReportItem = new JMenuItem[mlReport.length];
-		for (int i=0; i < mlReport.length; i++){
-			mlReportItem[i] = new JMenuItem(mlReport[i]);
-			mlReportItem[i].addActionListener(listener);
-			mlReportItem[i].setPreferredSize(new Dimension(218, 40));
-			mlReportItem[i].setFont(new Font("나눔고딕", Font.BOLD, 17));
-			mReportManage.add(mlReportItem[i]);
-		}
+		mReportManage.addActionListener(listener);
 		mReport.setPreferredSize(new Dimension(220, 50));
 		mReport.setBorder(new EmptyBorder(0,90,0,0));
-		
-		
-		mBar.add(mReport);
 		mReport.add(mReportManage);
-		mBar.add(Box.createHorizontalStrut(10));
 		
+		mBar.add(mReport);		
+		mBar.add(Box.createHorizontalStrut(10));		
 		
 		mAdop = new JMenu("입양");
 		mAdopAnnc = new JMenuItem("유기동물공고");
@@ -188,11 +206,15 @@ public class MainFrame extends JFrame {
 		mPost.setBorder(new EmptyBorder(0,80,0,0));
 		mBar.add(mPost);
 		//mBar.setBackground(Color.WHITE);
-		mBar.setBorder(new LineBorder(Color.black));
+		//mBar.setBorder(new LineBorder(Color.black));
 		
 		ContentPanel = new ContentPanel();
 		pContents = new MainPage();
 		ContentPanel.add(pContents);
+		
+		JComponent[] coms = {bMainButton, bLogin, bRegister, bLogout, bUserName, bCustName};
+		changeCursor(coms);
+		
 		MainPageView();
 	}
 	private void MainPageView() {
@@ -201,21 +223,23 @@ public class MainFrame extends JFrame {
 		//this.getContentPane().setBackground(Color.WHITE);
 		
 		bMainButton.setBounds(100,50,175,175);
-		mBar.setBounds(310,110,1370,50);
+		bLogo.setBounds(600, 5, 600, 150);
+		mBar.setBounds(310,170,1370,50);
 		
-		bLogin.setBounds(1700, 10, 100, 30);
-		bRegister.setBounds(1810, 10, 100, 30);
+		bLogin.setBounds(1700, 130, 85, 30);
+		bRegister.setBounds(1800, 130, 90, 30);
 		
-		vCenterName.setBounds(1700,110,150,20);
-		bUserName.setBounds(1700,125,75,30);
-		bCustName.setBounds(1700,125,75,30);
-		vWelcome.setBounds(1770,130,150,20);
-		bLogout.setBounds(1810, 10, 100, 30);
+		vCenterName.setBounds(1695,170,170,25);
+		bUserName.setBounds(1685,195,90,25);
+		bCustName.setBounds(1685,195,90,25);
+		vWelcome.setBounds(1755,195,170,25);
+		bLogout.setBounds(1820, 130, 90, 30);
 		
 		ContentPanel.setBounds(50, 250, 1800, 1100);
 		//ContentPanel.setBackground(Color.WHITE);
 		
 		this.add(bMainButton);
+		this.add(bLogo);
 		this.add(mBar);
 		this.add(ContentPanel);
 		
@@ -414,21 +438,15 @@ public class MainFrame extends JFrame {
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-			}else if(cont == "신고배정(본부센터)"){
+			}else if(e.getSource().equals(mReportManage)){
 				ContentPanel.removeAll();
 				try {
-					pContents = new RprtAssignment();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				ContentPanel.add(pContents);
-				revalidate();
-				repaint();
-			}else if(cont == "신고배정(일반센터)"){
-				ContentPanel.removeAll();
-				try {
-					pContents = new RprtAssignmentNorm();
+					if(EmpData.getEmpCntrTp().equals(new String("h"))){
+						pContents = new RprtAssignment();
+					}
+					else if(EmpData.getEmpCntrTp().equals(new String("n"))){
+						pContents = new RprtAssignmentNorm();
+					}
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -540,7 +558,11 @@ public class MainFrame extends JFrame {
 		ContentPanel.revalidate();
 		ContentPanel.repaint();
 	}
-	
+	private void changeCursor(JComponent[] comps){
+		for(JComponent c:comps){
+			c.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		}
+	}
 	
 	class ContentPanel extends JPanel {
 		public void ContentPanel() {
@@ -549,7 +571,7 @@ public class MainFrame extends JFrame {
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		MainFrame main = new MainFrame();
+		MainFrame main = new MainFrame();		
 	}
 
 }
