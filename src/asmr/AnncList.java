@@ -78,7 +78,7 @@ public class AnncList extends JPanel{
 		setLayout(gridbagLayout);
 		
 		gridbagAdd(vAnncList, 0, 0, 1, 1);
-		gridbagAdd(regis, 4, 0, 1, 1);
+		//gridbagAdd(regis, 4, 0, 1, 1);
 		
 		gridbagAdd(panelArray[0], 0, 1, 2 , 2);
 		gridbagAdd(panelArray[1], 2, 1, 2 , 2);
