@@ -156,7 +156,7 @@ public class RprtAssignment extends JPanel {
                    return false;               
            };
        };
-      eCageList.addMouseListener(rprtAssignmentMouseListener);
+//      eCageList.addMouseListener(rprtAssignmentMouseListener);
       scrollpane2 = new JScrollPane(eCageList);
       scrollpane2.setPreferredSize(new Dimension(600,200));
       
