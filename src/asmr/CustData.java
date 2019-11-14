@@ -96,6 +96,22 @@ public class CustData {
 		}
 		return custNo;
 	}
+	static String getSCustNo(String custID){
+		String custNo = "";
+		query = "SELECT CUST_NO FROM CUST WHERE ID = '"+custID+"'";
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+				custNo = rs.getString(1);
+			}
+		}catch(SQLException e){
+			System.out.println("sql ¿À·ù");
+			e.printStackTrace();
+		}
+		return custNo;
+	}
 	static String getCustPwd(int custNo){
 		String custPwd = "";
 		query = "SELECT PWD FROM CUST WHERE CUST_NO = "+custNo;

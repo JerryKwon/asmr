@@ -7,6 +7,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -16,13 +22,22 @@ import javax.swing.JTextField;
 
 public class InqRegis extends JPanel {
 	
+	private static String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private static String user = "asmr";
+	private static String password = "asmr";
+	
+	private static Connection con = null;
+	private static PreparedStatement pstmt = null;
+	private static ResultSet rs = null;
+	private static ResultSetMetaData rsmd = null;
+	
 	InqRegisButtonListener inqRegisButtonListener;
 	
 	private JLabel vInq, vTit, vCont;
 	
-	private JTextField xTit;
+	private static JTextField xTit;
 	
-	private JTextArea xCont;
+	private static JTextArea xCont;
 	
 	private JButton regis, cancel;
 	
@@ -40,7 +55,7 @@ public class InqRegis extends JPanel {
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
 		
-		vInq = new JLabel("문의등록");
+		vInq = new JLabel("Q&A");
 		vInq.setFont(new Font("나눔고딕", Font.BOLD, 24));
 		
 		vTit = new JLabel("제목");
@@ -122,7 +137,8 @@ public class InqRegis extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(regis)) {	
-				
+				PostInq();	
+				MainFrame.notiBoardCase();		
 			}
 			else if(e.getSource().equals(cancel)) {
 				MainFrame.qnaBoardCase();
@@ -130,6 +146,116 @@ public class InqRegis extends JPanel {
 		}
 		
 	}
+    
+    static void PostInq() {
+    	connection();
+    	
+		String postTit = xTit.getText();
+		String postCont = xCont.getText();
+		String cust_no = CustData.getSCustNo(Login.custID);
+		
+    	
+		try {
+			StringBuffer query1 = new StringBuffer("INSERT INTO POST(POST_NO, POST_TIT, WRT_DTTM, POST_CONT, POST_TP, INQ_POST_NO, INQ_WRT_PRSN_NO, ANS_WRT_PRSN_NO, NOTI_WRT_PRSN_NO) ");
+			query1.append("VALUES( ");
+			query1.append("POST_SEQ.nextval, ");
+			query1.append("'"+postTit+"', ");
+			query1.append("sysdate, ");
+			query1.append("'"+postCont+"', ");
+			query1.append("'q', ");
+			query1.append("null, ");
+			query1.append("'"+cust_no+"', ");
+			query1.append("null, ");
+			query1.append("null) ");
+			
+			pstmt = con.prepareStatement(query1.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+    	
+    	
+    }
+    
+    static void PostAns(String pno) {
+    	connection();
+    	
+		String postTit = xTit.getText();
+		String postCont = xCont.getText();
+		String emp_no = EmpData.getSEMPNo(Login.empID);
+		
+    	
+		try {
+			StringBuffer query1 = new StringBuffer("INSERT INTO POST(POST_NO, POST_TIT, WRT_DTTM, POST_CONT, POST_TP, INQ_POST_NO, INQ_WRT_PRSN_NO, ANS_WRT_PRSN_NO, NOTI_WRT_PRSN_NO) ");
+			query1.append("VALUES( ");
+			query1.append("POST_SEQ.nextval, ");
+			query1.append("'"+postTit+"', ");
+			query1.append("sysdate, ");
+			query1.append("'"+postCont+"', ");
+			query1.append("'a', ");
+			query1.append("'"+pno+"', ");
+			query1.append("null, ");
+			query1.append("'"+emp_no+"', ");
+			query1.append("null) ");
+			
+			pstmt = con.prepareStatement(query1.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+    	
+    	
+    }
+    
+    // 데이터베이스 연결
+
+    public static void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public static void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
 		
 	
 

@@ -7,14 +7,31 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class InqPost extends JPanel {
+	private boolean isClicked = false;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
 	InqPostButtonListener inqPostButtonListener;
 	
@@ -43,7 +60,7 @@ public class InqPost extends JPanel {
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
 		
-		vInq = new JLabel("공지사항");
+		vInq = new JLabel("문의답변게시물");
 		vInq.setFont(new Font("나눔고딕", Font.BOLD, 24));
 		
 		vWrt = new JLabel("작성자");
@@ -148,18 +165,128 @@ public class InqPost extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			if(e.getSource().equals(update)) {	
+			if(e.getSource().equals(update)) {
+				if(!isClicked) {
+					isClicked = true;
+					
+					xTit.setEditable(true);
+					xTit.requestFocus();
+					xCont.setEditable(true);
+					
+					update.setText("저장");
+					
+					
+//					String prePostTit = xTit.getText();
+//					String prePostCont = xCont.getText();
+					
+//					JComponent[] changeStatusComps = {xTit,xCont};
+//					for(JComponent cop: changeStatusComps) {
+//						cop.setEnabled(true);
+//					}
+					
+					
+				}
+				else {
+					isClicked = false;
+					int result = JOptionPane.showConfirmDialog(null, "해당 게시글을 수정하시겠습니까?", "게시글정보수정", JOptionPane.YES_NO_OPTION);
+					if(result == JOptionPane.OK_OPTION) {
+//						xTit.setEditable(true);
+//						xTit.requestFocus();
+//						xCont.setEditable(true);
+						
+						String newPostTit = xTit.getText();
+						String newPostCont = xCont.getText();
+						
+						
+						xTit.setEditable(false);
+						xCont.setEditable(false);
+						update.setText("수정");
+						
+						
+						
+						UpdateInqPost(newPostTit,newPostCont);
+						
+					}
+				}
 				
 			}
 			else if(e.getSource().equals(getBack)) {
+				MainFrame.qnaBoardCase();
 				
 			}
 			else if(e.getSource().equals(ans)) {
+//				String pno = InqAnsBoard.pno;
+//				
+////				InqRegis.PostInq();
+//				MainFrame.qnaCase();
+//				InqRegis.PostAns(pno);
+//				
 				
-			}
+				
 		}
 		
 	}
+		
+    }
+    
+    private void UpdateInqPost(String newPostTit, String newPostCont) {
+//		
+		StringBuffer query1 = new StringBuffer("UPDATE POST SET POST_TIT=?, POST_CONT=? WHERE POST_NO=? ");
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query1.toString());
+			pstmt.setString(1, newPostTit);
+			pstmt.setString(2, newPostCont);
+			pstmt.setString(3, InqAnsBoard.pno);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				con.commit();
+			}
+		}catch(SQLException e) {	
+			e.printStackTrace();
+		}
+		
+		disconnection();
+	}
+    
+ // 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

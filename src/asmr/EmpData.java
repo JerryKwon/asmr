@@ -202,6 +202,23 @@ public class EmpData {
 			e.printStackTrace();
 		}
 	}
+	
+	static String getSEMPNo(String empID){
+		String empNo = "";
+		query = "SELECT CUST_NO FROM EMP WHERE ID = '"+empID+"'";
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+				empNo = rs.getString(1);
+			}
+		}catch(SQLException e){
+			System.out.println("sql ¿À·ù");
+			e.printStackTrace();
+		}
+		return empNo;
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		setEmpData("0000");
