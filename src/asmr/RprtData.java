@@ -18,25 +18,36 @@ public class RprtData {
 	static PreparedStatement pstm = null;
 	static ResultSet rs = null;
 	
+	public static Map<String, Serializable > assgrprtdata = new HashMap<String, Serializable>();
 	public static Map<String, Serializable > rprtdata = new HashMap<String, Serializable>();
 	public static Map<String, Serializable > cagedata = new HashMap<String, Serializable>();
 	public static Map<String, Serializable > cntrdata = new HashMap<String, Serializable>();
 	public static Map<String, Serializable > cntrnodata = new HashMap<String, Serializable>();
+	public static Map<String, Serializable > assgnodata = new HashMap<String, Serializable>();
 	public static Map<String, Serializable > rprtnodata = new HashMap<String, Serializable>();
+	public static Map<String, Serializable > apprassgdata = new HashMap<String, Serializable>();
 	
 	public static Map<String, Serializable > rprtdataSet;
+	public static Map<String, Serializable > assgrprtdataSet;
 	public static Map<String, Serializable > cagedataSet;
 	public static Map<String, Serializable > cntrdataSet;
 	public static Map<String, Serializable > cntrnodataSet;
+	public static Map<String, Serializable > assgnodataSet;
 	public static Map<String, Serializable > rprtnodataSet;
+	public static Map<String, Serializable > apprassgdataSet;
 	
+	public static List<Map<String, Serializable>> assgRprtListData = new ArrayList<Map<String, Serializable>>();
 	public static List<Map<String, Serializable>> rprtListData = new ArrayList<Map<String, Serializable>>();
 	public static List<Map<String, Serializable>> cageListData = new ArrayList<Map<String, Serializable>>();
 	public static List<Map<String, Serializable>> cntrListData = new ArrayList<Map<String, Serializable>>();
 	public static List<Map<String, Serializable>> cntrNoListData = new ArrayList<Map<String, Serializable>>();
+	public static List<Map<String, Serializable>> assgNoListData = new ArrayList<Map<String, Serializable>>();
 	public static List<Map<String, Serializable>> rprtNoListData = new ArrayList<Map<String, Serializable>>();
+	public static List<Map<String, Serializable>> apprAssgListData = new ArrayList<Map<String, Serializable>>();
 	
 	private static ArrayList<String> cntrNm;
+	
+	// 배정전 신고 정보 가져오기.
 	static List<Map<String, Serializable>> getRprtList(){
 //		RprtAssignment.rprtNos.clear();
 	
@@ -45,6 +56,7 @@ public class RprtData {
 		query.append("LEFT OUTER JOIN ASSG A ");
 		query.append("ON R.RPRT_NO = A.rprt_no ");
 		query.append("WHERE ASSG_NO IS NULL ");
+//		query.append("AND ASSG_RES != 'a' "); 배정 결과가 승인이 아닌경우..
 		
 		rprtListData.clear();
 		
@@ -71,6 +83,90 @@ public class RprtData {
 		}
 		return rprtListData;
 	}
+	
+	// 로그인한 직원의 센터에 배정된 신고 가져오기.
+	static List<Map<String, Serializable>> getAssgRprtList(){
+//		RprtAssignment.rprtNos.clear();
+		
+		String cntr_no = EmpData.getCntrNo(Login.getEmpNo());
+	
+		StringBuffer query = new StringBuffer("SELECT rprt_dttm, anml_kinds, anml_size, expln, R.rprt_no, ASSG_NO ");
+		query.append("FROM rprt R ");
+		query.append("LEFT OUTER JOIN ASSG A ");
+		query.append("ON R.RPRT_NO = A.rprt_no ");
+		query.append("WHERE ASSG_NO IS NOT NULL ");
+		query.append("AND CNTR_NO = '"+cntr_no+"' ");
+		query.append("AND ASSG_RES IS NULL ");
+		
+		
+		
+		assgRprtListData.clear();
+		
+		try{
+			pstm = conn.prepareStatement(query.toString(), rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+	               assgrprtdataSet = new HashMap<String, Serializable>();
+  
+	               assgrprtdataSet.put("신고일시", rs.getString(1));
+	               assgrprtdataSet.put("동물종류", rs.getString(2));
+	               assgrprtdataSet.put("동물크기", rs.getString(3)); 
+	               assgrprtdataSet.put("설명", rs.getString(4));
+	               assgrprtdataSet.put("배정번호",rs.getString(6));
+	               
+//	               RprtAssignment.rprtNos.add(rs.getString("RPRT_NO"));
+	            
+	               assgRprtListData.add(assgrprtdataSet);
+			}
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+		return assgRprtListData;
+	}
+	
+	// 로그인한 직원의 센터에 배정승인된 신고 가져오기.
+		static List<Map<String, Serializable>> getApprAssgList(){
+//			RprtAssignment.rprtNos.clear();
+			
+			String cntr_no = EmpData.getCntrNo(Login.getEmpNo());
+		
+			StringBuffer query = new StringBuffer("SELECT rprt_dttm, anml_kinds, anml_size, expln, R.rprt_no, ASSG_NO ");
+			query.append("FROM rprt R ");
+			query.append("LEFT OUTER JOIN ASSG A ");
+			query.append("ON R.RPRT_NO = A.rprt_no ");
+			query.append("WHERE ASSG_NO IS NOT NULL ");
+			query.append("AND CNTR_NO = '"+cntr_no+"' ");
+			query.append("AND ASSG_RES = 'a' ");
+			
+			
+			
+			apprAssgListData.clear();
+			
+			try{
+				pstm = conn.prepareStatement(query.toString(), rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+				rs = pstm.executeQuery();
+				
+				while(rs.next()){
+		               apprassgdataSet = new HashMap<String, Serializable>();
+	  
+		               apprassgdataSet.put("신고일시", rs.getString(1));
+		               apprassgdataSet.put("동물종류", rs.getString(2));
+		               apprassgdataSet.put("동물크기", rs.getString(3)); 
+		               apprassgdataSet.put("설명", rs.getString(4));
+		               apprassgdataSet.put("배정번호",rs.getString(6));
+		               
+//		               RprtAssignment.rprtNos.add(rs.getString("RPRT_NO"));
+		            
+		               apprAssgListData.add(apprassgdataSet);
+				}
+			}catch(SQLException e){
+				System.out.println("SELECT문 예외 발생");
+				e.printStackTrace();
+			}
+			return apprAssgListData;
+		}
 	
 	static String getCntrNoList(String nm){
 		
@@ -205,6 +301,38 @@ static String getRprtNoList(String dttm){
 		}
 		return rprtNo;
 	}
+
+static String getAssgNoList(String dttm){
+	
+//	cntrNm = new ArrayList<String>();
+	String assgNo = "";
+	
+	
+	StringBuffer query = new StringBuffer("SELECT ASSG_NO FROM ASSG ");
+	query.append("WHERE ASSG_DTTM= to_date('"+dttm+"','YYYY-MM-DD hh24:mi:ss') ");;
+	
+//	assgNoListData.clear();
+	
+	try{
+		pstm = conn.prepareStatement(query.toString(), rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+		rs = pstm.executeQuery();
+		
+		while(rs.next()){
+//               cntrdataSet = new HashMap<String, Serializable>();
+               
+               assgNo = rs.getString(1);
+
+            
+//               cntrNoListData.add(cntrdataSet);
+               
+//               cntrNo.add(rs.getString(1));
+		}
+	}catch(SQLException e){
+		System.out.println("SELECT문 예외 발생");
+		e.printStackTrace();
+	}
+	return assgNo;
+}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
