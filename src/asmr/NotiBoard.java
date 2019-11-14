@@ -156,7 +156,7 @@ public class NotiBoard extends JPanel {
 	         panelNum = pageNum/pagePerPanel+1;
 	      }
 	      
-	      System.out.println(panelNum);
+//	      System.out.println(panelNum);
 	      pPage = new JPanel[panelNum]; //구한 panelNum만큼의 원소를 지닌 패널배열 선언(버튼을 올려놓을 곳)
 	      
 	      int indexButton=0;
