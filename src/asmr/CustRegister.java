@@ -21,7 +21,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 public class CustRegister extends JPanel implements ActionListener {
-	private JLabel vCustRegister, vCustName, vID, vPassword, vPasswordConfirm, vAddress, vPhone;
+	private JLabel vCustRegister, vCustName, vID, vPassword, vPasswordConfirm, vAddress, vPhone,
+	vIDInfo, vPassInfo, vConfirmInfo, vPhoneInfo;
 	private JTextField xCustName, xID, xAddress, xPhone;
 	private JPasswordField xPassword, xPasswordConfirm;
 	private JButton bDupConfirm, bAddrSearch, bRegister, bCancel;
@@ -51,16 +52,26 @@ public class CustRegister extends JPanel implements ActionListener {
 		
 		vID = new JLabel("아이디");
 		xID = new JTextField(15);
+		
 		bDupConfirm = new JButton("중복확인");
 		bDupConfirm.setBackground(blue);
 		bDupConfirm.setForeground(white);
 		bDupConfirm.addActionListener(this);
 		
+		vIDInfo = new JLabel("4 - 10 자리의 '영문' 또는 '영문+숫자'");
+		vIDInfo.setFont(new Font("나눔고딕", Font.BOLD, 14));
+				
 		vPassword = new JLabel("비밀번호");
 		xPassword = new JPasswordField(15);
 		
+		vPassInfo = new JLabel("4 - 10 자리로 설정해주세요.");
+		vPassInfo.setFont(new Font("나눔고딕", Font.BOLD, 14));
+		
 		vPasswordConfirm = new JLabel("비밀번호확인");
 		xPasswordConfirm = new JPasswordField(15);
+		
+		vConfirmInfo = new JLabel("비밀번호를 한번 더 입력해주세요.");
+		vConfirmInfo.setFont(new Font("나눔고딕", Font.BOLD, 14));
 		
 		//vBirthDay = new JLabel("생년월일");
 		//LocalDate now = LocalDate.now();
@@ -78,6 +89,9 @@ public class CustRegister extends JPanel implements ActionListener {
 		
 		vPhone = new JLabel("전화번호");
 		xPhone = new JTextField(15);
+		
+		vPhoneInfo = new JLabel("예시) '010-1234-1234'");
+		vPhoneInfo.setFont(new Font("나눔고딕", Font.BOLD, 14));
 		
 		bRegister = new JButton("등록");
 		bRegister.addActionListener(this);
@@ -110,10 +124,13 @@ public class CustRegister extends JPanel implements ActionListener {
 		gridbagAdd(vID, 0, 2, 1, 1);
 		gridbagAdd(xID, 1, 2, 1, 1);
 		gridbagAdd(bDupConfirm, 2, 2, 1, 1);
+		gridbagAdd(vIDInfo, 3, 2, 3, 1);
 		gridbagAdd(vPassword, 0, 3, 1, 1);
 		gridbagAdd(xPassword, 1, 3, 1, 1);
+		gridbagAdd(vPassInfo, 2, 3, 3, 1);
 		gridbagAdd(vPasswordConfirm, 0, 4, 1, 1);
 		gridbagAdd(xPasswordConfirm, 1, 4, 1, 1);
+		gridbagAdd(vConfirmInfo, 2, 4, 3, 1);
 		// 생년월일 미관리
 //		gridbagAdd(vBirthDay, 0, 5, 1, 1);
 //		gridbagAdd(chooser, 1, 5, 1, 1);
@@ -122,6 +139,7 @@ public class CustRegister extends JPanel implements ActionListener {
 		gridbagAdd(bAddrSearch, 3, 6, 1, 1);
 		gridbagAdd(vPhone, 0, 7, 1, 1);
 		gridbagAdd(xPhone, 1, 7, 1, 1);
+		gridbagAdd(vPhoneInfo, 2, 7, 3, 1);
 		
 		Component[] comps = {bRegister, bCancel};
 		CombinePanel btn = new CombinePanel(comps, true);
