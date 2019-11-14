@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -20,14 +21,16 @@ import javax.swing.border.EmptyBorder;
 
 public class CustMyPage extends JPanel implements ActionListener{
 	
-	private JLabel vTitle, vCustName, vPassword, vPassConfirm, vAddress, vPhone, vID;
+	private JLabel vTitle, vCustName, vPassword, vNewPass, vPassConfirm, vAddress, vPhone, vID;
 	private JTextField xCustName, xAddress, xPhone, xID;
-	private JPasswordField xPassword, xPassConfirm;
+	private JPasswordField xPassword, xNewPass, xPassConfirm;
 	
 	private JButton bSearch, bAdjust, bCancel, bCancel2, bSave;
 	
 	private Color blue = new Color(22,155,213);
 	private Color white = new Color(255,255,255);
+	
+	private String nowAddr, nowTelNo, nowPass, newAddr, newTelNo, newPass, newPassConfirm;
 	
 	private Component[] comp1, comp2;
 	private CombinePanel btn1, btn2;
@@ -51,9 +54,13 @@ public class CustMyPage extends JPanel implements ActionListener{
 		xCustName = new JTextField(20);
 		xCustName.setEditable(false);
 		
-		vPassword = new JLabel("비밀번호");
+		vPassword = new JLabel("현재 비밀번호");
 		xPassword = new JPasswordField(20);
 		xPassword.setEditable(false);
+		
+		vNewPass = new JLabel("새 비밀번호");
+		xNewPass = new JPasswordField(20);
+		xNewPass.setEditable(false);
 		
 		vPassConfirm = new JLabel("비밀번호확인");
 		xPassConfirm = new JPasswordField(20);
@@ -90,7 +97,7 @@ public class CustMyPage extends JPanel implements ActionListener{
 		bCancel2 = new JButton("취소");
 		bCancel2.addActionListener(this);
 		
-		JComponent[] slabel = {vCustName, vPassword, vPassConfirm, vAddress, vPhone, vID};
+		JComponent[] slabel = {vCustName, vPassword, vNewPass, vPassConfirm, vAddress, vPhone, vID};
 		ChangeFont(slabel, new Font("나눔고딕", Font.PLAIN, 16));
 		JComponent[] sbutton = {bSearch, bAdjust, bCancel, bCancel2, bSave};
 		ChangeFont(sbutton, new Font("나눔고딕", Font.BOLD, 16));
@@ -121,20 +128,117 @@ public class CustMyPage extends JPanel implements ActionListener{
 			btn1.setVisible(false);
 			btn2.setVisible(true);
 			bSearch.setEnabled(true);
-			xPassword.setEditable(true);
+			xNewPass.setEditable(true);
 			xPassConfirm.setEditable(true);
 			xPhone.setEditable(true);
+			nowPass = new String(xPassword.getPassword());
+			nowAddr = xAddress.getText();
+			nowTelNo = xPhone.getText();
 		}
 		else if(e.getSource().equals(bSave)){
-			
+			newPass = new String(xNewPass.getPassword());
+			newPassConfirm = new String(xPassConfirm.getPassword());
+			newAddr = xAddress.getText();
+			newTelNo = xPhone.getText();
+			int ans;
+			ans = JOptionPane.showConfirmDialog(null, "해당 내용으로 수정하시겠습니까?", "메시지", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if(ans == JOptionPane.OK_OPTION){
+				//0. 비번을 바꾸는가 ? 1. 원래 정보와 같은지 검사  2. 비밀번호 조건 체크  3. 비밀번호 일치 여부 검사
+				if(newPass.equals("") && newPass.equals(newPassConfirm)){
+					//비밀번호 안바꿈 -> 기존과 같은지 체크 후에 다른정보만 수정시킨다.
+					if(checkEqual()){
+						JOptionPane.showMessageDialog(null, "기존 값과 동일합니다.", "메시지", JOptionPane.WARNING_MESSAGE);
+					}
+					else{
+						CustData.updateCust(newAddr, newTelNo);
+						nowAddr = newAddr;
+						nowTelNo = newTelNo;
+						xAddress.setEditable(false);
+						xPhone.setEditable(false);
+						xNewPass.setEditable(false);
+						xPassConfirm.setEditable(false);
+						bSearch.setEnabled(false);
+						btn2.setVisible(false);
+						btn1.setVisible(true);
+						
+						JOptionPane.showMessageDialog(null, "변경되었습니다.", "메시지", JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+				else{
+					// 비밀번호 바꿈 (패스워드 체크)
+					if(nowPass.equals(newPass)){
+						JOptionPane.showMessageDialog(null, "현재 비밀번호와 같습니다.", "메시지", JOptionPane.WARNING_MESSAGE);
+					}
+					else if(!newPass.equals(newPassConfirm)){
+						JOptionPane.showMessageDialog(null, "비밀번호 확인과 일치하지 않습니다.", "메시지", JOptionPane.WARNING_MESSAGE);
+					}
+					else if(newPass.equals(newPassConfirm)){
+						if(newPass.length() < 4 || newPass.length() > 11){
+							JOptionPane.showMessageDialog(null, "비밀번호는 4 ~ 10 자리입니다.", "메시지", JOptionPane.WARNING_MESSAGE);
+						}
+						else{
+							if(checkEqual()){
+								//비밀번호만 변경
+								CustData.updateCustPass(newPass);
+								nowPass = newPass;
+								
+								xAddress.setEditable(false);
+								xPhone.setEditable(false);
+								xNewPass.setEditable(false);
+								xNewPass.setText(null);
+								xPassConfirm.setEditable(false);
+								xPassConfirm.setText(null);
+								bSearch.setEnabled(false);
+								btn2.setVisible(false);
+								btn1.setVisible(true);
+								
+								JOptionPane.showMessageDialog(null, "비밀번호가 변경되었습니다.", "메시지", JOptionPane.INFORMATION_MESSAGE);
+							}
+							else{
+								//비밀번호, 개인정보 변경
+								CustData.updateCust(newAddr, newTelNo);
+								CustData.updateCustPass(newPass);
+								
+								nowAddr = newAddr;
+								nowTelNo = newTelNo;
+								nowPass = newPass;
+								xAddress.setEditable(false);
+								xPhone.setEditable(false);
+								xNewPass.setText(null);
+								xNewPass.setEditable(false);
+								xPassConfirm.setText(null);
+								xPassConfirm.setEditable(false);
+								bSearch.setEnabled(false);
+								btn2.setVisible(false);
+								btn1.setVisible(true);
+								
+								JOptionPane.showMessageDialog(null, "정보가 변경되었습니다.", "메시지", JOptionPane.INFORMATION_MESSAGE);
+							}
+						}
+					}
+				}
+			}
 		}
 		else if(e.getSource().equals(bCancel2)){
 			btn2.setVisible(false);
 			btn1.setVisible(true);			
 			bSearch.setEnabled(false);
-			xPassword.setEditable(false);
+			xNewPass.setEditable(false);
 			xPassConfirm.setEditable(false);
 			xPhone.setEditable(false);
+			xPassword.setText(nowPass);
+			xNewPass.setText(null);
+			xPassConfirm.setText(null);
+			xAddress.setText(nowAddr);
+			xPhone.setText(nowTelNo);
+		}
+	}
+	private boolean checkEqual(){
+		if(nowAddr.equals(newAddr) && nowTelNo.equals(newTelNo)){
+			return true;
+		}
+		else{
+			return false;
 		}
 	}
 	private void CustMyPageView(){
@@ -158,15 +262,18 @@ public class CustMyPage extends JPanel implements ActionListener{
 		gridbagAdd(vPassword, 0,3,1,1);
 		gridbagAdd(xPassword, 1,3,1,1);
 		
-		gridbagAdd(vPassConfirm, 0,4,1,1);
-		gridbagAdd(xPassConfirm, 1,4,1,1);
+		gridbagAdd(vNewPass, 0,4,1,1);
+		gridbagAdd(xNewPass, 1,4,1,1);
 		
-		gridbagAdd(vAddress, 0,5,1,1);
-		gridbagAdd(xAddress, 1,5,2,1);
-		gridbagAdd(bSearch, 3,5,2,1);
+		gridbagAdd(vPassConfirm, 0,5,1,1);
+		gridbagAdd(xPassConfirm, 1,5,1,1);
 		
-		gridbagAdd(vPhone, 0,6,1,1);
-		gridbagAdd(xPhone, 1,6,1,1);
+		gridbagAdd(vAddress, 0,6,1,1);
+		gridbagAdd(xAddress, 1,6,2,1);
+		gridbagAdd(bSearch, 3,6,2,1);
+		
+		gridbagAdd(vPhone, 0,7,1,1);
+		gridbagAdd(xPhone, 1,7,1,1);
 		
 		//gridbagconstraints.anchor = GridBagConstraints.CENTER;
 		
@@ -174,8 +281,8 @@ public class CustMyPage extends JPanel implements ActionListener{
 		//gridbagAdd(bSave, 1,7,1,1);
 		//gridbagAdd(bCancel, 2,7,1,1);
 		
-		gridbagAdd(btn1, 1, 7, 1, 1);
-		gridbagAdd(btn2, 1, 7, 1, 1);
+		gridbagAdd(btn1, 1, 8, 1, 1);
+		gridbagAdd(btn2, 1, 8, 1, 1);
 	}
 	class CombinePanel extends JPanel {
 		//컴포넌트 1, 컴포넌트 2, 패널 구성시 좌,우 margin 공간을 없애기 위한 Flag

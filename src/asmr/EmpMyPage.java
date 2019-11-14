@@ -19,16 +19,18 @@ import javax.swing.border.EmptyBorder;
 
 
 public class EmpMyPage extends JPanel implements ActionListener{
-	private JLabel vTitle, vEmpName, vEmpType, vPassword, vPassConfirm, vAddress, vPhone,
+	private JLabel vTitle, vEmpName, vEmpType, vPassword, vNewPass, vPassConfirm, vAddress, vPhone,
 			vCenterName, vBizField, vSex, vBirthDay;
 	
 	private JTextField xEmpName, xEmpType, xAddress, xPhone, xCenterName, xBizField, xSex, xBirthDay;
-	private JPasswordField xPassword, xPassConfirm;
+	private JPasswordField xPassword, xNewPass, xPassConfirm;
 	
 	private JButton bSearch, bAdjust, bCancel, bSave;
 	
 	private Color blue = new Color(22,155,213);
 	private Color white = new Color(255,255,255);
+	
+	private String nowPass, nowAddr, nowTelNo, newPass, newPassConfirm, newAddr, newTelNo;
 	
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
@@ -49,13 +51,19 @@ public class EmpMyPage extends JPanel implements ActionListener{
 		xEmpType = new JTextField(20);
 		xEmpType.setEditable(false);
 		
-		vPassword = new JLabel("비밀번호");
+		vPassword = new JLabel("현재 비밀번호");
 		xPassword = new JPasswordField(20);
 		xPassword.setEditable(false);
+		
+		vNewPass = new JLabel("새 비밀번호");
+		xNewPass = new JPasswordField(20);
+		xNewPass.setEditable(false);
+		xNewPass.setText(null);
 		
 		vPassConfirm = new JLabel("비밀번호확인");
 		xPassConfirm = new JPasswordField(20);
 		xPassConfirm.setEditable(false);
+		xPassConfirm.setText(null);
 		
 		vAddress = new JLabel("주소");
 		xAddress = new JTextField(30);
@@ -86,19 +94,22 @@ public class EmpMyPage extends JPanel implements ActionListener{
 		bSearch.setBackground(blue);
 		bSearch.setForeground(white);
 		bSearch.setEnabled(false);
+		
 		bAdjust = new JButton("수정");
 		bAdjust.addActionListener(this);
 		bAdjust.setBackground(blue);
 		bAdjust.setForeground(white);
+		
 		bSave = new JButton("확인");
 		bSave.addActionListener(this);
 		bSave.setBackground(blue);
 		bSave.setForeground(white);
 		bSave.setVisible(false);
+		
 		bCancel = new JButton("취소");
 		bCancel.addActionListener(this);
 		
-		JComponent[] slabel = {vEmpName, vEmpType, vPassword, vPassConfirm, vAddress, vPhone,
+		JComponent[] slabel = {vEmpName, vEmpType, vPassword, vNewPass, vPassConfirm, vAddress, vPhone,
 				vCenterName, vBizField, vSex, vBirthDay};
 		ChangeFont(slabel, new Font("나눔고딕", Font.PLAIN, 16));
 		JComponent[] sbutton = {bSearch, bAdjust, bCancel, bSave};
@@ -126,20 +137,117 @@ public class EmpMyPage extends JPanel implements ActionListener{
 			bAdjust.setVisible(false);
 			bSave.setVisible(true);
 			bSearch.setEnabled(true);
-			xPassword.setEditable(true);
+			xNewPass.setEditable(true);
 			xPassConfirm.setEditable(true);
 			xPhone.setEditable(true);
+			nowPass = new String(xPassword.getPassword());
+			nowAddr = xAddress.getText();
+			nowTelNo = xPhone.getText();
 		}
 		else if(e.getSource().equals(bCancel)){
 			bAdjust.setVisible(true);
 			bSave.setVisible(false);
 			bSearch.setEnabled(false);
-			xPassword.setEditable(false);
+			xNewPass.setEditable(false);
 			xPassConfirm.setEditable(false);
 			xPhone.setEditable(false);
+			xPassword.setText(nowPass);
+			xNewPass.setText(null);
+			xPassConfirm.setText(null);
+			xAddress.setText(nowAddr);
+			xPhone.setText(nowTelNo);
 		}
 		else if(e.getSource().equals(bSave)){
-			JOptionPane.showMessageDialog(null, "해당 내용으로 수정하시겠습니까?", "메시지", JOptionPane.QUESTION_MESSAGE);
+			newPass = new String(xNewPass.getPassword());
+			newPassConfirm = new String(xPassConfirm.getPassword());
+			newAddr = xAddress.getText();
+			newTelNo = xPhone.getText();
+			int ans;
+			ans = JOptionPane.showConfirmDialog(null, "해당 내용으로 수정하시겠습니까?", "메시지", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if(ans == JOptionPane.OK_OPTION){
+				//0. 비번을 바꾸는가 ? 1. 원래 정보와 같은지 검사  2. 비밀번호 조건 체크  3. 비밀번호 일치 여부 검사
+				if(newPass.equals("") && newPass.equals(newPassConfirm)){
+					//비밀번호 안바꿈 -> 기존과 같은지 체크 후에 다른정보만 수정시킨다.
+					if(checkEqual()){
+						JOptionPane.showMessageDialog(null, "기존 값과 동일합니다.", "메시지", JOptionPane.WARNING_MESSAGE);
+					}
+					else{
+						EmpData.updateEmp(newAddr, newTelNo);
+						nowAddr = newAddr;
+						nowTelNo = newTelNo;
+						xAddress.setEditable(false);
+						xPhone.setEditable(false);
+						xNewPass.setEditable(false);
+						xPassConfirm.setEditable(false);
+						bSearch.setEnabled(false);
+						bSave.setVisible(false);
+						bAdjust.setVisible(true);
+						
+						JOptionPane.showMessageDialog(null, "변경되었습니다.", "메시지", JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+				else{
+					// 비밀번호 바꿈 (패스워드 체크)
+					if(nowPass.equals(newPass)){
+						JOptionPane.showMessageDialog(null, "현재 비밀번호와 같습니다.", "메시지", JOptionPane.WARNING_MESSAGE);
+					}
+					else if(!newPass.equals(newPassConfirm)){
+						JOptionPane.showMessageDialog(null, "비밀번호 확인과 일치하지 않습니다.", "메시지", JOptionPane.WARNING_MESSAGE);
+					}
+					else if(newPass.equals(newPassConfirm)){
+						if(newPass.length() < 4 || newPass.length() > 11){
+							JOptionPane.showMessageDialog(null, "비밀번호는 4 ~ 10 자리입니다.", "메시지", JOptionPane.WARNING_MESSAGE);
+						}
+						else{
+							if(checkEqual()){
+								//비밀번호만 변경
+								EmpData.updateEmpPass(newPass);
+								nowPass = newPass;
+								
+								xAddress.setEditable(false);
+								xPhone.setEditable(false);
+								xNewPass.setEditable(false);
+								xNewPass.setText(null);
+								xPassConfirm.setEditable(false);
+								xPassConfirm.setText(null);
+								bSearch.setEnabled(false);
+								bSave.setVisible(false);
+								bAdjust.setVisible(true);
+								
+								JOptionPane.showMessageDialog(null, "비밀번호가 변경되었습니다.", "메시지", JOptionPane.INFORMATION_MESSAGE);
+							}
+							else{
+								//비밀번호, 개인정보 변경
+								EmpData.updateEmp(newAddr, newTelNo);
+								EmpData.updateEmpPass(newPass);
+								
+								nowAddr = newAddr;
+								nowTelNo = newTelNo;
+								nowPass = newPass;
+								xAddress.setEditable(false);
+								xPhone.setEditable(false);
+								xNewPass.setText(null);
+								xNewPass.setEditable(false);
+								xPassConfirm.setText(null);
+								xPassConfirm.setEditable(false);
+								bSearch.setEnabled(false);
+								bSave.setVisible(false);
+								bAdjust.setVisible(true);
+								
+								JOptionPane.showMessageDialog(null, "정보가 변경되었습니다.", "메시지", JOptionPane.INFORMATION_MESSAGE);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	private boolean checkEqual(){
+		if(nowAddr.equals(newAddr) && nowTelNo.equals(newTelNo)){
+			return true;
+		}
+		else{
+			return false;
 		}
 	}
 	private void EmpMyPageView() {
@@ -169,23 +277,26 @@ public class EmpMyPage extends JPanel implements ActionListener{
 		gridbagAdd(vSex, 2,3,1,1);
 		gridbagAdd(xSex, 3,3,1,1);
 		
-		gridbagAdd(vPassConfirm, 0,4,1,1);
-		gridbagAdd(xPassConfirm, 1,4,1,1);
+		gridbagAdd(vNewPass, 0,4,1,1);
+		gridbagAdd(xNewPass, 1,4,1,1);
 		gridbagAdd(vBirthDay, 2,4,1,1);
 		gridbagAdd(xBirthDay, 3,4,1,1);
 		
-		gridbagAdd(vAddress, 0,5,1,1);
-		gridbagAdd(xAddress, 1,5,2,1);
-		gridbagAdd(bSearch, 3,5,1,1);
+		gridbagAdd(vPassConfirm, 0,5,1,1);
+		gridbagAdd(xPassConfirm, 1,5,1,1);
 		
-		gridbagAdd(vPhone, 0,6,1,1);
-		gridbagAdd(xPhone, 1,6,1,1);
+		gridbagAdd(vAddress, 0,6,1,1);
+		gridbagAdd(xAddress, 1,6,2,1);
+		gridbagAdd(bSearch, 3,6,1,1);
+		
+		gridbagAdd(vPhone, 0,7,1,1);
+		gridbagAdd(xPhone, 1,7,1,1);
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 		
-		gridbagAdd(bAdjust, 1,7,1,1);
-		gridbagAdd(bSave, 1,7,1,1);
-		gridbagAdd(bCancel, 2,7,1,1);
+		gridbagAdd(bAdjust, 1,8,1,1);
+		gridbagAdd(bSave, 1,8,1,1);
+		gridbagAdd(bCancel, 2,8,1,1);
 		
 	}
 	
