@@ -465,7 +465,7 @@ public class MainFrame extends JFrame {
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-			}else if(cont == "입양목록"){
+			}else if(cont == "입양신청관리"){
 				ContentPanel.removeAll();
 				try {
 					pContents = new ReqList();
@@ -476,7 +476,7 @@ public class MainFrame extends JFrame {
 				ContentPanel.add(pContents);
 				revalidate();
 				repaint();
-			}else if(cont == "입양완료목록"){
+			}else if(cont == "입양목록"){
 				ContentPanel.removeAll();
 				try {
 					pContents = new AdopList();
