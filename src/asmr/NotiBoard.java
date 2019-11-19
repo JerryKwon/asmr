@@ -26,6 +26,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class NotiBoard extends JPanel {
@@ -64,7 +66,7 @@ public class NotiBoard extends JPanel {
 	
 	private JButton regis0, search, pre, next;
 	
-	private final String[] col = {"锅龋","力格","累己磊","累己老矫"};
+	private final String[] col = {"力格","累己磊","累己老矫"};
 		
 	private DefaultTableModel model = new DefaultTableModel(col,0);
 	
@@ -102,7 +104,13 @@ public class NotiBoard extends JPanel {
 	                return false;               
 	        };
 	    };
+	    DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+	    dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 	    eNoticeList.addMouseListener(notiBoardMouseListener);
+	    eNoticeList.getColumnModel().getColumn(0).setPreferredWidth(400);
+	    eNoticeList.getColumnModel().getColumn(0).setCellRenderer(dtcr);
+	    eNoticeList.getColumnModel().getColumn(1).setCellRenderer(dtcr);
+	    eNoticeList.getColumnModel().getColumn(2).setCellRenderer(dtcr);
 		scrollPane = new JScrollPane(eNoticeList);
 		scrollPane.setPreferredSize(new Dimension(700,300));
 		
@@ -359,20 +367,22 @@ public class NotiBoard extends JPanel {
 		connection();
 			
 		try {
-			StringBuffer query= new StringBuffer("select p.post_no, p.post_tit, e.emp_name, p.wrt_dttm ");
+			StringBuffer query= new StringBuffer("select p.post_tit, e.emp_name, p.wrt_dttm ");
 			query.append("from post p ");
 			query.append("join emp e ");
 			query.append("on p.noti_wrt_prsn_no = e.emp_no ");
 			query.append("where p.post_tp = 'n' ");
-			query.append("order by 4 desc ");
+			query.append("order by 3 desc ");
 			
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
 			while(rs.next()) {		
 				
 //				cntrNos.add(rs.getString("CNTR_NO"));
+				String[] dttm = rs.getString("wrt_dttm").split(":");
+				String noSec = dttm[0]+":"+dttm[1];
 				
-				model.addRow(new Object[] {rs.getString("post_no"),rs.getString("post_tit"),rs.getString("emp_name"),rs.getString("wrt_dttm")});
+				model.addRow(new Object[] {rs.getString("post_tit"),rs.getString("emp_name"),noSec});
 			}
 		
 		}catch(Exception e1) {
