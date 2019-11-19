@@ -219,6 +219,23 @@ public class EmpData {
 		}
 		return empNo;
 	}
+	
+	static String getBiz(String empNo){
+		query = "SELECT BIZ_FILD FROM EMP_WORK_HIST WHERE EMP_NO='"+empNo+"'";
+		String empBiz = "";
+		try{
+			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstm.executeQuery();
+			
+			while(rs.next()){
+				empBiz = rs.getString(1);
+			}
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+		return empBiz;
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		setEmpData("0000");
