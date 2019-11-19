@@ -113,6 +113,8 @@ public class Login extends JPanel implements ActionListener{
 	public void clearField(){
 		xID.setText(null);
 		xPassword.setText(null);
+		empID = null;
+		custID = null;
 	}
 	static String getEmpNo(){
 		return empID;

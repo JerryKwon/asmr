@@ -24,6 +24,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class InqAnsBoard extends JPanel {
@@ -62,7 +64,7 @@ public class InqAnsBoard extends JPanel {
 	
 	private JButton regis, search;
 	
-	private final String[] col = {"锅龋","力格","累己磊","累己老矫"};
+	private final String[] col = {"力格","累己磊","累己老矫"};
 	
 	private DefaultTableModel model = new DefaultTableModel(col,0);
 	
@@ -90,7 +92,13 @@ public class InqAnsBoard extends JPanel {
 	                return false;               
 	        };
 	    };
+	    DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+	    dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 	    eInqAnsList.addMouseListener(inqAnsBoardMouseListener);
+	    eInqAnsList.getColumnModel().getColumn(0).setPreferredWidth(400);
+	    eInqAnsList.getColumnModel().getColumn(0).setCellRenderer(dtcr);
+	    eInqAnsList.getColumnModel().getColumn(1).setCellRenderer(dtcr);
+	    eInqAnsList.getColumnModel().getColumn(2).setCellRenderer(dtcr);
 		scrollPane = new JScrollPane(eInqAnsList);
 		scrollPane.setPreferredSize(new Dimension(700,300));
 		
@@ -245,23 +253,25 @@ public class InqAnsBoard extends JPanel {
 		connection();
 			
 		try {
-			StringBuffer query= new StringBuffer("SELECT POST_NO, POST_TIT, CUST_NAME , WRT_DTTM ");
+			StringBuffer query= new StringBuffer("SELECT POST_TIT, CUST_NAME , WRT_DTTM ");
 			query.append("FROM POST, CUST ");
 			query.append("WHERE POST.INQ_WRT_PRSN_NO = CUST.CUST_NO ");
 			query.append("UNION ");
-			query.append("SELECT POST_NO, POST_CONT, EMP_NAME AS CUST_NAME, WRT_DTTM ");
+			query.append("SELECT POST_CONT, EMP_NAME AS CUST_NAME, WRT_DTTM ");
 			query.append("FROM POST, EMP ");
 			query.append("WHERE post.ans_wrt_prsn_no = emp.emp_no ");
 //			query.append("where post.post_tp != 'n' ");
-			query.append("order by 4 desc ");
+			query.append("order by 3 desc ");
 //			System.out.println(query);
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
 			while(rs.next()) {		
 				
 //				cntrNos.add(rs.getString("CNTR_NO"));
+				String[] dttm = rs.getString("wrt_dttm").split(":");
+				String noSec = dttm[0]+":"+dttm[1];
 				
-				model.addRow(new Object[] {rs.getString("post_no"),rs.getString("post_tit"),rs.getString("CUST_NAME"),rs.getString("wrt_dttm")});
+				model.addRow(new Object[] {rs.getString("post_tit"),rs.getString("CUST_NAME"),noSec});
 			
 			}
 		
