@@ -47,27 +47,33 @@ public class RprtAssignmentNorm extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
-	private String user = "asmr";
-	private String password = "asmr";
+	private static String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private static String user = "asmr";
+	private static String password = "asmr";
 	
-	private Connection con = null;
-	private PreparedStatement pstmt = null;
-	private ResultSet rs = null;
-	private ResultSetMetaData rsmd = null;
+	private static Connection con = null;
+	private static PreparedStatement pstmt = null;
+	private static ResultSet rs = null;
+	private static ResultSetMetaData rsmd = null;
 	
 	RprtAssignmentNormButtonListener rprtAssignmentNormButtonListener;
 	
 	private JLabel vRprtNo, vRprtDttm, vRprtName, vTelNo, vRprtTp, vWrtPrsnTp, vAnmlKinds,
 	vAnmlSize, vExpln, vDscvDttm, vDscvLoc, vApprovalWaitList, vApprovalCompleteList, vRprtInfo;
 	
-	private JTextField xRprtNo, xRprtDttm, xRprtName, xTelNo,  xDscvDttm, xDscvLoc;
+	private static JTextField xRprtNo;
+	private static JTextField xRprtDttm;
+	private static JTextField xRprtName;
+	private static JTextField xTelNo;
+	private static JTextField xDscvDttm;
+	private static JTextField xDscvLoc;
 	
-	private JTextArea xExpln;
+	private static JTextArea xExpln;
 	
-	private JComboBox<String> cbRprtTp, cbWrtPrsnTp, cbAnmlKinds, cbAnmlSize;
+	private static JComboBox<String> cbRprtTp, cbWrtPrsnTp, cbAnmlKinds, cbAnmlSize;
 	
-	private JTable eApprovalWaitList, eApprovalCompleteList;
+	private static JTable eApprovalWaitList;
+	private static JTable eApprovalCompleteList;
 	
 	private JScrollPane scrollpane1, scrollpane2, rprtContentScroll;
 	
@@ -87,7 +93,7 @@ public class RprtAssignmentNorm extends JPanel {
 	
 	
 	private final String[] col1 = {"신고일시","동물종류","동물크기","설명","배정결과"};
-	private final String[] col2 = {"신고일시","동물종류","동물크기","설명"};
+	private final String[] col2 = {"배정일시","동물종류","동물크기","설명"};
 	
 	private DefaultTableModel model1 = new DefaultTableModel(col1,0);
 	private DefaultTableModel model2 = new DefaultTableModel(col2,0);
@@ -97,10 +103,11 @@ public class RprtAssignmentNorm extends JPanel {
 	
 	static List<Map<String, Serializable>> assgRprtListData ;
 	static List<Map<String, Serializable>> apprAssgListData ;
-	private JComboBox<String> combobox;
+	private static JComboBox<String> combobox;
 	static int regisRow;
 	public static String assgClickedRow;
 	public static String dttm;
+	static String rscuAssgDttm = null;
 	
 	//RprtRegisterButtonListener rprtRegisterButtonListener;
 	
@@ -369,16 +376,17 @@ public class RprtAssignmentNorm extends JPanel {
         column.setCellRenderer(renderer);
 }
 	
-	class ApprovalWaitListMouseListener extends MouseAdapter{
+	static class ApprovalWaitListMouseListener extends MouseAdapter{
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
 			super.mouseClicked(e);
+			if(eApprovalWaitList.getSelectedRow()!=-1) {
 			if(e.getButton()==1) {
 				int clickedRow = eApprovalWaitList.getSelectedRow();
 				
-				int assgClickedRow = eApprovalCompleteList.getSelectedRow();
+//				int assgClickedRow = eApprovalCompleteList.getSelectedRow();
 				
 				String rprtDttm = (String)eApprovalWaitList.getValueAt(clickedRow, 0);	
 				GetRprt(rprtDttm);
@@ -394,10 +402,42 @@ public class RprtAssignmentNorm extends JPanel {
 				
 				
 //				int row = eApprovalCompleteList.getSelectedRow();
-				String dttm = (String)eApprovalCompleteList.getValueAt(assgClickedRow, 1);
+//				String dttm = (String)eApprovalCompleteList.getValueAt(assgClickedRow, 1);
+//				System.out.println(dttm);
 //				GetRprt(expln1);
 
+				}
 			}
+			else {
+				if(e.getButton()==1) {
+//					int clickedRow = eApprovalWaitList.getSelectedRow();
+					
+					int clickedRow = eApprovalCompleteList.getSelectedRow();
+					
+					String assgDttm = (String)eApprovalCompleteList.getValueAt(clickedRow, 0);	
+					GetAssg(assgDttm);
+					rscuAssgDttm = assgDttm;
+//					String assgNo1 = getAssgNo(assgDttm);
+
+					
+//					int column = 4;
+//					// 센터에서 배정결과정보 담기.
+//					String assgNo = (String) assgRprtListData.get(clickedRow).get("배정번호");
+//					String value = (String) eApprovalWaitList.getModel().getValueAt(clickedRow, column);
+//					
+//					SetAssgRes(assgNo,value);
+					
+					
+					
+//					int row = eApprovalCompleteList.getSelectedRow();
+//					String dttm = (String)eApprovalCompleteList.getValueAt(assgClickedRow, 1);
+//					System.out.println(dttm);
+//					GetRprt(expln1);
+
+					}
+				
+			}
+			
 			
 //			else if(e.getButton()==2) {
 //				int clickedRow = eApprovalWaitList.getSelectedRow();
@@ -417,6 +457,27 @@ public class RprtAssignmentNorm extends JPanel {
 //
 //			}
 		}
+		
+		static String getAssgNo(String assgDttm){
+			connection(); 
+			String query = "SELECT assg_no FROM assg WHERE assg_dttm= to_date('"+assgDttm+"','YYYY-MM-DD hh24:mi:ss') ";
+			String assgNo = "";
+			try{
+				pstmt = con.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()){
+					assgNo = rs.getString(1);
+				}
+			}catch(SQLException e){
+				System.out.println("SELECT문 예외 발생");
+				e.printStackTrace();
+			}
+			disconnection();
+			return assgNo;
+		}
+
+		
 		
 		private void SetAssgRes(String assgno, String value) {
 			connection();
@@ -458,10 +519,106 @@ public class RprtAssignmentNorm extends JPanel {
 		
 	}
 	
+	private static void GetAssg(String assgDttm) {
+//		SELECT R.RPRT_NO, R.RPRT_DTTM, C.CUST_NAME, C.TEL_NO, R.RPRT_TP, C.CUST_TP, R.ANML_KINDS, R.ANML_SIZE, R.EXPLN, R.DSCV_DTTM, R.DSCV_LOC
+//		FROM RPRT R, CUST C, ASSG A
+//		WHERE R.RPRT_PRSN_NO = C.CUST_NO 
+//		AND A.RPRT_NO = R.RPRT_NO
+//		AND a.assg_dttm = '19/11/13 05:12:24';
+		   connection();
+		   try {
+			   StringBuffer query= new StringBuffer("SELECT R.RPRT_NO, R.RPRT_DTTM, C.CUST_NAME, C.TEL_NO, R.RPRT_TP, C.CUST_TP, R.ANML_KINDS, R.ANML_SIZE, R.EXPLN, R.DSCV_DTTM, R.DSCV_LOC ");
+			   query.append("FROM RPRT R, CUST C, ASSG A ");
+			   query.append("WHERE R.RPRT_PRSN_NO = C.CUST_NO  ");
+			   query.append("AND A.RPRT_NO = R.RPRT_NO ");
+			   query.append("AND a.assg_dttm = to_date('"+assgDttm+"','YYYY-MM-DD hh24:mi:ss') ");
+
+					
+				pstmt = con.prepareStatement(query.toString());
+				rs = pstmt.executeQuery();
+		   
+		   
+		   while(rs.next()) {
+
+				String rprtType = rs.getString("RPRT_TP");
+				String korRprtType = null;
+				
+				String custType = rs.getString("CUST_TP");
+				String korcustType = null;
+				
+				String anmlKindsType = rs.getString("ANML_KINDS");
+				String korAnmlKindsType = null;
+				
+				String anmlSizeType = rs.getString("ANML_SIZE");
+				String korAnmlSizeType = null;
+				
+				
+				switch(rprtType) {
+				case "d":
+					korRprtType = "발견";
+					break;
+				case "h":
+					korRprtType = "인계";
+					break;
+				}
+				
+				switch(custType) {
+				case "m":
+					korcustType = "회원";
+					break;
+				case "n":
+					korcustType = "비회원";
+					break;
+				}
+				
+				switch(anmlKindsType) {
+				case "d":
+					korAnmlKindsType = "개";
+					break;
+				case "c":
+					korAnmlKindsType = "고양이";
+					break;
+				case "e":
+					korAnmlKindsType = "기타";
+					break;
+				}
+				
+				switch(anmlSizeType) {
+				case "b":
+					korAnmlSizeType = "대";
+					break;
+				case "m":
+					korAnmlSizeType = "중";
+					break;
+				case "s":
+					korAnmlSizeType = "소";
+					break;
+				}
+
+				xRprtNo.setText(rs.getString("RPRT_NO"));
+				xRprtDttm.setText(rs.getString("RPRT_DTTM"));
+				xRprtName.setText(rs.getString("CUST_NAME"));
+				xTelNo.setText(rs.getString("TEL_NO"));
+				cbRprtTp.setSelectedItem(korRprtType);
+				cbWrtPrsnTp.setSelectedItem(korcustType);
+				cbAnmlKinds.setSelectedItem(korAnmlKindsType);
+				cbAnmlSize.setSelectedItem(korAnmlSizeType);
+				xExpln.setText(rs.getString("EXPLN"));
+				xDscvDttm.setText(rs.getString("DSCV_DTTM"));
+				xDscvLoc.setText(rs.getString("DSCV_LOC"));
+				
+		   }
+		   }catch(Exception e2) {
+			e2.printStackTrace();
+		}
+		
+		disconnection();
+	   	
+	}
 	
 	
 	
-	private void GetRprt(String rprtDttm) {
+	private static void GetRprt(String rprtDttm) {
 		   
 		   connection();
 		   try {
@@ -624,7 +781,7 @@ public class RprtAssignmentNorm extends JPanel {
 	
     // 데이터베이스 연결
 
-    public void connection() {
+    public static void connection() {
 
              try {
 
@@ -642,7 +799,7 @@ public class RprtAssignmentNorm extends JPanel {
     }
 
     // 데이터베이스 연결 해제
-    public void disconnection() {
+    public static void disconnection() {
 
         try {
 

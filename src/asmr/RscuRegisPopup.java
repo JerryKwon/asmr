@@ -31,6 +31,8 @@ import com.toedter.calendar.JDateChooser;
 
 public class RscuRegisPopup extends JFrame {
 	
+	static String rscuAssgDttm = RprtAssignmentNorm.rscuAssgDttm;
+	
 	private static String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	private static String user = "asmr";
 	private static String password = "asmr";
@@ -190,6 +192,28 @@ public class RscuRegisPopup extends JFrame {
 		
 	}
     
+	static String getAssgNo(String assgDttm){
+
+		String query = "SELECT assg_no FROM assg WHERE assg_dttm= to_date('"+assgDttm+"','YYYY-MM-DD hh24:mi:ss') ";
+		String assgNo = "";
+		try{
+			pstmt = con.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()){
+				assgNo = rs.getString(1);
+			}
+		}catch(SQLException e){
+			System.out.println("SELECT문 예외 발생");
+			e.printStackTrace();
+		}
+
+		return assgNo;
+	}
+    
+    
+    
+    
     static void AddRscu() {
     	connection();
 
@@ -200,20 +224,24 @@ public class RscuRegisPopup extends JFrame {
 		
 		String rscuNo =  Login.getEmpNo();
 		
-//		String assgdttm = RprtAssignmentNorm.dttm;
+		String assgNo = getAssgNo(rscuAssgDttm);
+		System.out.println(rscuAssgDttm);
+		
+
 		
     	
 		try {
 			StringBuffer query1 = new StringBuffer("INSERT INTO RSCU (RSCU_NO, RSCU_DTTM, RSCU_LOC, REP_RSCU_CREW_NO) ");
 			query1.append("VALUES( ");
-			query1.append("RSCU_SEQ.nextval, ");
-			query1.append("to_char('"+rscuDttm+"','YYYY-MM-dd'), ");
+			query1.append("'"+assgNo+"', ");
+			query1.append("to_date('"+rscuDttm+"','YYYY-MM-dd'), ");
 			query1.append("'"+rscuLoc+"', ");
 			query1.append("'"+rscuNo+"') ");
 
 
 			
 			pstmt = con.prepareStatement(query1.toString());
+			System.out.println(query1);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				con.commit();
