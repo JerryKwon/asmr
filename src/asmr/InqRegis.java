@@ -138,7 +138,7 @@ public class InqRegis extends JPanel {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(regis)) {	
 				PostInq();	
-				MainFrame.notiBoardCase();		
+				MainFrame.qnaBoardCase();
 			}
 			else if(e.getSource().equals(cancel)) {
 				MainFrame.qnaBoardCase();

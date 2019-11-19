@@ -112,8 +112,6 @@ public class InqPost extends JPanel {
 	
 	private void InqPostView() {
 		
-//		setTitle("문의사항게시글");	
-		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;
 		
@@ -141,10 +139,6 @@ public class InqPost extends JPanel {
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
-//		pack();
-//		setResizable(false);
-//		setVisible(true);
-		
 	}
 	
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
@@ -269,6 +263,13 @@ public class InqPost extends JPanel {
     	
     	
     }
+     
+     
+     
+     
+     
+     
+     
     
     
     private void UpdateInqPost(String newPostTit, String newPostCont) {
