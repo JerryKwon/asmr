@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 
-// ½Å°í¸ñ·Ï¿¡ µé¾î°¥ µ¥ÀÌÅÍ
+// ì‹ ê³ ëª©ë¡ì— ë“¤ì–´ê°ˆ ë°ì´í„°
 public class RprtData {
    public static Connection conn = ConnDB.getConnection();
    static String query;
@@ -47,7 +47,7 @@ public class RprtData {
    
    private static ArrayList<String> cntrNm;
    
-   // ¹èÁ¤Àü ½Å°í Á¤º¸ °¡Á®¿À±â.
+   // ë°°ì •ì „ ì‹ ê³  ì •ë³´ ê°€ì ¸ì˜¤ê¸°.
    static List<Map<String, Serializable>> getRprtList(){
 //      RprtAssignment.rprtNos.clear();
    
@@ -56,7 +56,7 @@ public class RprtData {
       query.append("LEFT OUTER JOIN ASSG A ");
       query.append("ON R.RPRT_NO = A.rprt_no ");
       query.append("WHERE ASSG_NO IS NULL ");
-//      query.append("AND ASSG_RES != 'a' "); ¹èÁ¤ °á°ú°¡ ½ÂÀÎÀÌ ¾Æ´Ñ°æ¿ì..
+//      query.append("AND ASSG_RES != 'a' "); ë°°ì • ê²°ê³¼ê°€ ìŠ¹ì¸ì´ ì•„ë‹Œê²½ìš°..
       
       rprtListData.clear();
       
@@ -67,24 +67,24 @@ public class RprtData {
          while(rs.next()){
                   rprtdataSet = new HashMap<String, Serializable>();
   
-                  rprtdataSet.put("½Å°íÀÏ½Ã", rs.getString(1));
-                  rprtdataSet.put("µ¿¹°Á¾·ù", rs.getString(2));
-                  rprtdataSet.put("µ¿¹°Å©±â", rs.getString(3)); 
-                  rprtdataSet.put("¼³¸í", rs.getString(4));
-//                  rprtdataSet.put("¹èÁ¤¼¾ÅÍ¸í",retrieve());
+                  rprtdataSet.put("ì‹ ê³ ì¼ì‹œ", rs.getString(1));
+                  rprtdataSet.put("ë™ë¬¼ì¢…ë¥˜", rs.getString(2));
+                  rprtdataSet.put("ë™ë¬¼í¬ê¸°", rs.getString(3)); 
+                  rprtdataSet.put("ì„¤ëª…", rs.getString(4));
+//                  rprtdataSet.put("ë°°ì •ì„¼í„°ëª…",retrieve());
                   
 //                  RprtAssignment.rprtNos.add(rs.getString("RPRT_NO"));
                
                   rprtListData.add(rprtdataSet);
          }
       }catch(SQLException e){
-         System.out.println("SELECT¹® ¿¹¿Ü ¹ß»ı");
+         System.out.println("SELECTë¬¸ ì˜ˆì™¸ ë°œìƒ");
          e.printStackTrace();
       }
       return rprtListData;
    }
    
-   // ·Î±×ÀÎÇÑ Á÷¿øÀÇ ¼¾ÅÍ¿¡ ¹èÁ¤µÈ ½Å°í °¡Á®¿À±â.
+   // ë¡œê·¸ì¸í•œ ì§ì›ì˜ ì„¼í„°ì— ë°°ì •ëœ ì‹ ê³  ê°€ì ¸ì˜¤ê¸°.
    static List<Map<String, Serializable>> getAssgRprtList(){
 //      RprtAssignment.rprtNos.clear();
       
@@ -109,30 +109,30 @@ public class RprtData {
          while(rs.next()){
                   assgrprtdataSet = new HashMap<String, Serializable>();
   
-                  assgrprtdataSet.put("½Å°íÀÏ½Ã", rs.getString(1));
-                  assgrprtdataSet.put("µ¿¹°Á¾·ù", rs.getString(2));
-                  assgrprtdataSet.put("µ¿¹°Å©±â", rs.getString(3)); 
-                  assgrprtdataSet.put("¼³¸í", rs.getString(4));
-                  assgrprtdataSet.put("¹èÁ¤¹øÈ£",rs.getString(6));
+                  assgrprtdataSet.put("ì‹ ê³ ì¼ì‹œ", rs.getString(1));
+                  assgrprtdataSet.put("ë™ë¬¼ì¢…ë¥˜", rs.getString(2));
+                  assgrprtdataSet.put("ë™ë¬¼í¬ê¸°", rs.getString(3)); 
+                  assgrprtdataSet.put("ì„¤ëª…", rs.getString(4));
+                  assgrprtdataSet.put("ë°°ì •ë²ˆí˜¸",rs.getString(6));
                   
 //                  RprtAssignment.rprtNos.add(rs.getString("RPRT_NO"));
                
                   assgRprtListData.add(assgrprtdataSet);
          }
       }catch(SQLException e){
-         System.out.println("SELECT¹® ¿¹¿Ü ¹ß»ı");
+         System.out.println("SELECTë¬¸ ì˜ˆì™¸ ë°œìƒ");
          e.printStackTrace();
       }
       return assgRprtListData;
    }
    
-   // ·Î±×ÀÎÇÑ Á÷¿øÀÇ ¼¾ÅÍ¿¡ ¹èÁ¤½ÂÀÎµÈ ½Å°í °¡Á®¿À±â.
+   // ë¡œê·¸ì¸í•œ ì§ì›ì˜ ì„¼í„°ì— ë°°ì •ìŠ¹ì¸ëœ ì‹ ê³  ê°€ì ¸ì˜¤ê¸°.
       static List<Map<String, Serializable>> getApprAssgList(){
 //         RprtAssignment.rprtNos.clear();
          
          String cntr_no = EmpData.getCntrNo(Login.getEmpNo());
       
-         StringBuffer query = new StringBuffer("SELECT rprt_dttm, anml_kinds, anml_size, expln, R.rprt_no, ASSG_NO ");
+         StringBuffer query = new StringBuffer("SELECT assg_dttm, anml_kinds, anml_size, expln, R.rprt_no, ASSG_NO ");
          query.append("FROM rprt R ");
          query.append("LEFT OUTER JOIN ASSG A ");
          query.append("ON R.RPRT_NO = A.rprt_no ");
@@ -151,18 +151,18 @@ public class RprtData {
             while(rs.next()){
                      apprassgdataSet = new HashMap<String, Serializable>();
      
-                     apprassgdataSet.put("½Å°íÀÏ½Ã", rs.getString(1));
-                     apprassgdataSet.put("µ¿¹°Á¾·ù", rs.getString(2));
-                     apprassgdataSet.put("µ¿¹°Å©±â", rs.getString(3)); 
-                     apprassgdataSet.put("¼³¸í", rs.getString(4));
-                     apprassgdataSet.put("¹èÁ¤¹øÈ£",rs.getString(6));
+                     apprassgdataSet.put("ì‹ ê³ ìŠ¹ì¸ì¼ì‹œ", rs.getString(1));
+                     apprassgdataSet.put("ë™ë¬¼ì¢…ë¥˜", rs.getString(2));
+                     apprassgdataSet.put("ë™ë¬¼í¬ê¸°", rs.getString(3)); 
+                     apprassgdataSet.put("ì„¤ëª…", rs.getString(4));
+                     apprassgdataSet.put("ë°°ì •ë²ˆí˜¸",rs.getString(6));
                      
 //                     RprtAssignment.rprtNos.add(rs.getString("RPRT_NO"));
                   
                      apprAssgListData.add(apprassgdataSet);
             }
          }catch(SQLException e){
-            System.out.println("SELECT¹® ¿¹¿Ü ¹ß»ı");
+            System.out.println("SELECTë¬¸ ì˜ˆì™¸ ë°œìƒ");
             e.printStackTrace();
          }
          return apprAssgListData;
@@ -194,7 +194,7 @@ public class RprtData {
 //                  cntrNo.add(rs.getString(1));
          }
       }catch(SQLException e){
-         System.out.println("SELECT¹® ¿¹¿Ü ¹ß»ı");
+         System.out.println("SELECTë¬¸ ì˜ˆì™¸ ë°œìƒ");
          e.printStackTrace();
       }
       return cntrNo;
@@ -216,7 +216,7 @@ public class RprtData {
          while(rs.next()){
                   cntrdataSet = new HashMap<String, Serializable>();
                   
-                  cntrdataSet.put("¼¾ÅÍÀÌ¸§", rs.getString(1));
+                  cntrdataSet.put("ì„¼í„°ì´ë¦„", rs.getString(1));
 
                
                   cntrListData.add(cntrdataSet);
@@ -224,7 +224,7 @@ public class RprtData {
                   cntrNm.add(rs.getString(1));
          }
       }catch(SQLException e){
-         System.out.println("SELECT¹® ¿¹¿Ü ¹ß»ı");
+         System.out.println("SELECTë¬¸ ì˜ˆì™¸ ë°œìƒ");
          e.printStackTrace();
       }
       return cntrNm;
@@ -234,13 +234,13 @@ public class RprtData {
 //      RprtAssignment.rprtNos.clear();
       
       StringBuffer query = new StringBuffer("select * ");
-      query.append("from (select cntr_name as nm, addr, decode(cage_size, 'b', '¿©À¯ÄÉÀÌÁö(´ë)', 'm', '¿©À¯ÄÉÀÌÁö(Áß)', 's', '¿©À¯ÄÉÀÌÁö(¼Ò)') as sz ");
+      query.append("from (select cntr_name as nm, addr, decode(cage_size, 'b', 'ì—¬ìœ ì¼€ì´ì§€(ëŒ€)', 'm', 'ì—¬ìœ ì¼€ì´ì§€(ì¤‘)', 's', 'ì—¬ìœ ì¼€ì´ì§€(ì†Œ)') as sz ");
       query.append("         from cntr ");
       query.append("         join cage ");
       query.append("         on cntr.cntr_no = cage.cntr_no) ");
       query.append("pivot( ");
       query.append("   count(sz) ");
-      query.append("   for sz in ('¿©À¯ÄÉÀÌÁö(´ë)', '¿©À¯ÄÉÀÌÁö(Áß)', '¿©À¯ÄÉÀÌÁö(¼Ò)') ");
+      query.append("   for sz in ('ì—¬ìœ ì¼€ì´ì§€(ëŒ€)', 'ì—¬ìœ ì¼€ì´ì§€(ì¤‘)', 'ì—¬ìœ ì¼€ì´ì§€(ì†Œ)') ");
       query.append(") ");
 
       
@@ -253,18 +253,18 @@ public class RprtData {
          while(rs.next()){
                   cagedataSet = new HashMap<String, Serializable>();
   
-                  cagedataSet.put("¼¾ÅÍ¸í", rs.getString(1));
-                  cagedataSet.put("ÁÖ¼Ò", rs.getString(2));
-                  cagedataSet.put("¿©À¯ÄÉÀÌÁö(´ë)", rs.getString(3)); 
-                  cagedataSet.put("¿©À¯ÄÉÀÌÁö(Áß)", rs.getString(4));
-                  cagedataSet.put("¿©À¯ÄÉÀÌÁö(¼Ò)",rs.getString(5));
+                  cagedataSet.put("ì„¼í„°ëª…", rs.getString(1));
+                  cagedataSet.put("ì£¼ì†Œ", rs.getString(2));
+                  cagedataSet.put("ì—¬ìœ ì¼€ì´ì§€(ëŒ€)", rs.getString(3)); 
+                  cagedataSet.put("ì—¬ìœ ì¼€ì´ì§€(ì¤‘)", rs.getString(4));
+                  cagedataSet.put("ì—¬ìœ ì¼€ì´ì§€(ì†Œ)",rs.getString(5));
                   
 //                  RprtAssignment.rprtNos.add(rs.getString("RPRT_NO"));
                
                   cageListData.add(cagedataSet);
          }
       }catch(SQLException e){
-         System.out.println("SELECT¹® ¿¹¿Ü ¹ß»ı");
+         System.out.println("SELECTë¬¸ ì˜ˆì™¸ ë°œìƒ");
          e.printStackTrace();
       }
       return cageListData;
@@ -296,7 +296,7 @@ static String getRprtNoList(String dttm){
 //                  cntrNo.add(rs.getString(1));
          }
       }catch(SQLException e){
-         System.out.println("SELECT¹® ¿¹¿Ü ¹ß»ı");
+         System.out.println("SELECTë¬¸ ì˜ˆì™¸ ë°œìƒ");
          e.printStackTrace();
       }
       return rprtNo;
@@ -328,7 +328,7 @@ static String getAssgNoList(String dttm){
 //               cntrNo.add(rs.getString(1));
       }
    }catch(SQLException e){
-      System.out.println("SELECT¹® ¿¹¿Ü ¹ß»ı");
+      System.out.println("SELECTë¬¸ ì˜ˆì™¸ ë°œìƒ");
       e.printStackTrace();
    }
    return assgNo;
@@ -336,8 +336,7 @@ static String getAssgNoList(String dttm){
 
    public static void main(String[] args) {
       // TODO Auto-generated method stub
-      System.out.println(getCntrNoList("¼­¿ï¼­ÃÊº¸È£¼¾ÅÍ"));
-//      System.out.println(retrieve());
+
    
    }
 
