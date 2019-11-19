@@ -206,12 +206,16 @@ public class InqAnsBoard extends JPanel {
 		MainFrame.InqPostCase();
 		connection();
 		
+		
 		try {
 			StringBuffer query= new StringBuffer("SELECT POST_TIT, POST_CONT, CUST_NAME, WRT_DTTM ");
-			query.append("FROM POST ");
-			query.append("JOIN CUST ");
-			query.append("ON POST.INQ_WRT_PRSN_NO = CUST.CUST_NO ");
-			query.append("WHERE POST_NO='"+postNo+"' ");
+			query.append("FROM POST, CUST ");
+			query.append("WHERE POST.INQ_WRT_PRSN_NO = CUST.CUST_NO ");
+			query.append("UNION ");
+			query.append("SELECT POST_TIT, POST_CONT, EMP_NAME AS CUST_NAME, WRT_DTTM ");
+			query.append("FROM POST, EMP ");
+			query.append("WHERE post.ans_wrt_prsn_no = emp.emp_no ");
+			query.append("AND POST_NO='"+postNo+"' ");
 
 				
 			pstmt = con.prepareStatement(query.toString());
@@ -241,11 +245,14 @@ public class InqAnsBoard extends JPanel {
 		connection();
 			
 		try {
-			StringBuffer query= new StringBuffer("select post_no, post_tit, cust_name, wrt_dttm ");
-			query.append("from post ");
-			query.append("join cust ");
-			query.append("on post.inq_wrt_prsn_no = cust.cust_no ");
-			query.append("where post.post_tp != 'n' ");
+			StringBuffer query= new StringBuffer("SELECT POST_NO, POST_TIT, CUST_NAME , WRT_DTTM ");
+			query.append("FROM POST, CUST ");
+			query.append("WHERE POST.INQ_WRT_PRSN_NO = CUST.CUST_NO ");
+			query.append("UNION ");
+			query.append("SELECT POST_NO, POST_CONT, EMP_NAME AS CUST_NAME, WRT_DTTM ");
+			query.append("FROM POST, EMP ");
+			query.append("WHERE post.ans_wrt_prsn_no = emp.emp_no ");
+//			query.append("where post.post_tp != 'n' ");
 			query.append("order by 4 desc ");
 //			System.out.println(query);
 			pstmt = con.prepareStatement(query.toString());
@@ -254,7 +261,7 @@ public class InqAnsBoard extends JPanel {
 				
 //				cntrNos.add(rs.getString("CNTR_NO"));
 				
-				model.addRow(new Object[] {rs.getString("post_no"),rs.getString("post_tit"),rs.getString("cust_name"),rs.getString("wrt_dttm")});
+				model.addRow(new Object[] {rs.getString("post_no"),rs.getString("post_tit"),rs.getString("CUST_NAME"),rs.getString("wrt_dttm")});
 			
 			}
 		
