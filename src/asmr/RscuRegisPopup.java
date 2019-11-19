@@ -10,7 +10,13 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 import javax.imageio.ImageIO;
@@ -18,23 +24,35 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import com.toedter.calendar.JDateChooser;
 
 public class RscuRegisPopup extends JFrame {
 	
+	private static String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private static String user = "asmr";
+	private static String password = "asmr";
+	
+	private static Connection con = null;
+	private static PreparedStatement pstmt = null;
+	private static ResultSet rs = null;
+	private static ResultSetMetaData rsmd = null;
+	
 	RscuRegisPopupButtonListener rscuRegisPopupButtonListener;
 	
 	private JLabel vRscuRegis, vRscuDttm, vRscuLoc, vRepRscuCrewName;
 	
-	private JTextField xRscuDttm, xRscuLoc, xRepRscuCrewName;
+	private static JTextField xRscuDttm;
+	private static JTextField xRscuLoc;
+	private static JTextField xRepRscuCrewName;
 	
 	private JButton confirm, cancel, imageButton, btnSearch;
 	
 //	private BufferedImage buttonIcon;
 	
-	private JDateChooser chooser;
+	private static JDateChooser chooser;
 	
 	private Color blue = new Color(22,155,213);
 	private Color white = new Color(255,255,255);
@@ -65,6 +83,7 @@ public class RscuRegisPopup extends JFrame {
 		vRepRscuCrewName = new JLabel("대표구조대원명");
 		vRepRscuCrewName.setFont(new Font("나눔고딕", Font.PLAIN, 16));
 		xRepRscuCrewName = new JTextField(20);
+		xRepRscuCrewName.setText(EmpData.getEmpName(Login.getEmpNo()));
 		xRepRscuCrewName.setEditable(false);
 		
 		btnSearch = new JButton("검색");
@@ -92,7 +111,7 @@ public class RscuRegisPopup extends JFrame {
 		LocalDate now = LocalDate.now();
 		Date date = Date.valueOf(now);
 		chooser = new JDateChooser(date,"YYYY-MM-dd");
-		chooser.setEnabled(false);
+		chooser.setEnabled(true);
 		
 		RscuRegisPopupView();
 	}
@@ -121,7 +140,7 @@ public class RscuRegisPopup extends JFrame {
 		gridbagAdd(vRepRscuCrewName, 0, 4, 1, 1);
 		gridbagAdd(xRepRscuCrewName, 2, 4, 1, 1);
 		
-		gridbagAdd(btnSearch, 4, 4, 1, 1);
+//		gridbagAdd(btnSearch, 4, 4, 1, 1);
 		
 		gridbagAdd(confirm,2, 5, 1, 1);
 		gridbagAdd(cancel, 3, 5, 1, 1);
@@ -154,6 +173,9 @@ public class RscuRegisPopup extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(confirm)) {	
+				AddRscu();
+				JOptionPane.showMessageDialog(null, "구조가 등록되었습니다.", "구조등록확인", JOptionPane.PLAIN_MESSAGE);
+				dispose();
 				
 			}
 			else if(e.getSource().equals(cancel)) {
@@ -167,6 +189,81 @@ public class RscuRegisPopup extends JFrame {
 		}
 		
 	}
+    
+    static void AddRscu() {
+    	connection();
+
+		String rscuDttm = ((JTextField)chooser.getDateEditor().getUiComponent()).getText();
+		String rscuLoc = xRscuLoc.getText();
+		
+//		String rscuCrew = xRepRscuCrewName.getText();
+		
+		String rscuNo =  Login.getEmpNo();
+		
+//		String assgdttm = RprtAssignmentNorm.dttm;
+		
+    	
+		try {
+			StringBuffer query1 = new StringBuffer("INSERT INTO RSCU (RSCU_NO, RSCU_DTTM, RSCU_LOC, REP_RSCU_CREW_NO) ");
+			query1.append("VALUES( ");
+			query1.append("RSCU_SEQ.nextval, ");
+			query1.append("to_char('"+rscuDttm+"','YYYY-MM-dd'), ");
+			query1.append("'"+rscuLoc+"', ");
+			query1.append("'"+rscuNo+"') ");
+
+
+			
+			pstmt = con.prepareStatement(query1.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+    	
+    	
+    }
+    
+ // 데이터베이스 연결
+
+    public static void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public static void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
 	
 	public static void main(String[] args) throws IOException  {
 		// TODO Auto-generated method stub

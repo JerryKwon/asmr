@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -97,8 +99,19 @@ public class RprtAssignmentNorm extends JPanel {
 	static List<Map<String, Serializable>> apprAssgListData ;
 	private JComboBox<String> combobox;
 	static int regisRow;
+	public static String assgClickedRow;
+	public static String dttm;
 	
 	//RprtRegisterButtonListener rprtRegisterButtonListener;
+	
+//	private String userWorkType;
+//	
+//	private String userCntrNo;
+//	private String userEmpNo;
+//	
+//	private ArrayList<String> empNos;
+//	private ArrayList<String> workStartDates;
+//	private ArrayList<String> cntrNos;
 	
 	public RprtAssignmentNorm() throws IOException {
 		
@@ -224,6 +237,11 @@ public class RprtAssignmentNorm extends JPanel {
 		assgRprtListData = RprtData.getAssgRprtList();
 		apprAssgListData = RprtData.getApprAssgList();
 		
+//		userCntrNo = cntrNo;
+//		userEmpNo = empNo;
+		
+//		userWorkType = GetWorkType(userCntrNo,userEmpNo); 
+		
 		
 		getData();
 		getApprData();
@@ -300,14 +318,22 @@ public class RprtAssignmentNorm extends JPanel {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			String userWorkType = EmpData.getBiz(Login.getEmpNo());
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(regis)) {
-				try {
-					new RscuRegisPopup();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}	
+				if(userWorkType.equals("r")) {
+					try {
+						new RscuRegisPopup();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "구조등록권한이 없습니다.", "경고", JOptionPane.WARNING_MESSAGE);
+				}
+					
 			}
 			else if (e.getSource().equals(previous)) {
 				
@@ -351,6 +377,9 @@ public class RprtAssignmentNorm extends JPanel {
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
 				int clickedRow = eApprovalWaitList.getSelectedRow();
+				
+				int assgClickedRow = eApprovalCompleteList.getSelectedRow();
+				
 				String rprtDttm = (String)eApprovalWaitList.getValueAt(clickedRow, 0);	
 				GetRprt(rprtDttm);
 
@@ -365,8 +394,8 @@ public class RprtAssignmentNorm extends JPanel {
 				
 				
 //				int row = eApprovalCompleteList.getSelectedRow();
-				String dttm = (String)eApprovalCompleteList.getValueAt(regisRow, 0);
-				GetRprt(dttm);
+				String dttm = (String)eApprovalCompleteList.getValueAt(assgClickedRow, 1);
+//				GetRprt(expln1);
 
 			}
 			
@@ -582,7 +611,7 @@ public class RprtAssignmentNorm extends JPanel {
         for(int i=0; i < apprAssgListData.size(); i++) {
         	
            model2.addRow(new Object[] {
-        		 apprAssgListData.get(i).get("신고일시"),
+        		 apprAssgListData.get(i).get("신고승인일시"),
         		 apprAssgListData.get(i).get("동물종류"),
         		 apprAssgListData.get(i).get("동물크기"),
         		 apprAssgListData.get(i).get("설명")
@@ -648,6 +677,66 @@ public class RprtAssignmentNorm extends JPanel {
 	   add(c);			
 				
 	   }
+	
+//	private void GetEmpList() {
+//		empNos.clear();
+//		workStartDates.clear();
+//		cntrNos.clear();
+////		model1.setRowCount(0);
+//		
+//		connection();
+//		
+//		try {
+//			StringBuffer query= new StringBuffer("SELECT c.CNTR_NO, e.EMP_NO emp_no, wh.WORK_START_DATE, e.EMP_NAME emp_name, c.CNTR_NAME cntr_name ");
+//			query.append("FROM ( SELECT EMP_NO, EMP_NAME FROM EMP) e INNER JOIN( ");
+//			query.append("	SELECT  EMP_NO, WORK_START_DATE, CNTR_NO ");
+//			query.append("	FROM EMP_WORK_HIST ");
+//			query.append("	WHERE WORK_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) wh ");
+//			query.append("	ON e.EMP_NO = wh.EMP_NO INNER JOIN( ");
+//			query.append("		SELECT CNTR_NO, CNTR_NAME FROM CNTR) c ");
+//			query.append("		ON wh.CNTR_NO = c.CNTR_NO ");
+//			query.append("ORDER BY 1,2,3 ASC ");
+//			
+//			pstmt = con.prepareStatement(query.toString());
+//			rs = pstmt.executeQuery();
+//			while(rs.next()) {		
+//				empNos.add(rs.getString("emp_no"));
+//				workStartDates.add(rs.getString("work_start_date"));
+//				cntrNos.add(rs.getString("cntr_no"));
+//				
+////				model1.addRow(new Object[] {rs.getString("emp_no"),rs.getString("emp_name"),rs.getString("cntr_name")});
+//			}
+//		
+//		}catch(Exception e1) {
+//			e1.printStackTrace();
+//		}
+//		
+//		disconnection();
+//	}
+	
+//	private String GetWorkType(String cntrNo, String empNo) {
+//		String result = null;
+//		
+//		StringBuffer query = new StringBuffer("SELECT /*+INDEX_DESC(EMP_WORK_HIST EMP_WORK_HIST_PK)*/ BIZ_FILD ");
+//		query.append("FROM emp_work_hist ");
+//		query.append("WHERE emp_no='"+empNo+"' AND cntr_no='"+cntrNo+"' AND work_end_date=to_date('9999-12-31','YYYY-MM-DD') AND ROWNUM =1 ");
+//		
+//		connection();
+//		
+//		try {
+//			pstmt = con.prepareStatement(query.toString());
+//			rs = pstmt.executeQuery();
+//			while(rs.next()) {
+//				result = rs.getString("BIZ_FILD");
+//			}
+//		}catch(SQLException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		disconnection();
+//		
+//		return result;
+//	}
 	
 
 	public static void main(String[] args) throws IOException {
