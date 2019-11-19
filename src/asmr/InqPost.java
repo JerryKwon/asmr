@@ -22,6 +22,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class InqPost extends JPanel {
+	
+	static String ino = InqAnsBoard.pno;
+	
 	private boolean isClicked = false;
 	
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
@@ -218,8 +221,9 @@ public class InqPost extends JPanel {
 //				String pno = InqAnsBoard.pno;
 //				
 ////				InqRegis.PostInq();
-//				MainFrame.qnaCase();
-//				InqRegis.PostAns(pno);
+				MainFrame.qnaCase();
+				PostAns(ino);
+				
 //				
 				
 				
@@ -228,6 +232,44 @@ public class InqPost extends JPanel {
 	}
 		
     }
+    
+     void PostAns(String pno) {
+    	connection();
+    	
+		String postTit = xTit.getText();
+		String postCont = xCont.getText();
+		String emp_no = EmpData.getSEMPNo(Login.empID);
+		
+    	
+		try {
+			StringBuffer query1 = new StringBuffer("INSERT INTO POST(POST_NO, POST_TIT, WRT_DTTM, POST_CONT, POST_TP, INQ_POST_NO, INQ_WRT_PRSN_NO, ANS_WRT_PRSN_NO, NOTI_WRT_PRSN_NO) ");
+			query1.append("VALUES( ");
+			query1.append("POST_SEQ.nextval, ");
+			query1.append("'"+postTit+"', ");
+			query1.append("sysdate, ");
+			query1.append("'"+postCont+"', ");
+			query1.append("'a', ");
+			query1.append("'"+pno+"', ");
+			query1.append("null, ");
+			query1.append("'"+emp_no+"', ");
+			query1.append("null) ");
+			
+			pstmt = con.prepareStatement(query1.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+    	
+    	
+    }
+    
     
     private void UpdateInqPost(String newPostTit, String newPostCont) {
 //		

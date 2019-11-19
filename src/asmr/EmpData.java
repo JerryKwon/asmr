@@ -205,7 +205,7 @@ public class EmpData {
 	
 	static String getSEMPNo(String empID){
 		String empNo = "";
-		query = "SELECT CUST_NO FROM EMP WHERE ID = '"+empID+"'";
+		query = "SELECT EMP_NO FROM EMP WHERE EMP_NO = '"+empID+"'";
 		try{
 			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
 			rs = pstm.executeQuery();
