@@ -558,6 +558,13 @@ public class MainFrame extends JFrame {
 		ContentPanel.revalidate();
 		ContentPanel.repaint();
 	}
+	public static void mainNotiCase(String postNo) {
+		ContentPanel.removeAll();
+		pContents = new MainNotiPost(postNo);
+		ContentPanel.add(pContents);
+		ContentPanel.revalidate();
+		ContentPanel.repaint();
+	}
 	private void changeCursor(JComponent[] comps){
 		for(JComponent c:comps){
 			c.setCursor(new Cursor(Cursor.HAND_CURSOR));

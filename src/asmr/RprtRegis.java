@@ -151,7 +151,7 @@ public class RprtRegis extends JPanel implements ActionListener{
 		fc.setMultiSelectionEnabled(true);
 		
 		timeSpinner = new JSpinner(new SpinnerDateModel());
-		timeEditor = new JSpinner.DateEditor(timeSpinner, "yyyy.MM.dd HH:mm:ss");
+		timeEditor = new JSpinner.DateEditor(timeSpinner, "yyyy.MM.dd HH:mm");
 		timeSpinner.setEditor(timeEditor);
 		//timeSpinner.setValue(new Date());
 		

@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,7 @@ public class MainPage extends JPanel{
 	private final String[] col = {"제목", "작성일시"};
 	private DefaultTableModel model = new DefaultTableModel(col, 0);
 	
+	MainMouseListener mainMouseListener;
 	List<Map<String, Serializable>> notiListData;
 	
 	GridBagLayout gridbaglayout;				// 화면을 구성하는 레이아웃
@@ -42,7 +45,10 @@ public class MainPage extends JPanel{
 		gridbaglayout = new GridBagLayout();		
 		gridbagconstraints = new GridBagConstraints();
 		
-		vMainBanner = new JLabel(new ImageIcon("images/mainbanner.jpg"));
+		mainMouseListener = new MainMouseListener();
+		
+		Image mainb = resize(new ImageIcon("images/mainbanner.jpg"), 650, 250);
+		vMainBanner = new JLabel(new ImageIcon(mainb));
 		
 		Image infect = resize(new ImageIcon("images/inf_banner.jpg"), 600, 785);
 		vinfectBanner = new JLabel(new ImageIcon(infect));
@@ -98,6 +104,7 @@ public class MainPage extends JPanel{
 		eNotice.getColumnModel().getColumn(0).setCellRenderer(dtcr);
 		eNotice.getColumnModel().getColumn(1).setPreferredWidth(150);
 		eNotice.getColumnModel().getColumn(1).setCellRenderer(dtcr);
+		eNotice.addMouseListener(mainMouseListener);
 		sNotice = new JScrollPane(eNotice);
 		sNotice.setPreferredSize(new Dimension(550,140));
 		sNotice.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -134,8 +141,8 @@ public class MainPage extends JPanel{
 		gridbagAdd(vNotice, 0, 0, 1, 1);
 		gridbagAdd(sNotice, 0, 1, 1, 1);
 //		gridbagAdd(vGood, 0, 1, 5, 1);
-		gridbagAdd(vReport, 0, 2, 5, 1);
-		gridbagAdd(vMainBanner, 0, 3, 5, 1);
+		gridbagAdd(vMainBanner, 0, 2, 5, 1);
+		gridbagAdd(vReport, 0, 3, 5, 1);
 		gridbagAdd(vinfectBanner, 11, 0, 1, 10);
 		
 //		gridbagAdd(vMainProtect, 0, 1, 6, 1);
@@ -173,6 +180,21 @@ public class MainPage extends JPanel{
 	   add(c);			
 				
 	   }
+	class MainMouseListener extends MouseAdapter{
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			super.mouseClicked(e);
+			
+//			https://blaseed.tistory.com/18			
+			//1:좌클릭, 3:우클릭
+			if(e.getButton() == 1) {
+				int clickedRow = eNotice.getSelectedRow();
+				String postNo = notiListData.get(clickedRow).get("번호").toString();
+				MainFrame.mainNotiCase(postNo);
+			}
+		}
+	}
 
 	public static void main(String[] args) {
 
