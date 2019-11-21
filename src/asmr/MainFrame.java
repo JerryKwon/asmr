@@ -24,6 +24,8 @@ import javax.swing.border.LineBorder;
 
 
 public class MainFrame extends JFrame {
+	
+	public static Color bgc = new Color(253, 247, 207);
 
 	private JButton bMainButton, bLogo, bLogin, bRegister, bLogout, bUserName, bCustName;
 	private JLabel vCenterName, vWelcome;
@@ -205,10 +207,11 @@ public class MainFrame extends JFrame {
 		mPost.setPreferredSize(new Dimension(220, 50));
 		mPost.setBorder(new EmptyBorder(0,80,0,0));
 		mBar.add(mPost);
-		//mBar.setBackground(Color.WHITE);
-		//mBar.setBorder(new LineBorder(Color.black));
+		mBar.setBackground(new Color(253, 237, 131));
+		mBar.setBorder(new LineBorder(new Color(125, 117, 65)));
 		
 		ContentPanel = new ContentPanel();
+		ContentPanel.setBackground(bgc);
 		pContents = new MainPage();
 		ContentPanel.add(pContents);
 		
@@ -220,7 +223,7 @@ public class MainFrame extends JFrame {
 	private void MainPageView() {
 		setTitle("ASMR");
 		setExtendedState(MAXIMIZED_BOTH);
-		//this.getContentPane().setBackground(Color.WHITE);
+		this.getContentPane().setBackground(new Color(253, 247, 207));
 		
 		bMainButton.setBounds(100,50,175,175);
 		bLogo.setBounds(600, 5, 600, 150);

@@ -24,11 +24,8 @@ import javax.swing.table.DefaultTableModel;
 
 public class MainPage extends JPanel{
 
-	private Image iDog, iCat, iEtc;
-	private JLabel vMainBanner, vMainProtect, iMainDog, iMainCat, iMainEtc, vMainDog, vMainCat, vMainEtc,
-				   vNowCenter, vNotice, vAnnc, vinfectBanner, vGood, vReport, vAdop;
-	private JTextArea xNowCenter;
-	private JScrollPane sNowCenter, sNotice;
+	private JLabel vMainBanner, vNotice, vinfectBanner, vGood, vReport, vAdop;
+	private JScrollPane sNotice;
 	
 	private JTable eNotice;
 	private final String[] col = {"제목", "작성일시"};
@@ -59,36 +56,6 @@ public class MainPage extends JPanel{
 		Image report = resize(new ImageIcon("images/report.png"), 650, 300);
 		vReport = new JLabel(new ImageIcon(report));
 		
-//		vMainProtect = new JLabel("현재 보호중인 유기동물");
-//		vMainProtect.setFont(new Font("나눔고딕", Font.PLAIN, 20));
-//		vMainProtect.setBorder(new EmptyBorder(0,0,0,250));
-//		iDog = resize(new ImageIcon("images/dog1.png"), 70, 70);
-//		iMainDog = new JLabel(new ImageIcon(iDog));
-//		vMainDog = new JLabel("521");
-//		vMainDog.setFont(new Font("나눔고딕", Font.BOLD, 24));
-//		
-//		iCat = resize(new ImageIcon("images/cat1.png"), 70, 70);
-//		iMainCat = new JLabel(new ImageIcon(iCat));
-//		vMainCat = new JLabel("322");
-//		vMainCat.setFont(new Font("나눔고딕", Font.BOLD, 24));
-//		
-//		iEtc = resize(new ImageIcon("images/bird1.png"), 70, 70);
-//		iMainEtc = new JLabel(new ImageIcon(iEtc));
-//		vMainEtc = new JLabel("62");
-//		vMainEtc.setFont(new Font("나눔고딕", Font.BOLD, 24));
-//		
-//		vNowCenter = new JLabel("지금 센터에서는");
-//		vNowCenter.setFont(new Font("나눔고딕", Font.PLAIN, 20));
-//		vNowCenter.setBorder(new EmptyBorder(0,0,10,0));
-//		xNowCenter = new JTextArea();
-//		xNowCenter.setText("[10:30] 서울서초센터 밍키 (고양이)가 등록되었습니다.\n"
-//				+ "[11:31] 부산해운대센터 방울 (개)가 입양되었습니다.\n"
-//				+ "[14:09] 대구달성센터 해피 (기타)가 반환되었습니다.");
-//		sNowCenter = new JScrollPane(xNowCenter);
-//		sNowCenter.setPreferredSize(new Dimension(400,150));
-//		sNowCenter.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-//		sNowCenter.setEnabled(false);
-		
 		vNotice = new JLabel("공지사항");
 		vNotice.setFont(new Font("나눔고딕", Font.BOLD, 20));
 		eNotice = new JTable(model){
@@ -109,16 +76,6 @@ public class MainPage extends JPanel{
 		sNotice.setPreferredSize(new Dimension(550,140));
 		sNotice.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
-//		vAnnc = new JLabel("공고");
-//		vAnnc.setFont(new Font("나눔고딕", Font.PLAIN, 20));
-//		vAnnc.setBorder(new EmptyBorder(10,0,0,0));
-		
-//		try {
-//			pAnnc = new Annc();
-//		} catch (IOException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		notiListData = MainPageData.getNotiList(5);
 		getData();
 		MainPageView();
@@ -144,18 +101,6 @@ public class MainPage extends JPanel{
 		gridbagAdd(vMainBanner, 0, 2, 5, 1);
 		gridbagAdd(vReport, 0, 3, 5, 1);
 		gridbagAdd(vinfectBanner, 11, 0, 1, 10);
-		
-//		gridbagAdd(vMainProtect, 0, 1, 6, 1);
-//		gridbagAdd(iMainDog, 0, 2, 1, 1);
-//		gridbagAdd(iMainCat, 1, 2, 1, 1);
-//		gridbagAdd(iMainEtc, 2, 2, 1, 1);
-//		gridbagAdd(vMainDog, 0, 3, 1, 1);
-//		gridbagAdd(vMainCat, 1, 3, 1, 1);
-//		gridbagAdd(vMainEtc, 2, 3, 1, 1);
-//		gridbagAdd(vNowCenter, 4, 1, 3, 1);
-//		gridbagAdd(sNowCenter, 4, 2, 3, 2);
-//		gridbagAdd(vAnnc, 4, 5, 3, 1);
-//		gridbagAdd(pAnnc, 4, 6, 3, 1);
 	}
 	private void getData(){
 		for(int i=0; i < notiListData.size(); i++){

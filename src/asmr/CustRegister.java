@@ -40,6 +40,8 @@ public class CustRegister extends JPanel implements ActionListener {
 
 	public CustRegister() {
 		
+		this.setBackground(MainFrame.bgc);
+		
 		gridbaglayout = new GridBagLayout();		
 		gridbagconstraints = new GridBagConstraints();
 		
