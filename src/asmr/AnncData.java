@@ -22,12 +22,13 @@ public class AnncData {
 	public static Map<String, Serializable> abanNo;
  	
 	static Map<String, Serializable> getAnnc(String abanNo){
-		query = "SELECT  a.regis_date, a.anml_kinds, a.kind, a.sex, rp.dscv_loc, feat "
-				+ "FROM ABAN A, PROT P, RSCU R, RPRT RP "
+		query = "SELECT  a.regis_date, a.anml_kinds, a.kind, a.sex, rp.dscv_loc, feat, ap.path "
+				+ "FROM ABAN A, PROT P, RSCU R, RPRT RP, ABAN_PIC AP "
 				+ "WHERE A.ABAN_NO = P.ABAN_NO "
 				+ "AND R.RSCU_NO = A.RSCU_NO "
 				+ "AND rp.rprt_no = r.rscu_no "
-				+ "AND a.aban_no = '"+abanNo+"'";
+				+ "AND ap.anml_pic_ornu = 1"
+				+ "AND ap.aban_no = '"+abanNo+"'";
 				
 		try{
 			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
@@ -41,6 +42,7 @@ public class AnncData {
 				Annc.put("성별", rs.getString(4));
 				Annc.put("발견장소", rs.getString(5));
 				Annc.put("특징", rs.getString(6));
+				Annc.put("경로", rs.getString(7));
 		}
 			}
 		catch(SQLException e){
@@ -61,7 +63,6 @@ public class AnncData {
 			while(rs.next()){
 				abanNo = new HashMap<String, Serializable>();
 				abanNo.put("번호", rs.getString("ABAN_NO"));
-				System.out.println(abanNo);
 				abanList.add(abanNo);
 				
 		}

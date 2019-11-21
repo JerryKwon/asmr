@@ -9,6 +9,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -74,6 +76,8 @@ public class RprtRegis extends JPanel implements ActionListener{
 	private JScrollPane rprtContentScroll;
 	
 	RprtRegisterButtonListener RprtRegisterButtonListener;
+	RprtTypeItemListener rprtTypeItemListener;
+	RprtAnmlKindItemListener rprtAnmlKindItemListener;
 	
 	GridBagLayout gridbaglayout;
 	GridBagConstraints gridbagconstraints;
@@ -90,6 +94,8 @@ public class RprtRegis extends JPanel implements ActionListener{
 	public RprtRegis() throws IOException{
 		
 		RprtRegisterButtonListener = new RprtRegisterButtonListener();
+		rprtTypeItemListener = new RprtTypeItemListener();
+		rprtAnmlKindItemListener = new RprtAnmlKindItemListener();
 		
 		gridbaglayout = new GridBagLayout();
 		gridbagconstraints = new GridBagConstraints();
@@ -106,10 +112,12 @@ public class RprtRegis extends JPanel implements ActionListener{
 
 		vRprtTp = new JLabel("신고구분");
 		cbRprtTp = new JComboBox<String>(rprtDiv);
-	
+		cbRprtTp.addItemListener(rprtTypeItemListener);
+		
 		vAnmlKinds = new JLabel("동물종류");
 		cbAnmlKinds = new JComboBox<String>(anmlDiv);
-				
+		cbAnmlKinds.addItemListener(rprtAnmlKindItemListener);
+		
 		vAnmlSize = new JLabel("동물크기");
 		cbAnmlSize = new JComboBox<String>(anmlSizeDiv);
 
@@ -164,6 +172,58 @@ public class RprtRegis extends JPanel implements ActionListener{
 		ChangeFont(bComps, new Font("나눔고딕", Font.BOLD, 16));
 		
 		RprtRegisView();
+	}
+	
+	private void activateDscv() {
+		timeSpinner.setEnabled(true);
+		xDscvLoc.setEnabled(true);
+	}
+	
+	private void deactivateDscv() {
+		timeSpinner.setEnabled(false);
+		xDscvLoc.setEnabled(false);
+	}
+	
+	private void activateCat() {
+		cbAnmlSize.setSelectedItem("소");
+		cbAnmlSize.setEnabled(false);
+	}
+	
+	private void deactivateCat() {
+		cbAnmlSize.setSelectedItem("대");
+		cbAnmlSize.setEnabled(true);	}
+	
+	
+	class RprtTypeItemListener implements ItemListener{
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// TODO Auto-generated method stub
+			String target = (String)e.getItem();
+			if(target.equals("발견")) {
+				activateDscv();
+			}
+			else if(target.equals("인계")) {
+				deactivateDscv();
+			}
+		}
+		
+	}
+
+	class RprtAnmlKindItemListener implements ItemListener{
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// TODO Auto-generated method stub
+			String target = (String)e.getItem();
+			if(target.equals("고양이")) {
+				activateCat();
+			}
+			else {
+				deactivateCat();
+			}
+		}
+		
 	}
 	
 	class RprtRegisterButtonListener implements ActionListener{
@@ -225,6 +285,7 @@ public class RprtRegis extends JPanel implements ActionListener{
 		gridbagconstraints.weighty=1.0;
 
 		setLayout(gridbaglayout);
+		setBackground(MainFrame.bgc);
 		
 		gridbagAdd(vTitle, 0, 0, 2, 1);
 		gridbagAdd(vRprtName, 0, 1, 1, 1);
@@ -338,22 +399,42 @@ public class RprtRegis extends JPanel implements ActionListener{
 		}
 		
 		try {
-			StringBuffer query1 = new StringBuffer("INSERT INTO RPRT(RPRT_NO, RPRT_DTTM, RPRT_TP, RPRT_MTHD, ANML_KINDS, ANML_SIZE, EXPLN, RPRT_PRSN_NO, DSCV_DTTM, DSCV_LOC) ");
-			query1.append("VALUES( ");
-			query1.append("NO_SEQ.nextval, ");
-			query1.append("sysdate, ");
-			query1.append("'"+engRprtTp+"', ");
-			query1.append("'i', ");
-			query1.append("'"+engAnmlKinds+"', ");
-			query1.append("'"+engAnmlSize+"', ");
-			query1.append("'"+expln+"', ");
-			query1.append("'0000001', ");
-			query1.append("to_date('"+dscvDttm+"','yyyy.MM.dd HH24:mi:ss'), ");
-			query1.append("'"+dscvLoc+"') ");
-
 			
+			String target = (String)cbRprtTp.getSelectedItem();
+			
+			StringBuffer query1 = new StringBuffer();
+			
+			if(target.equals("발견")) {
+				query1.append("INSERT INTO RPRT(RPRT_NO, RPRT_DTTM, RPRT_TP, RPRT_MTHD, ANML_KINDS, ANML_SIZE, EXPLN, RPRT_PRSN_NO, DSCV_DTTM, DSCV_LOC) ");
+				query1.append("VALUES( ");
+				query1.append("NO_SEQ.nextval, ");
+				query1.append("sysdate, ");
+				query1.append("'"+engRprtTp+"', ");
+				query1.append("'i', ");
+				query1.append("'"+engAnmlKinds+"', ");
+				query1.append("'"+engAnmlSize+"', ");
+				query1.append("'"+expln+"', ");
+				query1.append("'0000001', ");
+				query1.append("to_date('"+dscvDttm+"','yyyy.MM.dd HH24:mi:ss'), ");
+				query1.append("'"+dscvLoc+"') ");				
+			}
+			else if(target.equals("인계")) {
+				query1.append("INSERT INTO RPRT(RPRT_NO, RPRT_DTTM, RPRT_TP, RPRT_MTHD, ANML_KINDS, ANML_SIZE, EXPLN, RPRT_PRSN_NO) ");
+				query1.append("VALUES( ");
+				query1.append("NO_SEQ.nextval, ");
+				query1.append("sysdate, ");
+				query1.append("'"+engRprtTp+"', ");
+				query1.append("'i', ");
+				query1.append("'"+engAnmlKinds+"', ");
+				query1.append("'"+engAnmlSize+"', ");
+				query1.append("'"+expln+"', ");
+				query1.append("'0000001') ");				
+				
+			}
+						
 			pstmt = con.prepareStatement(query1.toString());
 			rs = pstmt.executeQuery();
+
 			if(rs.next()) {
 				con.commit();
 			}
