@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -166,6 +167,8 @@ public class ReqList extends JPanel {
 	
 	private void ReqListView() {
 		//setTitle("신청목록");
+		
+		gridbagConstraints.insets = new Insets(5,5,5,5);
 		
 		gridbagConstraints.anchor = GridBagConstraints.WEST;
 		gridbagConstraints.ipadx = 7;

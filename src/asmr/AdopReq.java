@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -110,6 +111,8 @@ public class AdopReq extends JPanel {
 	private void AdopReqView() {
 		
 		//setTitle("입양신청");
+		
+		gridbagConstraints.insets = new Insets(5,5,5,5);
 		
 		gridbagConstraints.anchor = GridBagConstraints.WEST;
 		gridbagConstraints.ipadx = 7;

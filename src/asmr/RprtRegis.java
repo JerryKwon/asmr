@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -215,6 +216,7 @@ public class RprtRegis extends JPanel implements ActionListener{
 	private void RprtRegisView() {
 
 		//setTitle("신고 등록");
+		gridbagconstraints.insets = new Insets(5,5,5,5);
 
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;

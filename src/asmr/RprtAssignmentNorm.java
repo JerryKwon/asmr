@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -258,6 +259,7 @@ public class RprtAssignmentNorm extends JPanel {
 	private void RprtAssignmentNormView() {
 		
 		//setTitle("신고배정_일반센터");	
+		gridbagconstraints.insets = new Insets(5,5,5,5);
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;

@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -67,6 +68,8 @@ public class AnncList extends JPanel{
 	
 	
 	private void AnncListView() {
+		
+		gridbagConstraints.insets = new Insets(5,5,5,5);
 		
 		
 		gridbagConstraints.anchor = GridBagConstraints.WEST;
