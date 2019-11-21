@@ -41,7 +41,7 @@ public class AnncDetailPopup extends JFrame {
 	
 	private JButton previous, next, imageButton;
 	
-	public AnncDetailPopup() throws IOException {
+	public AnncDetailPopup(String abanNo) throws IOException {
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
 		
@@ -237,7 +237,7 @@ public class AnncDetailPopup extends JFrame {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		
-		new AnncDetailPopup();
+		new AnncDetailPopup("2019112201");
 
 	}
 
