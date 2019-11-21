@@ -91,7 +91,9 @@ public class ReqPrsnRegist extends JFrame {
 		
 		cust = new JRadioButton("회원");
 		cust.addItemListener(custItemListener);
+		cust.setBackground(MainFrame.bgc);
 		nonCust = new JRadioButton("비회원");
+		nonCust.setBackground(MainFrame.bgc);
 		nonCust.addItemListener(nonCustItemListener);
 		
 		vCustSearch = new JLabel("회원검색");
@@ -165,6 +167,7 @@ public class ReqPrsnRegist extends JFrame {
 	private void ReqPrsnRegistView() {
 		setLayout(gridBagLayout);
 		setTitle("인수자등록");
+		this.getContentPane().setBackground(MainFrame.bgc);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -200,6 +203,7 @@ public class ReqPrsnRegist extends JFrame {
 		Component[] cops = {returning, cancel};
 		CombinePanel buttonPanel = new CombinePanel(cops, true);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 100, 0, 0));
+		buttonPanel.setBackground(MainFrame.bgc);
 		gridbagAdd(buttonPanel, 0, 9, 4, 1);
 		
 		pack();

@@ -203,6 +203,7 @@ public class EmpList extends JPanel {
 	private void EmpListView() {
 
 		setLayout(gridBagLayout);
+		setBackground(MainFrame.bgc);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -217,6 +218,7 @@ public class EmpList extends JPanel {
 		
 		Component[] cpts = {cbSearchType,xEmpNameSearch,empSearch};
 		CombinePanel cp1 = new CombinePanel(cpts,5,0);
+		cp1.setBackground(MainFrame.bgc);
 		cp1.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 		gridbagAdd(cp1, 0, 1, 2, 1);
 //		gridbagAdd(xEmpNameSearch, 1, 1, 1, 1);
@@ -226,6 +228,7 @@ public class EmpList extends JPanel {
 		
 		JPanel plainPanel = new JPanel();
 		plainPanel.add(scrollpane);
+		plainPanel.setBackground(MainFrame.bgc);
 		plainPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 10, 0));
 		gridbagAdd(plainPanel, 0, 2, 6, 1);
 		
@@ -264,6 +267,7 @@ public class EmpList extends JPanel {
 		
 		Component[] buttons = {modify,cancel,resign};
 		CombinePanel combineButtonPanel = new CombinePanel(buttons, 15,0);
+		combineButtonPanel.setBackground(MainFrame.bgc);
 		combineButtonPanel.setBorder(BorderFactory.createEmptyBorder(10,175,0,0));
 		gridbagAdd(combineButtonPanel, 0, 8, 5, 1);
 		

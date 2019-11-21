@@ -281,6 +281,7 @@ public class ProtAniList extends JPanel {
 	
 	private void ProtAniListView() throws IOException {
 		setLayout(gridBagLayout);
+		setBackground(MainFrame.bgc);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -293,12 +294,14 @@ public class ProtAniList extends JPanel {
 		JPanel registerPanel = new JPanel();
 		registerPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,0,0));
 		registerPanel.add(register);
+		registerPanel.setBackground(MainFrame.bgc);
 		registerPanel.setBorder(BorderFactory.createEmptyBorder(0,300,0,0));
 		gridbagAdd(registerPanel, 9, 0, 1, 1);
 		
 		JPanel aniListPanel = new JPanel();
 		aniListPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 		aniListPanel.add(aniListScroll);
+		aniListPanel.setBackground(MainFrame.bgc);
 		aniListPanel.setBorder(BorderFactory.createEmptyBorder(10,10,10,0));
 		gridbagAdd(aniListPanel, 0, 1, 10, 1);
 		
@@ -343,6 +346,7 @@ public class ProtAniList extends JPanel {
 
 		JPanel manButtonPanel = new JPanel();
 		manButtonPanel.add(pictureManage);
+		manButtonPanel.setBackground(MainFrame.bgc);
 		manButtonPanel.setBorder(BorderFactory.createEmptyBorder(0,100,0,0));
 		gridbagAdd(manButtonPanel, 5, 7, 1, 1);
 		
@@ -365,7 +369,8 @@ public class ProtAniList extends JPanel {
 		
 		Component[] cops1 = {modify, cancel, returning};
 		CombinePanel buttonPanel = new CombinePanel(cops1,15,0);
-		
+
+		buttonPanel.setBackground(MainFrame.bgc);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(20,500,0,0));
 		gridbagAdd(buttonPanel, 0, 12, 7, 1);
 		
@@ -373,6 +378,7 @@ public class ProtAniList extends JPanel {
 		bottomPanel.setLayout(new FlowLayout(FlowLayout.LEFT,20,10));
 		bottomPanel.add(previous);
 		bottomPanel.add(next);
+		bottomPanel.setBackground(MainFrame.bgc);
 		bottomPanel.setBorder(BorderFactory.createEmptyBorder(0,25,0,0));
 		gridbagAdd(bottomPanel, 5, 11 ,3, 1);
 	

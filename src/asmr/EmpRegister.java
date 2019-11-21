@@ -169,6 +169,7 @@ public class EmpRegister extends JFrame{
 		
 		setLayout(gridBagLayout);
 		setTitle("직원등록");
+		this.getContentPane().setBackground(MainFrame.bgc);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -203,6 +204,7 @@ public class EmpRegister extends JFrame{
 		gridbagAdd(vAddress, 0, 4, 1, 1);
 		JComponent[] addrSet = {xAddress, addressSearch};
 		CombinePanel addressSearchPanel = new CombinePanel(addrSet, 0, 0);
+		addressSearchPanel.setBackground(MainFrame.bgc);
 		gridbagAdd(addressSearchPanel, 1, 4, 1, 1);
 
 		gridbagAdd(vPhoneNum, 0, 5, 1, 1);
@@ -210,6 +212,7 @@ public class EmpRegister extends JFrame{
 
 		JComponent[] buttons = {register, cancel};
 		CombinePanel registerAndCancel = new CombinePanel(buttons, 15, 0);
+		registerAndCancel.setBackground(MainFrame.bgc);
 		registerAndCancel.setBorder(BorderFactory.createEmptyBorder(0, 220, 0, 0));
 		gridbagAdd(registerAndCancel, 0, 6, 5, 1);
 		

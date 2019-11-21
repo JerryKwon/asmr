@@ -187,6 +187,7 @@ public class NewPictureManage extends JFrame{
 	private void PictureManageView() throws IOException {
 		setLayout(gridBagLayout);
 		setTitle("유기동물사진관리");
+		this.getContentPane().setBackground(MainFrame.bgc);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -195,11 +196,14 @@ public class NewPictureManage extends JFrame{
 		gridBagConstraints.weighty=1.0;
 		
 //		gridbagAdd(vPictureManage, 0, 0, 1, 1);
-		
+
+		vPicturePath.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 		gridbagAdd(vPicturePath, 0, 1, 1, 1);
 		
 		Component[] cops1 = {xPicturePath,pictureSearch};
 		CombinePanel picturePathPanel = new CombinePanel(cops1, 5, 0);
+		picturePathPanel.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
+		picturePathPanel.setBackground(MainFrame.bgc);
 		gridbagAdd(picturePathPanel, 1, 1, 2, 1);
 		
 //		gridbagAdd(pictureListScroll, 1, 3, 1, 3);
@@ -207,7 +211,8 @@ public class NewPictureManage extends JFrame{
 		JPanel plainPanel = new JPanel();
 		plainPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 		plainPanel.add(vSelectedPicture);
-		plainPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+		plainPanel.setBackground(MainFrame.bgc);
+		plainPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 0));
 		gridbagAdd(plainPanel, 1, 2, 1, 1);
 		
 //		gridbagAdd(add, 2, 4, 1, 1);
@@ -218,18 +223,21 @@ public class NewPictureManage extends JFrame{
 		JPanel plainPanel2 = new JPanel();
 		plainPanel2.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 		plainPanel2.add(vPreview);
-		plainPanel2.setBorder(BorderFactory.createEmptyBorder(0, 45, 0, 0));
+		plainPanel2.setBackground(MainFrame.bgc);
+		plainPanel2.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 0));
 		gridbagAdd(plainPanel2, 4, 2, 1, 1);
 		
 		JPanel plainPanel3 = new JPanel();
 		plainPanel3.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 		plainPanel3.add(imageLabel);
+		plainPanel3.setBackground(MainFrame.bgc);
 		plainPanel3.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
 		gridbagAdd(plainPanel3, 4, 3, 3, 3);
 		
 		Component[] cops = {register,remove,cancel};
 		CombinePanel buttonPanel = new CombinePanel(cops,10,0);
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 220, 0, 0));
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(20, 220, 0, 0));
+		buttonPanel.setBackground(MainFrame.bgc);
 		gridbagAdd(buttonPanel, 0, 6, 7, 1);
 		
 		pack();

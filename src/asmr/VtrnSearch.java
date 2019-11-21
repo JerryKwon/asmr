@@ -75,7 +75,8 @@ public class VtrnSearch extends JFrame {
 		userCntrNo = cntrNo;
 		
 		vVtrnSearch = new JLabel("¼öÀÇ»ç¸ñ·Ï");
-		vVtrnSearch.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+		vVtrnSearch.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
+		vVtrnSearch.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 0));
 		
 //		eCenterManagerList = new JTable(model1);
 		eVtrnList = new JTable(model1) {
@@ -104,6 +105,7 @@ public class VtrnSearch extends JFrame {
 	private void CenterManagerSearchView() {
 		setLayout(gridBagLayout);
 		setTitle("¼öÀÇ»ç °Ë»ö");
+		this.getContentPane().setBackground(MainFrame.bgc);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -116,13 +118,20 @@ public class VtrnSearch extends JFrame {
 		JPanel scrollPanel = new JPanel();
 		scrollPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 		scrollPanel.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
+		scrollPanel.setBackground(MainFrame.bgc);
 		scrollPanel.add(scrollpane);
-		gridbagAdd(scrollPanel, 0, 1, 2, 1);
+		
+		JPanel plainPanel = new JPanel();
+		plainPanel.add(scrollPanel);
+		plainPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+		plainPanel.setBackground(MainFrame.bgc);
+		gridbagAdd(plainPanel, 0, 1, 2, 1);
 		
 		JComponent[] bComps = {confirm,cancel};
 		ChangeFont(bComps, new Font("³ª´®°íµñ", Font.BOLD, 12));
 		CombinePanel buttonPanel = new CombinePanel(bComps,10,0);
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,35,0,0));
+		buttonPanel.setBackground(MainFrame.bgc);
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10,60,0,0));
 		gridbagAdd(buttonPanel, 0, 2, 1, 1);
 		
 		readCenterManager();
