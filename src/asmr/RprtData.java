@@ -44,7 +44,7 @@ public class RprtData {
    public static List<Map<String, Serializable>> assgNoListData = new ArrayList<Map<String, Serializable>>();
    public static List<Map<String, Serializable>> rprtNoListData = new ArrayList<Map<String, Serializable>>();
    public static List<Map<String, Serializable>> apprAssgListData = new ArrayList<Map<String, Serializable>>();
-   
+   public static List<Map<String, Serializable>> picListData = new ArrayList<Map<String, Serializable>>();
    private static ArrayList<String> cntrNm;
    
    // 배정전 신고 정보 가져오기.
@@ -332,6 +332,41 @@ static String getAssgNoList(String dttm){
       e.printStackTrace();
    }
    return assgNo;
+}
+
+
+static String getPic(String dttm){
+    
+
+  String path = "";
+  
+  
+  StringBuffer query= new StringBuffer("SELECT PATH ");
+  query.append("FROM RPRT R, RPRT_PIC P ");
+  query.append("WHERE R.RPRT_NO = P.RPRT_NO ");
+  query.append("AND RPRT_DTTM = to_date('"+dttm+"','YYYY-MM-DD hh24:mi:ss') ");
+  
+  picListData.clear();
+  
+  try{
+     pstm = conn.prepareStatement(query.toString(), rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
+     rs = pstm.executeQuery();
+     
+     while(rs.next()){
+//              cntrdataSet = new HashMap<String, Serializable>();
+              
+              path = rs.getString(1);
+
+           
+//              cntrNoListData.add(cntrdataSet);
+              
+//              cntrNo.add(rs.getString(1));
+     }
+  }catch(SQLException e){
+     System.out.println("SELECT문 예외 발생");
+     e.printStackTrace();
+  }
+  return path;
 }
 
    public static void main(String[] args) {
