@@ -236,9 +236,11 @@ public class RprtData {
       
       StringBuffer query = new StringBuffer("select * ");
       query.append("from (select cntr_name as nm, addr, decode(cage_size, 'b', '여유케이지(대)', 'm', '여유케이지(중)', 's', '여유케이지(소)') as sz ");
-      query.append("         from cntr ");
-      query.append("         join cage ");
-      query.append("         on cntr.cntr_no = cage.cntr_no) ");
+      query.append("      FROM CNTR C1 INNER JOIN ( ");
+      query.append("         SELECT CNTR_NO,CAGE_ORNU,CAGE_SIZE  ");
+      query.append("         FROM CAGE ");
+      query.append("         WHERE (CNTR_NO,CAGE_ORNU) NOT IN(SELECT CNTR_NO,CAGE_ORNU FROM PROT ");
+      query.append("      WHERE prot_end_date = to_date('9999-12-31','yyyy-MM-dd'))) C2 ON C1.CNTR_NO = C2.CNTR_NO) ");
       query.append("pivot( ");
       query.append("   count(sz) ");
       query.append("   for sz in ('여유케이지(대)', '여유케이지(중)', '여유케이지(소)') ");
