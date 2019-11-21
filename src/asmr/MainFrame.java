@@ -63,7 +63,7 @@ public class MainFrame extends JFrame {
 		bMainButton.setBorderPainted(false);
 		bMainButton.addActionListener(listener);
 		
-		ImageIcon iLogoIcon = new ImageIcon("images/logo.png");
+		ImageIcon iLogoIcon = new ImageIcon("images/asmr_logo.png");
 		Image iLogo = iLogoIcon.getImage();
 		Image iLogoBtn = iLogo.getScaledInstance(600, 150, Image.SCALE_SMOOTH);
 		
@@ -225,9 +225,9 @@ public class MainFrame extends JFrame {
 		setExtendedState(MAXIMIZED_BOTH);
 		this.getContentPane().setBackground(new Color(253, 247, 207));
 		
-		bMainButton.setBounds(100,50,175,175);
-		bLogo.setBounds(600, 5, 600, 150);
-		mBar.setBounds(310,170,1370,50);
+		bMainButton.setBounds(80,50,175,175);
+		bLogo.setBounds(650, 5, 600, 150);
+		mBar.setBounds(290,170,1370,50);
 		
 		bLogin.setBounds(1700, 130, 85, 30);
 		bRegister.setBounds(1800, 130, 90, 30);

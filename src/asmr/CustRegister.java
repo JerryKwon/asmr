@@ -146,6 +146,7 @@ public class CustRegister extends JPanel implements ActionListener {
 		Component[] comps = {bRegister, bCancel};
 		CombinePanel btn = new CombinePanel(comps, true);
 		btn.setBorder(new EmptyBorder(20, 20, 0, 0));
+		btn.setBackground(MainFrame.bgc);
 		
 		gridbagAdd(btn, 1, 8, 1, 1);
 		
