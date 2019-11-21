@@ -45,11 +45,38 @@ public class AnncData {
 			rs = pstm.executeQuery();
 			
 			while(rs.next()){
+				String korAnmlKind = "";
+				switch(rs.getString(2)){
+				case("d"):
+					korAnmlKind = "개";
+					break;
+				case("c"):
+					korAnmlKind = "고양이";
+					break;
+				case("e"):
+					korAnmlKind = "기타";	
+					break;
+				}
+				
+				String korSex = "";
+				switch(rs.getString(4)){
+				case("m"):
+					korSex = "수컷";
+					break;
+				case("f"):
+					korSex = "암컷";
+					break;
+				case("e"):
+					korSex = "미상";
+					break;
+				
+				}
+				
 				Annc = new HashMap<String, Serializable>();
 				Annc.put("등록일자", rs.getString(1));
-				Annc.put("동물종류", rs.getString(2));
+				Annc.put("동물종류", korAnmlKind);
 				Annc.put("품종", rs.getString(3));
-				Annc.put("성별", rs.getString(4));
+				Annc.put("성별", korSex);
 				Annc.put("발견장소", rs.getString(5));
 				Annc.put("특징", rs.getString(6));
 				Annc.put("경로", rs.getString(7));
