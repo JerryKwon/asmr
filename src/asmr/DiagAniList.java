@@ -145,6 +145,8 @@ public class DiagAniList extends JPanel{
 		                return false;               
 		        };
 		    };
+		eProtAniList.getTableHeader().setReorderingAllowed(false);
+		eProtAniList.getTableHeader().setResizingAllowed(false);
 		eProtAniList.addMouseListener(protAniListMouseListener);
 		protAniListScroll = new JScrollPane(eProtAniList);
 		protAniListScroll.setPreferredSize(new Dimension(750,200));
@@ -157,6 +159,8 @@ public class DiagAniList extends JPanel{
 	                return false;               
 	        };
 	    };
+		eDiagList.getTableHeader().setReorderingAllowed(false);
+		eDiagList.getTableHeader().setResizingAllowed(false);
 		eDiagList.addMouseListener(diagListMouseListener);
 		diagListScroll = new JScrollPane(eDiagList);
 		diagListScroll.setPreferredSize(new Dimension(450,200));

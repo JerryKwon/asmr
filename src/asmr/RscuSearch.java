@@ -89,6 +89,8 @@ public class RscuSearch extends JFrame{
 	                return false;               
 	        };
 	    };
+		eRscuList.getTableHeader().setReorderingAllowed(false);
+		eRscuList.getTableHeader().setResizingAllowed(false);
 		eRscuList.addMouseListener(rscuSearchMouseListener);
 		scrollPane = new JScrollPane(eRscuList);
 		scrollPane.setPreferredSize(new Dimension(525,100));

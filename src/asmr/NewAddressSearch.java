@@ -116,6 +116,8 @@ public class NewAddressSearch extends JFrame{
 	                return false;               
 	        };
 	    };
+		eAddressList.getTableHeader().setReorderingAllowed(false);
+		eAddressList.getTableHeader().setResizingAllowed(false);
 		eAddressList.addMouseListener(addrSearchMouseListener);
 		scrollPane = new JScrollPane(eAddressList);
 		scrollPane.setPreferredSize(new Dimension(425,200));
