@@ -3,8 +3,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +22,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -109,6 +110,12 @@ public class RprtAssignmentNorm extends JPanel {
 	public static String assgClickedRow;
 	public static String dttm;
 	static String rscuAssgDttm = null;
+	
+	private static String picPath = "";
+	
+	private static ImageIcon noImageIcon;
+	private static JLabel imageLabel;	
+	
 	
 	//RprtRegisterButtonListener rprtRegisterButtonListener;
 	
@@ -213,11 +220,12 @@ public class RprtAssignmentNorm extends JPanel {
 		xDscvLoc = new JTextField(20);
 		xDscvLoc.setEditable(false);
 		
-		buttonIcon = ImageIO.read(new File("./images/cat1.png"));
-		Imagebutton = new JButton(new ImageIcon(buttonIcon));
-		Imagebutton.setBorderPainted(false);
-		Imagebutton.setContentAreaFilled(false);
-		Imagebutton.setFocusPainted(false);
+		File input = new File("images/NoImage.png");
+	    BufferedImage image = ImageIO.read(input);
+	    BufferedImage resized = resize(image,200,200);
+	    imageLabel = new JLabel();
+	    noImageIcon = new ImageIcon(resized);
+	    imageLabel.setIcon(noImageIcon);
 		
 		regis = new JButton("µî·Ï");
 		regis.setBackground(blue);
@@ -309,7 +317,7 @@ public class RprtAssignmentNorm extends JPanel {
 		gridbagAdd(vDscvLoc, 0, 13, 1, 1);
 		gridbagAdd(xDscvLoc, 2, 13, 1, 1);
 		
-		gridbagAdd(Imagebutton, 11,7,5,3);
+		gridbagAdd(imageLabel, 11,7,5,3);
 		
 		gridbagAdd(previous, 12,13,1,3);
 		gridbagAdd(next, 13,13,1,3);
@@ -392,6 +400,19 @@ public class RprtAssignmentNorm extends JPanel {
 				
 				String rprtDttm = (String)eApprovalWaitList.getValueAt(clickedRow, 0);	
 				GetRprt(rprtDttm);
+				
+				picPath = RprtData.getPic(rprtDttm);
+				
+				try {
+					File input = new File(picPath);
+					BufferedImage image = ImageIO.read(input);
+					BufferedImage resized = resize(image,200,200);
+					ImageIcon icon = new ImageIcon(resized);
+					imageLabel.setIcon(icon);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					imageLabel.setIcon(noImageIcon);
+				}
 
 				
 				int column = 4;
@@ -420,6 +441,19 @@ public class RprtAssignmentNorm extends JPanel {
 					GetAssg(assgDttm);
 					rscuAssgDttm = assgDttm;
 //					String assgNo1 = getAssgNo(assgDttm);
+					
+					picPath = RprtData.getAssgPic(assgDttm);
+					
+					try {
+						File input = new File(picPath);
+						BufferedImage image = ImageIO.read(input);
+						BufferedImage resized = resize(image,200,200);
+						ImageIcon icon = new ImageIcon(resized);
+						imageLabel.setIcon(icon);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						imageLabel.setIcon(noImageIcon);
+					}
 
 					
 //					int column = 4;
@@ -897,6 +931,16 @@ public class RprtAssignmentNorm extends JPanel {
 //		return result;
 //	}
 	
+	
+    private static BufferedImage resize(BufferedImage img, int height, int width) {
+        Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resized.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+        return resized;
+    }
+
 
 	public static void main(String[] args) throws IOException {
 		new RprtAssignmentNorm();

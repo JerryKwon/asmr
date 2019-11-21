@@ -4,8 +4,10 @@ import java.awt.Button;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -104,6 +106,7 @@ public class RprtAssignment extends JPanel {
    List<Map<String, Serializable>> cageListData;
    
    ArrayList<String> cntrListData;
+   ArrayList<String> picListData; 
    
    ArrayList<String> cntrMoListData;
    
@@ -114,9 +117,11 @@ public class RprtAssignment extends JPanel {
    private JComboBox<String> combobox;
    
    ArrayList<String> array = new ArrayList<String>();
-
-
+   private static String picPath = "";
    
+   private ImageIcon noImageIcon;
+   private JLabel imageLabel;
+
    public RprtAssignment() throws IOException {
 	   
 //	  rprtNos = new ArrayList<String>();
@@ -209,12 +214,14 @@ public class RprtAssignment extends JPanel {
       vDscvLoc = new JLabel("발견장소");
       xDscvLoc = new JTextField(20);
       xDscvLoc.setEditable(false);
+
+      File input = new File("images/NoImage.png");
+      BufferedImage image = ImageIO.read(input);
+      BufferedImage resized = resize(image,200,200);
+      imageLabel = new JLabel();
+      noImageIcon = new ImageIcon(resized);
+      imageLabel.setIcon(noImageIcon);
       
-      buttonIcon = ImageIO.read(new File("./images/cat1.png"));
-      Imagebutton = new JButton(new ImageIcon(buttonIcon));
-      Imagebutton.setBorderPainted(false);
-      Imagebutton.setContentAreaFilled(false);
-      Imagebutton.setFocusPainted(false);
 
       previous = new JButton("<<");
       previous.addActionListener(rprtAssignmentButtonListener);
@@ -236,6 +243,8 @@ public class RprtAssignment extends JPanel {
       rprtListData = RprtData.getRprtList();
       
       cntrListData = RprtData.getCntrList();
+      
+      
       
 //      RprtData.getCntrNoList(nm);
       
@@ -301,7 +310,7 @@ public class RprtAssignment extends JPanel {
       gridbagAdd(vDscvLoc, 0, 13, 1, 1);
       gridbagAdd(xDscvLoc, 2, 13, 1, 1);
       
-      gridbagAdd(Imagebutton, 11,7,5,3);
+      gridbagAdd(imageLabel, 11,7,5,3);
       
       gridbagAdd(previous, 12,11,1,3);
       gridbagAdd(next, 13,11,1,3);
@@ -429,6 +438,20 @@ public class RprtAssignment extends JPanel {
 //				String cntrName = (String)eEmpList.getValueAt(clickedRow, 2);
 //				String cntrNo = cntrNos.get(clickedRow);
 				GetRprt(rprtDttm);
+				picPath = RprtData.getPic(rprtDttm);
+				
+				try {
+					File input = new File(picPath);
+					BufferedImage image = ImageIO.read(input);
+					BufferedImage resized = resize(image,200,200);
+					ImageIcon icon = new ImageIcon(resized);
+					imageLabel.setIcon(icon);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					imageLabel.setIcon(noImageIcon);
+				}
+			    
+				
 				
 //				String selectCntr = (String)combobox.getSelectedItem();
 //	        	 
@@ -489,6 +512,7 @@ public class RprtAssignment extends JPanel {
       
    }
    
+
    private void GetRprt(String rprtDttm) {
 	   
 	   connection();
@@ -724,6 +748,15 @@ public class RprtAssignment extends JPanel {
         } catch (SQLException e) {
         	e.printStackTrace();
         }
+    }
+    
+    private static BufferedImage resize(BufferedImage img, int height, int width) {
+        Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resized.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+        return resized;
     }
 
     
