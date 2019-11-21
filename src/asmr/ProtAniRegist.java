@@ -421,6 +421,8 @@ public class ProtAniRegist extends JFrame{
     
     private void RegistProtAni() {
     	
+    	String cntrNo = this.userCntrNo;
+    	
     	String abanAniType= (String)cbAbanAniType.getSelectedItem();
     	String engAbanAniType = null;
     	
@@ -578,34 +580,57 @@ public class ProtAniRegist extends JFrame{
 			isPicture = false;
 		}
 		
-		StringBuffer query3 = new StringBuffer("INSERT INTO PROT(PROT_NO,PROT_START_DATE,ABAN_NO,CNTR_NO,CAGE_ORNU,CAMA_EMP_NO) ");
-		query3.append("SELECT ");
-		query3.append("	CASE WHEN SUBSTR(PROT_NO,1,8) = to_char(TRUNC(SYSDATE),'yyyymmdd') ");
-		query3.append(" THEN to_char(TRUNC(SYSDATE),'yyyymmdd') || CASE WHEN SUBSTR(PROT_NO,10,1) = '9' THEN to_char(SUBSTR(PROT_NO,9,1)+1) ELSE SUBSTR(PROT_NO,9,1) END || CASE WHEN SUBSTR(PROT_NO,10,1)='9' THEN '0' ELSE to_char(SUBSTR(PROT_NO,10,1)+1) END ");
-		query3.append(" ELSE to_char(TRUNC(SYSDATE),'yyyymmdd') || '01' END PROT_NO, ");
-		query3.append("	TRUNC(SYSDATE) PROT_START_DATE, ");
-		query3.append("	(SELECT NVL(ABAN_NO,0) ABAN_NO FROM (SELECT /*+INDEX_DESC(ABAN ABAN_PK) */ MAX(ABAN_NO) ABAN_NO FROM ABAN)) ABAN_NO, ");
-		query3.append("	(SELECT CNTR_NO ");
-		query3.append("	FROM(SELECT * FROM ASSG ");
-		query3.append("		WHERE ASSG_RES='a') a INNER JOIN (SELECT RSCU_NO ");
-		query3.append("		FROM RSCU ");
-		query3.append("	WHERE RSCU_NO='"+rscuNo+"') r ");
-		query3.append("	ON a.ASSG_NO = r.RSCU_NO) CNTR_NO, ");
-		query3.append("	'"+ornu+"' CAGE_ORNU, ");
-		query3.append("	(SELECT /*+INDEX_ASC(EMP_WORK_HIST EMP_WORK_HIST_PK) */ EMP_NO FROM EMP_WORK_HIST ");
-		query3.append("	WHERE CNTR_NO = (SELECT CNTR_NO ");
-		query3.append("	FROM(SELECT * FROM ASSG ");
-		query3.append("		WHERE ASSG_RES='a') a INNER JOIN (SELECT RSCU_NO ");
-		query3.append("		FROM RSCU ");
-		query3.append("		WHERE RSCU_NO='"+rscuNo+"') r ");
-		query3.append("		ON a.ASSG_NO = r.RSCU_NO) ");
-		query3.append("	AND BIZ_FILD='p' ");
-		query3.append("	AND ROWNUM=1) CAMA_EMP_NO ");
-		query3.append("FROM(SELECT NVL(PROT_NO,0) PROT_NO ");
-		query3.append("	FROM(SELECT /*+INDEX_DESC(PROT PROT_PK) */ MAX(PROT_NO) PROT_NO ");
-		query3.append("		FROM PROT) ");
-		query3.append(") ");
-			
+		StringBuffer query3 = new StringBuffer();
+		if(abanAniType.equals("±¸Á¶")) {
+			query3.append("INSERT INTO PROT(PROT_NO,PROT_START_DATE,ABAN_NO,CNTR_NO,CAGE_ORNU,CAMA_EMP_NO) ");
+			query3.append("SELECT ");
+			query3.append("	CASE WHEN SUBSTR(PROT_NO,1,8) = to_char(TRUNC(SYSDATE),'yyyymmdd') ");
+			query3.append(" THEN to_char(TRUNC(SYSDATE),'yyyymmdd') || CASE WHEN SUBSTR(PROT_NO,10,1) = '9' THEN to_char(SUBSTR(PROT_NO,9,1)+1) ELSE SUBSTR(PROT_NO,9,1) END || CASE WHEN SUBSTR(PROT_NO,10,1)='9' THEN '0' ELSE to_char(SUBSTR(PROT_NO,10,1)+1) END ");
+			query3.append(" ELSE to_char(TRUNC(SYSDATE),'yyyymmdd') || '01' END PROT_NO, ");
+			query3.append("	TRUNC(SYSDATE) PROT_START_DATE, ");
+			query3.append("	(SELECT NVL(ABAN_NO,0) ABAN_NO FROM (SELECT /*+INDEX_DESC(ABAN ABAN_PK) */ MAX(ABAN_NO) ABAN_NO FROM ABAN)) ABAN_NO, ");
+			query3.append("	(SELECT CNTR_NO ");
+			query3.append("	FROM(SELECT * FROM ASSG ");
+			query3.append("		WHERE ASSG_RES='a') a INNER JOIN (SELECT RSCU_NO ");
+			query3.append("		FROM RSCU ");
+			query3.append("	WHERE RSCU_NO='"+rscuNo+"') r ");
+			query3.append("	ON a.ASSG_NO = r.RSCU_NO) CNTR_NO, ");
+			query3.append("	'"+ornu+"' CAGE_ORNU, ");
+			query3.append("	(SELECT /*+INDEX_ASC(EMP_WORK_HIST EMP_WORK_HIST_PK) */ EMP_NO FROM EMP_WORK_HIST ");
+			query3.append("	WHERE CNTR_NO = (SELECT CNTR_NO ");
+			query3.append("	FROM(SELECT * FROM ASSG ");
+			query3.append("		WHERE ASSG_RES='a') a INNER JOIN (SELECT RSCU_NO ");
+			query3.append("		FROM RSCU ");
+			query3.append("		WHERE RSCU_NO='"+rscuNo+"') r ");
+			query3.append("		ON a.ASSG_NO = r.RSCU_NO) ");
+			query3.append("	AND BIZ_FILD='p' ");
+			query3.append("	AND ROWNUM=1) CAMA_EMP_NO ");
+			query3.append("FROM(SELECT NVL(PROT_NO,0) PROT_NO ");
+			query3.append("	FROM(SELECT /*+INDEX_DESC(PROT PROT_PK) */ MAX(PROT_NO) PROT_NO ");
+			query3.append("		FROM PROT) ");
+			query3.append(") ");
+		}	
+		
+		else if(abanAniType.equals("Åº»ý")) {
+			query3.append("INSERT INTO PROT(PROT_NO,PROT_START_DATE,ABAN_NO,CNTR_NO,CAGE_ORNU,CAMA_EMP_NO) ");
+			query3.append("SELECT ");
+			query3.append("	CASE WHEN SUBSTR(PROT_NO,1,8) = to_char(TRUNC(SYSDATE),'yyyymmdd') ");
+			query3.append(" THEN to_char(TRUNC(SYSDATE),'yyyymmdd') || CASE WHEN SUBSTR(PROT_NO,10,1) = '9' THEN to_char(SUBSTR(PROT_NO,9,1)+1) ELSE SUBSTR(PROT_NO,9,1) END || CASE WHEN SUBSTR(PROT_NO,10,1)='9' THEN '0' ELSE to_char(SUBSTR(PROT_NO,10,1)+1) END ");
+			query3.append(" ELSE to_char(TRUNC(SYSDATE),'yyyymmdd') || '01' END PROT_NO, ");
+			query3.append("	TRUNC(SYSDATE) PROT_START_DATE, ");
+			query3.append("	(SELECT NVL(ABAN_NO,0) ABAN_NO FROM (SELECT /*+INDEX_DESC(ABAN ABAN_PK) */ MAX(ABAN_NO) ABAN_NO FROM ABAN)) ABAN_NO, ");
+			query3.append("	'"+cntrNo+"' CNTR_NO, ");
+			query3.append("	'"+ornu+"' CAGE_ORNU, ");
+			query3.append("	(SELECT /*+INDEX_ASC(EMP_WORK_HIST EMP_WORK_HIST_PK) */ EMP_NO FROM EMP_WORK_HIST ");
+			query3.append("	WHERE CNTR_NO ='"+cntrNo+"' ");
+			query3.append("	AND BIZ_FILD='p' ");
+			query3.append("	AND ROWNUM=1) CAMA_EMP_NO ");
+			query3.append("FROM(SELECT NVL(PROT_NO,0) PROT_NO ");
+			query3.append("	FROM(SELECT /*+INDEX_DESC(PROT PROT_PK) */ MAX(PROT_NO) PROT_NO ");
+			query3.append("		FROM PROT) ");
+			query3.append(") ");
+		}
+		
 		try {
 			pstmt = con.prepareStatement(query1.toString());
 			rs = pstmt.executeQuery();
