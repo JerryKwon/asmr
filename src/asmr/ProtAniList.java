@@ -1225,7 +1225,7 @@ public class ProtAniList extends JPanel {
 					break;
 				}
 								
-				model1.addRow(new Object[] {rs.getString("ABAN_NAME"),korAnmlKinds,rs.getString("KIND"),rs.getString("AGE"),korAnmlSize,rs.getString("FEAT")});
+				model1.addRow(new Object[] {rs.getString("ABAN_NAME"),korAnmlKinds,rs.getString("KIND"),rs.getString("AGE"),korAnmlSize,rs.getString("FEAT").trim()});
 			}
     		
     	}catch(SQLException e) {
