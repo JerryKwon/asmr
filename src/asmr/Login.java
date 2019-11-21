@@ -68,7 +68,7 @@ public class Login extends JPanel implements ActionListener{
 	private void CustLoginCheck(String id, String pw){
 		int custNo;
 		custNo = CustData.getCustNo(id);
-		if(custNo == 0){
+		if(custNo == -1){
 			JOptionPane.showMessageDialog(null, "존재하지 않는 아이디 입니다.");
 		}
 		else{
