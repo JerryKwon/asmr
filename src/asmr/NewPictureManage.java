@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -195,6 +196,8 @@ public class NewPictureManage extends JFrame{
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
 		
+		gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+		
 //		gridbagAdd(vPictureManage, 0, 0, 1, 1);
 
 		vPicturePath.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
@@ -212,7 +215,7 @@ public class NewPictureManage extends JFrame{
 		plainPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 		plainPanel.add(vSelectedPicture);
 		plainPanel.setBackground(MainFrame.bgc);
-		plainPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 0));
+//		plainPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 0));
 		gridbagAdd(plainPanel, 1, 2, 1, 1);
 		
 //		gridbagAdd(add, 2, 4, 1, 1);
@@ -224,14 +227,14 @@ public class NewPictureManage extends JFrame{
 		plainPanel2.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 		plainPanel2.add(vPreview);
 		plainPanel2.setBackground(MainFrame.bgc);
-		plainPanel2.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 0));
+		plainPanel2.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0));
 		gridbagAdd(plainPanel2, 4, 2, 1, 1);
 		
 		JPanel plainPanel3 = new JPanel();
 		plainPanel3.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 		plainPanel3.add(imageLabel);
 		plainPanel3.setBackground(MainFrame.bgc);
-		plainPanel3.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
+		plainPanel3.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 		gridbagAdd(plainPanel3, 4, 3, 3, 3);
 		
 		Component[] cops = {register,remove,cancel};

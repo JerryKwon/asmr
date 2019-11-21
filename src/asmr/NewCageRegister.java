@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -119,6 +120,7 @@ public class NewCageRegister extends JFrame{
 		
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
+		gridBagConstraints.insets = new Insets(5, 5, 5, 5);
 		
 //		gridbagAdd(vCageRegister, 0, 0, 1, 1);
 		
@@ -158,7 +160,7 @@ public class NewCageRegister extends JFrame{
 		ChangeFont(buttons, new Font("³ª´®°íµñ", Font.BOLD, 12));
 		CombinePanel buttonPanel = new CombinePanel(buttons, 10,0);
 		buttonPanel.setBackground(MainFrame.bgc);	
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,45,0,0));
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,65,0,0));
 		gridbagAdd(buttonPanel, 0, 6, 6, 1);
 		
 		

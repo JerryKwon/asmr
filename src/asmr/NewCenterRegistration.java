@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -192,6 +193,7 @@ public class NewCenterRegistration extends JFrame{
 		
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
+		gridBagConstraints.insets = new Insets(5, 5, 5, 5);
 		
 		//화면제목
 //		gridbagAdd(vNewCenterRegist, 0, 0, 1, 1);
@@ -256,7 +258,7 @@ public class NewCenterRegistration extends JFrame{
 		JComponent[] buttons = {register, cancel};
 		CombinePanel buttonPanel = new CombinePanel(buttons, 10, 0);
 		buttonPanel.setBackground(MainFrame.bgc);
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(5,250,0,0));
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(5,270,0,0));
 		gridbagAdd(buttonPanel, 0, 10, 4, 1);
 		
 		

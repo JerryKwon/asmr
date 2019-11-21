@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -180,6 +181,8 @@ public class ProtAniRegist extends JFrame{
 		
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
+		
+		gridBagConstraints.insets = new Insets(5, 5, 5, 5);
 	
 //		gridbagAdd(vProtAniRegist, 0, 0, 1, 1);
 		
@@ -230,7 +233,7 @@ public class ProtAniRegist extends JFrame{
 		Component[] cops = {register, cancel};
 		CombinePanel buttonPanel = new CombinePanel(cops, true);
 		buttonPanel.setBackground(MainFrame.bgc);
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 225, 0, 0));
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 265, 0, 0));
 		gridbagAdd(buttonPanel, 0, 10, 6, 1);
 		
 		pack();
