@@ -112,7 +112,7 @@ public class RscuRegisPopup extends JFrame {
 		
 		LocalDate now = LocalDate.now();
 		Date date = Date.valueOf(now);
-		chooser = new JDateChooser(date,"YYYY-MM-dd");
+		chooser = new JDateChooser(date,"yyyy-MM-dd");
 		chooser.setEnabled(true);
 		
 		RscuRegisPopupView();
