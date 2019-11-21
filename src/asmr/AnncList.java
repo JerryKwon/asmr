@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class AnncList extends JPanel{
 	AnncListMouseListener anncListMouseListener;
 	
 	private JPanel[] panelArray;
-	private String[] abanList;
+	private ArrayList<String> abanList = new ArrayList<String>();
 	List<Map<String, Serializable>> abanNo;
 	
 	private JLabel vAnncList;
@@ -41,7 +42,7 @@ public class AnncList extends JPanel{
 	private Color white = new Color(255,255,255);
 	
 	public AnncList() throws IOException {
-		
+		setBackground(MainFrame.bgc);
 		anncListMouseListener = new AnncListMouseListener();
 		
 		gridbagLayout = new GridBagLayout();
@@ -59,11 +60,13 @@ public class AnncList extends JPanel{
 		regis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
 		panelArray = new JPanel[8];
+		
 		abanNo = AnncData.getAbanNoList();
+		
 		getData();
 		
-		for (int i =0 ; i<abanNo.size(); i++) {
-			panelArray[i] = new Annc(abanList[i]);
+		for (int i=0 ; i < 6/*abanList.size()*/; i++) {
+			panelArray[i] = new Annc(abanList.get(0));
 			panelArray[i].addMouseListener(anncListMouseListener);
 		}
 		
@@ -89,13 +92,13 @@ public class AnncList extends JPanel{
 		//gridbagAdd(regis, 4, 0, 1, 1);
 		
 		gridbagAdd(panelArray[0], 0, 1, 2 , 2);
-//		gridbagAdd(panelArray[1], 2, 1, 2 , 2);
-//		
-//		gridbagAdd(panelArray[2], 0, 3, 2 , 2);
-//		gridbagAdd(panelArray[3], 2, 3, 2 , 2);
-//		
-//		gridbagAdd(panelArray[4], 0, 5, 2 , 2);
-//		gridbagAdd(panelArray[5], 2, 5, 2 , 2);
+		gridbagAdd(panelArray[1], 2, 1, 2 , 2);
+		
+		gridbagAdd(panelArray[2], 0, 3, 2 , 2);
+		gridbagAdd(panelArray[3], 2, 3, 2 , 2);
+		
+		gridbagAdd(panelArray[4], 0, 5, 2 , 2);
+		gridbagAdd(panelArray[5], 2, 5, 2 , 2);
 		
 //		gridbagAdd(panelArray[6], 0, 7, 2 , 2);
 //		gridbagAdd(panelArray[7], 2, 7, 2 , 2);
@@ -125,7 +128,7 @@ public class AnncList extends JPanel{
 	
 	private void getData() {
 		for(int i=0; i < abanNo.size(); i++) {
-			abanList[i] = abanNo.get(i).get("¹øÈ£").toString();
+			abanList.add(abanNo.get(i).get("¹øÈ£").toString());
 		}
 	}
 	class AnncListButtonListener implements ActionListener{
@@ -165,8 +168,7 @@ public class AnncList extends JPanel{
 	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		
-		System.out.println(AnncData.getAbanNoList().size());
+		new AnncList();
 
 	}
 
