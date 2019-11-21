@@ -2,8 +2,10 @@ package asmr;
 
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -28,6 +30,7 @@ public class Annc extends JPanel {
 	private BufferedImage buttonIcon;
 	
 	private JButton imageButton;
+	private ImageIcon noImageIcon;
 	
 	Map<String, Serializable> annc;
 	
@@ -35,6 +38,7 @@ public class Annc extends JPanel {
 	GridBagConstraints gridbagConstraints;
 	
 	public Annc(String abanNo) throws IOException {
+		setBackground(MainFrame.bgc);
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
 		
@@ -68,6 +72,10 @@ public class Annc extends JPanel {
 		imageButton.setContentAreaFilled(false);
 		imageButton.setFocusPainted(false);
 		
+		File input = new File("images/NoImage.png");
+	    BufferedImage image = ImageIO.read(input);
+	    BufferedImage resized = resize(image,200,200);
+	    noImageIcon = new ImageIcon(resized);
 		
 		JComponent[] vComps2 = {vRegisDate, vAnmlKinds, vKind, vSex, vDscvLoc, vFeat};
 		ChangeFont(vComps2, new Font("³ª´®°íµñ", Font.PLAIN, 16));
@@ -89,25 +97,25 @@ public class Annc extends JPanel {
 
 		setLayout(gridbagLayout);
 		
-		gridbagAdd(vRegisDate, 5, 0, 1, 1);
+		gridbagAdd(vRegisDate, 6, 0, 1, 1);
 		gridbagAdd(xRegisDate, 7, 0, 1, 1);
 		
-		gridbagAdd(vAnmlKinds, 5, 1, 1, 1);
+		gridbagAdd(vAnmlKinds, 6, 1, 1, 1);
 		gridbagAdd(xAnmlKinds, 7, 1, 1, 1);
 		
-		gridbagAdd(vKind, 5, 2, 1, 1);
+		gridbagAdd(vKind, 6, 2, 1, 1);
 		gridbagAdd(xKind, 7, 2, 1, 1);
 		
-		gridbagAdd(vSex, 5, 3, 1, 1);
+		gridbagAdd(vSex, 6, 3, 1, 1);
 		gridbagAdd(xSex, 7, 3, 1, 1);
 		
-		gridbagAdd(vDscvLoc, 5, 4, 1, 1);
+		gridbagAdd(vDscvLoc, 6, 4, 1, 1);
 		gridbagAdd(xDscvLoc, 7, 4, 1, 1);
 		
-		gridbagAdd(vFeat, 5, 5, 1, 1);
+		gridbagAdd(vFeat, 6, 5, 1, 1);
 		gridbagAdd(xFeat, 7, 5, 1, 1);
 		
-		gridbagAdd(imageButton, 0, 0, 4, 4);
+		gridbagAdd(imageButton, 0, 0, 6, 6);
 		
 		
 	}
@@ -124,6 +132,16 @@ public class Annc extends JPanel {
 		xSex.setText(annc.get("¼ºº°").toString());
 		xDscvLoc.setText(annc.get("¹ß°ßÀå¼Ò").toString());
 		xFeat.setText(annc.get("Æ¯Â¡").toString());
+		try {
+			File input = new File(annc.get("°æ·Î").toString());
+			BufferedImage image = ImageIO.read(input);
+			BufferedImage resized = resize(image,200,200);
+			ImageIcon icon = new ImageIcon(resized);
+			imageButton.setIcon(icon);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			imageButton.setIcon(noImageIcon);
+		}
 	}
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
 		
@@ -141,6 +159,14 @@ public class Annc extends JPanel {
 				
 	   }
 
+	private static BufferedImage resize(BufferedImage img, int height, int width) {
+        Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resized.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+        return resized;
+    }
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		
