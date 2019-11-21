@@ -81,7 +81,9 @@ public class Annc extends JPanel {
 		ChangeFont(vComps2, new Font("나눔고딕", Font.PLAIN, 16));
 		
 		annc = AnncData.getAnnc(abanNo);
+
 		setData();
+		
 		AnncView();
 	}
 	
@@ -130,7 +132,18 @@ public class Annc extends JPanel {
 		xAnmlKinds.setText(annc.get("동물종류").toString());
 		xKind.setText(annc.get("품종").toString());
 		xSex.setText(annc.get("성별").toString());
-		xDscvLoc.setText(annc.get("발견장소").toString());
+		
+		String dscvLoc = null;
+		try {
+			
+			dscvLoc = annc.get("발견장소").toString();
+			
+		}catch(NullPointerException e) {
+			dscvLoc = "";
+		}
+		
+		xDscvLoc.setText(dscvLoc);
+		
 		xFeat.setText(annc.get("특징").toString());
 		try {
 			File input = new File(annc.get("경로").toString());
