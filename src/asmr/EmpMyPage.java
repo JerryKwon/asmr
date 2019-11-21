@@ -36,6 +36,7 @@ public class EmpMyPage extends JPanel implements ActionListener{
 	GridBagConstraints gridbagconstraints;
 	
 	public EmpMyPage() {
+		setBackground(MainFrame.bgc);
 		gridbaglayout = new GridBagLayout();		
 		gridbagconstraints = new GridBagConstraints();
 		
@@ -169,7 +170,7 @@ public class EmpMyPage extends JPanel implements ActionListener{
 				if(newPass.equals("") && newPass.equals(newPassConfirm)){
 					//비밀번호 안바꿈 -> 기존과 같은지 체크 후에 다른정보만 수정시킨다.
 					if(checkEqual()){
-						JOptionPane.showMessageDialog(null, "기존 값과 동일합니다.", "메시지", JOptionPane.WARNING_MESSAGE);
+						JOptionPane.showMessageDialog(null, "변경된 내용이 없습니다.", "메시지", JOptionPane.WARNING_MESSAGE);
 					}
 					else{
 						EmpData.updateEmp(newAddr, newTelNo);
