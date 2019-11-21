@@ -37,7 +37,8 @@ public class NotiBoard extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	static String pno = null;
+	static String ptit = null;
+	static String pprsn = null;
 	
 	private static String url = "jdbc:oracle:thin:@localhost:1521:XE";
 	private static String user = "asmr";
@@ -291,9 +292,11 @@ public class NotiBoard extends JPanel {
 			//1:좌클릭, 3:우클릭
 			if(e.getButton() == 1) {
 				int clickedRow = eNoticeList.getSelectedRow();
-				String postNo = (String)eNoticeList.getValueAt(clickedRow, 0);
-				pno = postNo;
-				GetPost(postNo);
+				String postTit = (String)eNoticeList.getValueAt(clickedRow, 0);
+				String postPrsn = (String)eNoticeList.getValueAt(clickedRow, 1);
+				ptit = postTit;
+				pprsn = postPrsn;
+				GetPost(postTit,postPrsn);
 			}
 			else if(e.getSource()==pre) {
 		        if(nowPanel > 0) {
@@ -331,7 +334,7 @@ public class NotiBoard extends JPanel {
 }
 	
 	
-	static private void GetPost(String postNo) {
+	static private void GetPost(String postTit, String postPrsn) {
 			
 		MainFrame.notiPostCase();
 		connection();
@@ -341,7 +344,8 @@ public class NotiBoard extends JPanel {
 			query.append("FROM POST ");
 			query.append("JOIN EMP ");
 			query.append("ON POST.NOTI_WRT_PRSN_NO = EMP.EMP_NO ");
-			query.append("WHERE POST_NO='"+postNo+"' ");
+			query.append("WHERE POST_TIT='"+postTit+"' ");
+			query.append("AND EMP_NAME='"+postPrsn+"' ");
 
 				
 			pstmt = con.prepareStatement(query.toString());

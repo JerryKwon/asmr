@@ -265,6 +265,7 @@ public class RprtAssignmentNorm extends JPanel {
 	}
 	
 	private void RprtAssignmentNormView() {
+		setBackground(MainFrame.bgc);
 		
 		//setTitle("신고배정_일반센터");	
 		gridbagconstraints.insets = new Insets(5,5,5,5);
