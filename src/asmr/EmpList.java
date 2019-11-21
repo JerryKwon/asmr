@@ -769,7 +769,7 @@ public class EmpList extends JPanel {
 			query.append("FROM ( ");
 			query.append("	SELECT EMP_NO, EMP_NAME  ");
 			query.append("	FROM EMP ");
-			query.append("	WHERE EMP_NAME='"+name+"') e INNER JOIN( ");
+			query.append("	WHERE EMP_NAME LIKE '"+name+"%') e INNER JOIN( ");
 			query.append("		SELECT  EMP_NO, WORK_START_DATE, CNTR_NO ");
 			query.append("		FROM EMP_WORK_HIST ");
 			query.append("		WHERE WORK_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) wh ");
@@ -790,7 +790,7 @@ public class EmpList extends JPanel {
 			query.append("		ON e.EMP_NO = wh.EMP_NO INNER JOIN( ");
 			query.append("			SELECT CNTR_NO, CNTR_NAME ");
 			query.append("			FROM CNTR ");
-			query.append("			WHERE CNTR_NAME='"+name+"') c ");
+			query.append("			WHERE CNTR_NAME LIKE '"+name+"%') c ");
 			query.append("			ON wh.CNTR_NO = c.CNTR_NO ");
 			query.append("ORDER BY 1,2 ASC ");
 			
