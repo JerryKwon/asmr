@@ -134,7 +134,7 @@ public class AnncDetailPopup extends JFrame {
 	}
 	
 	private void AnncDetailPopupView() {
-		
+		this.getContentPane().setBackground(MainFrame.bgc);
 		setTitle("상세정보");
 		
 		gridbagConstraints.insets = new Insets(5,5,5,5);
