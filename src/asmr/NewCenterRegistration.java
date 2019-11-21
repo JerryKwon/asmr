@@ -376,9 +376,10 @@ public class NewCenterRegistration extends JFrame{
 			query1.append("	 TO_DATE('"+estbDate+"','YYYY-MM-DD') ESTB_DATE, ");
 			query1.append("	'n' CNTR_TP ");
 			query1.append("FROM( ");
-			query1.append("	SELECT /*+ INDEX_DESC(CNTR CNTR_PK)*/ CNTR_NO ");
-			query1.append("	FROM CNTR ");
-			query1.append("	WHERE ROWNUM=1 ) ");
+			query1.append("	SELECT * ");
+			query1.append("	FROM(SELECT CNTR_NO FROM CNTR ");
+			query1.append("	ORDER BY 1 DESC) ");
+			query1.append("	WHERE ROWNUM=1) ");
 			
 			pstmt = con.prepareStatement(query1.toString());
 			rs = pstmt.executeQuery();
@@ -763,8 +764,8 @@ public class NewCenterRegistration extends JFrame{
 		else {
 			String repStr = phoneNum.replaceAll("[0-9]", "");
 			String[] splitStr = repStr.split("");
-			System.out.println(splitStr.toString());
-			System.out.println(splitStr.length);
+//			System.out.println(splitStr.toString());
+//			System.out.println(splitStr.length);
 			if(splitStr.length==2)
 				return true;
 			else return false;
