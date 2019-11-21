@@ -139,6 +139,7 @@ public class ProtAniRegist extends JFrame{
 		
 		vFeature = new JLabel("Ư¡");
 		xFeature = new JTextArea();
+		xFeature.setLineWrap(true);
 		featureScroll = new JScrollPane(xFeature);
 		featureScroll.setPreferredSize(new Dimension(300,100));
 		featureScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
