@@ -220,7 +220,8 @@ public class RscuSearch extends JFrame{
 			query.append("		WHERE ASSG_RES='a' AND CNTR_NO='"+userCntrNo+"' ) a ");
 			query.append("		ON rs.RSCU_NO=a.ASSG_NO INNER JOIN (SELECT RPRT_NO,ANML_KINDS,ANML_SIZE ");
 			query.append("			FROM RPRT) rp ");
-			query.append("			ON a.RPRT_NO = rp.RPRT_NO ");
+			query.append("			ON a.RPRT_NO = rp.RPRT_NO LEFT OUTER JOIN ABAN a2 ON rs.RSCU_NO = a2.RSCU_NO ");
+			query.append("WHERE a2.ABAN_NO is null ");
 			
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();

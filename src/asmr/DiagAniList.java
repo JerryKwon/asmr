@@ -736,7 +736,7 @@ public class DiagAniList extends JPanel{
 				protNos_2.add(rs.getString("PROT_NO"));
 				diagOrnus.add(rs.getString("DIAG_ORNU"));
 				
-				model2.addRow(new Object[] {rs.getString("DIAG_DATE").split(" ")[0],korDiagType,rs.getString("DIAG_CONT")});
+				model2.addRow(new Object[] {rs.getString("DIAG_DATE").split(" ")[0],korDiagType,rs.getString("DIAG_CONT").trim()});
 			}
     	}catch(SQLException e) {
     		e.printStackTrace();
