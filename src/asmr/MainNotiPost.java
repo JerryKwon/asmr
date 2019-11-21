@@ -37,7 +37,7 @@ public class MainNotiPost extends JPanel {
 	private Color black = new Color(0,0,0);
 	
 	public MainNotiPost(String postNo) {
-		
+		setBackground(MainFrame.bgc);
 		notiPostButtonListener = new NotiPostButtonListener();
 		
 		gridbaglayout = new GridBagLayout();

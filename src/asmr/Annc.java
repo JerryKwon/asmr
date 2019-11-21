@@ -7,6 +7,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class Annc extends JPanel {
+public class Annc extends JPanel implements MouseListener{
 	
 	private JLabel vRegisDate, vAnmlKinds, vKind, vSex, vDscvLoc, vFeat;
 	
@@ -31,6 +34,7 @@ public class Annc extends JPanel {
 	
 	private JButton imageButton;
 	private ImageIcon noImageIcon;
+	private String abanNo;
 	
 	Map<String, Serializable> annc;
 	
@@ -39,8 +43,12 @@ public class Annc extends JPanel {
 	
 	public Annc(String abanNo) throws IOException {
 		setBackground(MainFrame.bgc);
+		this.abanNo = abanNo;
+		
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
+		
+		this.addMouseListener(this);
 		
 		vRegisDate = new JLabel("등록일자");
 		xRegisDate = new JTextField(20);
@@ -185,5 +193,42 @@ public class Annc extends JPanel {
 		
 
 	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		try {
+			new AnncDetailPopup(abanNo);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 
 }

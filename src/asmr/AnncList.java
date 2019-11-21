@@ -67,7 +67,7 @@ public class AnncList extends JPanel{
 		
 		for (int i=0 ; i < 6/*abanList.size()*/; i++) {
 			panelArray[i] = new Annc(abanList.get(0));
-			panelArray[i].addMouseListener(anncListMouseListener);
+//			panelArray[i].addMouseListener(anncListMouseListener);
 		}
 		
 		AnncListView();
@@ -153,7 +153,7 @@ public class AnncList extends JPanel{
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
 				try {
-					new AnncDetailPopup();
+					new AnncDetailPopup("2019112201");
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
