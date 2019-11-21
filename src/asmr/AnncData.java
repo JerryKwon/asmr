@@ -35,10 +35,10 @@ public class AnncData {
 
 		query = "SELECT  a.regis_date, a.anml_kinds, a.kind, a.sex, rp.dscv_loc, feat, ap.path "
 				+ "FROM ABAN A INNER JOIN PROT P ON A.ABAN_NO = P.ABAN_NO AND A.ABAN_NO='"+abanNo+"'  "
-				+ "INNER JOIN RSCU R ON R.RSCU_NO = A.RSCU_NO "
-				+ "INNER JOIN ASSG A2 ON R.RSCU_NO=A2.ASSG_NO "
-				+ "INNER JOIN RPRT RP ON RP.RPRT_NO=A2.RPRT_NO "
-				+ "LEFT OUTER JOIN ABAN_PIC AP ON A.ABAN_NO=AP.ABAN_NO AND AP.anml_pic_ornu = 1";
+				+ "LEFT JOIN RSCU R ON R.RSCU_NO = A.RSCU_NO "
+				+ "LEFT JOIN ASSG A2 ON R.RSCU_NO=A2.ASSG_NO "
+				+ "LEFT JOIN RPRT RP ON RP.RPRT_NO=A2.RPRT_NO "
+				+ "LEFT JOIN ABAN_PIC AP ON A.ABAN_NO=AP.ABAN_NO AND AP.anml_pic_ornu = 1";
 		
 		try{
 			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
@@ -63,8 +63,11 @@ public class AnncData {
 		
 	}
 	static List<Map<String, Serializable>> getAbanNoList() {
+		abanList.clear();
 		query = "SELECT ABAN_NO "
-				+ "FROM PROT ";
+				+ "FROM PROT "
+				+ "WHERE PROT_END_DATE = TO_DATE('9999-12-31', 'YYYY-MM-DD') "
+				+ "ORDER BY 1 ";
 		
 		try{
 			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
@@ -88,7 +91,7 @@ public class AnncData {
 				+ "ANML_SIZE, RSCU_DTTM, RSCU_LOC, FEAT "
 				+ "FROM ABAN AB INNER JOIN PROT P ON AB.ABAN_NO = P.ABAN_NO "
 				+ "INNER JOIN CNTR C ON P.CNTR_NO = C.CNTR_NO "
-				+ "INNER JOIN RSCU R ON AB.RSCU_NO = R.RSCU_NO "
+				+ "LEFT JOIN RSCU R ON AB.RSCU_NO = R.RSCU_NO "
 				+ "WHERE P.PROT_END_DATE = TO_DATE('9999-12-31', 'YYYY-MM-DD') "
 				+ "AND P.ABAN_NO = '"+abanNo+"'";
 		
@@ -179,7 +182,7 @@ public class AnncData {
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.println(getAbanPicPath("2019112201"));
+		System.out.println(getAnnc("2019112202"));
 	}
 
 }

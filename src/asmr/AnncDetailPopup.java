@@ -229,9 +229,27 @@ public class AnncDetailPopup extends JFrame{
 		xAge.setText(anncDtl.get("나이").toString());
 		xColor.setText(anncDtl.get("색상").toString());
 		xNeutWhet.setText(anncDtl.get("중성화여부").toString());
-		xAnmlSize.setText(anncDtl.get("동물크기").toString());
-		xRscuDate.setText(anncDtl.get("구조일시").toString());
-		xRscuLoc.setText(anncDtl.get("구조장소").toString());
+		xAnmlSize.setText(anncDtl.get("동물크기").toString());		
+		String rscuDt = null;
+		try {
+			
+			rscuDt = anncDtl.get("구조일시").toString();
+			
+		}catch(NullPointerException e) {
+			rscuDt = "";
+		}
+		xRscuDate.setText(rscuDt);
+		
+		String rscuLoc = null;
+		try {
+			
+			rscuLoc = anncDtl.get("구조장소").toString();
+			
+		}catch(NullPointerException e) {
+			rscuLoc = "";
+		}
+		xRscuLoc.setText(rscuLoc);
+		
 		xExpln.setText(anncDtl.get("특징").toString());
 		try {
 			File input = new File(picPath.get(pnt));

@@ -59,13 +59,13 @@ public class AnncList extends JPanel{
 		regis.addActionListener(anncListButtonListener);
 		regis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
-		panelArray = new JPanel[8];
+		panelArray = new JPanel[6];
 		
 		abanNo = AnncData.getAbanNoList();
 		
 		getData();
 		
-		for (int i=0 ; i < abanList.size(); i++) {
+		for (int i=0 ; i < 6/*abanList.size()*/; i++) {
 			panelArray[i] = new Annc(abanList.get(i));
 //			panelArray[i].addMouseListener(anncListMouseListener);
 		}
@@ -94,11 +94,11 @@ public class AnncList extends JPanel{
 		gridbagAdd(panelArray[0], 0, 1, 2 , 2);
 		gridbagAdd(panelArray[1], 2, 1, 2 , 2);
 		
-//		gridbagAdd(panelArray[2], 0, 3, 2 , 2);
-//		gridbagAdd(panelArray[3], 2, 3, 2 , 2);
-//		
-//		gridbagAdd(panelArray[4], 0, 5, 2 , 2);
-//		gridbagAdd(panelArray[5], 2, 5, 2 , 2);
+		gridbagAdd(panelArray[2], 0, 3, 2 , 2);
+		gridbagAdd(panelArray[3], 2, 3, 2 , 2);
+		
+		gridbagAdd(panelArray[4], 0, 5, 2 , 2);
+		gridbagAdd(panelArray[5], 2, 5, 2 , 2);
 //		
 //		gridbagAdd(panelArray[6], 0, 7, 2 , 2);
 //		gridbagAdd(panelArray[7], 2, 7, 2 , 2);
