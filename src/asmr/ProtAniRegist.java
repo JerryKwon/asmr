@@ -502,7 +502,7 @@ public class ProtAniRegist extends JFrame{
     	StringBuffer query1 = new StringBuffer();
 	    
 		if(abanAniType=="±¸Á¶") {
-	    	query1.append("INSERT INTO ABAN(ABAN_NO,ABAN_TP,ABAN_NAME,AGE,KIND,SEX,COLOR,NEUT_WHET,REGIS_DATE,ANML_SIZE,FEAT,RSCU_NO) ");
+	    	query1.append("INSERT INTO ABAN(ABAN_NO,ABAN_TP,ABAN_NAME,AGE,ANML_KINDS,KIND,SEX,COLOR,NEUT_WHET,REGIS_DATE,ANML_SIZE,FEAT,RSCU_NO) ");
     		query1.append("SELECT ");
     		query1.append("	CASE WHEN SUBSTR(ABAN_NO,1,8) = to_char(TRUNC(SYSDATE),'yyyymmdd') ");
     		query1.append("	THEN to_char(TRUNC(SYSDATE),'yyyymmdd') || CASE WHEN SUBSTR(ABAN_NO,10,1) = '9' THEN to_char(SUBSTR(ABAN_NO,9,1)+1) ELSE SUBSTR(ABAN_NO,9,1) END || CASE WHEN SUBSTR(ABAN_NO,10,1)='9' THEN '0' ELSE to_char(SUBSTR(ABAN_NO,10,1)+1) END ");
