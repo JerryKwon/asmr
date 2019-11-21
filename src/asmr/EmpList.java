@@ -644,7 +644,7 @@ public class EmpList extends JPanel {
 			query.append("	SELECT  EMP_NO, WORK_START_DATE, CNTR_NO ");
 			query.append("	FROM EMP_WORK_HIST ");
 			query.append("	WHERE WORK_END_DATE=to_date('9999-12-31','YYYY-MM-DD')) wh ");
-			query.append("	ON e.EMP_NO = wh.EMP_NO INNER JOIN( ");
+			query.append("	ON e.EMP_NO = wh.EMP_NO AND e.EMP_NO <> '0000' INNER JOIN( ");
 			query.append("		SELECT CNTR_NO, CNTR_NAME FROM CNTR) c ");
 			query.append("		ON wh.CNTR_NO = c.CNTR_NO ");
 			query.append("ORDER BY 1,2,3 ASC ");
