@@ -148,6 +148,8 @@ public class RprtAssignment extends JPanel {
                    return true;               
            };
        };
+      eRprtList.getTableHeader().setReorderingAllowed(false);
+      eRprtList.getTableHeader().setResizingAllowed(false);
       eRprtList.addMouseListener(rprtAssignmentMouseListener);
       scrollpane1 = new JScrollPane(eRprtList);
       scrollpane1.setPreferredSize(new Dimension(600,200));
@@ -162,6 +164,8 @@ public class RprtAssignment extends JPanel {
                    return false;               
            };
        };
+      eCageList.getTableHeader().setReorderingAllowed(false);
+      eCageList.getTableHeader().setResizingAllowed(false);
 //      eCageList.addMouseListener(rprtAssignmentMouseListener);
       scrollpane2 = new JScrollPane(eCageList);
       scrollpane2.setPreferredSize(new Dimension(600,200));
@@ -223,21 +227,19 @@ public class RprtAssignment extends JPanel {
       imageLabel.setIcon(noImageIcon);
       
 
-      previous = new JButton("<<");
-      previous.addActionListener(rprtAssignmentButtonListener);
-      previous.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
-      next = new JButton(">>");
-      next.addActionListener(rprtAssignmentButtonListener);
-      next.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+//      previous = new JButton("<<");
+//      previous.addActionListener(rprtAssignmentButtonListener);
+//      previous.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+//      next = new JButton(">>");
+//      next.addActionListener(rprtAssignmentButtonListener);
+//      next.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
       
       JComponent[] vComps = {vRprtNo, vRprtDttm, vRprtName, vTelNo, vRprtTp, vWrtPrsnTp, vAnmlKinds,
             vAnmlSize, vExpln, vDscvDttm, vDscvLoc};
       ChangeFont(vComps, new Font("³ª´®°íµñ", Font.PLAIN, 16));
       
-      new Button();
-      
-
-      
+//      new Button();
+            
       changeCellEditor(eRprtList, eRprtList.getColumnModel().getColumn(4));
       
       rprtListData = RprtData.getRprtList();
@@ -270,6 +272,7 @@ public class RprtAssignment extends JPanel {
       gridbagconstraints.weighty=1.0;
       
       setLayout(gridbaglayout);
+      setBackground(MainFrame.bgc);
 
       gridbagAdd(vRprtList, 0, 0, 1, 1);
       gridbagAdd(vCageList, 4, 0, 1, 1);
@@ -310,10 +313,10 @@ public class RprtAssignment extends JPanel {
       gridbagAdd(vDscvLoc, 0, 13, 1, 1);
       gridbagAdd(xDscvLoc, 2, 13, 1, 1);
       
-      gridbagAdd(imageLabel, 11,7,5,3);
+      gridbagAdd(imageLabel, 11,7,5,5);
       
-      gridbagAdd(previous, 12,11,1,3);
-      gridbagAdd(next, 13,11,1,3);
+//      gridbagAdd(previous, 12,11,1,3);
+//      gridbagAdd(next, 13,11,1,3);
       
 
       gridbagconstraints.anchor = GridBagConstraints.CENTER;
@@ -664,12 +667,39 @@ public class RprtAssignment extends JPanel {
    
     void getData() {
     	
+    		String korAnmlType = null;
+    		String KorAnmlSize = null;
+    	
             for(int i=0; i < rprtListData.size(); i++) {
             	
+               switch((String)rprtListData.get(i).get("µ¿¹°Á¾·ù")) {
+               case "d":
+            	   korAnmlType = "°³";
+            	   break;
+               case "c":
+            	   korAnmlType = "°í¾çÀÌ";
+            	   break;
+               case "e":
+            	   korAnmlType = "±âÅ¸";
+            	   break;
+               }
+            	
+               switch((String)rprtListData.get(i).get("µ¿¹°Å©±â")) {
+               case "b":
+            	   KorAnmlSize = "´ë";
+            	   break;
+               case "m":
+            	   KorAnmlSize = "Áß";
+            	   break;
+               case "s":
+            	   KorAnmlSize = "¼Ò";
+            	   break;
+               }
+               
                model1.addRow(new Object[] {
                      rprtListData.get(i).get("½Å°íÀÏ½Ã"),
-                     rprtListData.get(i).get("µ¿¹°Á¾·ù"),
-                     rprtListData.get(i).get("µ¿¹°Å©±â"),
+                     korAnmlType,
+                     KorAnmlSize,
                      rprtListData.get(i).get("¼³¸í")
                      
                      
