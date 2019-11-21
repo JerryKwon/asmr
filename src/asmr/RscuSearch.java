@@ -115,6 +115,7 @@ public class RscuSearch extends JFrame{
 	}
 	
 	private void RscuSearchView() {
+		this.getContentPane().setBackground(MainFrame.bgc);
 		
 		setLayout(gridBagLayout);
 		setTitle("구조검색");

@@ -119,6 +119,7 @@ public class RscuRegisPopup extends JFrame {
 	}
 	
 	private void RscuRegisPopupView() {
+		this.getContentPane().setBackground(MainFrame.bgc);
 		
 		setTitle("구조등록");
 		

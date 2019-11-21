@@ -110,6 +110,8 @@ public class AdopReq extends JPanel {
 	
 	private void AdopReqView() {
 		
+		setBackground(MainFrame.bgc);
+		
 		//setTitle("입양신청");
 		
 		gridbagConstraints.insets = new Insets(5,5,5,5);

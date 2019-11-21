@@ -156,6 +156,8 @@ public class AdopList extends JPanel {
 	
 	private void AdopListView() {
 		
+		setBackground(MainFrame.bgc);
+		
 		//setTitle("입양목록");
 		
 		gridbagConstraints.insets = new Insets(5,5,5,5);

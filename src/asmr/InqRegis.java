@@ -83,6 +83,7 @@ public class InqRegis extends JPanel {
 	}
 	
 	private void InqRegisView() {
+		setBackground(MainFrame.bgc);
 		
 //		setTitle("문의등록");	
 		
