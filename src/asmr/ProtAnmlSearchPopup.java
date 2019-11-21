@@ -84,6 +84,8 @@ public class ProtAnmlSearchPopup extends JFrame {
 		this.xParAbanAniName = xParAbanAniName;
 		
 		eProtAnmlList = new JTable(model1);
+		eProtAnmlList.getTableHeader().setReorderingAllowed(false);
+		eProtAnmlList.getTableHeader().setResizingAllowed(false);
 		eProtAnmlList.addMouseListener(protAnmlSearchMouseListener);
 		scrollPane1 = new JScrollPane(eProtAnmlList);
 		scrollPane1.setPreferredSize(new Dimension(500,100));

@@ -135,6 +135,8 @@ public class CenterList extends JPanel{
 	        };
 	    };
 		
+		eCenterList.getTableHeader().setReorderingAllowed(false);
+		eCenterList.getTableHeader().setResizingAllowed(false);
 		eCenterList.addMouseListener(centerListMouseListener);
 		scrollpane1 = new JScrollPane(eCenterList);
 		scrollpane1.setPreferredSize(new Dimension(600,200));
@@ -153,7 +155,8 @@ public class CenterList extends JPanel{
 	                return false;               
 	        };
 	    };
-
+		eCageList.getTableHeader().setReorderingAllowed(false);
+		eCageList.getTableHeader().setResizingAllowed(false);
 		scrollpane2 = new JScrollPane(eCageList);
 		scrollpane2.setPreferredSize(new Dimension(300,200));
 		

@@ -87,6 +87,8 @@ public class CenterSearch extends JFrame{
 		        };
 		    };
 		
+		eCenterList.getTableHeader().setReorderingAllowed(false);
+		eCenterList.getTableHeader().setResizingAllowed(false);
 		eCenterList.addMouseListener(centerSearchMouseListener);
 		scrollpane = new JScrollPane(eCenterList);
 		scrollpane.setPreferredSize(new Dimension(450,100));

@@ -150,6 +150,8 @@ public class NewPictureManage extends JFrame{
 	        };
 	    };
 
+		eSelectedPictureList.getTableHeader().setReorderingAllowed(false);
+		eSelectedPictureList.getTableHeader().setResizingAllowed(false);
 		eSelectedPictureList.addMouseListener(pictureManageSeletedFileMouseListener);
 		selectedPictureListScroll = new JScrollPane(eSelectedPictureList);
 		selectedPictureListScroll.setPreferredSize(new Dimension(400,150));

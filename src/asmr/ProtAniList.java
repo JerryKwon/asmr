@@ -150,6 +150,8 @@ public class ProtAniList extends JPanel {
 	                return false;               
 	        };
 	    };
+		eProtAniList.getTableHeader().setReorderingAllowed(false);
+		eProtAniList.getTableHeader().setResizingAllowed(false);
 		eProtAniList.addMouseListener(protAniListMouseListener);
 		aniListScroll = new JScrollPane(eProtAniList);
 		aniListScroll.setPreferredSize(new Dimension(1300,200));

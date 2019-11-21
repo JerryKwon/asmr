@@ -86,6 +86,8 @@ public class VtrnSearch extends JFrame {
 	                return false;               
 	        };
 	    };
+		eVtrnList.getTableHeader().setReorderingAllowed(false);
+		eVtrnList.getTableHeader().setResizingAllowed(false);
 	    eVtrnList.addMouseListener(centerManagerSearchMouseListener);
 		scrollpane = new JScrollPane(eVtrnList);
 		scrollpane.setPreferredSize(new Dimension(200,100));

@@ -136,6 +136,8 @@ public class EmpList extends JPanel {
 	                return false;               
 	        };
 	    };
+		eEmpList.getTableHeader().setReorderingAllowed(false);
+		eEmpList.getTableHeader().setResizingAllowed(false);
 	    eEmpList.addMouseListener(empListMouseListener);
 		scrollpane = new JScrollPane(eEmpList);
 		scrollpane.setPreferredSize(new Dimension(600,200));
