@@ -589,7 +589,7 @@ public class ProtAniRegist extends JFrame{
 		query3.append("	FROM(SELECT * FROM ASSG ");
 		query3.append("		WHERE ASSG_RES='a') a INNER JOIN (SELECT RSCU_NO ");
 		query3.append("		FROM RSCU ");
-		query3.append("	WHERE RSCU_NO='1') r ");
+		query3.append("	WHERE RSCU_NO='"+rscuNo+"') r ");
 		query3.append("	ON a.ASSG_NO = r.RSCU_NO) CNTR_NO, ");
 		query3.append("	'"+ornu+"' CAGE_ORNU, ");
 		query3.append("	(SELECT /*+INDEX_ASC(EMP_WORK_HIST EMP_WORK_HIST_PK) */ EMP_NO FROM EMP_WORK_HIST ");
@@ -597,7 +597,7 @@ public class ProtAniRegist extends JFrame{
 		query3.append("	FROM(SELECT * FROM ASSG ");
 		query3.append("		WHERE ASSG_RES='a') a INNER JOIN (SELECT RSCU_NO ");
 		query3.append("		FROM RSCU ");
-		query3.append("		WHERE RSCU_NO='1') r ");
+		query3.append("		WHERE RSCU_NO='"+rscuNo+"') r ");
 		query3.append("		ON a.ASSG_NO = r.RSCU_NO) ");
 		query3.append("	AND BIZ_FILD='p' ");
 		query3.append("	AND ROWNUM=1) CAMA_EMP_NO ");
