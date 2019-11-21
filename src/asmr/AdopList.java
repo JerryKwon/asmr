@@ -116,6 +116,10 @@ public class AdopList extends JPanel {
 	                return false;               
 	        };
 	    };
+	    
+	    eAdopList.getTableHeader().setReorderingAllowed(false);
+	    eAdopList.getTableHeader().setResizingAllowed(false);
+	    
 		scrollPane1 = new JScrollPane(eAdopList);
 		scrollPane1.setPreferredSize(new Dimension(1200,100));
 		
@@ -135,6 +139,8 @@ public class AdopList extends JPanel {
 	                return false;               
 	        };
 	    };
+	    eVisitList.getTableHeader().setReorderingAllowed(false);
+	    eVisitList.getTableHeader().setResizingAllowed(false);
 		scrollPane2 = new JScrollPane(eVisitList);
 		scrollPane2.setPreferredSize(new Dimension(1200,100));
 		
@@ -155,6 +161,8 @@ public class AdopList extends JPanel {
 	}
 	
 	private void AdopListView() {
+		
+		setBackground(MainFrame.bgc);
 		
 		//setTitle("입양목록");
 		

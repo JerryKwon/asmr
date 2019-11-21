@@ -84,6 +84,7 @@ public class NotiWrtUpt extends JPanel {
 	}
 	
 	private void NotiWrtUptView() {
+		setBackground(MainFrame.bgc);
 		
 //		setTitle("신고배정_일반센터");	
 		

@@ -92,6 +92,9 @@ public class InqAnsBoard extends JPanel {
 	                return false;               
 	        };
 	    };
+	    eInqAnsList.getTableHeader().setReorderingAllowed(false);
+	    eInqAnsList.getTableHeader().setResizingAllowed(false);
+	    
 	    DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 	    dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 	    eInqAnsList.addMouseListener(inqAnsBoardMouseListener);
@@ -122,6 +125,7 @@ public class InqAnsBoard extends JPanel {
 	}
 
 	private void InqAnsBoardView() {
+		setBackground(MainFrame.bgc);
 		
 		//setTitle("문의/답변");	
 		
@@ -331,6 +335,12 @@ public class InqAnsBoard extends JPanel {
 			query.append("from post ");
 			query.append("join cust  ");
 			query.append("on post.inq_wrt_prsn_no = cust.cust_no ");
+			query.append("where cust_name = '"+name+"' ");
+			query.append("union ");
+			query.append("select post_no, post_tit, emp_name, wrt_dttm ");
+			query.append("from post ");
+			query.append("join emp  ");
+			query.append("on post.ans_wrt_prsn_no = emp.emp_no ");
 			query.append("where emp_name = '"+name+"' ");
 			query.append("order by 1 desc ");			
 		}
@@ -340,6 +350,12 @@ public class InqAnsBoard extends JPanel {
 			query.append("join cust ");
 			query.append("on post.inq_wrt_prsn_no = cust.cust_no ");
 			query.append("where post_tit like '%"+name+"%' ");
+			query.append("union ");
+			query.append("select post_no, post_tit, emp_name, wrt_dttm ");
+			query.append("from post ");
+			query.append("join emp  ");
+			query.append("on post.ans_wrt_prsn_no = emp.emp_no ");
+			query.append("where post_tit like '%"+name+"%' ");
 			query.append("order by 1 desc ");				
 		}
 		
@@ -348,7 +364,7 @@ public class InqAnsBoard extends JPanel {
 		rs = pstmt.executeQuery();
 		
 		while(rs.next()) {
-			model.addRow(new Object[] {rs.getString("post_no"),rs.getString("post_tit"),rs.getString("cust_name"),rs.getString("wrt_dttm")});
+			model.addRow(new Object[] {rs.getString("post_tit"),rs.getString("cust_name"),rs.getString("wrt_dttm")});
 		}
 		}catch(Exception e) {
 			e.printStackTrace();

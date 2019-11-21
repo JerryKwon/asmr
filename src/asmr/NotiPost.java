@@ -108,6 +108,8 @@ public class NotiPost extends JPanel {
 	
 	private void NotiPostView() {
 		
+		setBackground(MainFrame.bgc);
+		
 //		setTitle("신고배정_일반센터");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;

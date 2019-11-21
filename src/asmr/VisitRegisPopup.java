@@ -87,6 +87,8 @@ public class VisitRegisPopup extends JFrame {
 	}
 	
 	private void VisitRegisPopupView() {
+		this.getContentPane().setBackground(MainFrame.bgc);
+		
 		setTitle("방문등록");
 		
 		gridbagConstraints.anchor = GridBagConstraints.WEST;

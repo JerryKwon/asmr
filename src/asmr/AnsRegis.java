@@ -68,7 +68,8 @@ public class AnsRegis extends JFrame {
 	}
 	
 	private void AnsRegisView() {
-		
+		setBackground(MainFrame.bgc);
+
 		setTitle("답변등록");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;

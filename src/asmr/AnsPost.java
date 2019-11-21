@@ -81,7 +81,7 @@ public class AnsPost extends JFrame {
 	}
 	
 	private void AnsPostView() {
-		
+		setBackground(MainFrame.bgc);
 		setTitle("답변게시글");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;

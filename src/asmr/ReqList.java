@@ -167,6 +167,8 @@ public class ReqList extends JPanel {
 	
 	private void ReqListView() {
 		//setTitle("신청목록");
+		setBackground(MainFrame.bgc);
+		
 		
 		gridbagConstraints.insets = new Insets(5,5,5,5);
 		

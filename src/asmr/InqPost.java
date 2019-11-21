@@ -111,6 +111,7 @@ public class InqPost extends JPanel {
 	}
 	
 	private void InqPostView() {
+		setBackground(MainFrame.bgc);
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;

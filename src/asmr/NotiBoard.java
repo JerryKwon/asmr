@@ -111,6 +111,8 @@ public class NotiBoard extends JPanel {
 	    eNoticeList.getColumnModel().getColumn(0).setCellRenderer(dtcr);
 	    eNoticeList.getColumnModel().getColumn(1).setCellRenderer(dtcr);
 	    eNoticeList.getColumnModel().getColumn(2).setCellRenderer(dtcr);
+	    eNoticeList.getTableHeader().setReorderingAllowed(false);
+	    eNoticeList.getTableHeader().setResizingAllowed(false);
 		scrollPane = new JScrollPane(eNoticeList);
 		scrollPane.setPreferredSize(new Dimension(700,300));
 		
@@ -191,6 +193,8 @@ public class NotiBoard extends JPanel {
 	
 	
 	private void NotiBoardView() {
+		
+		setBackground(MainFrame.bgc);
 
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
@@ -509,7 +513,8 @@ public class NotiBoard extends JPanel {
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				model.addRow(new Object[] {rs.getString("post_no"),rs.getString("post_tit"),rs.getString("emp_name"),rs.getString("wrt_dttm")});
+				model.addRow(new Object[] {rs.getString("post_tit"),rs.getString("emp_name"),rs.getString("wrt_dttm")});
+//				model.addRow(new Object[] {rs.getString("post_no"),rs.getString("post_tit"),rs.getString("emp_name"),rs.getString("wrt_dttm")});
 			}
 			}catch(Exception e) {
 				e.printStackTrace();
