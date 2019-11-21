@@ -236,6 +236,31 @@ public class EmpData {
 		}
 		return empBiz;
 	}
+	static String getKorBiz(String empBiz){
+		String korBiz = "";
+		switch(empBiz){
+		case "c":
+			korBiz = "센터장";
+			break;
+		case "m":
+			korBiz = "관리직원";
+			break;
+		case "d":
+			korBiz = "수의사";
+			break;
+		case "o":
+			korBiz = "사무직원";
+			break;
+		case "p":
+			korBiz = "보호관리직원";
+			break;
+		case "r":
+			korBiz = "구조대원";
+			break;
+		}
+		
+		return "("+korBiz+")";
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		setEmpData("0000");

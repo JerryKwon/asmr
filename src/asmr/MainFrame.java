@@ -30,7 +30,7 @@ public class MainFrame extends JFrame {
 	public static Color linec = new Color(125, 117, 65);
 
 	private JButton bMainButton, bLogo, bLogin, bRegister, bLogout, bUserName, bCustName;
-	private JLabel vCenterName, vWelcome;
+	private JLabel vCenterName,vBiz, vWelcome;
 	
 	private JMenuBar mBar;
 	private JMenu mAban, mReport, mAdop, mPost, mAdopManage;
@@ -116,6 +116,9 @@ public class MainFrame extends JFrame {
 		bCustName.setBorderPainted(false);
 		bCustName.setForeground(new Color(0, 180, 255));
 		
+		vBiz = new JLabel(" ");
+		vBiz.setFont(new Font("나눔고딕", Font.BOLD, 14));
+
 		mBar = new JMenuBar();
 		UIManager.put("Menu.font", new Font("나눔고딕", Font.BOLD, 20));
 
@@ -239,13 +242,14 @@ public class MainFrame extends JFrame {
 		this.getContentPane().setBackground(new Color(253, 247, 207));
 		
 		bMainButton.setBounds(80,50,175,175);
-		bLogo.setBounds(650, 5, 600, 150);
+		bLogo.setBounds(670, 5, 600, 150);
 		mBar.setBounds(290,170,1370,50);
 		
 		bLogin.setBounds(1700, 130, 85, 30);
 		bRegister.setBounds(1800, 130, 90, 30);
 		
 		vCenterName.setBounds(1695,170,170,25);
+		vBiz.setBounds(1810, 170, 150, 25);
 		bUserName.setBounds(1685,195,90,25);
 		bCustName.setBounds(1685,195,90,25);
 		vWelcome.setBounds(1755,195,170,25);
@@ -266,6 +270,7 @@ public class MainFrame extends JFrame {
 		// 로그인 파트
 		this.add(bLogout);
 		this.add(vCenterName);
+		this.add(vBiz);
 		this.add(bUserName);
 		this.add(bCustName);
 		this.add(vWelcome);
@@ -273,6 +278,7 @@ public class MainFrame extends JFrame {
 		// 버튼 보이기 여부
 		bLogout.setVisible(false);
 		vCenterName.setVisible(false);
+		vBiz.setVisible(false);
 		bUserName.setVisible(false);
 		bCustName.setVisible(false);
 		vWelcome.setVisible(false);
@@ -296,6 +302,7 @@ public class MainFrame extends JFrame {
 		bRegister.setVisible(true);
 		bLogout.setVisible(false);
 		vCenterName.setVisible(false);
+		vBiz.setVisible(false);
 		bUserName.setVisible(false);
 		bCustName.setVisible(false);
 		vWelcome.setVisible(false);
@@ -331,6 +338,9 @@ public class MainFrame extends JFrame {
 		empCntr = EmpData.getEmpCntr(login.empID);
 		vCenterName.setText(empCntr);
 		vCenterName.setVisible(true);
+		
+		vBiz.setText(EmpData.getKorBiz(EmpData.getBiz(login.empID)));
+		vBiz.setVisible(true);
 		
 		// 메뉴 접근 가능여부
 		mCenter.setEnabled(true);
