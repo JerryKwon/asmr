@@ -452,10 +452,10 @@ public class EmpRegister extends JFrame{
 			query2.append("FROM( ");
 			query2.append("	SELECT * ");
 			query2.append("	FROM( ");
-			query2.append("		SELECT /*+ INDEX_DESC(EMP EMP_PK) */ NVL(EMP_NO,0) EMP_NO ");
+			query2.append("		SELECT NVL(EMP_NO,0) EMP_NO ");
 			query2.append("		FROM EMP ");
 			query2.append("		ORDER BY 1 DESC) ");
-			query2.append("	WHERE ROWNUM=1) e, (SELECT * FROM CNTR WHERE CNTR_NAME='\"+cntrName+\"') c ");
+			query2.append("	WHERE ROWNUM=1) e, (SELECT * FROM CNTR WHERE CNTR_NAME='"+cntrName+"') c ");
 
 			pstmt = con.prepareStatement(query2.toString());
 			rs = pstmt.executeQuery();
