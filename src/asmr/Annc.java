@@ -8,6 +8,8 @@ import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -27,10 +29,12 @@ public class Annc extends JPanel {
 	
 	private JButton imageButton;
 	
+	Map<String, Serializable> annc;
+	
 	GridBagLayout gridbagLayout;
 	GridBagConstraints gridbagConstraints;
 	
-	public Annc() throws IOException {
+	public Annc(String abanNo) throws IOException {
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
 		
@@ -68,6 +72,8 @@ public class Annc extends JPanel {
 		JComponent[] vComps2 = {vRegisDate, vAnmlKinds, vKind, vSex, vDscvLoc, vFeat};
 		ChangeFont(vComps2, new Font("나눔고딕", Font.PLAIN, 16));
 		
+		annc = AnncData.getAnnc(abanNo);
+		setData();
 		AnncView();
 	}
 	
@@ -111,7 +117,14 @@ public class Annc extends JPanel {
 	    		comp.setFont(font);
 	    	}
 	    }	
-	
+	private void setData() {
+		xRegisDate.setText(annc.get("등록일자").toString());
+		xAnmlKinds.setText(annc.get("동물종류").toString());
+		xKind.setText(annc.get("품종").toString());
+		xSex.setText(annc.get("성별").toString());
+		xDscvLoc.setText(annc.get("발견장소").toString());
+		xFeat.setText(annc.get("특징").toString());
+	}
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
 		
 		gridbagConstraints.gridx = x;		

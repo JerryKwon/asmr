@@ -11,12 +11,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import asmr.RprtRegis.RprtRegisterButtonListener;
 
 // °ø°í¸ñ·Ï
 public class AnncList extends JPanel{
@@ -24,6 +25,8 @@ public class AnncList extends JPanel{
 	AnncListMouseListener anncListMouseListener;
 	
 	private JPanel[] panelArray;
+	private String[] abanList;
+	List<Map<String, Serializable>> abanNo;
 	
 	private JLabel vAnncList;
 	
@@ -56,9 +59,11 @@ public class AnncList extends JPanel{
 		regis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
 		panelArray = new JPanel[8];
+		abanNo = AnncData.getAbanNoList();
+		getData();
 		
-		for (int i =0 ; i<6; i++) {
-			panelArray[i] = new Annc();
+		for (int i =0 ; i<abanNo.size(); i++) {
+			panelArray[i] = new Annc(abanList[i]);
 			panelArray[i].addMouseListener(anncListMouseListener);
 		}
 		
@@ -84,13 +89,13 @@ public class AnncList extends JPanel{
 		//gridbagAdd(regis, 4, 0, 1, 1);
 		
 		gridbagAdd(panelArray[0], 0, 1, 2 , 2);
-		gridbagAdd(panelArray[1], 2, 1, 2 , 2);
-		
-		gridbagAdd(panelArray[2], 0, 3, 2 , 2);
-		gridbagAdd(panelArray[3], 2, 3, 2 , 2);
-		
-		gridbagAdd(panelArray[4], 0, 5, 2 , 2);
-		gridbagAdd(panelArray[5], 2, 5, 2 , 2);
+//		gridbagAdd(panelArray[1], 2, 1, 2 , 2);
+//		
+//		gridbagAdd(panelArray[2], 0, 3, 2 , 2);
+//		gridbagAdd(panelArray[3], 2, 3, 2 , 2);
+//		
+//		gridbagAdd(panelArray[4], 0, 5, 2 , 2);
+//		gridbagAdd(panelArray[5], 2, 5, 2 , 2);
 		
 //		gridbagAdd(panelArray[6], 0, 7, 2 , 2);
 //		gridbagAdd(panelArray[7], 2, 7, 2 , 2);
@@ -118,7 +123,11 @@ public class AnncList extends JPanel{
 				
 	   }
 	
-	
+	private void getData() {
+		for(int i=0; i < abanNo.size(); i++) {
+			abanList[i] = abanNo.get(i).get("¹øÈ£").toString();
+		}
+	}
 	class AnncListButtonListener implements ActionListener{
 		
 		@Override
@@ -157,7 +166,7 @@ public class AnncList extends JPanel{
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		
-		new AnncList();
+		System.out.println(AnncData.getAbanNoList().size());
 
 	}
 

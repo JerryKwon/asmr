@@ -80,7 +80,7 @@ public class MainPageData {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.println(getNotiData("1"));
+		System.out.println(getNotiData("83"));
 	}
 
 }
