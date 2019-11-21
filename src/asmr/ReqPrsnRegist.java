@@ -10,6 +10,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
@@ -42,6 +44,8 @@ public class ReqPrsnRegist extends JFrame {
 	private JButton custSearch, addressSearch, returning, cancel;
 	private JRadioButton cust,nonCust;
 	private JComboBox<String> cbCustSearch;
+	
+	private static String hint = "- 를 포함한 13자리 숫자";
 	
 	private String abanNo;
 	private boolean isCust = true;
@@ -139,6 +143,24 @@ public class ReqPrsnRegist extends JFrame {
 		
 		vPhoneNum = new JLabel("전화번호");
 		xPhoneNum = new JTextField(10);
+		xPhoneNum.setText(hint);
+		xPhoneNum.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				// TODO Auto-generated method stub
+				if(xPhoneNum.getText().trim().length()==0) {
+					xPhoneNum.setText(hint);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+				if(xPhoneNum.getText().equals(hint))
+					xPhoneNum.setText("");
+			}
+		});
 		
 		returning = new JButton("반환");
 		returning.setBackground(red);
@@ -387,8 +409,8 @@ public class ReqPrsnRegist extends JFrame {
 		else {
 			String repStr = phoneNum.replaceAll("[0-9]", "");
 			String[] splitStr = repStr.split("");
-			System.out.println(splitStr.toString());
-			System.out.println(splitStr.length);
+//			System.out.println(splitStr.toString());
+//			System.out.println(splitStr.length);
 			if(splitStr.length==2)
 				return true;
 			else return false;
