@@ -92,6 +92,9 @@ public class InqAnsBoard extends JPanel {
 	                return false;               
 	        };
 	    };
+	    eInqAnsList.getTableHeader().setReorderingAllowed(false);
+	    eInqAnsList.getTableHeader().setResizingAllowed(false);
+	    
 	    DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 	    dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 	    eInqAnsList.addMouseListener(inqAnsBoardMouseListener);
