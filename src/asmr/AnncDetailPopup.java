@@ -3,14 +3,20 @@ package asmr;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -18,15 +24,20 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-public class AnncDetailPopup extends JFrame {
+public class AnncDetailPopup extends JFrame{
 	
 	private JLabel vProtCntrName, vAnncRegis, vAbanName, vAnmlKinds, vKind, vSex, vAge,vColor, vNeutWhet, vAnmlSize, vRscuDate, vRscuLoc, vExpln;   
 	
 	private JTextField xProtCntrName, xAbanName, xAnmlKinds, xKind, xSex, xAge, xColor, xNeutWhet, xAnmlSize, xRscuDate, xRscuLoc, xExpln;
 	
 	private JButton confirm, cancel;
+	
+	Map<String, Serializable> anncDtl;
+	List<Map<String, Serializable>> picList;
+	private ArrayList<String> picPath = new ArrayList<String>();
 	
 	GridBagLayout gridbagLayout;
 	GridBagConstraints gridbagConstraints;
@@ -36,10 +47,12 @@ public class AnncDetailPopup extends JFrame {
 	private Color black = new Color(0,0,0);
 	
 	private BufferedImage buttonIcon;
+	private ImageIcon noImageIcon;
 	
 	AnncDetailPopupButtonListener anncDetailPopupButtonListener;
 	
 	private JButton previous, next, imageButton;
+	private int pnt, picMax;
 	
 	public AnncDetailPopup(String abanNo) throws IOException {
 		gridbagLayout = new GridBagLayout();
@@ -124,10 +137,24 @@ public class AnncDetailPopup extends JFrame {
 		imageButton.setContentAreaFilled(false);
 		imageButton.setFocusPainted(false);
 		
+		File input = new File("images/NoImage.png");
+	    BufferedImage image = ImageIO.read(input);
+	    BufferedImage resized = resize(image,200,200);
+	    noImageIcon = new ImageIcon(resized);
+		
 		JComponent[] vComps = {vProtCntrName, vAbanName, vAnmlKinds, vKind, vSex, vAge, vColor, vNeutWhet,
 				vAnmlSize, vRscuDate,vRscuLoc, vExpln};
 		ChangeFont(vComps, new Font("나눔고딕", Font.PLAIN, 16));
 		
+		anncDtl = AnncData.getAnncDetail(abanNo);
+		picList = AnncData.getAbanPicPath(abanNo);
+		
+		for(int i=0; i<picList.size(); i++){
+			picPath.add(picList.get(i).get("경로").toString());
+		}
+		pnt = 0;
+		picMax = picPath.size();
+		setData();
 		
 		AnncDetailPopupView();
 		
@@ -193,7 +220,30 @@ public class AnncDetailPopup extends JFrame {
 		setResizable(false);
 		setVisible(true);
 	}
-	
+	private void setData(){
+		xProtCntrName.setText(anncDtl.get("센터명").toString());
+		xAbanName.setText(anncDtl.get("동물명").toString());
+		xAnmlKinds.setText(anncDtl.get("동물종류").toString());
+		xKind.setText(anncDtl.get("품종").toString());
+		xSex.setText(anncDtl.get("성별").toString());
+		xAge.setText(anncDtl.get("나이").toString());
+		xColor.setText(anncDtl.get("색상").toString());
+		xNeutWhet.setText(anncDtl.get("중성화여부").toString());
+		xAnmlSize.setText(anncDtl.get("동물크기").toString());
+		xRscuDate.setText(anncDtl.get("구조일시").toString());
+		xRscuLoc.setText(anncDtl.get("구조장소").toString());
+		xExpln.setText(anncDtl.get("특징").toString());
+		try {
+			File input = new File(picPath.get(pnt));
+			BufferedImage image = ImageIO.read(input);
+			BufferedImage resized = resize(image,200,200);
+			ImageIcon icon = new ImageIcon(resized);
+			imageButton.setIcon(icon);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			imageButton.setIcon(noImageIcon);
+		}
+	}
 	private void gridbagAdd(Component c, int x, int y, int w, int h) {			
 		
 		gridbagConstraints.gridx = x;		
@@ -216,10 +266,38 @@ public class AnncDetailPopup extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if (e.getSource().equals(previous)) {
-				
+				if(pnt > 0) {
+					pnt -= 1;
+					try {
+						File input = new File(picPath.get(pnt));
+						BufferedImage image = ImageIO.read(input);
+						BufferedImage resized = resize(image,200,200);
+						ImageIcon icon = new ImageIcon(resized);
+						imageButton.setIcon(icon);
+					} catch(IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "첫번째 사진입니다.", "경고", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 			else if(e.getSource().equals(next)) {
-				
+				if(pnt < picMax-1) {
+					pnt += 1;
+					try {
+						File input = new File(picPath.get(pnt));
+						BufferedImage image = ImageIO.read(input);
+						BufferedImage resized = resize(image,200,200);
+						ImageIcon icon = new ImageIcon(resized);
+						imageButton.setIcon(icon);
+					} catch(IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "마지막 사진입니다.", "경고", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 			else if(e.getSource().equals(cancel)) {
 				dispose();
@@ -233,7 +311,14 @@ public class AnncDetailPopup extends JFrame {
     		comp.setFont(font);
     	}
     }
-
+    private static BufferedImage resize(BufferedImage img, int height, int width) {
+        Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resized.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+        return resized;
+    }
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		

@@ -65,8 +65,8 @@ public class AnncList extends JPanel{
 		
 		getData();
 		
-		for (int i=0 ; i < 6/*abanList.size()*/; i++) {
-			panelArray[i] = new Annc(abanList.get(0));
+		for (int i=0 ; i < abanList.size(); i++) {
+			panelArray[i] = new Annc(abanList.get(i));
 //			panelArray[i].addMouseListener(anncListMouseListener);
 		}
 		
@@ -94,12 +94,12 @@ public class AnncList extends JPanel{
 		gridbagAdd(panelArray[0], 0, 1, 2 , 2);
 		gridbagAdd(panelArray[1], 2, 1, 2 , 2);
 		
-		gridbagAdd(panelArray[2], 0, 3, 2 , 2);
-		gridbagAdd(panelArray[3], 2, 3, 2 , 2);
-		
-		gridbagAdd(panelArray[4], 0, 5, 2 , 2);
-		gridbagAdd(panelArray[5], 2, 5, 2 , 2);
-		
+//		gridbagAdd(panelArray[2], 0, 3, 2 , 2);
+//		gridbagAdd(panelArray[3], 2, 3, 2 , 2);
+//		
+//		gridbagAdd(panelArray[4], 0, 5, 2 , 2);
+//		gridbagAdd(panelArray[5], 2, 5, 2 , 2);
+//		
 //		gridbagAdd(panelArray[6], 0, 7, 2 , 2);
 //		gridbagAdd(panelArray[7], 2, 7, 2 , 2);
 		
@@ -152,12 +152,7 @@ public class AnncList extends JPanel{
 			// TODO Auto-generated method stub
 			super.mouseClicked(e);
 			if(e.getButton()==1) {
-				try {
-					new AnncDetailPopup("2019112201");
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}				
+								
 			}
 		}
 		
