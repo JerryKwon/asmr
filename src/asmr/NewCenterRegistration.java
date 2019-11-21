@@ -185,6 +185,7 @@ public class NewCenterRegistration extends JFrame{
 	private void NewCenterRegistrationView() {
 		setLayout(gridBagLayout);
 		setTitle("신규센터등록");
+		this.getContentPane().setBackground(MainFrame.bgc);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -225,6 +226,7 @@ public class NewCenterRegistration extends JFrame{
 		gridbagAdd(vOperTime, 11, 3, 1, 1);
 		Component[] cops2 = {cbOperTimeOpen, vOperTimeDash, cbOperTimeClose};
 		CombinePanel operTimePanel = new CombinePanel(cops2,0,0);
+		operTimePanel.setBackground(MainFrame.bgc);
 		gridbagAdd(operTimePanel, 12 ,3, 1, 1);
 		
 		//센터장	
@@ -253,6 +255,7 @@ public class NewCenterRegistration extends JFrame{
 		//저장버튼
 		JComponent[] buttons = {register, cancel};
 		CombinePanel buttonPanel = new CombinePanel(buttons, 10, 0);
+		buttonPanel.setBackground(MainFrame.bgc);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(5,250,0,0));
 		gridbagAdd(buttonPanel, 0, 10, 4, 1);
 		
@@ -285,7 +288,8 @@ public class NewCenterRegistration extends JFrame{
 	class BottomPanel extends JPanel{
 		public BottomPanel() {
 			setLayout(new FlowLayout(FlowLayout.LEFT));
-
+			setBackground(MainFrame.bgc);
+			
 			add(vCageBig);
 			add(xCageBig);
 			add(vCageBigCount);

@@ -120,6 +120,7 @@ public class ProtAnmlSearchPopup extends JFrame {
 	private void ProtAnmlSearchPopupView() {
 		
 		setTitle("보호동물검색");
+		this.getContentPane().setBackground(MainFrame.bgc);
 		
 		gridbagConstraints.anchor = GridBagConstraints.WEST;
 		gridbagConstraints.ipadx = 7;
@@ -136,6 +137,8 @@ public class ProtAnmlSearchPopup extends JFrame {
 		gridbagAdd(search, 5, 1, 1, 1);
 		
 		JPanel plainPanel = new JPanel();
+		plainPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+		plainPanel.setBackground(MainFrame.bgc);
 		plainPanel.add(scrollPane1);
 //		plainPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 0));
 		
@@ -145,6 +148,7 @@ public class ProtAnmlSearchPopup extends JFrame {
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT,40,0));
 		buttonPanel.add(confirm);
 		buttonPanel.add(cancel);
+		buttonPanel.setBackground(MainFrame.bgc);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 150, 0, 0));
 		
 		gridbagAdd(buttonPanel, 0, 3, 6, 1);

@@ -166,7 +166,7 @@ public class CenterList extends JPanel{
 		
 		//날짜 형태 2001.01.20[10글자]
 		vEstDate = new JLabel("설립일자");
-		xEstDate = new JTextField(10);
+		xEstDate = new JTextField(12);
 		xEstDate.setEditable(false);
 		
 		//센터명
@@ -279,6 +279,7 @@ public class CenterList extends JPanel{
 	//Component 배치
 	private void CenterListView() {
 		setLayout(gridBagLayout);
+		setBackground(MainFrame.bgc);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -294,6 +295,7 @@ public class CenterList extends JPanel{
 		gridbagAdd(vCageList, 5, 0, 1, 1);
 		JPanel plainPanel2 = new JPanel();
 		plainPanel2.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
+		plainPanel2.setBackground(MainFrame.bgc);
 		plainPanel2.add(cageRegist);
 		plainPanel2.setBorder(BorderFactory.createEmptyBorder(0, 100, 0, 0));
 		gridbagAdd(plainPanel2, 9, 0, 1, 1);
@@ -303,6 +305,7 @@ public class CenterList extends JPanel{
 		JPanel plainPanel = new JPanel();
 		plainPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 		plainPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
+		plainPanel.setBackground(MainFrame.bgc);
 		plainPanel.add(scrollpane2);
 		gridbagAdd(plainPanel, 5, 1, 5, 5);
 		
@@ -332,6 +335,7 @@ public class CenterList extends JPanel{
 		//운영시간
 		Component[] cops = {cbOperTimeOpen, vOperTimeDash,cbOperTimeClose};
 		CombinePanel operTimePanel = new CombinePanel(cops,0,0);
+		operTimePanel.setBackground(MainFrame.bgc);
 		
 		gridbagAdd(vOperTime, 2, 9, 1, 1);
 		gridbagAdd(operTimePanel, 3, 9, 1, 1);
@@ -359,6 +363,7 @@ public class CenterList extends JPanel{
 		//저장버튼 배치
 		JComponent[] bComps = {modify,cancel};
 		CombinePanel buttonPanel = new CombinePanel(bComps, 10, 0);
+		buttonPanel.setBackground(MainFrame.bgc);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10,325,0,0));
 		gridbagAdd(buttonPanel, 0, 13, 21, 1);
 		
@@ -701,7 +706,8 @@ public class CenterList extends JPanel{
 	class BottomPanel extends JPanel{
 		public BottomPanel() {
 			setLayout(new FlowLayout(FlowLayout.LEFT));
-
+			setBackground(MainFrame.bgc);
+			
 			add(vCageBig);
 			add(xCageBig);
 			add(vCageBigCount);

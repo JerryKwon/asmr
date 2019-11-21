@@ -78,6 +78,7 @@ public class RscuSearch extends JFrame{
 		this.xRscuNo = xRscuNo;
 		
 		vRscuList = new JLabel("구조목록");
+		vRscuList.setBorder(BorderFactory.createEmptyBorder(10,10,0,0));
 		vRscuList.setFont(new Font("나눔고딕", Font.PLAIN, 16));
 		
 //		eRscuList = new JTable(model1);
@@ -115,6 +116,7 @@ public class RscuSearch extends JFrame{
 		
 		setLayout(gridBagLayout);
 		setTitle("구조검색");
+		this.getContentPane().setBackground(MainFrame.bgc);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -124,10 +126,15 @@ public class RscuSearch extends JFrame{
 		
 		gridbagAdd(vRscuList, 0, 0, 1, 1);
 		
-		gridbagAdd(scrollPane, 0, 1, 1, 1);
+		JPanel plainPanel = new JPanel();
+		plainPanel.add(scrollPane);
+		plainPanel.setBackground(MainFrame.bgc);
+		plainPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+		gridbagAdd(plainPanel, 0, 1, 1, 1);
 		
 		Component[] cops = {confirm, cancel};
 		CombinePanel buttonPanel = new CombinePanel(cops, 5, 5);
+		buttonPanel.setBackground(MainFrame.bgc);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,200,0,0));
 		gridbagAdd(buttonPanel, 0, 2, 1, 1);
 		

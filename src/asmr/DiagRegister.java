@@ -182,6 +182,7 @@ public class DiagRegister extends JFrame{
 	private void DiagRegisterView() {
 		setLayout(gridBagLayout);
 		setTitle("진료등록");
+		this.getContentPane().setBackground(MainFrame.bgc);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -240,6 +241,7 @@ public class DiagRegister extends JFrame{
 		
 		Component[] cops3 = {register, cancel};
 		CombinePanel buttonPanel = new CombinePanel(cops3,true);
+		buttonPanel.setBackground(MainFrame.bgc);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10,175,0,0));
 		gridbagAdd(buttonPanel, 0, 9, 4, 1);
 		

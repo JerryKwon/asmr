@@ -75,6 +75,7 @@ public class CenterSearch extends JFrame{
 		cntrNos = new ArrayList<String>();
 		
 		vCenterSearch = new JLabel("¼¾ÅÍ¸ñ·Ï");
+		vCenterSearch.setBorder(BorderFactory.createEmptyBorder(10,10,0,0));
 		
 //		eCenterList = new JTable(model1);
 		eCenterList = new JTable(model1) {
@@ -107,6 +108,7 @@ public class CenterSearch extends JFrame{
 	private void CenterSearchView() {
 		setLayout(gridBagLayout);
 		setTitle("¼¾ÅÍ°Ë»ö");
+		this.getContentPane().setBackground(MainFrame.bgc);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -114,17 +116,19 @@ public class CenterSearch extends JFrame{
 		gridBagConstraints.weightx=1.0;
 		gridBagConstraints.weighty=1.0;
 		
-		vCenterSearch.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+		vCenterSearch.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		gridbagAdd(vCenterSearch, 0, 0, 1, 1);
 		
 		JPanel panel = new JPanel();
 		panel.add(scrollpane);
-		panel.setBorder(BorderFactory.createEmptyBorder(0,20,0,0));
+		panel.setBackground(MainFrame.bgc);
+		panel.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
 		gridbagAdd(panel, 0, 1, 1, 1);
 		
 		JComponent[] cops = {confirm,cancel};
 		ChangeFont(cops, new Font("³ª´®°íµñ", Font.BOLD, 12));
 		CombinePanel buttonPanel = new CombinePanel(cops, true);
+		buttonPanel.setBackground(MainFrame.bgc);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,175,0,0));
 		gridbagAdd(buttonPanel, 0, 2, 1, 1);
 		

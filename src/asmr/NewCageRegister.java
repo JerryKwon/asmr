@@ -111,6 +111,7 @@ public class NewCageRegister extends JFrame{
 	private void CageRegisterView() {
 		setLayout(gridBagLayout);
 		setTitle("ÄÉÀÌÁöµî·Ï");
+		this.getContentPane().setBackground(MainFrame.bgc);
 
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
@@ -131,16 +132,19 @@ public class NewCageRegister extends JFrame{
 		Component[] copsBig = {vCageBig,xCageBig,vCageBigCount};
 		
 		CombinePanel cageBigPanel = new CombinePanel(copsBig, 0, 10);
+		cageBigPanel.setBackground(MainFrame.bgc);
 		gridbagAdd(cageBigPanel, 0, 2, 1, 1);
 		
 		Component[] copsMid = {vCageMid,xCageMid,vCageMidCount};
-		
+				
 		CombinePanel cageMidPanel = new CombinePanel(copsMid, 0, 10);
+		cageMidPanel.setBackground(MainFrame.bgc);	
 		gridbagAdd(cageMidPanel, 1, 2, 1, 1);
 		
 		Component[] copsSmall = {vCageSmall,xCageSmall,vCageSmallCount};
 		
 		CombinePanel cageSmallPanel = new CombinePanel(copsSmall, 0, 10);
+		cageSmallPanel.setBackground(MainFrame.bgc);	
 		gridbagAdd(cageSmallPanel, 2, 2, 1, 1);
 		
 		
@@ -153,6 +157,7 @@ public class NewCageRegister extends JFrame{
 		JComponent[] buttons = {register,cancel};
 		ChangeFont(buttons, new Font("³ª´®°íµñ", Font.BOLD, 12));
 		CombinePanel buttonPanel = new CombinePanel(buttons, 10,0);
+		buttonPanel.setBackground(MainFrame.bgc);	
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,45,0,0));
 		gridbagAdd(buttonPanel, 0, 6, 6, 1);
 		

@@ -173,6 +173,7 @@ public class ProtAniRegist extends JFrame{
 	private void ProtAniRegistView() {
 		setLayout(gridBagLayout);
 		setTitle("보호동물등록");
+		this.getContentPane().setBackground(MainFrame.bgc);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -228,6 +229,7 @@ public class ProtAniRegist extends JFrame{
 	
 		Component[] cops = {register, cancel};
 		CombinePanel buttonPanel = new CombinePanel(cops, true);
+		buttonPanel.setBackground(MainFrame.bgc);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 225, 0, 0));
 		gridbagAdd(buttonPanel, 0, 10, 6, 1);
 		

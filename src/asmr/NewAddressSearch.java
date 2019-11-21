@@ -160,6 +160,7 @@ public class NewAddressSearch extends JFrame{
 	private void AddressSearchView() {
 		setLayout(gridBagLayout);
 		setTitle("주소검색");
+		this.getContentPane().setBackground(MainFrame.bgc);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -192,6 +193,7 @@ public class NewAddressSearch extends JFrame{
 		
 		JPanel plainPanel = new JPanel();
 		plainPanel.add(scrollPane);
+		plainPanel.setBackground(MainFrame.bgc);
 		gridbagAdd(plainPanel, 0, 4, 6, 1);
 		
 		gridbagAdd(vDtilAddr, 0, 5, 1, 1);
@@ -200,6 +202,7 @@ public class NewAddressSearch extends JFrame{
 		JComponent[] buttons = {confirm,cancel};
 		CombinePanel buttonPanel = new CombinePanel(buttons, 10, 0);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 160, 0, 0));
+		buttonPanel.setBackground(MainFrame.bgc);
 		gridbagAdd(buttonPanel, 0, 6, 3, 1);
 		
 		pack();

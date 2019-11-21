@@ -261,6 +261,7 @@ public class DiagAniList extends JPanel{
 
 	private void DiagAniListView() {
 		setLayout(gridBagLayout);
+		setBackground(MainFrame.bgc);
 		
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.ipadx = 7;
@@ -273,6 +274,7 @@ public class DiagAniList extends JPanel{
 		JPanel plainPanel = new JPanel();
 		plainPanel.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
 		plainPanel.add(protAniListScroll);
+		plainPanel.setBackground(MainFrame.bgc);
 		plainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 20));
 		gridbagAdd(plainPanel, 0, 1, 5, 1);
 		
@@ -330,6 +332,7 @@ public class DiagAniList extends JPanel{
 	
 		Component[] cops2 = {modify, cancel};
 		CombinePanel buttonPanel = new CombinePanel(cops2, true);
+		buttonPanel.setBackground(MainFrame.bgc);
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 280, 0, 0));
 		gridbagAdd(buttonPanel, 0, 11, 6, 1);
 
