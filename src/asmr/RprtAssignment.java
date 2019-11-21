@@ -233,13 +233,13 @@ public class RprtAssignment extends JPanel {
       
       changeCellEditor(eRprtList, eRprtList.getColumnModel().getColumn(4));
       
-      rprtListData = RprtData2.getRprtList();
+      rprtListData = RprtData.getRprtList();
       
-      cntrListData = RprtData2.getCntrList();
+      cntrListData = RprtData.getCntrList();
       
 //      RprtData.getCntrNoList(nm);
       
-      cageListData = RprtData2.getCageList();
+      cageListData = RprtData.getCageList();
 
 //      cntrNm = new ArrayList<String>();
 //      System.out.println(xPath);
@@ -448,9 +448,9 @@ public class RprtAssignment extends JPanel {
 				int column = 4;
 				int row = eRprtList.getSelectedRow();
 				String value = (String) eRprtList.getModel().getValueAt(row, column);
-				String cntrno = RprtData2.getCntrNoList(value);
+				String cntrno = RprtData.getCntrNoList(value);
 	        	System.out.println(cntrno);
-	        	String rprtno = RprtData2.getRprtNoList(rprtDttm);
+	        	String rprtno = RprtData.getRprtNoList(rprtDttm);
 	        	System.out.println(rprtno);
 	        	AssignCntr(cntrno, rprtno);
             

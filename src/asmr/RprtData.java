@@ -12,7 +12,7 @@ import java.util.Map;
 
 
 // 신고목록에 들어갈 데이터
-public class RprtData2 {
+public class RprtData {
    public static Connection conn = ConnDB.getConnection();
    static String query;
    static PreparedStatement pstm = null;
