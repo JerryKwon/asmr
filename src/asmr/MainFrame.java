@@ -30,7 +30,7 @@ public class MainFrame extends JFrame {
 	public static Color linec = new Color(125, 117, 65);
 
 	private JButton bMainButton, bLogo, bLogin, bRegister, bLogout, bUserName, bCustName;
-	private JLabel vCenterName,vBiz, vWelcome;
+	private JLabel vCenterName,vBiz, vWelcome, vTitle;
 	
 	private JMenuBar mBar;
 	private JMenu mAban, mReport, mAdop, mPost, mAdopManage;
@@ -67,13 +67,18 @@ public class MainFrame extends JFrame {
 		
 		ImageIcon iLogoIcon = new ImageIcon("images/asmr_logo.png");
 		Image iLogo = iLogoIcon.getImage();
-		Image iLogoBtn = iLogo.getScaledInstance(600, 150, Image.SCALE_SMOOTH);
+		Image iLogoBtn = iLogo.getScaledInstance(600, 120, Image.SCALE_SMOOTH);
 		
 		bLogo = new JButton(new ImageIcon(iLogoBtn));
 		bLogo.setContentAreaFilled(false);
 		bLogo.setFocusPainted(false);
 		bLogo.setBorderPainted(false);
 		bLogo.addActionListener(listener);
+		
+		ImageIcon iTit = new ImageIcon("images/asmr_title.png");
+		Image icon = iTit.getImage();
+		Image iTitle = icon.getScaledInstance(600, 50, Image.SCALE_SMOOTH);
+		vTitle = new JLabel(new ImageIcon(iTitle));
 		
 		bLogin = new JButton("·Î±×ÀÎ");
 		bLogin.setContentAreaFilled(false);
@@ -242,7 +247,8 @@ public class MainFrame extends JFrame {
 		this.getContentPane().setBackground(new Color(253, 247, 207));
 		
 		bMainButton.setBounds(80,50,175,175);
-		bLogo.setBounds(670, 5, 600, 150);
+		bLogo.setBounds(670, 5, 600, 120);
+		vTitle.setBounds(670, 125, 600, 50);
 		mBar.setBounds(290,170,1370,50);
 		
 		bLogin.setBounds(1700, 130, 85, 30);
@@ -260,6 +266,7 @@ public class MainFrame extends JFrame {
 		
 		this.add(bMainButton);
 		this.add(bLogo);
+		this.add(vTitle);
 		this.add(mBar);
 		this.add(ContentPanel);
 		
