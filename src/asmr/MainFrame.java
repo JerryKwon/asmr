@@ -188,6 +188,7 @@ public class MainFrame extends JFrame {
 		mAdopManage = new JMenu("ÀÔ¾ç°ü¸®");
 		mAdopManage.setPreferredSize(new Dimension(218, 40));
 		mAdopManage.setFont(new Font("³ª´®°íµñ", Font.BOLD, 17));
+		mAdopManage.setOpaque(true);
 		mAdopManage.setBackground(bgc);
 		
 		JMenuItem[] mlAdopItem = new JMenuItem[mlAdop.length];
@@ -219,8 +220,8 @@ public class MainFrame extends JFrame {
 		mPost.setPreferredSize(new Dimension(220, 50));
 		mPost.setBorder(new EmptyBorder(0,80,0,0));
 		mBar.add(mPost);
-		mBar.setBackground(new Color(253, 237, 131));
-		mBar.setBorder(new LineBorder(new Color(125, 117, 65)));
+		mBar.setBackground(deepbgc);
+		mBar.setBorder(new LineBorder(linec));
 		
 		ContentPanel = new ContentPanel();
 		ContentPanel.setBackground(bgc);
