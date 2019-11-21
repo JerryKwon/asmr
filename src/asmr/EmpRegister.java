@@ -430,8 +430,11 @@ public class EmpRegister extends JFrame{
 			query1.append("	'"+engGender+"' SEX, ");
 			query1.append("	'"+telNo+"' TEL_NO ");
 			query1.append("FROM( ");
-			query1.append("	SELECT /*+ INDEX_DESC(EMP EMP_PK) */ NVL(EMP_NO,0) EMP_NO ");
-			query1.append("	FROM EMP ");
+			query1.append("	SELECT * ");
+			query1.append("	FROM( ");
+			query1.append("		SELECT /*+ INDEX_DESC(EMP EMP_PK) */ NVL(EMP_NO,0) EMP_NO ");
+			query1.append("		FROM EMP ");
+			query1.append("		ORDER BY 1 DESC) ");
 			query1.append("	WHERE ROWNUM=1) e ");
 			
 			pstmt = con.prepareStatement(query1.toString());
