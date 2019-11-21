@@ -69,7 +69,7 @@ public class CustData {
 	}
 	static void createIsNotUserCust(){
 		char custType = 'n';
-		query = "INSERT INTO CUST VALUES ((SELECT NVL(MAX(CUST_NO)+1, 0) FROM CUST), "
+		query = "INSERT INTO CUST(CUST_NO,CUST_NAME,ADDR,TEL_NO,CUST_TP) VALUES ((SELECT NVL(MAX(CUST_NO)+1, 0) FROM CUST), "
 				+"'"+custdata.get("이름")+"', '"+custdata.get("주소")+"', '"+custdata.get("전화번호")+"',"
 				+"'"+custType+"')";
 		try{
@@ -81,7 +81,7 @@ public class CustData {
 		}
 	}
 	static int getCustNo(String custID){
-		int custNo = 0;
+		int custNo = -1;
 		query = "SELECT CUST_NO FROM CUST WHERE ID = '"+custID+"'";
 		try{
 			pstm = conn.prepareStatement(query, rs.TYPE_SCROLL_INSENSITIVE, rs.CONCUR_READ_ONLY);
