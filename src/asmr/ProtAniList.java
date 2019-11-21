@@ -42,6 +42,8 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
 
@@ -174,6 +176,7 @@ public class ProtAniList extends JPanel {
 		vAbanAniType = new JLabel("유기동물구분");
 		xAbanAniType = new JTextField(12);
 		xAbanAniType.setEditable(false);
+
 		
 //		vRescueNo = new JLabel("구조번호");
 //		xRescueNo = new JTextField(12);
@@ -1073,10 +1076,15 @@ public class ProtAniList extends JPanel {
 					xDscvDate.setText(rs.getString("DSCV_DTTM"));
 					xDscvPlace.setText(rs.getString("DSCV_LOC"));
 					
+					xParAniName.setText("");
 				}
 				
 				if(abanTp.equals("b")) {
 					parAbanAniNo = rs.getString("MOM_ABAN_NO");
+				
+					xDscvDate.setText("");
+					xDscvPlace.setText("");
+					
 				}
 				
 				xAbanAniNo.setText(rs.getString("ABAN_NO"));
