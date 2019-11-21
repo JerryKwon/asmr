@@ -33,9 +33,11 @@ public class InqAnsBoard extends JPanel {
 	/**
 	 * 
 	 */
+	static String pno = null;
 	private static final long serialVersionUID = 1L;
 
-	static String pno = null;
+	static String ptit = null;
+	static String pdttm = null;
 	
 	private static String url = "jdbc:oracle:thin:@localhost:1521:XE";
 	private static String user = "asmr";
@@ -176,8 +178,9 @@ public class InqAnsBoard extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			if(e.getSource().equals(regis)) {	
-				MainFrame.qnaCase();
+			if(e.getSource().equals(regis)) {
+
+				MainFrame.InqCase();
 				
 			}
 			else if(e.getSource().equals(search)) {
@@ -206,44 +209,120 @@ public class InqAnsBoard extends JPanel {
 			super.mouseClicked(e);
 			if(e.getButton() == 1) {	
 				int clickedRow = eInqAnsList.getSelectedRow();
-				String postNo = (String)eInqAnsList.getValueAt(clickedRow, 0);
-				pno = postNo;
-				GetPost(postNo);		
+				String postTit = (String)eInqAnsList.getValueAt(clickedRow, 0);
+				String postDttm = (String)eInqAnsList.getValueAt(clickedRow, 2);
+				ptit = postTit;
+				pdttm = postDttm;
+//				GetPost(postTit, postDttm);	
+				
+				pno = InqAnsData.getPostNo(ptit, pdttm);
+				System.out.println(pno);
+				String postTp = InqAnsData.getPostTp(pno);
+				System.out.println(postTp);
+				if(postTp.equals("q")) {
+					GetPost(postTit, postDttm);	
+					
+				}else {
+					GetAnsPost(postTit, postDttm);
+				}
+				
 			}
 		}	
 	}
     
-    private void GetPost(String postNo) {
+
+    
+    private void GetPost(String postTit, String postDttm) {
 		
 		MainFrame.InqPostCase();
+
 		connection();
+		
+		StringBuffer query= new StringBuffer("SELECT POST_TIT, POST_CONT, CUST_NAME, WRT_DTTM, POST_NO ");
+		query.append("FROM POST, CUST ");
+//		query.append("WHERE POST.INQ_WRT_PRSN_NO = CUST.CUST_NO ");
+		query.append("WHERE POST_TIT='"+postTit+"' ");
+		query.append("AND WRT_DTTM=to_date('"+postDttm+"','YYYY-MM-DD hh24:mi:ss') ");
+		query.append("UNION ");
+		query.append("SELECT POST_TIT, POST_CONT, EMP_NAME , WRT_DTTM, POST_NO ");
+		query.append("FROM POST, EMP ");
+//		query.append("WHERE post.ans_wrt_prsn_no = emp.emp_no ");
+		query.append("WHERE POST_TIT='"+postTit+"' ");
+		query.append("AND WRT_DTTM=to_date('"+postDttm+"','YYYY-MM-DD hh24:mi:ss') ");
+
 		
 		
 		try {
-			StringBuffer query= new StringBuffer("SELECT POST_TIT, POST_CONT, CUST_NAME, WRT_DTTM ");
-			query.append("FROM POST, CUST ");
-			query.append("WHERE POST.INQ_WRT_PRSN_NO = CUST.CUST_NO ");
-			query.append("UNION ");
-			query.append("SELECT POST_TIT, POST_CONT, EMP_NAME AS CUST_NAME, WRT_DTTM ");
-			query.append("FROM POST, EMP ");
-			query.append("WHERE post.ans_wrt_prsn_no = emp.emp_no ");
-			query.append("AND POST_NO='"+postNo+"' ");
 
-				
 			pstmt = con.prepareStatement(query.toString());
 			rs = pstmt.executeQuery();
 
 			
 			while(rs.next()) {
+				
 								
-				InqPost.xTit.setText(rs.getString("POST_TIT"));
-				InqPost.xCont.setText(rs.getString("POST_CONT"));
-				InqPost.xWrt.setText(rs.getString("CUST_NAME"));
-				InqPost.xWrtDttm.setText(rs.getString("WRT_DTTM"));
+				InqPost.xTit.setText(rs.getString(1));
+				InqPost.xCont.setText(rs.getString(2));
+				InqPost.xWrt.setText(rs.getString(3));
+				InqPost.xWrtDttm.setText(rs.getString(4));
+				pno=rs.getString(5);
+				
+				
 				
 			}
 				
 		}catch(Exception e2) {
+
+			
+			e2.printStackTrace();
+		}
+		
+		disconnection();
+	}
+    
+private void GetAnsPost(String postTit, String postDttm) {
+		
+		MainFrame.AnsPostCase();
+
+		connection();
+		
+		StringBuffer query= new StringBuffer("SELECT POST_TIT, POST_CONT, CUST_NAME, WRT_DTTM, POST_NO ");
+		query.append("FROM POST, CUST ");
+//		query.append("WHERE POST.INQ_WRT_PRSN_NO = CUST.CUST_NO ");
+		query.append("WHERE POST_TIT='"+postTit+"' ");
+		query.append("AND WRT_DTTM=to_date('"+postDttm+"','YYYY-MM-DD hh24:mi:ss') ");
+		query.append("UNION ");
+		query.append("SELECT POST_TIT, POST_CONT, EMP_NAME , WRT_DTTM, POST_NO ");
+		query.append("FROM POST, EMP ");
+//		query.append("WHERE post.ans_wrt_prsn_no = emp.emp_no ");
+		query.append("WHERE POST_TIT='"+postTit+"' ");
+		query.append("AND WRT_DTTM=to_date('"+postDttm+"','YYYY-MM-DD hh24:mi:ss') ");
+
+		
+		
+		try {
+
+			pstmt = con.prepareStatement(query.toString());
+			rs = pstmt.executeQuery();
+
+			
+			while(rs.next()) {
+				
+								
+				AnsPost.xTit.setText(rs.getString(1));
+				AnsPost.xCont.setText(rs.getString(2));
+				AnsPost.xWrt.setText(rs.getString(3));
+				AnsPost.xWrtDttm.setText(rs.getString(4));
+				pno=rs.getString(5);
+				
+				
+				
+				
+			}
+				
+		}catch(Exception e2) {
+
+			
 			e2.printStackTrace();
 		}
 		
@@ -261,7 +340,7 @@ public class InqAnsBoard extends JPanel {
 			query.append("FROM POST, CUST ");
 			query.append("WHERE POST.INQ_WRT_PRSN_NO = CUST.CUST_NO ");
 			query.append("UNION ");
-			query.append("SELECT POST_CONT, EMP_NAME AS CUST_NAME, WRT_DTTM ");
+			query.append("SELECT POST_TIT,  EMP_NAME AS CUST_NAME, WRT_DTTM ");
 			query.append("FROM POST, EMP ");
 			query.append("WHERE post.ans_wrt_prsn_no = emp.emp_no ");
 //			query.append("where post.post_tp != 'n' ");
@@ -275,7 +354,7 @@ public class InqAnsBoard extends JPanel {
 				String[] dttm = rs.getString("wrt_dttm").split(":");
 				String noSec = dttm[0]+":"+dttm[1];
 				
-				model.addRow(new Object[] {rs.getString("post_tit"),rs.getString("CUST_NAME"),noSec});
+				model.addRow(new Object[] {rs.getString("post_tit"),rs.getString("CUST_NAME"),rs.getString("WRT_DTTM")});
 			
 			}
 		

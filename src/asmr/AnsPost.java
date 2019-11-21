@@ -7,22 +7,44 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class AnsPost extends JFrame {
+public class AnsPost extends JPanel {
+	
+	private boolean isClicked = false;
+	
+	private String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private String user = "asmr";
+	private String password = "asmr";
+	
+	private Connection con = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+	private ResultSetMetaData rsmd = null;
 	
 	AnsPostButtonListener ansPostButtonListener;
 	
 	private JLabel vAns, vWrt, vWrtDttm, vTit, vCont;
 	
-	private JTextField xWrt, xWrtDttm, xTit;
+	static JTextField xWrt;
+
+	static JTextField xWrtDttm;
+
+	static JTextField xTit;
 	
-	private JTextArea xCont;
+	static JTextArea xCont;
 	
 	private JButton update, getBack;
 	
@@ -33,7 +55,7 @@ public class AnsPost extends JFrame {
 	private Color white = new Color(255,255,255);
 	private Color black = new Color(0,0,0);
 	
-	private AnsPost() {
+	AnsPost() {
 		
 		ansPostButtonListener = new AnsPostButtonListener();
 		
@@ -81,8 +103,10 @@ public class AnsPost extends JFrame {
 	}
 	
 	private void AnsPostView() {
+//		setBackground(MainFrame.bgc);
+//		setTitle("답변게시글");	
+		
 		setBackground(MainFrame.bgc);
-		setTitle("답변게시글");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;
@@ -110,9 +134,9 @@ public class AnsPost extends JFrame {
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
-		pack();
-		setResizable(false);
-		setVisible(true);
+//		pack();
+//		setResizable(false);
+//		setVisible(true);
 		
 	}
 	
@@ -138,14 +162,116 @@ public class AnsPost extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource().equals(update)) {	
+				if(!isClicked) {
+					isClicked = true;
+					
+					xTit.setEditable(true);
+					xTit.requestFocus();
+					xCont.setEditable(true);
+					
+					update.setText("저장");
+					
+					
+//					String prePostTit = xTit.getText();
+//					String prePostCont = xCont.getText();
+					
+//					JComponent[] changeStatusComps = {xTit,xCont};
+//					for(JComponent cop: changeStatusComps) {
+//						cop.setEnabled(true);
+//					}
+					
+					
+				}
+				else {
+					isClicked = false;
+					int result = JOptionPane.showConfirmDialog(null, "해당 게시글을 수정하시겠습니까?", "게시글정보수정", JOptionPane.YES_NO_OPTION);
+					if(result == JOptionPane.OK_OPTION) {
+//						xTit.setEditable(true);
+//						xTit.requestFocus();
+//						xCont.setEditable(true);
+						
+						String newPostTit = xTit.getText();
+						String newPostCont = xCont.getText();
+						
+						
+						xTit.setEditable(false);
+						xCont.setEditable(false);
+						update.setText("수정");
+						
+						
+						
+						UpdateAnsPost(newPostTit,newPostCont);
+						
+					}
+				}
 				
 			}
 			else if(e.getSource().equals(getBack)) {
+				MainFrame.qnaBoardCase();
 				
 			}
 		}
 		
 	}
+	
+    private void UpdateAnsPost(String newPostTit, String newPostCont) {
+//		
+		StringBuffer query1 = new StringBuffer("UPDATE POST SET POST_TIT=?, POST_CONT=? WHERE POST_NO=? ");
+		
+		connection();
+		
+		try {
+			pstmt = con.prepareStatement(query1.toString());
+			pstmt.setString(1, newPostTit);
+			pstmt.setString(2, newPostCont);
+			pstmt.setString(3, InqAnsBoard.pno);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				con.commit();
+			}
+		}catch(SQLException e) {	
+			e.printStackTrace();
+		}
+		
+		disconnection();
+	}
+	
+	// 데이터베이스 연결
+
+    public void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

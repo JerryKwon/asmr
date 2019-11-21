@@ -7,22 +7,38 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class AnsRegis extends JFrame {
+public class AnsRegis extends JPanel {
+	
+	private static String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	private static String user = "asmr";
+	private static String password = "asmr";
+	
+	private static Connection con = null;
+	private static PreparedStatement pstmt = null;
+	private static ResultSet rs = null;
+	private static ResultSetMetaData rsmd = null;
 	
 	AnsRegisButtonListener ansRegisButtonListener;
 	
 	private JLabel vAnsRegis, vTit, vCont;
 	
-	private JTextField xTit;
+	private static JTextField xTit;
 	
-	private JTextArea xCont;
+	private static JTextArea xCont;
 	
 	private JButton regis, cancel;
 	
@@ -33,7 +49,7 @@ public class AnsRegis extends JFrame {
 	private Color white = new Color(255,255,255);
 	private Color black = new Color(0,0,0);
 	
-	private AnsRegis() {
+	AnsRegis() {
 		
 		ansRegisButtonListener = new AnsRegisButtonListener();
 		
@@ -70,7 +86,7 @@ public class AnsRegis extends JFrame {
 	private void AnsRegisView() {
 		setBackground(MainFrame.bgc);
 
-		setTitle("답변등록");	
+//		setTitle("답변등록");	
 		
 		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagconstraints.ipadx = 7;
@@ -94,9 +110,9 @@ public class AnsRegis extends JFrame {
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
 
-		pack();
-		setResizable(false);
-		setVisible(true);
+//		pack();
+//		setResizable(false);
+//		setVisible(true);
 		
 		
 	}
@@ -122,16 +138,95 @@ public class AnsRegis extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			if(e.getSource().equals(regis)) {	
-				
+			if(e.getSource().equals(regis)) {
+				PostAns();
+				MainFrame.qnaBoardCase();	
 			}
 			else if(e.getSource().equals(cancel)) {
+				MainFrame.qnaBoardCase();
 				
 			}
 		}
 		
 	}
+    
+    static void PostAns() {
+    	connection();
+    	
+		String postTit = xTit.getText();
+		String postCont = xCont.getText();
+		String emp_no = EmpData.getSEMPNo(Login.empID);
+		String pno = InqAnsBoard.pno;
+		
+    	
+		try {
+			StringBuffer query1 = new StringBuffer("INSERT INTO POST(POST_NO, POST_TIT, WRT_DTTM, POST_CONT, POST_TP, INQ_POST_NO, INQ_WRT_PRSN_NO, ANS_WRT_PRSN_NO, NOTI_WRT_PRSN_NO) ");
+			query1.append("VALUES( ");
+			query1.append("POST_SEQ.nextval, ");
+			query1.append("'"+postTit+"', ");
+			query1.append("sysdate, ");
+			query1.append("'"+postCont+"', ");
+			query1.append("'a', ");
+			query1.append("'"+pno+"', ");
+			query1.append("null, ");
+			query1.append("'"+emp_no+"', ");
+			query1.append("null) ");
+			
+			pstmt = con.prepareStatement(query1.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				con.commit();
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		disconnection();
+		
+    	
+    	
+    }
 	
+    
+    // 데이터베이스 연결
+
+    public static void connection() {
+
+             try {
+
+                      Class.forName("oracle.jdbc.driver.OracleDriver");
+
+                      con = DriverManager.getConnection(url,user,password);
+
+
+             } catch (ClassNotFoundException e) {
+            	 e.printStackTrace();
+             } catch (SQLException e) {
+            	 e.printStackTrace();
+             }
+
+    }
+
+    // 데이터베이스 연결 해제
+    public static void disconnection() {
+
+        try {
+
+                 if(pstmt != null) pstmt.close();
+
+                 if(rs != null) rs.close();
+
+                 if(con != null) con.close();
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+    }
+		
+	
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new AnsRegis();

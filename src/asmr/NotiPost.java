@@ -228,7 +228,7 @@ public class NotiPost extends JPanel {
     
     private void UpdateNotiPost(String newPostTit, String newPostCont) {
 //    		
-    		StringBuffer query1 = new StringBuffer("UPDATE POST SET POST_TIT=?, POST_CONT=? WHERE POST_NO=? ");
+    		StringBuffer query1 = new StringBuffer("UPDATE POST SET POST_TIT=?, POST_CONT=? WHERE POST_TIT=? ");
     		
     		connection();
     		
@@ -236,7 +236,8 @@ public class NotiPost extends JPanel {
     			pstmt = con.prepareStatement(query1.toString());
     			pstmt.setString(1, newPostTit);
     			pstmt.setString(2, newPostCont);
-    			pstmt.setString(3, NotiBoard.pno);
+    			pstmt.setString(3, NotiBoard.ptit);
+//    			pstmt.setString(4, NotiBoard.pprsn);
     			rs = pstmt.executeQuery();
     			
     			if(rs.next()) {

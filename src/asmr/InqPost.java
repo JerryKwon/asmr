@@ -23,7 +23,7 @@ import javax.swing.JTextField;
 
 public class InqPost extends JPanel {
 	
-	static String ino = InqAnsBoard.pno;
+//	static String ino = InqAnsBoard.pno;
 	
 	private boolean isClicked = false;
 	
@@ -159,6 +159,7 @@ public class InqPost extends JPanel {
 	   }
 	
     class InqPostButtonListener implements ActionListener{
+    	
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -216,8 +217,9 @@ public class InqPost extends JPanel {
 //				String pno = InqAnsBoard.pno;
 //				
 ////				InqRegis.PostInq();
-				MainFrame.qnaCase();
-				PostAns(ino);
+				
+				MainFrame.ansCase();
+//				PostAns(ino);
 				
 //				
 				

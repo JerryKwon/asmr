@@ -553,6 +553,14 @@ public class MainFrame extends JFrame {
 		ContentPanel.repaint();
 	}
 	
+	public static void AnsPostCase() {
+		ContentPanel.removeAll();
+		pContents = new AnsPost();
+		ContentPanel.add(pContents);
+		ContentPanel.revalidate();
+		ContentPanel.repaint();
+	}
+	
 	public static void notiBoardCase() {
 		ContentPanel.removeAll();
 		pContents = new NotiBoard();
@@ -561,9 +569,17 @@ public class MainFrame extends JFrame {
 		ContentPanel.repaint();
 	}
 	
-	public static void qnaCase() {
+	public static void InqCase() {
 		ContentPanel.removeAll();
 		pContents = new InqRegis();
+		ContentPanel.add(pContents);
+		ContentPanel.revalidate();
+		ContentPanel.repaint();
+	}
+	
+	public static void ansCase() {
+		ContentPanel.removeAll();
+		pContents = new AnsRegis();
 		ContentPanel.add(pContents);
 		ContentPanel.revalidate();
 		ContentPanel.repaint();
