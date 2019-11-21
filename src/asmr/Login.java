@@ -32,6 +32,7 @@ public class Login extends JPanel implements ActionListener{
 	
 	public Login() {
 		
+		setBackground(MainFrame.bgc);
 		gridbaglayout = new GridBagLayout();		
 		gridbagconstraints = new GridBagConstraints();
 		

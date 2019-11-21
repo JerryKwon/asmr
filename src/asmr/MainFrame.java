@@ -26,6 +26,8 @@ import javax.swing.border.LineBorder;
 public class MainFrame extends JFrame {
 	
 	public static Color bgc = new Color(253, 247, 207);
+	public static Color deepbgc = new Color(253, 237, 131);
+	public static Color linec = new Color(125, 117, 65);
 
 	private JButton bMainButton, bLogo, bLogin, bRegister, bLogout, bUserName, bCustName;
 	private JLabel vCenterName, vWelcome;
@@ -146,6 +148,7 @@ public class MainFrame extends JFrame {
 			mlAbanItem[i].addActionListener(listener);
 			mlAbanItem[i].setPreferredSize(new Dimension(218, 40));
 			mlAbanItem[i].setFont(new Font("³ª´®°íµñ", Font.BOLD, 17));
+			mlAbanItem[i].setBackground(bgc);
 			mAban.add(mlAbanItem[i]);
 		}
 		mAban.setPreferredSize(new Dimension(220, 50));
@@ -158,14 +161,17 @@ public class MainFrame extends JFrame {
 		mReportAni.addActionListener(listener);
 		mReportAni.setPreferredSize(new Dimension(218, 40));
 		mReportAni.setFont(new Font("³ª´®°íµñ", Font.BOLD, 17));
+		mReportAni.setBackground(bgc);
 		mReport.add(mReportAni);
 		
 		mReportManage = new JMenuItem("½Å°íÁ¤º¸°ü¸®");
 		mReportManage.setPreferredSize(new Dimension(218, 40));
 		mReportManage.setFont(new Font("³ª´®°íµñ", Font.BOLD, 17));
 		mReportManage.addActionListener(listener);
+		mReportManage.setBackground(bgc);
 		mReport.setPreferredSize(new Dimension(220, 50));
 		mReport.setBorder(new EmptyBorder(0,90,0,0));
+		mReport.setBackground(bgc);
 		mReport.add(mReportManage);
 		
 		mBar.add(mReport);		
@@ -176,10 +182,13 @@ public class MainFrame extends JFrame {
 		mAdopAnnc.addActionListener(listener);
 		mAdopAnnc.setPreferredSize(new Dimension(218, 40));
 		mAdopAnnc.setFont(new Font("³ª´®°íµñ", Font.BOLD, 17));
+		mAdopAnnc.setBackground(bgc);
 		mAdop.add(mAdopAnnc);
+		
 		mAdopManage = new JMenu("ÀÔ¾ç°ü¸®");
 		mAdopManage.setPreferredSize(new Dimension(218, 40));
 		mAdopManage.setFont(new Font("³ª´®°íµñ", Font.BOLD, 17));
+		mAdopManage.setBackground(bgc);
 		
 		JMenuItem[] mlAdopItem = new JMenuItem[mlAdop.length];
 		for (int i=0; i < mlAdop.length; i++){
@@ -187,9 +196,11 @@ public class MainFrame extends JFrame {
 			mlAdopItem[i].addActionListener(listener);
 			mlAdopItem[i].setPreferredSize(new Dimension(218, 40));
 			mlAdopItem[i].setFont(new Font("³ª´®°íµñ", Font.BOLD, 17));
+			mlAdopItem[i].setBackground(bgc);
 			mAdopManage.add(mlAdopItem[i]);
 		}
 		mAdop.add(mAdopManage);
+		mAdop.setBackground(bgc);
 		mAdop.setPreferredSize(new Dimension(220, 50));
 		mAdop.setBorder(new EmptyBorder(0,90,0,0));
 		mBar.add(mAdop);
@@ -202,6 +213,7 @@ public class MainFrame extends JFrame {
 			mlPostItem[i].addActionListener(listener);
 			mlPostItem[i].setPreferredSize(new Dimension(218, 40));
 			mlPostItem[i].setFont(new Font("³ª´®°íµñ", Font.BOLD, 17));
+			mlPostItem[i].setBackground(bgc);
 			mPost.add(mlPostItem[i]);
 		}
 		mPost.setPreferredSize(new Dimension(220, 50));

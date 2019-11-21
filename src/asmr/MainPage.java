@@ -38,6 +38,7 @@ public class MainPage extends JPanel{
 	GridBagConstraints gridbagconstraints;	
 	
 	public MainPage() {
+		setBackground(MainFrame.bgc);
 		
 		gridbaglayout = new GridBagLayout();		
 		gridbagconstraints = new GridBagConstraints();
