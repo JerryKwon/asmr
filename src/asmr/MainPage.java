@@ -1,10 +1,13 @@
 package asmr;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.Serializable;
@@ -12,22 +15,21 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-public class MainPage extends JPanel{
+public class MainPage extends JPanel implements ActionListener{
 
 	private JLabel vMainBanner, vNotice, vinfectBanner, vGood, vReport, vAdop;
 	private JScrollPane sNotice;
-	
+	private JButton bMore;
 	private JTable eNotice;
 	private final String[] col = {"제목", "작성일시"};
 	private DefaultTableModel model = new DefaultTableModel(col, 0);
@@ -60,6 +62,15 @@ public class MainPage extends JPanel{
 		
 		vNotice = new JLabel("공지사항");
 		vNotice.setFont(new Font("나눔고딕", Font.BOLD, 20));
+		
+		bMore = new JButton("+ 더 보기");
+		bMore.setFont(new Font("나눔고딕", Font.BOLD, 14));
+		bMore.addActionListener(this);
+		bMore.setContentAreaFilled(false);
+		bMore.setFocusPainted(false);
+		bMore.setBorderPainted(false);
+		bMore.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		
 		eNotice = new JTable(model){
 	        private static final long serialVersionUID = 1L;
 
@@ -69,13 +80,13 @@ public class MainPage extends JPanel{
 	    };
 	    DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
 	    dtcr.setHorizontalAlignment(SwingConstants.CENTER);
-		eNotice.getColumnModel().getColumn(0).setPreferredWidth(400);
+		eNotice.getColumnModel().getColumn(0).setPreferredWidth(450);
 		eNotice.getColumnModel().getColumn(0).setCellRenderer(dtcr);
 		eNotice.getColumnModel().getColumn(1).setPreferredWidth(150);
 		eNotice.getColumnModel().getColumn(1).setCellRenderer(dtcr);
 		eNotice.addMouseListener(mainMouseListener);
 		sNotice = new JScrollPane(eNotice);
-		sNotice.setPreferredSize(new Dimension(550,140));
+		sNotice.setPreferredSize(new Dimension(600,140));
 		sNotice.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
 		notiListData = MainPageData.getNotiList(5);
@@ -98,8 +109,11 @@ public class MainPage extends JPanel{
 		setLayout(gridbaglayout);
 		
 		gridbagAdd(vNotice, 0, 0, 1, 1);
-		gridbagAdd(sNotice, 0, 1, 1, 1);
+		gridbagAdd(sNotice, 0, 1, 2, 1);
 //		gridbagAdd(vGood, 0, 1, 5, 1);
+		gridbagconstraints.anchor = GridBagConstraints.EAST;
+		gridbagAdd(bMore, 1, 0, 1, 1);
+		gridbagconstraints.anchor = GridBagConstraints.WEST;
 		gridbagAdd(vMainBanner, 0, 2, 5, 1);
 		gridbagAdd(vReport, 0, 3, 5, 1);
 		gridbagAdd(vinfectBanner, 11, 0, 1, 10);
@@ -142,7 +156,11 @@ public class MainPage extends JPanel{
 			}
 		}
 	}
-
+	public void actionPerformed(ActionEvent e){
+		if(e.getSource().equals(bMore)){
+			MainFrame.notiBoardCase();
+		}
+	}
 	public static void main(String[] args) {
 
 	}
