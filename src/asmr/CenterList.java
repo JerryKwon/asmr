@@ -37,6 +37,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
 
@@ -135,14 +137,19 @@ public class CenterList extends JPanel{
 	        };
 	    };
 		
+	    DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+	    dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+	    
 		eCenterList.getTableHeader().setReorderingAllowed(false);
 		eCenterList.getTableHeader().setResizingAllowed(false);
 		eCenterList.addMouseListener(centerListMouseListener);
 		scrollpane1 = new JScrollPane(eCenterList);
 		scrollpane1.setPreferredSize(new Dimension(600,200));
 		eCenterList.getColumnModel().getColumn(0).setPreferredWidth(150);
+		eCenterList.getColumnModel().getColumn(0).setCellRenderer(dtcr);
 		eCenterList.getColumnModel().getColumn(1).setPreferredWidth(350);
 		eCenterList.getColumnModel().getColumn(2).setPreferredWidth(100);
+		eCenterList.getColumnModel().getColumn(2).setCellRenderer(dtcr);
 		
 		//케이지목록
 		vCageList = new JLabel("케이지목록");
@@ -157,8 +164,11 @@ public class CenterList extends JPanel{
 	    };
 		eCageList.getTableHeader().setReorderingAllowed(false);
 		eCageList.getTableHeader().setResizingAllowed(false);
+		eCageList.getColumnModel().getColumn(0).setCellRenderer(dtcr);
+		eCageList.getColumnModel().getColumn(1).setCellRenderer(dtcr);
 		scrollpane2 = new JScrollPane(eCageList);
 		scrollpane2.setPreferredSize(new Dimension(300,200));
+		
 		
 		vCenterInfo = new JLabel("센터정보");
 		vCenterInfo.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));

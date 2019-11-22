@@ -35,6 +35,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
 
@@ -136,6 +138,12 @@ public class EmpList extends JPanel {
 	                return false;               
 	        };
 	    };
+	    DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+	    dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+	    
+	    eEmpList.getColumnModel().getColumn(0).setCellRenderer(dtcr);
+	    eEmpList.getColumnModel().getColumn(1).setCellRenderer(dtcr);
+	    eEmpList.getColumnModel().getColumn(2).setCellRenderer(dtcr);
 		eEmpList.getTableHeader().setReorderingAllowed(false);
 		eEmpList.getTableHeader().setResizingAllowed(false);
 	    eEmpList.addMouseListener(empListMouseListener);

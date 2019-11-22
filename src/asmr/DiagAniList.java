@@ -37,6 +37,8 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
 
@@ -145,8 +147,17 @@ public class DiagAniList extends JPanel{
 		                return false;               
 		        };
 		    };
+			
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+		    
 		eProtAniList.getTableHeader().setReorderingAllowed(false);
 		eProtAniList.getTableHeader().setResizingAllowed(false);
+		eProtAniList.getColumnModel().getColumn(0).setCellRenderer(dtcr);
+		eProtAniList.getColumnModel().getColumn(1).setCellRenderer(dtcr);
+		eProtAniList.getColumnModel().getColumn(2).setCellRenderer(dtcr);
+		eProtAniList.getColumnModel().getColumn(3).setCellRenderer(dtcr);
+		eProtAniList.getColumnModel().getColumn(4).setCellRenderer(dtcr);
 		eProtAniList.addMouseListener(protAniListMouseListener);
 		protAniListScroll = new JScrollPane(eProtAniList);
 		protAniListScroll.setPreferredSize(new Dimension(750,200));
@@ -165,8 +176,11 @@ public class DiagAniList extends JPanel{
 		diagListScroll = new JScrollPane(eDiagList);
 		diagListScroll.setPreferredSize(new Dimension(450,200));
 		eDiagList.getColumnModel().getColumn(0).setPreferredWidth(100);
+		eDiagList.getColumnModel().getColumn(0).setCellRenderer(dtcr);
 		eDiagList.getColumnModel().getColumn(1).setPreferredWidth(75);
+		eDiagList.getColumnModel().getColumn(1).setCellRenderer(dtcr);
 		eDiagList.getColumnModel().getColumn(2).setPreferredWidth(275);
+		eDiagList.getColumnModel().getColumn(2).setCellRenderer(dtcr);
 		
 		vDiagInfo = new JLabel("진료정보");
 		vDiagInfo.setFont(new Font("나눔고딕", Font.BOLD, 20));
@@ -791,7 +805,7 @@ public class DiagAniList extends JPanel{
 					korAnmlKinds="개";
 					break;
 				case "c":
-					korAnmlKinds="고영이";
+					korAnmlKinds="고양이";
 					break;
 				case "e":
 					korAnmlKinds="기타";

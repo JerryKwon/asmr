@@ -29,6 +29,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class ProtAnmlSearchPopup extends JFrame {
@@ -83,9 +85,26 @@ public class ProtAnmlSearchPopup extends JFrame {
 		userCntrNo = cntrNo;
 		this.xParAbanAniName = xParAbanAniName;
 		
-		eProtAnmlList = new JTable(model1);
+	    
+	    
+		eProtAnmlList = new JTable(model1) {
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
+		
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+	    dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+	    
 		eProtAnmlList.getTableHeader().setReorderingAllowed(false);
 		eProtAnmlList.getTableHeader().setResizingAllowed(false);
+		eProtAnmlList.getColumnModel().getColumn(0).setCellRenderer(dtcr);
+		eProtAnmlList.getColumnModel().getColumn(1).setCellRenderer(dtcr);
+		eProtAnmlList.getColumnModel().getColumn(2).setCellRenderer(dtcr);
+		eProtAnmlList.getColumnModel().getColumn(3).setCellRenderer(dtcr);
+		eProtAnmlList.getColumnModel().getColumn(4).setCellRenderer(dtcr);
 		eProtAnmlList.addMouseListener(protAnmlSearchMouseListener);
 		scrollPane1 = new JScrollPane(eProtAnmlList);
 		scrollPane1.setPreferredSize(new Dimension(500,100));

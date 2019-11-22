@@ -42,8 +42,10 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
 
@@ -152,16 +154,25 @@ public class ProtAniList extends JPanel {
 	                return false;               
 	        };
 	    };
+	    
+	    DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+	    dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+	    
 		eProtAniList.getTableHeader().setReorderingAllowed(false);
 		eProtAniList.getTableHeader().setResizingAllowed(false);
 		eProtAniList.addMouseListener(protAniListMouseListener);
 		aniListScroll = new JScrollPane(eProtAniList);
 		aniListScroll.setPreferredSize(new Dimension(1300,200));
 		eProtAniList.getColumnModel().getColumn(0).setPreferredWidth(100);
+		eProtAniList.getColumnModel().getColumn(0).setCellRenderer(dtcr);
 		eProtAniList.getColumnModel().getColumn(1).setPreferredWidth(75);
+		eProtAniList.getColumnModel().getColumn(1).setCellRenderer(dtcr);
 		eProtAniList.getColumnModel().getColumn(2).setPreferredWidth(150);
+		eProtAniList.getColumnModel().getColumn(2).setCellRenderer(dtcr);
 		eProtAniList.getColumnModel().getColumn(3).setPreferredWidth(75);
+		eProtAniList.getColumnModel().getColumn(3).setCellRenderer(dtcr);
 		eProtAniList.getColumnModel().getColumn(4).setPreferredWidth(50);
+		eProtAniList.getColumnModel().getColumn(4).setCellRenderer(dtcr);
 		eProtAniList.getColumnModel().getColumn(5).setPreferredWidth(900);
 		
 		

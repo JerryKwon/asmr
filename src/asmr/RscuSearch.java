@@ -28,6 +28,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import asmr.NewCenterRegistration.NewCenterRegistButtonListener;
@@ -89,6 +91,10 @@ public class RscuSearch extends JFrame{
 	                return false;               
 	        };
 	    };
+	    
+	    DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+	    dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+	    
 		eRscuList.getTableHeader().setReorderingAllowed(false);
 		eRscuList.getTableHeader().setResizingAllowed(false);
 		eRscuList.addMouseListener(rscuSearchMouseListener);
@@ -96,10 +102,13 @@ public class RscuSearch extends JFrame{
 		scrollPane.setPreferredSize(new Dimension(525,100));
 		
 		eRscuList.getColumnModel().getColumn(0).setPreferredWidth(150);
+		eRscuList.getColumnModel().getColumn(0).setCellRenderer(dtcr);
 		eRscuList.getColumnModel().getColumn(1).setPreferredWidth(75);
+		eRscuList.getColumnModel().getColumn(1).setCellRenderer(dtcr);
 		eRscuList.getColumnModel().getColumn(2).setPreferredWidth(50);
+		eRscuList.getColumnModel().getColumn(2).setCellRenderer(dtcr);
 		eRscuList.getColumnModel().getColumn(3).setPreferredWidth(250);
-		
+		eRscuList.getColumnModel().getColumn(3).setCellRenderer(dtcr);
 		
 		confirm = new JButton("»Æ¿Œ");
 		confirm.setBackground(blue);

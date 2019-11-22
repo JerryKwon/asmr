@@ -31,6 +31,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import asmr.AddressSearch.AddrSearchButtonListener;
@@ -116,6 +118,9 @@ public class NewAddressSearch extends JFrame{
 	                return false;               
 	        };
 	    };
+	    DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+	    dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+	    
 		eAddressList.getTableHeader().setReorderingAllowed(false);
 		eAddressList.getTableHeader().setResizingAllowed(false);
 		eAddressList.addMouseListener(addrSearchMouseListener);
@@ -123,7 +128,8 @@ public class NewAddressSearch extends JFrame{
 		scrollPane.setPreferredSize(new Dimension(425,200));
 		eAddressList.getColumnModel().getColumn(0).setPreferredWidth(350);
 		eAddressList.getColumnModel().getColumn(1).setPreferredWidth(75);
-	    
+	    eAddressList.getColumnModel().getColumn(1).setCellRenderer(dtcr);
+		
 //		vRoadNmAddr1 = new JLabel("도로명주소");
 //		vRoadNmAddr1.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
 		
