@@ -1,19 +1,24 @@
 package asmr;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -49,15 +54,15 @@ public class VisitRegisPopup extends JFrame {
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
 		
-		vVisitRegis = new JLabel("¹æ¹®µî·Ï");
-		vVisitRegis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
+//		vVisitRegis = new JLabel("¹æ¹®µî·Ï");
+//		vVisitRegis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		
 		vVisitDate = new JLabel("¹æ¹®ÀÏÀÚ");
 		vVisitDate.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
 		
 		LocalDate now = LocalDate.now();
 		Date date = Date.valueOf(now);
-		chooser = new JDateChooser(date,"YYYY-MM-dd");
+		chooser = new JDateChooser(date,"yyyy-MM-dd");
 		
 //		xVisitDate = new JTextField(20);
 //		buttonIcon = ImageIO.read(new File("./images/cal1.png"));
@@ -97,9 +102,11 @@ public class VisitRegisPopup extends JFrame {
 		gridbagConstraints.weightx=1.0;
 		gridbagConstraints.weighty=1.0;
 
+		gridbagConstraints.insets = new Insets(5, 5, 5, 5);
+		
 		setLayout(gridbagLayout);
 		
-		gridbagAdd(vVisitRegis, 0, 0, 1, 1);
+//		gridbagAdd(vVisitRegis, 0, 0, 1, 1);
 		
 		gridbagAdd(vVisitDate, 0, 1, 1, 1);
 		gridbagAdd(chooser, 2, 1, 1, 1);
@@ -108,8 +115,16 @@ public class VisitRegisPopup extends JFrame {
 		gridbagAdd(vVisitCont, 0, 2, 1, 1);
 		gridbagAdd(xVisitCont, 2, 2, 6, 1);
 		
-		gridbagAdd(regis, 3, 3, 1, 1);
-		gridbagAdd(cancel, 4, 3, 1, 1);
+		JPanel plainPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,20,0));
+		plainPanel.add(regis);
+		plainPanel.add(cancel);
+		plainPanel.setBackground(MainFrame.bgc);
+		plainPanel.setBorder(BorderFactory.createEmptyBorder(0, 400, 0, 0));
+		
+		gridbagAdd(plainPanel, 0, 3, 8, 1);
+		
+//		gridbagAdd(regis, 3, 3, 1, 1);
+//		gridbagAdd(cancel, 4, 3, 1, 1);
 		
 		pack();
 		setLocationRelativeTo(null);

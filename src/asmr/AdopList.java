@@ -96,11 +96,11 @@ public class AdopList extends JPanel {
 		
 		LocalDate now1 = LocalDate.now();
 		Date date1 = Date.valueOf(now1);
-		chooser1 = new JDateChooser(date1,"YYYY-MM-dd");
+		chooser1 = new JDateChooser(date1,"yyyy-MM-dd");
 		
 		LocalDate now2 = LocalDate.now();
 		Date date2 = Date.valueOf(now2);
-		chooser2 = new JDateChooser(date2,"YYYY-MM-dd");
+		chooser2 = new JDateChooser(date2,"yyyy-MM-dd");
 	
 //		xEndDate = new JTextField(20);
 //		buttonIcon2 = ImageIO.read(new File("./images/cal1.png"));

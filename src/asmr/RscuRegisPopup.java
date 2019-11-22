@@ -2,9 +2,11 @@ package asmr;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -20,11 +22,13 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.toedter.calendar.JDateChooser;
@@ -70,8 +74,8 @@ public class RscuRegisPopup extends JFrame {
 		gridbagLayout = new GridBagLayout();
 		gridbagConstraints = new GridBagConstraints();
 		
-		vRscuRegis = new JLabel("±¸Á¶µî·Ï");
-		vRscuRegis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
+//		vRscuRegis = new JLabel("±¸Á¶µî·Ï");
+//		vRscuRegis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 24));
 		
 		vRscuDttm = new JLabel("±¸Á¶ÀÏ½Ã");
 		vRscuDttm.setFont(new Font("³ª´®°íµñ", Font.PLAIN, 16));
@@ -129,9 +133,11 @@ public class RscuRegisPopup extends JFrame {
 		gridbagConstraints.weightx=1.0;
 		gridbagConstraints.weighty=1.0;
 
+		gridbagConstraints.insets = new Insets(5, 5, 5, 5);
+		
 		setLayout(gridbagLayout);
 		
-		gridbagAdd(vRscuRegis, 0, 0, 1, 1);
+//		gridbagAdd(vRscuRegis, 0, 0, 1, 1);
 		
 		gridbagAdd(vRscuDttm, 0, 1, 1, 1);
 		gridbagAdd(chooser, 2, 1, 2, 1);
@@ -145,8 +151,16 @@ public class RscuRegisPopup extends JFrame {
 		
 //		gridbagAdd(btnSearch, 4, 4, 1, 1);
 		
-		gridbagAdd(confirm,2, 5, 1, 1);
-		gridbagAdd(cancel, 3, 5, 1, 1);
+		JPanel plainPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,20,0));
+		plainPanel.add(confirm);
+		plainPanel.add(cancel);
+		plainPanel.setBackground(MainFrame.bgc);
+		plainPanel.setBorder(BorderFactory.createEmptyBorder(0, 100, 0, 0));
+
+		gridbagAdd(plainPanel, 0, 5, 5, 1);
+		
+//		gridbagAdd(confirm,2, 5, 1, 1);
+//		gridbagAdd(cancel, 3, 5, 1, 1);
 		
 		pack();
 		setLocationRelativeTo(null);

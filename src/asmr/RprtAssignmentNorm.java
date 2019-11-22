@@ -233,12 +233,12 @@ public class RprtAssignmentNorm extends JPanel {
 		regis.addActionListener(rprtAssignmentNormButtonListener);
 		regis.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
-		previous = new JButton("<<");
-		previous.addActionListener(rprtAssignmentNormButtonListener);
-		previous.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
-		next = new JButton(">>");
-		next.addActionListener(rprtAssignmentNormButtonListener);
-		next.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+//		previous = new JButton("<<");
+//		previous.addActionListener(rprtAssignmentNormButtonListener);
+//		previous.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
+//		next = new JButton(">>");
+//		next.addActionListener(rprtAssignmentNormButtonListener);
+//		next.setFont(new Font("³ª´®°íµñ", Font.BOLD, 16));
 		
 		
 		
@@ -318,10 +318,10 @@ public class RprtAssignmentNorm extends JPanel {
 		gridbagAdd(vDscvLoc, 0, 13, 1, 1);
 		gridbagAdd(xDscvLoc, 2, 13, 1, 1);
 		
-		gridbagAdd(imageLabel, 11,7,5,3);
+		gridbagAdd(imageLabel, 11,7,5,5);
 		
-		gridbagAdd(previous, 12,13,1,3);
-		gridbagAdd(next, 13,13,1,3);
+//		gridbagAdd(previous, 12,13,1,3);
+//		gridbagAdd(next, 13,13,1,3);
 		
 		
 		gridbagconstraints.anchor = GridBagConstraints.CENTER;
@@ -803,11 +803,37 @@ public class RprtAssignmentNorm extends JPanel {
     void getApprData() {
     	
         for(int i=0; i < apprAssgListData.size(); i++) {
-        	
+           
+           String korAnmlType = "";
+           switch((String)apprAssgListData.get(i).get("µ¿¹°Á¾·ù")) {
+           case "d":
+        	   korAnmlType = "°³";
+        	   break;
+           case "c":
+        	   korAnmlType = "°í¾çÀÌ";
+        	   break;
+           case "e":
+        	   korAnmlType = "±âÅ¸";
+        	   break;
+           }
+           
+           String korAnmlSize = "";
+           switch((String)apprAssgListData.get(i).get("µ¿¹°Å©±â")) {
+           case "b":
+        	   korAnmlSize = "´ë";
+        	   break;
+           case "m":
+        	   korAnmlSize = "Áß";
+        	   break;
+           case "s":
+        	   korAnmlSize = "¼Ò";
+        	   break;
+           }
+           
            model2.addRow(new Object[] {
         		 apprAssgListData.get(i).get("½Å°í½ÂÀÎÀÏ½Ã"),
-        		 apprAssgListData.get(i).get("µ¿¹°Á¾·ù"),
-        		 apprAssgListData.get(i).get("µ¿¹°Å©±â"),
+        		 korAnmlType,
+        		 korAnmlSize,
         		 apprAssgListData.get(i).get("¼³¸í")
                  
                  

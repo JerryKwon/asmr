@@ -3,6 +3,7 @@ package asmr;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -143,7 +145,7 @@ public class ReqList extends JPanel {
 		
 		LocalDate now = LocalDate.now();
 		Date date = Date.valueOf(now);
-		chooser = new JDateChooser(date,"YYYY-MM-dd");
+		chooser = new JDateChooser(date,"yyyy-MM-dd");
 		
 		regis = new JButton("µî·Ï");
 		regis.setBackground(blue);
@@ -221,8 +223,16 @@ public class ReqList extends JPanel {
 		gridbagAdd(vAdopDate, 0, 13, 1, 1);
 		gridbagAdd(chooser, 2, 13, 1, 1);
 		
-		gridbagAdd(regis, 3, 14, 1, 1);
-		gridbagAdd(cancel, 4, 14, 1, 1);
+		JPanel plainPanel = new JPanel(new FlowLayout(FlowLayout.LEADING,20,0));
+		plainPanel.add(regis);
+		plainPanel.add(cancel);
+		plainPanel.setBackground(MainFrame.bgc);
+		plainPanel.setBorder(BorderFactory.createEmptyBorder(0, 425, 0, 0));
+		
+		gridbagAdd(plainPanel, 0, 14, 7, 0);
+		
+//		gridbagAdd(regis, 3, 14, 1, 1);
+//		gridbagAdd(cancel, 4, 14, 1, 1);
 		
 		//pack();
 		//setResizable(false);
