@@ -45,16 +45,16 @@
  4. 속성정의서
  5. 관계정의서
  6. 논리데이터모델
-	<img src="./DA_Result/6_논리데이터모델.jpg" width="300" />
+ <img src="./DA_Result/6_논리데이터모델.jpg" width="600" />
  7. 단어사전
  8. 도메인사전
  9. 용어사전
  10. 물리데이터모델
-	<img src="./DA_Result/6_물리데이터모델.jpg" width="300" />
+<img src="./DA_Result/10_물리데이터모델.jpg" width="600" />
  11. 테이블정의서
  12. 인덱스정의서
  13. 데이터삽입결과
 
 ### :globe_with_meridians: UI
 
-<img src="./images/readme/aban_ani_search.png" width="300" />
+<img src="./images/readme/aban_ani_search.png" width="600" />
